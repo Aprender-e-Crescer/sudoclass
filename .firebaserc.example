@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "default": ""
+  },
+  "dataconnectEmulatorConfig": {
+    "postgres": {
+      "localConnectionString": ""
+    }
+  }
+}
