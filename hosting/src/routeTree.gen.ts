@@ -11,9 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ListResponsibleImport } from './routes/list-responsible'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const ListResponsibleRoute = ListResponsibleImport.update({
+  path: '/list-responsible',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
@@ -31,6 +37,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/list-responsible': {
+      id: '/list-responsible'
+      path: '/list-responsible'
+      fullPath: '/list-responsible'
+      preLoaderRoute: typeof ListResponsibleImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -38,32 +51,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/list-responsible': typeof ListResponsibleRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/list-responsible': typeof ListResponsibleRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/list-responsible': typeof ListResponsibleRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/list-responsible'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/list-responsible'
+  id: '__root__' | '/' | '/list-responsible'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ListResponsibleRoute: typeof ListResponsibleRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ListResponsibleRoute: ListResponsibleRoute,
 }
 
 export const routeTree = rootRoute
@@ -78,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/list-responsible"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/list-responsible": {
+      "filePath": "list-responsible.tsx"
     }
   }
 }
