@@ -11,9 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TeachersListingImport } from './routes/teachers-listing'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const TeachersListingRoute = TeachersListingImport.update({
+  path: '/teachers-listing',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
@@ -31,6 +37,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/teachers-listing': {
+      id: '/teachers-listing'
+      path: '/teachers-listing'
+      fullPath: '/teachers-listing'
+      preLoaderRoute: typeof TeachersListingImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -38,32 +51,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/teachers-listing': typeof TeachersListingRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/teachers-listing': typeof TeachersListingRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/teachers-listing': typeof TeachersListingRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/teachers-listing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/teachers-listing'
+  id: '__root__' | '/' | '/teachers-listing'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TeachersListingRoute: typeof TeachersListingRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TeachersListingRoute: TeachersListingRoute,
 }
 
 export const routeTree = rootRoute
@@ -78,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/teachers-listing"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/teachers-listing": {
+      "filePath": "teachers-listing.tsx"
     }
   }
 }
