@@ -11,9 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ListSubjectsImport } from './routes/list-subjects'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const ListSubjectsRoute = ListSubjectsImport.update({
+  path: '/list-subjects',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
@@ -31,6 +37,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/list-subjects': {
+      id: '/list-subjects'
+      path: '/list-subjects'
+      fullPath: '/list-subjects'
+      preLoaderRoute: typeof ListSubjectsImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -38,32 +51,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/list-subjects': typeof ListSubjectsRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/list-subjects': typeof ListSubjectsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/list-subjects': typeof ListSubjectsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/list-subjects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/list-subjects'
+  id: '__root__' | '/' | '/list-subjects'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ListSubjectsRoute: typeof ListSubjectsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ListSubjectsRoute: ListSubjectsRoute,
 }
 
 export const routeTree = rootRoute
@@ -78,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/list-subjects"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/list-subjects": {
+      "filePath": "list-subjects.tsx"
     }
   }
 }
