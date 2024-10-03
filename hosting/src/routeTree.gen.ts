@@ -11,9 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SchoolMatricesImport } from './routes/school-matrices'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const SchoolMatricesRoute = SchoolMatricesImport.update({
+  path: '/school-matrices',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
@@ -31,6 +37,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/school-matrices': {
+      id: '/school-matrices'
+      path: '/school-matrices'
+      fullPath: '/school-matrices'
+      preLoaderRoute: typeof SchoolMatricesImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -38,32 +51,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/school-matrices': typeof SchoolMatricesRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/school-matrices': typeof SchoolMatricesRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/school-matrices': typeof SchoolMatricesRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/school-matrices'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/school-matrices'
+  id: '__root__' | '/' | '/school-matrices'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SchoolMatricesRoute: typeof SchoolMatricesRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SchoolMatricesRoute: SchoolMatricesRoute,
 }
 
 export const routeTree = rootRoute
@@ -78,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/school-matrices"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/school-matrices": {
+      "filePath": "school-matrices.tsx"
     }
   }
 }
