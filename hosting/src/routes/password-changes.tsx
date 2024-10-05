@@ -1,26 +1,46 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs } from "firebase/firestore"; 
-import { firestore } from "@/services/firebase";
-import { useState } from "react";
+import { collection, DocumentReference, getDocs } from 'firebase/firestore'
+import { firestore } from '@/services/firebase'
+import { z } from 'zod'
 
 export const Route = createFileRoute('/password-changes')({
-    component: ChangedPasswordRequests,
-}) 
-export function ChangedPasswordRequests(){
-    const result = useQuery({
-        queryKey: ['changed-password-requests'],
-         queryFn: async() => {
-        const PasswordRequestsRef = collection(firestore, "studentPasswordChangeRequests");
-        const docSnap = await getDocs(PasswordRequestsRef); 
+  component: ChangedPasswordRequests,
+})
 
-        return docSnap.docs.map((doc) => doc.data())
-    }}) 
+const changePasswordRequestSchema = z.object({
+  newPasswordDefault: z.string(),
+  requestStatus: z.string(),
+  studentName: z.instanceof(DocumentReference),
+})
 
-    console.log(result.data)
+type ChangeRequests = z.infer<typeof changePasswordRequestSchema>
 
-    return(
-        <>
-            <h1>olaadfasfas</h1>
-        </>
-    )}
+export function ChangedPasswordRequests() {
+  const { data: changeRequests } = useQuery({
+    queryKey: ['changed-password-requests'],
+    queryFn: async () => {
+      const PasswordRequestsRef = collection(firestore, 'studentPasswordChangeRequests').withConverter({
+        toFirestore: (doc: ChangeRequests) => doc,
+        fromFirestore: (snapshot) => changePasswordRequestSchema.parse(snapshot.data()),
+      })
+      const docSnap = await getDocs(PasswordRequestsRef)
+
+      return docSnap.docs.map((doc) => doc.data())
+    },
+  })
+
+  return (
+    <>
+      <div>
+        {changeRequests?.map(({ newPasswordDefault, requestStatus }, index) => (
+          <div key={index}>
+            <p>
+              Nova senha padrão {newPasswordDefault}, status da solicitação: {requestStatus}
+            </p>
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}
