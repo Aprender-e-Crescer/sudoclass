@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { collection, DocumentReference, getDocs } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 import { z } from 'zod'
+import { Field, Form, Formik } from 'formik'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 export const Route = createFileRoute('/password-changes')({
   component: ChangedPasswordRequests,
@@ -15,6 +17,12 @@ const changePasswordRequestSchema = z.object({
 })
 
 type ChangeRequests = z.infer<typeof changePasswordRequestSchema>
+
+const initialValues = {
+  newPasswordDefault: '',
+  requestStatus: '',
+  studentName: '',
+}
 
 export function ChangedPasswordRequests() {
   const { data: changeRequests } = useQuery({
@@ -41,6 +49,20 @@ export function ChangedPasswordRequests() {
           </div>
         ))}
       </div>
+
+      <br></br>
+      <br></br>
+
+      <h1>Agora envie os dados para validação</h1>
+      <Formik
+        onSubmit={() => {}}
+        initialValues={initialValues}
+        validationSchema={toFormikValidationSchema(changePasswordRequestSchema)}
+      >
+        <Form>
+          <Field></Field>
+        </Form>
+      </Formik>
     </>
   )
 }
