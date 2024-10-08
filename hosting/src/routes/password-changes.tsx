@@ -1,5 +1,7 @@
 import { InputForm } from '@/components/custom/input-form'
-import { useChangePasswordRequestQuery } from '@/queries/useChangePasswordRequestQuery'
+import { changePasswordRequestSchema } from '@/models/change-password-request-schema'
+import { useChangePasswordRequestQuery } from '@/queries/use-change-password-request-query'
+import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
@@ -16,6 +18,9 @@ const initialValues = {
 
 export function ChangedPasswordRequests() {
   const { data: changeRequests } = useChangePasswordRequestQuery()
+  const { data: students } = useStudentsListQuery()
+
+  console.log(students)
 
   return (
     <>
