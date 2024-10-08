@@ -19,7 +19,7 @@ export const registerSchema = z.object({
       .nonempty("O campo 'Status de emissão do RG' obrigatorio"),
     rgDispatchDate: z.string().nonempty("O campo 'Data de emissão do RG' obrigatorio"),
     telephone: z.string().nonempty("O campo 'Telefone' obrigatorio"),
-    password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+    password: z.string().min(6, "A senha deve ter pelo menos 6 caractere"),
   });
 
   export type RegisterRequests = z.infer<typeof registerSchema>
