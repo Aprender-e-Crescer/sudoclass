@@ -20,15 +20,14 @@ export function ChangedPasswordRequests() {
   const { data: changeRequests } = useChangePasswordRequestQuery()
   const { data: students } = useStudentsListQuery()
 
-  console.log(students)
-
   return (
     <>
       <div>
-        {changeRequests?.map(({ newPasswordDefault, requestStatus }, index) => (
+        {changeRequests?.map(({ newPasswordDefault, requestStatus, student }, index) => (
           <div key={index}>
             <p>
-              Nova senha padrão {newPasswordDefault}, status da solicitação: {requestStatus}
+              Nova senha padrão {newPasswordDefault}, status da solicitação: {requestStatus}, nome do estudante:{' '}
+              {students?.find((doc) => doc.id === student.id)?.name}
             </p>
           </div>
         ))}

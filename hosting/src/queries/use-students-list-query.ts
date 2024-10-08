@@ -9,7 +9,7 @@ export function useStudentsListQuery() {
         queryFn: async () => {
             const studentsRef = collection(firestore, 'students').withConverter({
                 toFirestore: (doc: Students) => doc,
-                fromFirestore: (snapshot) => StudentsSchema.parse(snapshot.data()),
+                fromFirestore: (snapshot) => StudentsSchema.parse({...snapshot.data(), id: snapshot.id}),
             })
 
             const docSnap = await getDocs(studentsRef)
