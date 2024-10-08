@@ -1,8 +1,8 @@
+import { matriceSchema } from '@/models/matrice-schema'
 import { useListSchoolMatricesQuery } from '@/queries/list-school-matrices'
 import { createFileRoute } from '@tanstack/react-router'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { matriceSchema } from '@/models/matrice-schema'
 
 export const Route = createFileRoute('/school-matrices')({
   component: SchoolMatrices,
@@ -24,16 +24,16 @@ function SchoolMatrices() {
   return (
     <div>
       <div>
-        {data?.map(({ name, numberOfClasses, workload }, index) => (
+        {data?.map((matrice, index) => (
           <div key={index}>
             <p>
-              <strong>Nome:</strong> {name}
+              <strong>Nome:</strong> {matrice.name}
             </p>
             <p>
-              <strong>Número de Aulas:</strong> {numberOfClasses}
+              <strong>Número de Aulas:</strong> {matrice.numberOfClasses}
             </p>
             <p>
-              <strong>Carga Horária:</strong> {workload} horas
+              <strong>Carga Horária:</strong> {matrice.workload} horas
             </p>
           </div>
         ))}
@@ -56,7 +56,7 @@ function SchoolMatrices() {
             </div>
 
             <div>
-              <label htmlFor="numberOfClasses">Numeros de aulas:</label>
+              <label htmlFor="numberOfClasses">Número de aulas:</label>
               <Field type="number" name="numberOfClasses" />
               <ErrorMessage name="numberOfClasses" component="div" className="text-red-600" />
             </div>
