@@ -11,8 +11,5 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {
-    "formik": "^2.4.6",
-    "zod": "^3.23.8"
-  }
+  "dependencies": {}
 }
