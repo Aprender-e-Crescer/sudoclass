@@ -1,53 +1,138 @@
-import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { collection, getDocs } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { ErrorMessage, Field, Form, Formik } from 'formik'
+import { ListResponsibleQuery } from '@/queries/list-responsible-queries'
+import { responsibleSchema } from '@/models/list-responsible-schema'
 
 export const Route = createFileRoute('/list-responsible')({
   component: ListResponsible,
 })
 
 function ListResponsible() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['getResposible'],
-    queryFn: () => {
-      const responsiblesRef = collection(firestore, 'resposibles')
+  const { data, isLoading, error } = ListResponsibleQuery()
+  if (isLoading) {
+    return (
+      <div>
+        <h1>Carregando...</h1>
+      </div>
+    )
+  }
 
-      return getDocs(responsiblesRef).then(({ docs }) => docs.map((doc) => doc.data()))
-    },
-  })
-
-  if (isLoading) return <h1>Carregando...</h1>
+  if (error) return <h1>Erro ao carregar os dados: {error.message}</h1>
 
   return (
     <div>
-      {data?.map(({ cpf, dateOfBirth, email, name, rg, telephone, address }) => (
-        <div>
-          <p>
-            Nome: {name}
-            <br />
-            CPF: {cpf}
-            <br />
-            Data de Nascimento: {dateOfBirth}
-            <br />
-            E-mail: {email}
-            <br />
-            RG: {rg}
-            <br />
-            Telefone: {telephone}
-            <br />
-            address.city: {address.city}
-            <br />
-            address.neighborhood: {address.neighborhood}
-            <br />
-            address.state: {address.state}
-            <br />
-            address.street: {address.street}
-            <br />
-            address.streetNumber: {address.streetNumber}
-          </p>
-        </div>
-      ))}
+      <div>
+        {data?.map(({ cpf, dateOfBirth, email, name, rg, telephone, address }, index) => (
+          <div key={index}>
+            <p>Nome: {name}</p>
+            <p>CPF: {cpf}</p>
+            <p>Data de Nascimento: {dateOfBirth}</p>
+            <p>E-mail: {email}</p>
+            <p>RG: {rg}</p>
+            <p>Telefone: {telephone}</p>
+            <p>address.city: {address.city}</p>
+            <p>address.neighborhood: {address.neighborhood}</p>
+            <p>address.state: {address.state}</p>
+            <p>address.street: {address.street}</p>
+            <p>address.streetNumber: {address.streetNumber}</p>
+          </div>
+        ))}
+      </div>
+      <div>
+        <Formik
+          initialValues={{
+            cpf: '',
+            dateOfBirth: '',
+            email: '',
+            name: '',
+            rg: '',
+            telephone: '',
+            address: {
+              city: '',
+              neighborhood: '',
+              state: '',
+              street: '',
+              streetNumber: '',
+            },
+          }}
+          validationSchema={toFormikValidationSchema(responsibleSchema)}
+          onSubmit={(values, { resetForm }) => {
+            console.log('Form values:', values)
+            resetForm()
+          }}
+        >
+          <Form>
+            <div>
+              <label htmlFor="name">Nome:</label>
+              <Field type="text" name="name" />
+              <ErrorMessage name="name" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="cpf">CPF:</label>
+              <Field type="text" name="cpf" />
+              <ErrorMessage name="cpf" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="dateOfBirth">Data de Nascimento:</label>
+              <Field type="date" name="dateOfBirth" />
+              <ErrorMessage name="dateOfBirth" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="email">Email:</label>
+              <Field type="email" name="email" />
+              <ErrorMessage name="email" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="rg">RG:</label>
+              <Field type="text" name="rg" />
+              <ErrorMessage name="rg" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="telephone">Telefone:</label>
+              <Field type="text" name="telephone" />
+              <ErrorMessage name="telephone" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="address.city">Cidade:</label>
+              <Field type="text" name="address.city" />
+              <ErrorMessage name="address.city" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="address.neighborhood">Bairro:</label>
+              <Field type="text" name="address.neighborhood" />
+              <ErrorMessage name="address.neighborhood" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="address.state">Estado:</label>
+              <Field type="text" name="address.state" />
+              <ErrorMessage name="address.state" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="address.street">Rua:</label>
+              <Field type="text" name="address.street" />
+              <ErrorMessage name="address.street" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="address.streetNumber">Número:</label>
+              <Field type="number" name="address.streetNumber" />
+              <ErrorMessage name="address.streetNumber" component="div" />
+            </div>
+
+            <button type="submit">Adicionar</button>
+          </Form>
+        </Formik>
+      </div>
     </div>
   )
 }
