@@ -2,11 +2,13 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { createFileRoute } from "@tanstack/react-router";
+
 
 const CadastroSchema = z.object({
   municipality: z.string().nonempty("O campo 'Município' obrigatorio"),
   neighborhood: z.string().nonempty("O campo 'Bairro' obrigatorio"),
-  number: z.string().nonempty("O campo 'Número' obrigatorio"),
+  number: z.string().nonempty("O campo 'Numero' obrigatorio"),
   road: z.string().nonempty("O campo 'Rua' obrigatorio"),
   state: z.string().nonempty("O campo 'Estado' obrigatorio"),
   birthCity: z.string().nonempty("O campo 'Cidade de nascimento' obrigatorio"),
@@ -136,5 +138,9 @@ const RegistrationForm = () => (
     )}
   </Formik>
 );
+
+export const Route = createFileRoute('/teachers-listing')({
+  component: RegistrationForm,
+})
 
 export default RegistrationForm;
