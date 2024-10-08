@@ -5,8 +5,6 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { createFileRoute } from "@tanstack/react-router";
 import { registerSchema } from "../models/register-schema";
 
-
-
 const RegistrationForm = () => (
   <Formik
     initialValues={{
