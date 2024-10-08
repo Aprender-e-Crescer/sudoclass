@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const StudentSchema = z.object({
+export const studentSchema = z.object({
     id: z.string(),
     address: z.object({
       city: z.string(),
@@ -21,4 +21,4 @@ export const StudentSchema = z.object({
     telephone: z.string()
   })
 
-export type Student = z.infer<typeof StudentSchema>
+export type Student = z.infer<typeof studentSchema>
