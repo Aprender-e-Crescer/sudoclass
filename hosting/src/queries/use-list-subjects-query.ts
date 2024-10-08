@@ -3,11 +3,11 @@ import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 
-export function useListSubjectsQuery() {
+export function useListSubjectsQuery(schoolMatricesId: string) {
   return useQuery({
     queryKey: ['getSubjects'],
     queryFn: async () => {
-      const subjectRefs = collection(firestore, 'schoolMatrices', 'aQjvxCKlEuHc9YQEedCQ', 'subjects').withConverter({
+      const subjectRefs = collection(firestore, 'schoolMatrices', schoolMatricesId, 'subjects').withConverter({
         toFirestore: (subject: Subject) => subject,
         fromFirestore: (snapshot) => subjectsSchema.parse(snapshot.data()),
       })
