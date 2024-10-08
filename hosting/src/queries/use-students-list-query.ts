@@ -1,4 +1,4 @@
-import { Students, StudentsSchema } from "@/models/students-schema";
+import { Student, StudentSchema } from "@/models/students-schema";
 import { firestore } from "@/services/firebase";
 import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
@@ -8,8 +8,8 @@ export function useStudentsListQuery() {
         queryKey: ['students'],
         queryFn: async () => {
             const studentsRef = collection(firestore, 'students').withConverter({
-                toFirestore: (doc: Students) => doc,
-                fromFirestore: (snapshot) => StudentsSchema.parse({...snapshot.data(), id: snapshot.id}),
+                toFirestore: (doc: Student) => doc,
+                fromFirestore: (snapshot) => StudentSchema.parse({...snapshot.data(), id: snapshot.id}),
             })
 
             const docSnap = await getDocs(studentsRef)
