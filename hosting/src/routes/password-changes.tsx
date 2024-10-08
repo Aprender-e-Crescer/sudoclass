@@ -1,23 +1,12 @@
+import { InputForm } from '@/components/custom/input-form'
+import { useChangePasswordRequestQuery } from '@/queries/useChangePasswordRequestQuery'
 import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
-import { collection, DocumentReference, getDocs } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
-import { z } from 'zod'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { InputForm } from '@/components/custom/input-form'
 
 export const Route = createFileRoute('/password-changes')({
   component: ChangedPasswordRequests,
 })
-
-const changePasswordRequestSchema = z.object({
-  newPasswordDefault: z.string().min(6, { message: 'A string deve conter no minimo 6 caracteres.' }),
-  requestStatus: z.enum(['accepted', 'refused', 'pending']),
-  studentName: z.instanceof(DocumentReference), // ver sobre
-})
-
-type ChangeRequests = z.infer<typeof changePasswordRequestSchema>
 
 const initialValues = {
   newPasswordDefault: '',
@@ -26,18 +15,7 @@ const initialValues = {
 }
 
 export function ChangedPasswordRequests() {
-  const { data: changeRequests } = useQuery({
-    queryKey: ['changed-password-requests'],
-    queryFn: async () => {
-      const PasswordRequestsRef = collection(firestore, 'studentPasswordChangeRequests').withConverter({
-        toFirestore: (doc: ChangeRequests) => doc,
-        fromFirestore: (snapshot) => changePasswordRequestSchema.parse(snapshot.data()),
-      })
-      const docSnap = await getDocs(PasswordRequestsRef)
-
-      return docSnap.docs.map((doc) => doc.data())
-    },
-  })
+  const { data: changeRequests } = useChangePasswordRequestQuery()
 
   return (
     <>
