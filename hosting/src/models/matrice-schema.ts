@@ -6,6 +6,4 @@ export const matriceSchema = z.object({
   workload: z.number({ required_error: 'O campo deve ser um número' }),
 })
 
-export const matricesSchema = z.array(matriceSchema)
-
 export type Matrice = z.infer<typeof matriceSchema>
