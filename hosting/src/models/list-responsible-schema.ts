@@ -17,3 +17,4 @@ export const responsibleSchema = z.object({
 })
 
 export const responsiblesSchema = z.array(responsibleSchema)
+export type Responsible = z.infer<typeof responsibleSchema>
