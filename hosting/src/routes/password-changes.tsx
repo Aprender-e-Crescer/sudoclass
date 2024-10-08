@@ -1,5 +1,7 @@
 import { InputForm } from '@/components/custom/input-form'
-import { useChangePasswordRequestQuery } from '@/queries/useChangePasswordRequestQuery'
+import { changePasswordRequestSchema } from '@/models/change-password-request-schema'
+import { useChangePasswordRequestQuery } from '@/queries/use-change-password-request-query'
+import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
@@ -16,14 +18,16 @@ const initialValues = {
 
 export function ChangedPasswordRequests() {
   const { data: changeRequests } = useChangePasswordRequestQuery()
+  const { data: students } = useStudentsListQuery()
 
   return (
     <>
       <div>
-        {changeRequests?.map(({ newPasswordDefault, requestStatus }, index) => (
+        {changeRequests?.map(({ newPasswordDefault, requestStatus, student }, index) => (
           <div key={index}>
             <p>
-              Nova senha padrão {newPasswordDefault}, status da solicitação: {requestStatus}
+              Nova senha padrão {newPasswordDefault}, status da solicitação: {requestStatus}, nome do estudante:{' '}
+              {students?.find((doc) => doc.id === student.id)?.name}
             </p>
           </div>
         ))}

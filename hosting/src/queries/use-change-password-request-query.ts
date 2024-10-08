@@ -1,4 +1,4 @@
-import { changePasswordRequestSchema, ChangeRequests } from "@/models/changePasswordRequestSchema"
+import { changePasswordRequestSchema, ChangeRequests } from "@/models/change-password-request-schema"
 import { firestore } from "@/services/firebase"
 import { useQuery } from "@tanstack/react-query"
 import { collection, getDocs } from "firebase/firestore"
