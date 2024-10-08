@@ -9,7 +9,7 @@ export const Route = createFileRoute('/list-subjects')({
 })
 
 function ListSubjects() {
-  const { data } = useListSubjectsQuery()
+  const { data } = useListSubjectsQuery('aQjvxCKlEuHc9YQEedCQ')
 
   const validate = toFormikValidate(subjectsSchema)
 
