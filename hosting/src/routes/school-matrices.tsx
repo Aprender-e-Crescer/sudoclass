@@ -1,40 +1,15 @@
-import { firestore } from '@/services/firebase'
-import { useQuery } from '@tanstack/react-query'
+import { ListSchoolMatrices } from '@/queries/list-school-matrices'
 import { createFileRoute } from '@tanstack/react-router'
-import { collection, getDocs } from 'firebase/firestore'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
-import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-
-const matrixSchema = z.object({
-  name: z.string(),
-  numberOfClasses: z.number(),
-  workload: z.number(),
-})
-
-const matricesSchema = z.array(matrixSchema)
+import { matrizSchema } from '@/models/matriz-schema'
 
 export const Route = createFileRoute('/school-matrices')({
   component: SchoolMatrices,
 })
 
 function SchoolMatrices() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['getMatrices'],
-    queryFn: async () => {
-      const matricesRef = collection(firestore, 'schoolMatrices')
-      const snapshot = await getDocs(matricesRef)
-      const matricesData = snapshot.docs.map((doc) => doc.data())
-
-      const parsedData = matricesSchema.safeParse(matricesData)
-
-      if (!parsedData.success) {
-        throw new Error('Invalid data structure')
-      }
-
-      return parsedData.data
-    },
-  })
+  const { data, isLoading, error } = ListSchoolMatrices()
 
   if (isLoading) {
     return (
@@ -44,7 +19,7 @@ function SchoolMatrices() {
     )
   }
 
-  if (error) return <h1>Erro ao carregar os dados.</h1>
+  if (error) return <h1>Erro ao carregar os dados</h1>
 
   return (
     <div>
@@ -67,37 +42,33 @@ function SchoolMatrices() {
       <div>
         <Formik
           initialValues={{ name: '', numberOfClasses: '', workload: '' }}
-          validationSchema={toFormikValidationSchema(matrixSchema)}
+          validationSchema={toFormikValidationSchema(matrizSchema)}
           onSubmit={(values, { resetForm }) => {
             console.log('Form values:', values)
             resetForm()
           }}
         >
-          {({ isSubmitting }) => (
-            <Form>
-              <div>
-                <label htmlFor="name">Nome:</label>
-                <Field type="text" name="name" />
-                <ErrorMessage name="name" component="div" />
-              </div>
+          <Form>
+            <div>
+              <label htmlFor="name">Nome:</label>
+              <Field type="text" name="name" />
+              <ErrorMessage name="name" component="div" className="text-red-600" />
+            </div>
 
-              <div>
-                <label htmlFor="numberOfClasses">Numeros de aulas:</label>
-                <Field type="number" name="numberOfClasses" />
-                <ErrorMessage name="numberOfClasses" component="div" />
-              </div>
+            <div>
+              <label htmlFor="numberOfClasses">Numeros de aulas:</label>
+              <Field type="number" name="numberOfClasses" />
+              <ErrorMessage name="numberOfClasses" component="div" className="text-red-600" />
+            </div>
 
-              <div>
-                <label htmlFor="workload">Carga Horária:</label>
-                <Field type="number" name="workload" />
-                <ErrorMessage name="workload" component="div" />
-              </div>
+            <div>
+              <label htmlFor="workload">Carga Horária:</label>
+              <Field type="number" name="workload" />
+              <ErrorMessage name="workload" component="div" className="text-red-600" />
+            </div>
 
-              <button type="submit" disabled={isSubmitting}>
-                Adicionar
-              </button>
-            </Form>
-          )}
+            <button type="submit">Adicionar</button>
+          </Form>
         </Formik>
       </div>
     </div>
