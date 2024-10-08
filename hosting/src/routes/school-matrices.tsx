@@ -1,15 +1,15 @@
-import { ListSchoolMatrices } from '@/queries/list-school-matrices'
+import { useListSchoolMatricesQuery } from '@/queries/list-school-matrices'
 import { createFileRoute } from '@tanstack/react-router'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { matrizSchema } from '@/models/matriz-schema'
+import { matriceSchema } from '@/models/matrice-schema'
 
 export const Route = createFileRoute('/school-matrices')({
   component: SchoolMatrices,
 })
 
 function SchoolMatrices() {
-  const { data, isLoading, error } = ListSchoolMatrices()
+  const { data, isLoading, error } = useListSchoolMatricesQuery()
 
   if (isLoading) {
     return (
@@ -42,7 +42,7 @@ function SchoolMatrices() {
       <div>
         <Formik
           initialValues={{ name: '', numberOfClasses: '', workload: '' }}
-          validationSchema={toFormikValidationSchema(matrizSchema)}
+          validationSchema={toFormikValidationSchema(matriceSchema)}
           onSubmit={(values, { resetForm }) => {
             console.log('Form values:', values)
             resetForm()

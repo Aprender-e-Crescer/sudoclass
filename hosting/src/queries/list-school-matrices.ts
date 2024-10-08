@@ -1,9 +1,9 @@
 import { firestore } from '@/services/firebase'
-import { matricesSchema } from '@/models/matriz-schema'
+import { matricesSchema } from '@/models/matrice-schema'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 
-export function ListSchoolMatrices() {
+export function useListSchoolMatricesQuery() {
   return useQuery({
     queryKey: ['getMatrices'],
     queryFn: async () => {
