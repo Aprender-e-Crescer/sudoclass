@@ -1,28 +1,21 @@
-
-import { DocumentReference } from 'firebase/firestore';
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const registerSchema = z.object({
-    municipality: z.string().nonempty("O campo 'Município' obrigatorio"),
-    neighborhood: z.string().nonempty("O campo 'Bairro' obrigatorio"),
-    number: z.string().nonempty("O campo 'Numero' obrigatorio"),
-    road: z.string().nonempty("O campo 'Rua' obrigatorio"),
-    state: z.string().nonempty("O campo 'Estado' obrigatorio"),
-    birthCity: z.string().nonempty("O campo 'Cidade de nascimento' obrigatorio"),
-    birthStatus: z.string().nonempty("O campo 'Estado civil' obrigatorio"),
-    cpf: z.string().nonempty("O campo 'CPF' é obrigatório"),
-    dateOfBirth: z.string().nonempty("O campo 'Data de nascimento' e obrigatorio"),
-    email: z.string().email("Email invalido"),
-    fullName: z.string().nonempty("O campo 'Nome completo' obrigatorio"),
-    rgNumber: z.string().nonempty().min(7,"RG , no minimo 7 digitos "),
-    rgDispatchStatus: z.string().nonempty("O campo 'Status de emissão do RG' obrigatorio"),
-    rgDispatchDate: z.string().nonempty("O campo 'Data de emissão do RG' obrigatorio"),
-    telephone: z.string().nonempty("O campo 'Telefone' obrigatorio"),
-    password: z.string().min(6, "A senha deve ter pelo menos 6 caractere"),
-    matter: z.any().refine((provider: object): provider is DocumentReference => provider instanceof DocumentReference,
-    )
-  });
-
-  export type RegisterRequests = z.infer<typeof registerSchema>
-
-  
+  municipality: z.string().nonempty("O campo 'Município' é obrigatório").optional(),
+  neighborhood: z.string().nonempty("O campo 'Bairro' é obrigatório").optional(),
+  number: z.string().nonempty("O campo 'Número' é obrigatório").optional(),
+  road: z.string().nonempty("O campo 'Rua' é obrigatório").optional(),
+  state: z.string().nonempty("O campo 'Estado' é obrigatório").optional(),
+  birthCity: z.string().nonempty("O campo 'Cidade de nascimento' é obrigatório").optional(),
+  birthStatus: z.string().nonempty("O campo 'Estado civil' é obrigatório").optional(),
+  cpf: z.string().nonempty("O campo 'CPF' é obrigatório").optional(),
+  email: z.string().email("Email inválido").optional(),
+  fullName: z.string().nonempty("O campo 'Nome completo' é obrigatório").optional(),
+  rgNumber: z.string().nonempty().min(7, "RG deve ter no mínimo 7 dígitos").optional(),
+  rgDispatchStatus: z.string().nonempty("O campo 'Status de emissão do RG' é obrigatório").optional(),
+  rgDispatchDate: z.string().nonempty("O campo 'Data de emissão do RG' é obrigatório").optional(),
+  telephone: z.string().nonempty("O campo 'Telefone' é obrigatório").optional(),
+  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres").optional(),
+  matter: z.any().optional(),
+});
+export type RegisterRequests = z.infer<typeof registerSchema>;

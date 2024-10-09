@@ -3,6 +3,8 @@ import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { createFileRoute } from '@tanstack/react-router';
 import { registerSchema } from '@/models/register-schema';
 import { useRegisterSchemaQuery } from '@/queries/teachers-listing-query';
+import { addDoc, collection } from 'firebase/firestore';
+import { firestore } from '@/services/firebase';
 
 export const Route = createFileRoute('/teachers-listing')({
   component: TeachersListing,
@@ -50,8 +52,37 @@ export function TeachersListing() {
       <Formik
         initialValues={initialValues}
         validationSchema={toFormikValidationSchema(registerSchema)}
-        onSubmit={(values) => {
-          console.log('Valores do formulário:', values);
+        onSubmit={async (values, { resetForm, setSubmitting }) => {
+          try {
+            // Referência à coleção 'teachers' no Firestore
+            const teachersRef = collection(firestore, 'teachers');
+
+            // Adicionando um novo documento à coleção com os valores do formulário
+            await addDoc(teachersRef, {
+              municipality: values.municipality,
+              neighborhood: values.neighborhood,
+              number: values.number,
+              road: values.road,
+              state: values.state,
+              birthCity: values.birthCity,
+              birthStatus: values.birthStatus,
+              cpf: values.cpf,
+              email: values.email,
+              fullName: values.fullName,
+              rgNumber: values.rgNumber,
+              rgDispatchStatus: values.rgDispatchStatus,
+              rgDispatchDate: values.rgDispatchDate,
+              telephone: values.telephone,
+              password: values.password,
+            });
+
+            alert('Professor cadastrado com sucesso!');
+            resetForm(); // Reseta o formulário após o envio
+          } catch (error) {
+            console.error('Erro ao cadastrar professor: ', error);
+          } finally {
+            setSubmitting(false); // Encerra o estado de "enviando"
+          }
         }}
       >
         {({ errors, touched }) => (
