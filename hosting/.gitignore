@@ -32,3 +32,4 @@ package-lock.json
 # firebase
 .firebaserc
 .firebase
+routeTree.gen.ts
