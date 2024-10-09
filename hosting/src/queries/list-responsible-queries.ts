@@ -3,9 +3,10 @@ import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 import { Responsible, responsibleSchema } from '@/models/list-responsible-schema'
 
+export const RESPONSIBLES_QUERY_KEY = ['getResponsibles']
 export function useListResponsibleQuery() {
   return useQuery({
-    queryKey: ['getResponsibles'],
+    queryKey: RESPONSIBLES_QUERY_KEY,
     queryFn: async () => {
       const responsiblesRef = collection(firestore, 'responsibles').withConverter({
         toFirestore: (responsible: Responsible) => responsible,
