@@ -3,7 +3,7 @@ import { firestore } from "@/services/firebase";
 import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
 
-export function registerSchemaQuery(){
+export function useRegisterSchemaQuery(){
     return useQuery({
         queryKey: ['teachers'],
         queryFn: async () => {
