@@ -7,7 +7,7 @@ export function useListResponsibleQuery() {
   return useQuery({
     queryKey: ['getResponsibles'],
     queryFn: async () => {
-      const responsiblesRef = collection(firestore, 'resposibles').withConverter({
+      const responsiblesRef = collection(firestore, 'responsibles').withConverter({
         toFirestore: (responsible: Responsible) => responsible,
         fromFirestore: (snapshot) => responsibleSchema.parse(snapshot.data()),
       })

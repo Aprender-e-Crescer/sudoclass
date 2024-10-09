@@ -1,3 +1,4 @@
+import { DocumentReference } from 'firebase/firestore'
 import { z } from 'zod'
 
 export const responsibleSchema = z.object({
@@ -7,6 +8,9 @@ export const responsibleSchema = z.object({
   name: z.string({ required_error: `Insira um name valido` }),
   rg: z.string({ required_error: `Insira um rg valido` }),
   telephone: z.string({ required_error: `Insira um telefone valido` }),
+  students: z.array(
+    z.any().refine((student: object): student is DocumentReference => student instanceof DocumentReference),
+  ),
   address: z.object({
     city: z.string({ required_error: `Insira uma cidade valido` }),
     neighborhood: z.string({ required_error: `Insira um bairro valido` }),
