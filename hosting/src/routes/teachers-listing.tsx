@@ -3,13 +3,11 @@ import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { createFileRoute } from '@tanstack/react-router';
 import { registerSchema } from '@/models/register-schema';
 import { useRegisterSchemaQuery } from '@/queries/teachers-listing-query';
-import { addDoc, collection } from 'firebase/firestore';
-import { firestore } from '@/services/firebase';
-
+ 
 export const Route = createFileRoute('/teachers-listing')({
   component: TeachersListing,
 });
-
+ 
 const initialValues = {
   municipality: '',
   neighborhood: '',
@@ -28,10 +26,10 @@ const initialValues = {
   telephone: '',
   password: '',
 };
-
+ 
 export function TeachersListing() {
   const { data: registerRequests } = useRegisterSchemaQuery();
-
+ 
   return (
     <>
       <div>
@@ -43,46 +41,18 @@ export function TeachersListing() {
           </div>
         ))}
       </div>
-
+ 
       <br />
       <br />
-
+ 
       <h1>Cadastro de Professor</h1>
-
+ 
       <Formik
         initialValues={initialValues}
         validationSchema={toFormikValidationSchema(registerSchema)}
-        onSubmit={async (values, { resetForm, setSubmitting }) => {
-          try {
-            // Referência à coleção 'teachers' no Firestore
-            const teachersRef = collection(firestore, 'teachers');
-
-            // Adicionando um novo documento à coleção com os valores do formulário
-            await addDoc(teachersRef, {
-              municipality: values.municipality,
-              neighborhood: values.neighborhood,
-              number: values.number,
-              road: values.road,
-              state: values.state,
-              birthCity: values.birthCity,
-              birthStatus: values.birthStatus,
-              cpf: values.cpf,
-              email: values.email,
-              fullName: values.fullName,
-              rgNumber: values.rgNumber,
-              rgDispatchStatus: values.rgDispatchStatus,
-              rgDispatchDate: values.rgDispatchDate,
-              telephone: values.telephone,
-              password: values.password,
-            });
-
-            alert('Professor cadastrado com sucesso!');
-            resetForm(); // Reseta o formulário após o envio
-          } catch (error) {
-            console.error('Erro ao cadastrar professor: ', error);
-          } finally {
-            setSubmitting(false); // Encerra o estado de "enviando"
-          }
+        onSubmit={(values) => {
+         
+          console.log('Valores do formulário:', values);
         }}
       >
         {({ errors, touched }) => (
@@ -94,7 +64,7 @@ export function TeachersListing() {
                 <div>{errors.municipality}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Bairro:</label>
               <Field type="text" name="neighborhood" />
@@ -102,25 +72,25 @@ export function TeachersListing() {
                 <div>{errors.neighborhood}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Número:</label>
               <Field type="text" name="number" />
               {touched.number && errors.number && <div>{errors.number}</div>}
             </div>
-
+ 
             <div>
               <label>Rua:</label>
               <Field type="text" name="road" />
               {touched.road && errors.road && <div>{errors.road}</div>}
             </div>
-
+ 
             <div>
               <label>Estado:</label>
               <Field type="text" name="state" />
               {touched.state && errors.state && <div>{errors.state}</div>}
             </div>
-
+ 
             <div>
               <label>Cidade de Nascimento:</label>
               <Field type="text" name="birthCity" />
@@ -128,7 +98,7 @@ export function TeachersListing() {
                 <div>{errors.birthCity}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Estado Civil:</label>
               <Field type="text" name="birthStatus" />
@@ -136,13 +106,13 @@ export function TeachersListing() {
                 <div>{errors.birthStatus}</div>
               )}
             </div>
-
+ 
             <div>
               <label>CPF:</label>
               <Field type="text" name="cpf" />
               {touched.cpf && errors.cpf && <div>{errors.cpf}</div>}
             </div>
-
+ 
             <div>
               <label>Data de Nascimento:</label>
               <Field type="text" name="dateOfBirth" />
@@ -150,19 +120,19 @@ export function TeachersListing() {
                 <div>{errors.dateOfBirth}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Email:</label>
               <Field type="email" name="email" />
               {touched.email && errors.email && <div>{errors.email}</div>}
             </div>
-
+ 
             <div>
               <label>Nome Completo:</label>
               <Field type="text" name="fullName" />
               {touched.fullName && errors.fullName && <div>{errors.fullName}</div>}
             </div>
-
+ 
             <div>
               <label>Número do RG:</label>
               <Field type="text" name="rgNumber" />
@@ -170,7 +140,7 @@ export function TeachersListing() {
                 <div>{errors.rgNumber}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Status de Emissão do RG:</label>
               <Field type="text" name="rgDispatchStatus" />
@@ -178,7 +148,7 @@ export function TeachersListing() {
                 <div>{errors.rgDispatchStatus}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Data de Emissão do RG:</label>
               <Field type="text" name="rgDispatchDate" />
@@ -186,7 +156,7 @@ export function TeachersListing() {
                 <div>{errors.rgDispatchDate}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Telefone:</label>
               <Field type="text" name="telephone" />
@@ -194,13 +164,13 @@ export function TeachersListing() {
                 <div>{errors.telephone}</div>
               )}
             </div>
-
+ 
             <div>
               <label>Senha:</label>
               <Field type="password" name="password" />
               {touched.password && errors.password && <div>{errors.password}</div>}
             </div>
-
+ 
             <button type="submit">Cadastrar</button>
           </Form>
         )}
@@ -208,3 +178,5 @@ export function TeachersListing() {
     </>
   );
 }
+ 
+ 
