@@ -3,6 +3,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { toFormikValidate } from 'zod-formik-adapter'
 import { useListSubjectsQuery } from '@/queries/use-list-subjects-query'
 import { subjectsSchema } from '@/models/subjects-schema'
+import { addDoc, collection, doc } from 'firebase/firestore'
+import { firestore } from '@/services/firebase'
+import { useRegisterSchemaQuery } from '@/queries/teachers-listing-query'
 
 export const Route = createFileRoute('/list-subjects')({
   component: ListSubjects,
@@ -10,15 +13,22 @@ export const Route = createFileRoute('/list-subjects')({
 
 function ListSubjects() {
   const { data } = useListSubjectsQuery('aQjvxCKlEuHc9YQEedCQ')
+  const { data: teachers } = useRegisterSchemaQuery()
+  console.log(teachers)
 
   const validate = toFormikValidate(subjectsSchema)
 
   return (
     <>
       <Formik
-        initialValues={{ name: '', description: '' }}
+        initialValues={{ name: '', description: '', teacher: '' }}
         validate={validate}
         onSubmit={(values, { resetForm }) => {
+          addDoc(collection(firestore, 'schoolMatrices', 'aQjvxCKlEuHc9YQEedCQ', 'subjects'), {
+            name: values.name,
+            description: values.description,
+            teacher: doc(firestore, 'teachers', values.teacher),
+          })
           console.log('valores do formulário:', values)
           resetForm()
         }}
@@ -36,6 +46,18 @@ function ListSubjects() {
               name="description"
             />
             <ErrorMessage name="description" component="div" className="text-red-500 text-sm mt-1" />
+          </div>
+          <div className="flex flex-col w-full max-w-xs">
+            <label htmlFor="teacherId" className="text-gray-700 mb-1">
+              Selecione um professor:
+            </label>
+            <Field as="select" name="teacher" className="bg-gray-200 rounded-md p-2">
+              {teachers?.map((teacher, index) => (
+                <option key={index} value={teacher.id}>
+                  {teacher.fullName}
+                </option>
+              ))}
+            </Field>
           </div>
           <button type="submit" className="mt-4 bg-green-400 text-white rounded-md p-2">
             Enviar
