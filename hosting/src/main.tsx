@@ -7,6 +7,7 @@ import './index.css'
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
+import { DialogDemo } from './components/new-collection'
 
 const router = createRouter({ routeTree })
 
@@ -22,7 +23,8 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        {/* <RouterProvider router={router} /> */}
+        <DialogDemo />
       </QueryClientProvider>
     </StrictMode>,
   )
