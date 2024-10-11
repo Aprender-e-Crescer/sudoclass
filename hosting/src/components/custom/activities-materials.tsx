@@ -18,12 +18,32 @@ export function ActivitiesMaterials() {
               </div>
             </div>
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="">
             <hr />
-            <div className="ml-4">
-              <div className="flex">
-                <Switch />
-                <p className="ml-4">Aceita envios</p>
+            <div className="ml-4 flex p-16 justify-between">
+              <div className="flex gap-5">
+                <p className="text-lg text-gray-700">instruções</p>
+              </div>
+              <div className="flex flex-col gap-y-5">
+                <div className="flex gap-5">
+                  <div>
+                    <p className="text-6xl text-gray-700">0</p>
+                    <p className="text-gray-700">Entregue</p>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="border-l-2 border-gray-300 h-24 mx-4"></div>
+                   
+                  </div>
+                  <div>
+                    <p className="text-6xl text-gray-700">0</p>
+                    <p className="text-gray-700">Pendentes</p>
+                  </div>
+                </div>
+
+                <div className="flex">
+                  <Switch />
+                  <p className="ml-4 text-gray-700">Aceita envios</p>
+                </div>
               </div>
             </div>
             <hr />
