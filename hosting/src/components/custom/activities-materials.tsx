@@ -32,7 +32,6 @@ export function ActivitiesMaterials() {
                   </div>
                   <div className="flex items-center">
                     <div className="border-l-2 border-gray-300 h-24 mx-4"></div>
-                   
                   </div>
                   <div>
                     <p className="text-6xl text-gray-700">0</p>
@@ -46,8 +45,11 @@ export function ActivitiesMaterials() {
                 </div>
               </div>
             </div>
-            <hr />
-            <p className="text-blue-600">Visualizar Entregues</p>
+
+            <div className="flex gap-5 flex-col">
+              <hr />
+              <p className="text-blue-600">Visualizar Entregues</p>
+            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
