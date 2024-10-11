@@ -49,7 +49,7 @@ export function ChangedPasswordRequests() {
             name="newPasswordDefault"
             placeholder="Digite a senha padrão aqui"
             label="newPasswordDefault"
-            type="default"
+            type="text"
           />
 
           <InputForm
@@ -58,7 +58,7 @@ export function ChangedPasswordRequests() {
             name="requestStatus"
             placeholder="Digite o status da requisição de troca de senha"
             label="requestStatus"
-            type="default"
+            type="text"
           />
         </Form>
       </Formik>

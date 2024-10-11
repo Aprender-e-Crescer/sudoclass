@@ -6,16 +6,33 @@ interface InputProps {
   placeholder: string
   id: string
   name: string
-  type: 'default' | 'file' | 'textarea'
+  type: 'text' | 'file' | 'textarea'
   titleTextArea?: string
+  customStyleLabel?: string
+  customStyleButton?: string
 }
 
-export function InputForm({ title, label, name, placeholder, id, type, titleTextArea }: InputProps) {
-  if (type === 'default') {
+export function InputForm({
+  title,
+  label,
+  name,
+  placeholder,
+  id,
+  type,
+  titleTextArea,
+  customStyleButton,
+  customStyleLabel,
+}: InputProps) {
+  if (type === 'text') {
     return (
-      <label htmlFor={label} className="flex flex-col flex-1 max-w-96 mt-3">
+      <label htmlFor={label} className={`${customStyleLabel ? customStyleLabel : 'flex flex-col flex-1 w-full mt-3'}`}>
         {title}
-        <Field placeholder={placeholder} id={id} name={name} className="p-1" />
+        <Field
+          placeholder={placeholder}
+          id={id}
+          name={name}
+          className={`${customStyleButton ? customStyleButton : 'p-1'}`}
+        />
         <div className="text-red-500">
           <ErrorMessage name={name} />
         </div>
