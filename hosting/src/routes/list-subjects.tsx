@@ -6,6 +6,7 @@ import { subjectsSchema } from '@/models/subjects-schema'
 import { addDoc, collection, doc } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 import { useRegisterSchemaQuery } from '@/queries/teachers-listing-query'
+import { useListSchoolMatricesQuery } from '@/queries/list-school-matrices'
 
 export const Route = createFileRoute('/list-subjects')({
   component: ListSubjects,
@@ -13,8 +14,9 @@ export const Route = createFileRoute('/list-subjects')({
 
 function ListSubjects() {
   const { data } = useListSubjectsQuery('aQjvxCKlEuHc9YQEedCQ')
+  const { data: schoolMatrices } = useListSchoolMatricesQuery()
   const { data: teachers } = useRegisterSchemaQuery()
-  console.log(teachers)
+  console.log(schoolMatrices)
 
   const validate = toFormikValidate(subjectsSchema)
 
@@ -34,6 +36,13 @@ function ListSubjects() {
         }}
       >
         <Form className="flex items-center justify-center flex-col gap-4 p-6">
+          {/* <Field as="select" name="teacher" className="bg-gray-200 rounded-md p-2">
+            {schoolMatrices?.map((matrice, index) => (
+              <option key={index} value={matrice.id}>
+                {matrice.name}
+              </option>
+            ))}
+          </Field> */}
           <div className="flex flex-col w-full max-w-xs">
             <Field type="text" className="bg-gray-200 rounded-md p-2" placeholder="Nome da matéria" name="name" />
             <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
