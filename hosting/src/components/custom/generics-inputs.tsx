@@ -1,7 +1,9 @@
 import { ErrorMessage, Field } from 'formik'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Eye } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { useState } from 'react'
 interface InputProps {
   title?: string
   label: string
@@ -29,6 +31,16 @@ export function InputForm({
   icon,
   showEyeIcon,
 }: InputProps) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+  const handleOnToggleIconClick = () => {
+    setIsPasswordVisible((oldIsPasswordVisible) => !oldIsPasswordVisible)
+  }
+
+  const EyeIcon = isPasswordVisible ? Eye : EyeOff
+  const typePassword = 'password'
+  const newType = isPasswordVisible ? 'string' : typePassword
+
   if (type === 'text') {
     return (
       <label htmlFor={label} className={`${customStyleLabel ? customStyleLabel : 'flex flex-col flex-1 w-full mt-3'}`}>
@@ -109,12 +121,21 @@ export function InputForm({
           <Field
             id={id}
             name={name}
+            as={Input}
+            type={newType}
             placeholder={placeholder}
             className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold text-[#2F2F2F]"
           />
           {showEyeIcon && (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <Eye className="h-5 w-5 text-blue-500" />
+              <button
+                onClick={handleOnToggleIconClick}
+                type="button"
+                data-is-password={typePassword == 'password'}
+                className="hidden data-[is-password=true]:block"
+              >
+                <EyeIcon className="h-5 w-5 text-blue-500" />
+              </button>
             </div>
           )}
         </div>
