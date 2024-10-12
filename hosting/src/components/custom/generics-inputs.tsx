@@ -1,17 +1,19 @@
 import { ErrorMessage, Field } from 'formik'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Eye } from 'lucide-react'
 interface InputProps {
   title?: string
   label: string
   placeholder?: string
   id: string
   name: string
-  type: 'text' | 'file' | 'textarea' | 'onlyInput' | 'checkbox'
+  type: 'text' | 'file' | 'textarea' | 'onlyInput' | 'checkbox' | 'blueDetails'
   titleTextArea?: string
   customStyleLabel?: string
   customStyleButton?: string
   icon?: JSX.Element
+  showEyeIcon?: boolean
 }
 
 export function InputForm({
@@ -25,6 +27,7 @@ export function InputForm({
   customStyleButton,
   customStyleLabel,
   icon,
+  showEyeIcon,
 }: InputProps) {
   if (type === 'text') {
     return (
@@ -95,6 +98,27 @@ export function InputForm({
           </div>
         ))}
       </>
+    )
+  }
+
+  if (type === 'blueDetails') {
+    return (
+      <div className="p-4">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center">{icon}</div>
+          <Field
+            id={id}
+            name={name}
+            placeholder={placeholder}
+            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold text-[#2F2F2F]"
+          />
+          {showEyeIcon && (
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <Eye className="h-5 w-5 text-blue-500" />
+            </div>
+          )}
+        </div>
+      </div>
     )
   }
 }
