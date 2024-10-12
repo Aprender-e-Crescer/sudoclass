@@ -8,6 +8,8 @@ interface PropsTeacher {
   dataAtv: string
   instructions: string
   iconColor: string
+  assigned: number
+  pending: number
 }
 interface PropsStudent {
   title: string
@@ -17,7 +19,7 @@ interface PropsStudent {
   isSubmitted: boolean
 }
 
-export function ActivitiesMaterialsStudent({ title, dataAtv, instructions, iconColor, isSubmitted }: PropsStudent) {
+export function ActivitiesMaterialsStudent({ title, dataAtv, instructions, iconColor, isSubmitted  }: PropsStudent) {
   return (
     <div className="w-3/6 h-auto my-2.5">
       <Accordion className="border rounded-2xl p-1" type="single" collapsible>
@@ -54,7 +56,7 @@ export function ActivitiesMaterialsStudent({ title, dataAtv, instructions, iconC
   )
 }
 
-export function ActivitiesMaterialsTeacher({ title, dataAtv, instructions, iconColor }: PropsTeacher) {
+export function ActivitiesMaterialsTeacher({ title, dataAtv, instructions, iconColor, assigned, pending }: PropsTeacher) {
   return (
     <div className="w-3/6 h-auto my-2.5">
       <Accordion className="border rounded-2xl p-1" type="single" collapsible>
@@ -80,14 +82,14 @@ export function ActivitiesMaterialsTeacher({ title, dataAtv, instructions, iconC
               <div className="flex flex-col gap-y-2">
                 <div className="flex gap-2">
                   <div>
-                    <p className="text-3xl text-gray-700">0</p>
+                    <p className="text-3xl text-gray-700">{assigned}</p>
                     <p className="text-gray-700">Entregue</p>
                   </div>
                   <div className="flex items-center">
                     <div className="border-l-2 border-gray-300 h-10 mx-1"></div>
                   </div>
                   <div>
-                    <p className="text-3xl text-gray-700">0</p>
+                    <p className="text-3xl text-gray-700">{pending}</p>
                     <p className="text-gray-700">Pendentes</p>
                   </div>
                 </div>
