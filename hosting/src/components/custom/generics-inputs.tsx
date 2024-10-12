@@ -73,21 +73,19 @@ export function InputForm({
     )
   }
 
-  const vetorTeste = [
+  const checkboxValuesExample = [
     {
       test1: 'Sim',
+      label: 'test1',
     },
-    {
-      test2: 'Não',
-    },
-  ]
+  ] // criar para a checkbox
 
   if (type === 'checkbox') {
     return (
       <>
-        {vetorTeste.map(({ test1, test2 }) => (
-          <div className="flex items-center space-x-2 mt-2" key={name}>
-            <Checkbox id={id} />
+        {checkboxValuesExample.map(({ test1, label }, index) => (
+          <div className="flex items-center space-x-2 mt-2" key={index}>
+            <Checkbox id={label} name={label} />
             <label
               htmlFor={label}
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
