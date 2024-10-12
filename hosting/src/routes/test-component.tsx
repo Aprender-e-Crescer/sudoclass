@@ -8,7 +8,8 @@ export const Route = createFileRoute('/test-component')({
 function RouteActivitiesMaterials() {
   return (
     <div className="p-2">
-      <ActivitiesMaterials />
+      <ActivitiesMaterials title="teste 1" dataAtv="11-10-2024" />
+      <ActivitiesMaterials title="teste 2" dataAtv="12-11-2024" />
     </div>
   )
 }

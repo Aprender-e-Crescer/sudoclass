@@ -2,7 +2,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Switch } from '@/components/ui/switch'
 import iconeAtividade from '@/assets/iconeAtividade.png'
 
-export function ActivitiesMaterials() {
+interface props {
+  title: string,
+  dataAtv: string,
+}
+
+export function ActivitiesMaterials({title, dataAtv}: props) {
   return (
     <>
       <div className="w-3/5 h-32">
@@ -14,8 +19,8 @@ export function ActivitiesMaterials() {
                   <img className="h-8 w-8" src={iconeAtividade} alt="" />
                 </div>
                 <div className="ml-4">
-                  <p className="flex color:gray font-bold text-lg text-gray-700">Titulo da atividade:</p>
-                  <p className="flex color:gray text-xs text-gray-300">data da atividade</p>
+                  <p className="flex color:gray font-bold text-lg text-gray-700">{title}</p>
+                  <p className="flex color:gray text-xs text-gray-300">{dataAtv}</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -58,5 +63,3 @@ export function ActivitiesMaterials() {
     </>
   )
 }
-
-// use switch too for aceita envios
