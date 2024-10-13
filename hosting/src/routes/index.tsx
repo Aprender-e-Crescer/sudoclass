@@ -8,24 +8,52 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <div className="flex gap-8">
-      <Button variant="blueButton" icon={<FaCheck />}>
-        Copiar
-      </Button>
+    <div>
+      <div className="flex gap-2.5">
+        <Button variant="blueButton" size="large">
+          Confirmar
+        </Button>
 
-      <Button variant="copyButton" icon={<FaCheck />} size="fixed">
-        Copiar
-      </Button>
+        <Button variant="lightTextBlack" size="large">
+          Cancelar
+        </Button>
+      </div>
 
-      <Button variant="blueButton" icon={<FaCheck />} iconPosition='left' notificationCount={0}>
-        Blue
-      </Button>
-      <Button variant="lightTextBlack" icon={<FaCheck />} notificationCount={10}>
-        Light Text Black
-      </Button>
-      <Button variant="lightTextRed" icon={<FaCheck />} notificationCount={2}>
-        Light Text Red
-      </Button>
+      <div className="mt-2.5">
+        <Button variant="copyButton" icon={<FaCheck />} size="fixed">
+          Copiar
+        </Button>
+      </div>
+
+      <div className="mt-2.5">
+        <Button variant="blueButton" size="medium">
+          Escolher Foto
+        </Button>
+
+        <Button variant="lightTextRed" size="medium">
+          Apargar Foto
+        </Button>
+      </div>
+
+      <div className="mt-2.5">
+        <Button variant="ghostWhite" icon={<FaCheck />} size="small">
+          Editar
+        </Button>
+
+        <Button variant="blueButton" icon={<FaCheck />} size="small">
+          Editar
+        </Button>
+      </div>
+
+      <div className="mt-3">
+        <Button variant="ghostBlack" icon={<FaCheck />} iconPosition='left' size="small">
+          Enviar
+        </Button>
+
+        <Button variant="ghostBlack" icon={<FaCheck />} iconPosition='left' notificationCount={10} size="small">
+          Respostas
+        </Button>
+      </div>
     </div>
   );
 }
