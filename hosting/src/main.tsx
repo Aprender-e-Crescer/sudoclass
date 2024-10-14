@@ -7,7 +7,6 @@ import './index.css'
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
-
 const router = createRouter({ routeTree })
 
 declare module '@tanstack/react-router' {
@@ -27,3 +26,4 @@ if (!rootElement.innerHTML) {
     </StrictMode>,
   )
 }
+//
