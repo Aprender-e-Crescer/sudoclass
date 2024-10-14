@@ -11,5 +11,7 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.1"
+  }
 }
