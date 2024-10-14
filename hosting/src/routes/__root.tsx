@@ -17,6 +17,9 @@ export const Route = createRootRoute({
         <Link to="/confirmation-screen" className="[&.active]:font-bold">
           confirmation screen
         </Link>
+        <Link to="/class-user-resgistration" className="[&.active]:font-bold">
+          user registration class
+        </Link>
       </div>
       <hr />
       <Outlet />
