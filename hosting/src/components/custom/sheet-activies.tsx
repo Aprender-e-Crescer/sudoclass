@@ -23,18 +23,21 @@ export function SheetActivies() {
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Selecione os alunos que deseja atribuir atividade</SheetTitle>
+            <SheetTitle className="text-2xl">Selecione os alunos que deseja atribuir atividade</SheetTitle>
             <SheetDescription>
               {students?.map((student) => (
-                <div key={student.id}>
+                <div className="flex gap-x-2 items-center" key={student.id}>
                   <input
                     type="checkbox"
                     name=""
                     id="{`student-${student.id}`}"
                     checked={!!selectedStudents[student.id]}
                     onChange={() => handleCheckboxChange(student.id)}
+                    className="w-5 h-5"
                   />
-                  <label htmlFor={`student-${student.id}`}>{student.name}</label>
+                  <label className="text-2xl" htmlFor={`student-${student.id}`}>
+                    {student.name}
+                  </label>
                 </div>
               ))}
             </SheetDescription>
