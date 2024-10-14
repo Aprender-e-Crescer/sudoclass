@@ -1,7 +1,13 @@
-import React from 'react'
 import * as Avatar from '@radix-ui/react-avatar'
 
-export function TeacherComment() {
+interface TeacherCommentProps {
+  name: string
+  date: string
+  comment: string
+  textAvatar: string
+}
+
+export function TeacherComment({ name, date, comment, textAvatar }: TeacherCommentProps) {
   return (
     <div>
       <div className="w-[993px] h-[83px] mx-auto p-4 bg-white shadow-lg rounded-lg flex space-x-4">
@@ -11,13 +17,13 @@ export function TeacherComment() {
             src=".../assets/teachercommentavatarphoto.png"
             alt="Alexandre Martinek"
           />
-          <Avatar.Fallback className="text-xl text-gray-500">AM</Avatar.Fallback>
+          <Avatar.Fallback className="text-xl text-gray-500">{textAvatar}</Avatar.Fallback>
         </Avatar.Root>
 
         <div className="flex flex-col justify-center">
-          <span className="text-sm font-medium text-gray-800">Alexandre Martinek</span>
-          <span className="text-xs text-gray-500">Ontem</span>
-          <p className="mt-2 text-sm text-gray-700">Prova amanhã pessoal! Não faltem</p>
+          <span className="text-sm font-medium text-gray-800">{name}</span>
+          <span className="text-xs text-gray-500">{date}</span>
+          <p className="mt-2 text-sm text-gray-700">{comment}</p>
         </div>
       </div>
     </div>

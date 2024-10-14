@@ -24,7 +24,12 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <TeacherComment />
+        <TeacherComment
+          name="Alexandre Martinek"
+          date="Ontem"
+          comment="Prova amanhã pessoal! Não faltem!"
+          textAvatar="AM"
+        />
       </QueryClientProvider>
     </StrictMode>,
   )
