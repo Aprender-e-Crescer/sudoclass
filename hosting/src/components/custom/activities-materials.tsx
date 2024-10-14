@@ -10,7 +10,6 @@ interface ActivitiesMaterialsProps {
   iconColor: string
   assigned?: number
   pending?: number
-  isSubmitted?: boolean
   type: 'teacher' | 'student'
 }
 
@@ -21,13 +20,12 @@ export function ActivitiesMaterials({
   iconColor,
   assigned,
   pending,
-  isSubmitted,
   type,
 }: ActivitiesMaterialsProps) {
   if (type === 'teacher') {
     return (
       <div className="w-3/6 h-auto my-2.5">
-        <Accordion className="border rounded-2xl p-1" type="single" collapsible>
+        <Accordion className="border rounded-2xl px-4" type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>
               <div className="flex items-center">
@@ -42,7 +40,7 @@ export function ActivitiesMaterials({
             </AccordionTrigger>
             <AccordionContent className="transition-all duration-300">
               <hr className="my-2" />
-              <div className="flex flex-col ml-1 md:flex p-4 justify-between  gap-5">
+              <div className="flex flex-col ml-1 md:flex justify-between  gap-5">
                 <div className="hidden md:flex gap-2">
                   <p className="text-sm text-gray-700">Instruções</p>
                   <p className="text-sm mx-7">{instructions}</p>
@@ -80,12 +78,22 @@ export function ActivitiesMaterials({
   } else if (type === 'student') {
     return (
       <>
-        <div className="w-3/6 h-auto my-2.5">
-          <Accordion className="border rounded-2xl p-1" type="single" collapsible>
+        <div className="flex items-center w-3/6 md:hidden border p-4 rounded-2xl my-2.5">
+          <div className={clsx('flex justify-center items-center', iconColor, 'w-10 h-10 rounded-full')}>
+            <img className="h-6 w-6" src={iconeAtividade} alt="" />
+          </div>
+          <div className="ml-2">
+            <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
+            <p className="flex color:gray text-xs text-gray-300">{dataAtv}</p>
+          </div>
+        </div>
+
+        <div className="hidden md:flex md:w-3/6 h-auto my-2.5">
+          <Accordion className="border rounded-2xl px-4 w-full" type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>
                 <div className="flex items-center">
-                  <div className={clsx('flex justify-center items-center ', iconColor, 'w-10 h-10 rounded-full')}>
+                  <div className={clsx('flex justify-center items-center', iconColor, 'w-10 h-10 rounded-full')}>
                     <img className="h-6 w-6" src={iconeAtividade} alt="" />
                   </div>
                   <div className="ml-2">
@@ -94,20 +102,18 @@ export function ActivitiesMaterials({
                   </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="transition-all duration-300">
-                <hr className="my-2" />
-                <div className="flex flex-col ml-1 md:flex p-4 justify-between gap-5">
-                  <div className="hidden md:flex gap-2">
-                    <p className="text-sm text-gray-700">Instruções</p>
-                    <p className="text-sm mx-7">{instructions}</p>
+              <div className="">
+                <AccordionContent className="transition-all duration-300">
+                  <hr className="my-2" />
+                  <div className="flex flex-col ml-1 md:flex p-4 justify-between gap-5">
+                    {/* Conteúdo visível apenas em telas maiores */}
+                    <div className="hidden md:flex gap-2">
+                      <p className="text-sm text-gray-700">Instruções</p>
+                      <p className="text-sm mx-7">{instructions}</p>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-y-2">
-                    <p className={`text-lg ${isSubmitted ? 'text-green-600' : 'text-red-600'}`}>
-                      {isSubmitted ? 'Atividade entregue' : 'Atividade pendente'}
-                    </p>
-                  </div>
-                </div>
-              </AccordionContent>
+                </AccordionContent>
+              </div>
             </AccordionItem>
           </Accordion>
         </div>

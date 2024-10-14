@@ -24,7 +24,6 @@ function RouteActivitiesMaterials() {
         dataAtv="11-10-2024"
         instructions='Análise de Texto: "Leia o texto indicado e faça uma análise crítica, destacando os principais argumentos do autor. Em seguida, elabore uma reflexão pessoal de, no mínimo, 300 palavras, conectando o conteúdo do texto com temas abordados em sala de aula."'
         iconColor="bg-yellow-500"
-        isSubmitted={false}
         type="student"
       />
     </div>
