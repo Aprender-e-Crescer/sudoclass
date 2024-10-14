@@ -7,6 +7,7 @@ import './index.css'
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
+import { CardSubject } from './components/custom/card-subject'
 
 const router = createRouter({ routeTree })
 
@@ -23,6 +24,7 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        <CardSubject materialSubject="Matéria" description="descrição" />
       </QueryClientProvider>
     </StrictMode>,
   )
