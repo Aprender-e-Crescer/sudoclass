@@ -5,48 +5,12 @@ interface CardTitleFormProps {
 
 export function CardTitleForm({ title, sentBy }: CardTitleFormProps) {
   return (
-    <div
-      style={{
-        backgroundColor: '#0C408F',
-        borderRadius: '10px',
-        padding: '6px 1px 1.5px 1px',
-        width: '620px',
-        position: 'relative',
-      }}
-    >
-
-      <div
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: '8px 8px 0 0',
-          padding: '5px 1px 1px 1px',
-          width: '100%',
-          height: '50px', 
-          marginBottom: '1px',
-        }}
-      >
-        <h1 style={{ fontSize: '28px', margin: '0', fontWeight: 'bold', textAlign: 'left', paddingLeft: '8px' }}>
-          {title}
-        </h1>
+    <div className="bg-blue-900 rounded-lg pt-2.5 pb-0.5 pl-0.5 pr-0.5 w-[330px] sm:w-[620px] ">
+      <div className="bg-white rounded-t-lg p-1 h-12 mb-0.5">
+        <h1 className="text-2xl font-bold text-left pl-2 m-0">{title}</h1>
       </div>
-      <div
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: '0 0 8px 8px',
-          padding: '1px 1px 1px 1px',
-          width: '100%',
-          height: '70px',
-          marginTop: '1px',
-        }}
-      >
-        <div style={{ 
-            fontSize: '14px', 
-            color: 'black', 
-            textAlign: 'left', 
-            paddingLeft: '8px', 
-            paddingTop: '16px',
-            fontWeight: 'normal'
-          }}>
+      <div className="bg-white rounded-b-lg p-1 h-16 mt-0.5">
+        <div className="text-sm text-black text-left pl-2 pt-4 font-normal">
           Enviado por {sentBy}
         </div>
       </div>
