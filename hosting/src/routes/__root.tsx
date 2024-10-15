@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { Subheader } from '@/components/custom/subheader';
 
 export const Route = createRootRoute({
   component: () => (
@@ -17,6 +18,7 @@ export const Route = createRootRoute({
       </div>
       <hr />
       <Outlet />
+      <Subheader classroomType="student"/>
       <TanStackRouterDevtools />
     </>
   ),
