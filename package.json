@@ -11,5 +11,7 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "lucide-react": "^0.452.0"
+  }
 }
