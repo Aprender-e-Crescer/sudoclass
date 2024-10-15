@@ -13,7 +13,6 @@ const buttonVariants = cva(
         blueButton: "bg-[#1A73E8] text-[#F8FAFC] hover:bg-[#1A60D0]",
         lightTextBlack: "bg-[#F8FAFC] text-[#0F172A] hover:bg-[#F1F5F9]",
         lightTextRed: "bg-[#F8FAFC] text-[#B3261E] hover:bg-[#F1F5F9]",
-        copyButton: "border border-[#0F172A] text-[#0F172A] hover:bg-[#F1F5F9] text-[30px]",
       },
       size: {
         fixed: "w-[500px] h-[60px]",
@@ -75,6 +74,5 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-Button.displayName = "Button";
 
 export { Button, buttonVariants };
