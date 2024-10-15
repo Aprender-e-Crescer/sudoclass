@@ -9,7 +9,7 @@ interface InputProps {
   titleTextArea?: string
 }
 
-export function TextareaInput({ label, titleTextArea, placeholder, id, name }: InputProps) {
+export function InputTextarea({ label, titleTextArea, placeholder, id, name }: InputProps) {
   return (
     <div>
       <label htmlFor={label}>{titleTextArea}</label>

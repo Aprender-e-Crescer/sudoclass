@@ -7,7 +7,7 @@ interface InputProps {
   icon?: JSX.Element
 }
 
-export function WithoutLabelInput({ placeholder, id, icon, name }: InputProps) {
+export function InputWithoutLabel({ placeholder, id, icon, name }: InputProps) {
   return (
     <div className="relative w-full">
       <Field placeholder={placeholder} id={id} name={name} className="w-full pr-10" />

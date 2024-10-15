@@ -7,7 +7,7 @@ interface CheckboxProps {
   }[]
 }
 
-export function CheckboxInput({ checkboxValues }: CheckboxProps) {
+export function InputCheckbox({ checkboxValues }: CheckboxProps) {
   return (
     <>
       {checkboxValues.map(({ value, label }, index) => (

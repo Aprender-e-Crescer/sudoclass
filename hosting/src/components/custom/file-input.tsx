@@ -8,7 +8,7 @@ interface FileInputProps {
   name: string
 }
 
-export function FileInput({ id, label, title, placeholder, name }: FileInputProps) {
+export function InputFile({ id, label, title, placeholder, name }: FileInputProps) {
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <label htmlFor={label}>{title}</label>

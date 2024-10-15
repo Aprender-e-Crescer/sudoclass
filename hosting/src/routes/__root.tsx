@@ -14,9 +14,6 @@ export const Route = createRootRoute({
         <Link to="/password-changes" className="[&.active]:font-bold">
           password changes
         </Link>
-        <Link to="/confirmation-screen" className="[&.active]:font-bold">
-          confirmation screen
-        </Link>
       </div>
       <hr />
       <Outlet />

@@ -11,8 +11,5 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {
-    "@radix-ui/react-alert-dialog": "^1.1.2",
-    "lucide-react": "^0.452.0"
-  }
+  "dependencies": {}
 }

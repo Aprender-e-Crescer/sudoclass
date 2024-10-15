@@ -10,7 +10,7 @@ interface AuthInputProps {
   icon: JSX.Element
 }
 
-export function AuthInput({ id, name, placeholder, icon }: AuthInputProps) {
+export function InputAuth({ id, name, placeholder, icon }: AuthInputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const handleOnToggleIconClick = () => {
