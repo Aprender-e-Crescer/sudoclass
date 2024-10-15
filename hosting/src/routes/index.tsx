@@ -1,15 +1,27 @@
-import { Button } from '@/components/ui/button'
-import { createFileRoute } from '@tanstack/react-router'
+import FormHeader from '@/components/formHeader';
+import { createFileRoute } from '@tanstack/react-router';
+import { Button } from '@/components/ui/button';
+import { RiEditLine } from "react-icons/ri";
+
 
 export const Route = createFileRoute('/')({
   component: Index,
-})
+});
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-      <Button variant="destructive">Click me</Button>
+    <div>
+      <div className='flex items-center justify-between'>
+        <FormHeader 
+          imagemUrl="https://via.placeholder.com/60"
+          nome="Aluno tal" 
+        />
+        <Button icon={<RiEditLine />} size="small">
+          Editar
+        </Button>
+      </div>
     </div>
-  )
+  );
 }
+
+export default Index;
