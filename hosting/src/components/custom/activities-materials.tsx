@@ -2,10 +2,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Switch } from '@/components/ui/switch'
 import iconeAtividade from '@/assets/iconeAtividade.png'
 import clsx from 'clsx'
-
 interface ActivitiesMaterialsProps {
   title: string
-  dataAtv: string
+  dateActivity: string
   instructions: string
   iconColor: string
   assigned?: number
@@ -15,7 +14,7 @@ interface ActivitiesMaterialsProps {
 
 export function ActivitiesMaterials({
   title,
-  dataAtv,
+  dateActivity,
   instructions,
   iconColor,
   assigned,
@@ -34,7 +33,7 @@ export function ActivitiesMaterials({
                 </div>
                 <div className="ml-2">
                   <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
-                  <p className="flex color:gray text-xs text-gray-300">{dataAtv}</p>
+                  <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -46,7 +45,7 @@ export function ActivitiesMaterials({
                   <p className="text-sm mx-7">{instructions}</p>
                 </div>
                 <div className="flex flex-col gap-y-2">
-                  <div className="flex gap-2">
+                  <div className="hidden md:flex gap-2">
                     <div>
                       <p className="text-3xl text-gray-700">{assigned}</p>
                       <p className="text-gray-700">Entregue</p>
@@ -59,10 +58,23 @@ export function ActivitiesMaterials({
                       <p className="text-gray-700">Pendentes</p>
                     </div>
                   </div>
+                  <div className="flex gap-2 md:hidden">
+                    <div>
+                      <p className="text-2xl text-gray-700">{assigned}</p>
+                      <p className="text-sm text-gray-700">Entregue</p>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="border-l-2 border-gray-300 h-10 mx-1"></div>
+                    </div>
+                    <div>
+                      <p className="text-2xl text-gray-700">{pending}</p>
+                      <p className="text-sm text-gray-700">Pendentes</p>
+                    </div>
+                  </div>
 
                   <div className="flex items-center">
                     <Switch />
-                    <p className="ml-3 text-gray-700">Aceita envios</p>
+                    <p className="text-sm md:text-base ml-3 text-gray-700 ">Aceita envios</p>
                   </div>
                 </div>
               </div>
@@ -84,7 +96,7 @@ export function ActivitiesMaterials({
           </div>
           <div className="ml-2">
             <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
-            <p className="flex color:gray text-xs text-gray-300">{dataAtv}</p>
+            <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
           </div>
         </div>
 
@@ -98,7 +110,7 @@ export function ActivitiesMaterials({
                   </div>
                   <div className="ml-2">
                     <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
-                    <p className="flex color:gray text-xs text-gray-300">{dataAtv}</p>
+                    <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
                   </div>
                 </div>
               </AccordionTrigger>

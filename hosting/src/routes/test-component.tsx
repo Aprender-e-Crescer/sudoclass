@@ -11,7 +11,7 @@ function RouteActivitiesMaterials() {
       <h1>Visao Professor:</h1>
       <ActivitiesMaterials
         title="Atividade 1"
-        dataAtv="11-10-2024"
+        dateActivity="11-10-2024"
         instructions='Análise de Texto: "Leia o texto indicado e faça uma análise crítica, destacando os principais argumentos do autor. Em seguida, elabore uma reflexão pessoal de, no mínimo, 300 palavras, conectando o conteúdo do texto com temas abordados em sala de aula."'
         iconColor="bg-yellow-500"
         assigned={30}
@@ -21,7 +21,7 @@ function RouteActivitiesMaterials() {
       <h1>Visao Aluno:</h1>
       <ActivitiesMaterials
         title="Atividade 1"
-        dataAtv="11-10-2024"
+        dateActivity="11-10-2024"
         instructions='Análise de Texto: "Leia o texto indicado e faça uma análise crítica, destacando os principais argumentos do autor. Em seguida, elabore uma reflexão pessoal de, no mínimo, 300 palavras, conectando o conteúdo do texto com temas abordados em sala de aula."'
         iconColor="bg-yellow-500"
         type="student"
