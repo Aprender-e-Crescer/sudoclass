@@ -1,31 +1,27 @@
 import sudotecLogo from '@/assets/sudotecLogo.svg'
-import { Avatar, AvatarFallback,} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 
-interface props {
-    Logo: string
-    AvatarFallBack: string
-    AvatarImage: string
+interface headerProps {
+    logo: string
+    avatarFallBack: string
+    avatarImage: string
 }
-export function Header ({ Logo = sudotecLogo, AvatarImage, AvatarFallBack}: props) {
+export function Header ({ logo = sudotecLogo, avatarImage, avatarFallBack}: headerProps) {
     return(
         <div className='flex justify-between items-center border'>
             <div className='flex h-24 w-40 ml-10 '>
-                <img src= {Logo} alt="sudotecLogo" />
+                <img src= {logo} alt="sudotecLogo" />
             </div>
             <div className='flex h-11 w-11 mr-10'>
             <Avatar>
-                <img src={AvatarImage} />
-                <AvatarFallback>{AvatarFallBack}</AvatarFallback>
+                <img src={avatarImage} />
+                <AvatarFallback>{avatarFallBack}</AvatarFallback>
             </Avatar>
 
             </div>
         </div>
         
-
-
-    )
-
-
+    )   
 
 }
