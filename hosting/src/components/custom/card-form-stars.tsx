@@ -5,14 +5,13 @@ interface RatingProps {
   title: string
 }
 
-export default function CardFormStars({ title }: RatingProps) {
+export function CardFormStars({ title }: RatingProps) {
   const [value, setValue] = useState(0)
-  console.log(value)
 
   return (
     <div className="border-[#0C408F] border-2 rounded-xl w-[280px] h-auto flex flex-col items-center px-3 py-5 justify-between sm:w-[652px]">
       <p className="text-2xl mb-2 text-center">{title}</p>
-      <hr className="w-full border-[#0C408F]  mb-10" />
+      <hr className="w-full border-[#0C408F] mb-10" />
       <Rating
         value={value}
         onChange={(_event, newValue) => {
