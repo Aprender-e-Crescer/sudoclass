@@ -1,5 +1,6 @@
 import { InputForm } from '@/components/custom/text-input'
 import { FileInput } from '@/components/custom/file-input'
+import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
 import { X } from 'lucide-react'
@@ -54,7 +55,7 @@ export function TeacherRegistration() {
                       label="state"
                       customStyleButton='rounded-lg border-2 p-[6px]'
                       
-                  />
+                 />
                   <InputForm
                       title="Muncipio"
                       placeholder="Dois vizinhos"
@@ -76,7 +77,7 @@ export function TeacherRegistration() {
                       customStyleButton='rounded-lg border-2 p-[6px]'
                 />
 
-                 <div className='flex sm:gap-5'>
+                 <div className='flex gap-5'>
                   <div className='xl:w-1/2 w-1/2 '>
                   <InputForm
                       title="Bairro"
@@ -168,17 +169,19 @@ export function TeacherRegistration() {
                       label="cityOfBirth"
                       customStyleButton='rounded-lg border-2 p-[6px]'
                 />
-                <div className='flex'>
                  <FileInput
                       title='Anexar documentos:'
-                      placeholder="ImagemDocumentoAnexado.png      90kb"
+                      placeholder="ImagemDocumentoAnexado.png 90kb"
                       type="file"
                       id="AttachDocuments"
                       name="AttachDocuments"
                       label="AttachDocuments"
                 />
-                
-               </div>
+                <div className='flex justify-center gap-5'>
+                <Button variant='ghostBlack' size='large' className='w-64'>Cancelar</Button>
+                <Button variant='blueButton' size='large' className='w-64'>Atualizar</Button>
+                </div>
+               
                 </div>
         </Form>
       </Formik>
