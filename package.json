@@ -10,9 +10,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "dependencies": {
-    "@radix-ui/react-dialog": "^1.1.2",
-    "lucide-react": "^0.451.0"
   }
 }

@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export function DialogRemuveSubject() {
+export function DialogRemoveSubject() {
   return (
     <>
       <Dialog>
