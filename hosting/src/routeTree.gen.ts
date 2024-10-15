@@ -12,12 +12,42 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TeachersListingImport } from './routes/teachers-listing'
+import { Route as SchoolMatricesImport } from './routes/school-matrices'
+import { Route as PasswordChangesImport } from './routes/password-changes'
+import { Route as ListSubjectsImport } from './routes/list-subjects'
+import { Route as ListResponsibleImport } from './routes/list-responsible'
+import { Route as ActivitiesImport } from './routes/activities'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
 const TeachersListingRoute = TeachersListingImport.update({
   path: '/teachers-listing',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SchoolMatricesRoute = SchoolMatricesImport.update({
+  path: '/school-matrices',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PasswordChangesRoute = PasswordChangesImport.update({
+  path: '/password-changes',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ListSubjectsRoute = ListSubjectsImport.update({
+  path: '/list-subjects',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ListResponsibleRoute = ListResponsibleImport.update({
+  path: '/list-responsible',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ActivitiesRoute = ActivitiesImport.update({
+  path: '/activities',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -37,6 +67,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesImport
+      parentRoute: typeof rootRoute
+    }
+    '/list-responsible': {
+      id: '/list-responsible'
+      path: '/list-responsible'
+      fullPath: '/list-responsible'
+      preLoaderRoute: typeof ListResponsibleImport
+      parentRoute: typeof rootRoute
+    }
+    '/list-subjects': {
+      id: '/list-subjects'
+      path: '/list-subjects'
+      fullPath: '/list-subjects'
+      preLoaderRoute: typeof ListSubjectsImport
+      parentRoute: typeof rootRoute
+    }
+    '/password-changes': {
+      id: '/password-changes'
+      path: '/password-changes'
+      fullPath: '/password-changes'
+      preLoaderRoute: typeof PasswordChangesImport
+      parentRoute: typeof rootRoute
+    }
+    '/school-matrices': {
+      id: '/school-matrices'
+      path: '/school-matrices'
+      fullPath: '/school-matrices'
+      preLoaderRoute: typeof SchoolMatricesImport
+      parentRoute: typeof rootRoute
+    }
     '/teachers-listing': {
       id: '/teachers-listing'
       path: '/teachers-listing'
@@ -51,36 +116,83 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/list-responsible': typeof ListResponsibleRoute
+  '/list-subjects': typeof ListSubjectsRoute
+  '/password-changes': typeof PasswordChangesRoute
+  '/school-matrices': typeof SchoolMatricesRoute
   '/teachers-listing': typeof TeachersListingRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/list-responsible': typeof ListResponsibleRoute
+  '/list-subjects': typeof ListSubjectsRoute
+  '/password-changes': typeof PasswordChangesRoute
+  '/school-matrices': typeof SchoolMatricesRoute
   '/teachers-listing': typeof TeachersListingRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/list-responsible': typeof ListResponsibleRoute
+  '/list-subjects': typeof ListSubjectsRoute
+  '/password-changes': typeof PasswordChangesRoute
+  '/school-matrices': typeof SchoolMatricesRoute
   '/teachers-listing': typeof TeachersListingRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/teachers-listing'
+  fullPaths:
+    | '/'
+    | '/activities'
+    | '/list-responsible'
+    | '/list-subjects'
+    | '/password-changes'
+    | '/school-matrices'
+    | '/teachers-listing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/teachers-listing'
-  id: '__root__' | '/' | '/teachers-listing'
+  to:
+    | '/'
+    | '/activities'
+    | '/list-responsible'
+    | '/list-subjects'
+    | '/password-changes'
+    | '/school-matrices'
+    | '/teachers-listing'
+  id:
+    | '__root__'
+    | '/'
+    | '/activities'
+    | '/list-responsible'
+    | '/list-subjects'
+    | '/password-changes'
+    | '/school-matrices'
+    | '/teachers-listing'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivitiesRoute: typeof ActivitiesRoute
+  ListResponsibleRoute: typeof ListResponsibleRoute
+  ListSubjectsRoute: typeof ListSubjectsRoute
+  PasswordChangesRoute: typeof PasswordChangesRoute
+  SchoolMatricesRoute: typeof SchoolMatricesRoute
   TeachersListingRoute: typeof TeachersListingRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivitiesRoute: ActivitiesRoute,
+  ListResponsibleRoute: ListResponsibleRoute,
+  ListSubjectsRoute: ListSubjectsRoute,
+  PasswordChangesRoute: PasswordChangesRoute,
+  SchoolMatricesRoute: SchoolMatricesRoute,
   TeachersListingRoute: TeachersListingRoute,
 }
 
@@ -97,11 +209,31 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/activities",
+        "/list-responsible",
+        "/list-subjects",
+        "/password-changes",
+        "/school-matrices",
         "/teachers-listing"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/activities": {
+      "filePath": "activities.tsx"
+    },
+    "/list-responsible": {
+      "filePath": "list-responsible.tsx"
+    },
+    "/list-subjects": {
+      "filePath": "list-subjects.tsx"
+    },
+    "/password-changes": {
+      "filePath": "password-changes.tsx"
+    },
+    "/school-matrices": {
+      "filePath": "school-matrices.tsx"
     },
     "/teachers-listing": {
       "filePath": "teachers-listing.tsx"
