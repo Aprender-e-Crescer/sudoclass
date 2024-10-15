@@ -31,7 +31,7 @@ export function DialogRemuveSubject() {
           <div className="flex justify-center mt-4 space-x-2">
             <DialogClose asChild>
               <button className="flex-1 px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 transition">
-                remover
+                Remover
               </button>
             </DialogClose>
             <DialogClose asChild>
