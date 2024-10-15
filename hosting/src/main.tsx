@@ -3,12 +3,10 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
-import { QuestionForm } from '@/components/ui/question-form'
 
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
-
 const router = createRouter({ routeTree })
 
 declare module '@tanstack/react-router' {
@@ -23,8 +21,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        {/*</QueryClientProvider>< RouterProvider router={router}  > */}
-        <QuestionForm test="HTML é uma linguagem de programação" />
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </StrictMode>,
   )
