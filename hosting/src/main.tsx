@@ -1,13 +1,12 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import { createRouter } from '@tanstack/react-router'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
 
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
-import { DialogDemo } from './components/new-collection'
 
 const router = createRouter({ routeTree })
 
@@ -23,8 +22,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        {/* <RouterProvider router={router} /> */}
-        <DialogDemo />
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </StrictMode>,
   )
