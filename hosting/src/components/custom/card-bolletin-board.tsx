@@ -1,5 +1,3 @@
-// src/components/custom/card-bolletin-board.tsx
-
 interface CardComponentProps {
   materia: string
   descricao: string
@@ -13,3 +11,4 @@ export function CardComponent({ materia, descricao }: CardComponentProps) {
     </div>
   )
 }
+9
