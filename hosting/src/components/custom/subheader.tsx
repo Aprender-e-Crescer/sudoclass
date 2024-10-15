@@ -1,16 +1,16 @@
 import { Link } from '@tanstack/react-router';
 
-interface SubheaderProps {
-  classroomType?: 'teacher' | 'student'; // Define se o header é para o professor ou aluno
+interface SubHeaderProps {
+  classroomType?: 'teacher' | 'student';
 }
 
-export function Subheader({ classroomType = 'student' }: SubheaderProps) {
+export function SubHeader({ classroomType = 'student' }: SubHeaderProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    // Remove a classe ativa de todos os links
+    
     const links = document.querySelectorAll('.menu-link');
     links.forEach((link) => link.classList.remove('font-bold', 'text-gray-800'));
 
-    // Adiciona a classe ativa no link clicado
+    
     e.currentTarget.classList.add('font-bold', 'text-gray-800');
   };
 
