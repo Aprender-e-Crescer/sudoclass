@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
 
 interface SubHeaderProps {
-  classroomType?: 'teacher' | 'student';
+  hasPrivilege?: 'teacher' | 'student';
 }
 
-export function SubHeader({ classroomType = 'student' }: SubHeaderProps) {
+export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     
     const links = document.querySelectorAll('.menu-link');
@@ -54,7 +54,7 @@ export function SubHeader({ classroomType = 'student' }: SubHeaderProps) {
           </Link>
         </li>
         <li>
-          {classroomType === 'teacher' ? (
+          {hasPrivilege === 'teacher' ? (
             <Link
               to="/"
               onClick={handleClick}
