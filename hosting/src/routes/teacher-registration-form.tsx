@@ -1,6 +1,9 @@
-import { InputForm } from '../components/custom/generics-inputs'
+import { InputForm } from '@/components/custom/text-input'
+import { FileInput } from '@/components/custom/file-input'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
+import { X } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
 export const Route = createFileRoute('/teacher-registration-form')({
   component: TeacherRegistration,
@@ -10,7 +13,7 @@ export function TeacherRegistration() {
     <>
       <Formik>
         <Form className='p-1'>
-          <div className='w-11/12 p-2  rounded-sm border-2'>
+          <div className=' p-2 w-11/12 rounded-sm border-2'>
             <InputForm
                     title="Nome completo"
                     placeholder="nomecompleto.."
@@ -18,9 +21,9 @@ export function TeacherRegistration() {
                     id="nameProfessor"
                     name="nameProfessor"
                     label="nameProfessor"
+                    customStyleButton='rounded-lg border-2 p-[6px]'
                     
                 />
-{/* (99) 99999-9999 */}
                 <InputForm
                     title="Email"
                     placeholder="@gmail.com"
@@ -28,6 +31,7 @@ export function TeacherRegistration() {
                     id="emailProfessor"
                     name="emailProfessor"
                     label="emailProfessor"
+                    customStyleButton='rounded-lg border-2 p-[6px]'
                     
                 />
                 <InputForm
@@ -37,9 +41,10 @@ export function TeacherRegistration() {
                     id="phoneNumberTeacher"
                     name="phoneNumberTeacher"
                     label="phoneNumberTeacher"
+                    customStyleButton='rounded-lg border-2 p-[6px]'
                     
                 />
-               {/*  <div className='flex gap-5'>
+                 <div className='flex gap-5 flex-wrap'>
                   <InputForm
                       title="Estado"
                       placeholder="PR"
@@ -47,6 +52,7 @@ export function TeacherRegistration() {
                       id="state"
                       name="state"
                       label="state"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                       
                   />
                   <InputForm
@@ -56,9 +62,9 @@ export function TeacherRegistration() {
                       id="city"
                       name="city"
                       label="city"
-                      
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                   />
-                </div>  */}
+                </div>  
 
                 <InputForm
                       title="Rua"
@@ -67,6 +73,7 @@ export function TeacherRegistration() {
                       id="street"
                       name="street"
                       label="street"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                 />
 
                  <div className='flex sm:gap-5'>
@@ -78,6 +85,7 @@ export function TeacherRegistration() {
                       id="neighborhood"
                       name="neighborhood"
                       label="neighborhood"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                       
                   />
                   </div>
@@ -89,6 +97,7 @@ export function TeacherRegistration() {
                       id="HouseNumber"
                       name="HouseNumber"
                       label="HouseNumber"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                   />
                   </div>
                 </div>
@@ -101,6 +110,7 @@ export function TeacherRegistration() {
                       id="Date of birth"
                       name="Date of birth"
                       label="Date of birth"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                   />
                   <InputForm
                       title="CPF"
@@ -109,6 +119,7 @@ export function TeacherRegistration() {
                       id="CPFadmin"
                       name="CPFadmin"
                       label="CPFadmin"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                   />
                   <InputForm
                       title="RG"
@@ -117,14 +128,60 @@ export function TeacherRegistration() {
                       id="RGadmin"
                       name="RGadmin"
                       label="RGadmin"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
                   />
 
                 </div>
-
+                <InputForm
+                      title="Data de expedição RG"
+                      placeholder="data de expedição"
+                      type="text"
+                      id="shippingDate"
+                      name="shippingDate"
+                      label="shippingDate"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
+                />
+                 <InputForm
+                      title="Estado de expedição RG"
+                      placeholder="estado de expedição"
+                      type="text"
+                      id="shippingState"
+                      name="shippingState"
+                      label="shippingState"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
+                />
+                <InputForm
+                      title="Estado de nascimento"
+                      placeholder="Estado"
+                      type="text"
+                      id="stateOfBirth"
+                      name="stateOfBirth"
+                      label="stateOfBirth"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
+                />
+                <InputForm
+                      title="Cidade de nascimento"
+                      placeholder="  Cidade"
+                      type="text"
+                      id="cityOfBirth"
+                      name="cityOfBirth"
+                      label="cityOfBirth"
+                      customStyleButton='rounded-lg border-2 p-[6px]'
+                />
+                <div className='flex'>
+                 <FileInput
+                      title='Anexar documentos:'
+                      placeholder="ImagemDocumentoAnexado.png      90kb"
+                      type="file"
+                      id="AttachDocuments"
+                      name="AttachDocuments"
+                      label="AttachDocuments"
+                />
+                
+               </div>
                 </div>
         </Form>
       </Formik>
-      
     </>
   )
 }

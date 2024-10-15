@@ -1,4 +1,4 @@
-import { InputForm } from '@/components/custom/generics-inputs'
+import { InputForm } from '@/components/custom/text-input'
 import { changePasswordRequestSchema } from '@/models/change-password-request-schema'
 import { useChangePasswordRequestQuery } from '@/queries/use-change-password-request-query'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
