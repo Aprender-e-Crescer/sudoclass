@@ -1,9 +1,9 @@
-export function QuestionForm({ test }: { test: string }) {
+export function QuestionForm({ question }: { question: string }) {
   return (
 <div className="flex flex-col min-h-screen bg-gray-100 p-4">
   <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md border border-blue-300">
-    <p className="text-xl font-semibold mb-4 border-b border-blue-300 pb-4 w-full"> {/* Usando border-b para uma linha mais fina */}
-      {test}
+    <p className="text-xl font-semibold mb-4 border-b border-blue-300 pb-4 w-full">
+      {question}
     </p>
     <div className="flex flex-col space-y-4 pb-3">
       <div className="flex items-center">
