@@ -36,10 +36,3 @@ export function AttachmentView({ url, imageUrl, title, linkText }: PropsAttachme
     </div>
   );
 }
-
-AttachmentView.defaultProps = {
-  url: "https://quizizz.com/?lng=pt-BR",
-  imageUrl: "https://i.imgur.com/bEzh3oE.png",
-  title: "Desafio",
-  linkText: "https://quizizz.com/?lng=pt-BR",
-};
