@@ -13,27 +13,27 @@ export function AttachmentView({ url, imageUrl, title, linkText }: PropsAttachme
   return (
     <div className="border border-gray-300 rounded-lg flex items-center w-[379.71px] h-[78.14px]">
       <Link
-        to={url} // Usando a prop 'url' para o link externo
+        to={url}
         className="flex items-center gap-2 m-4 hover:underline"
       >
         <div className="w-[105px] h-[70px]">
           <img
-            src={imageUrl} // Usando a prop 'imageUrl' para a imagem
+            src={imageUrl}
             alt="Imagem do anexo"
           />
         </div>
         <div className="">
           <div className="">
             <h1 className="text-[23px]">
-              {title} {/* Usando a prop 'title' para o título */}
+              {title}
             </h1>
           </div>
           <div className="">
             <Link
-              to={url} // Usando a prop 'url' para o link interno
+              to={url}
               className="hover:underline text-sm"
             >
-              {linkText} {/* Usando a prop 'linkText' para o texto do link */}
+              {linkText}
             </Link>
           </div>
         </div>
