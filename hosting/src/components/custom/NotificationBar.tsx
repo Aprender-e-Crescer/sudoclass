@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react'; 
 import Frame2815 from'@/assets/Frame 2815.svg'
+import { If, Then, Else } from 'react-if';
 
 const initialNotifications = [
   { id: 1, title: "Aprender e Crescer", message: "(Felipe Pardim): Uma nova atividade foi postada em AOO", time: "há 6m" },
@@ -25,26 +26,29 @@ const NotificationBar = () => {
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <div key={notification.id} className="flex items-center bg-gray-200 rounded-md p-3 gap-2">
-              <div className="flex-shrink-0">
-                <img
-                  src={Frame2815}
-                  alt="App Icon"
-                  className="w-10 h-10 rounded-md"
-                />
+        <If condition={notifications.length > 0}>
+          <Then>
+            {notifications.map((notification) => (
+              <div key={notification.id} className="flex items-center bg-gray-200 rounded-md p-3 gap-2">
+                <div className="flex-shrink-0">
+                  <img
+                    src={Frame2815}
+                    alt="App Icon"
+                    className="w-10 h-10 rounded-md"
+                  />
+                </div>
+                <div className="flex-1">
+                  <strong>{notification.title}</strong>
+                  <p>{notification.message}</p>
+                </div>
+                <div className="text-sm text-gray-600 flex-shrink-0">{notification.time}</div>
               </div>
-              <div className="flex-1">
-                <strong>{notification.title}</strong>
-                <p>{notification.message}</p>
-              </div>
-              <div className="text-sm text-gray-600 flex-shrink-0">{notification.time}</div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500 mt-4">Nenhuma notificação</p>
-        )}
+            ))}
+          </Then>
+          <Else>
+            <p className="text-center text-gray-500 mt-4">Nenhuma notificação</p>
+          </Else>
+        </If>
       </div>
     </div>
   );
