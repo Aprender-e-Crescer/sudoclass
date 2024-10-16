@@ -1,12 +1,12 @@
 interface Props {
-  Note: number
-  MaxGrade: number
+  note: number
+  maxGrade: number
 }
 
-export default function NoteValue({ Note, MaxGrade }: Props) {
+export default function NoteValue({ note, maxGrade }: Props) {
   return (
     <div className="flex justify-center items-center">
-      {Note}/{MaxGrade}
+      {note}/{maxGrade}
     </div>
   )
 }

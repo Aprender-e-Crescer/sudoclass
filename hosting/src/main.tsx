@@ -26,4 +26,3 @@ if (!rootElement.innerHTML) {
     </StrictMode>,
   )
 }
-//
