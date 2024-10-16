@@ -6,7 +6,7 @@ import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 export const Route = createFileRoute('/class-user-resgistration')({
-  component: formRegistration,
+  component: FormRegistration,
 })
 
 const initialValues = {
@@ -25,7 +25,7 @@ const checkboxValues = [{
 }
 ]
 
-export function formRegistration() {
+export function FormRegistration() {
   return (
     <>
       <Formik 
