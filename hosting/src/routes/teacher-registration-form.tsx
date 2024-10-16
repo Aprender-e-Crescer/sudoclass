@@ -170,9 +170,8 @@ export function TeacherRegistration() {
                       customStyleButton='rounded-lg border-2 p-[6px]'
                 />
                  <FileInput
-                      title='Anexar documentos:'
+                      title='Anexar arquivos'
                       placeholder="ImagemDocumentoAnexado.png 90kb"
-                      type="file"
                       id="AttachDocuments"
                       name="AttachDocuments"
                       label="AttachDocuments"
