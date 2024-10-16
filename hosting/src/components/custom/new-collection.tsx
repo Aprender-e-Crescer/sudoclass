@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -8,16 +7,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog-new-collection'
 import { FolderPlus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export function DialogDemo() {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <div>
-          <Button variant="outline" className="flex items-center gap-2 border-none">
+          <button className="flex items-center gap-2 outline-none">
             <FolderPlus />
             Nova coleção
-          </Button>
+          </button>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -32,8 +32,13 @@ export function DialogDemo() {
             <input id="name" className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none "></input>
           </div>
         </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
+        <DialogFooter className="mr-6">
+          <Button variant="blueButton" size="medium">
+            Confirmar
+          </Button>
+          <Button variant="lightTextBlack" size="medium">
+            Cancelar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
