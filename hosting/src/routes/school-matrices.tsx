@@ -1,4 +1,5 @@
 import { matriceSchema } from '@/models/matrice-schema'
+import { useCreateSchoolMatriceMutation } from '@/mutations/use-create-school-matrice-mutation'
 import { useListSchoolMatricesQuery } from '@/queries/list-school-matrices'
 import { createFileRoute } from '@tanstack/react-router'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
@@ -10,6 +11,8 @@ export const Route = createFileRoute('/school-matrices')({
 
 function SchoolMatrices() {
   const { data, isLoading, error } = useListSchoolMatricesQuery()
+
+  const { mutateAsync: createSchoolMatrice } = useCreateSchoolMatriceMutation()
 
   if (isLoading) {
     return (
@@ -43,9 +46,9 @@ function SchoolMatrices() {
         <Formik
           initialValues={{ name: '', numberOfClasses: '', workload: '' }}
           validationSchema={toFormikValidationSchema(matriceSchema)}
-          onSubmit={(values, { resetForm }) => {
-            console.log('Form values:', values)
-            resetForm()
+          onSubmit={async (values) => {
+            await new Promise((r) => setTimeout(r, 2000))
+            return createSchoolMatrice(values)
           }}
         >
           <Form>
