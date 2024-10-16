@@ -7,7 +7,6 @@ import './index.css'
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
-import { CardSubject } from './components/custom/card-subject'
 
 const router = createRouter({ routeTree })
 

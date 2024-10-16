@@ -2,16 +2,16 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { EllipsisVertical, MessageCircleMore } from 'lucide-react'
 
 interface CardSubjectProps {
-  materialSubject: string
+  name: string
   description: string
 }
 
-export function CardSubject({ materialSubject, description }: CardSubjectProps) {
+export function CardSubject({ name, description }: CardSubjectProps) {
   return (
     <div className="w-full max-w-[384px] sm:w-[443px] h-44 sm:h-80 bg-[#DE9E2F] rounded-lg shadow-lg flex flex-col justify-between">
       <div className="flex justify-between m-6">
         <div className="flex flex-col">
-          <div className="text-white font-bold text-xl mr-5 mb-1 line-clamp-2">{materialSubject}</div>
+          <div className="text-white font-bold text-xl mr-5 mb-1 line-clamp-2">{name}</div>
           <div className="text-black text-sm sm:text-base">{description}</div>
         </div>
         <DropdownMenu>
