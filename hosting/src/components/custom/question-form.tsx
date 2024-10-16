@@ -1,4 +1,10 @@
-export function QuestionForm({ question }: { question: string }) {
+inteface Props {
+  question: string;
+  trueText: string;
+  falseText: string;
+}
+
+export function QuestionForm({ question, trueText, falseText }: Props) {
   return (
 <div className="flex flex-col min-h-screen bg-gray-100 p-4">
   <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md border border-blue-300">
@@ -8,11 +14,11 @@ export function QuestionForm({ question }: { question: string }) {
     <div className="flex flex-col space-y-4 pb-3">
       <div className="flex items-center">
         <input type="radio" name="question1" className="form-radio h-4 w-4 text-blue-600" />
-        <span className="ml-2">Verdadeiro</span>
+        <span className="ml-2">{trueText}</span>
       </div>
       <div className="flex items-center mb-2"> 
         <input type="radio" name="question1" className="form-radio h-4 w-4 text-blue-600" />
-        <span className="ml-2">Falso</span>
+        <span className="ml-2">{falseText}</span>
       </div>
     </div>
   </div>
