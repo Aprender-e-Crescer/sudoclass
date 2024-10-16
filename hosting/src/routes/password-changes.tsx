@@ -1,3 +1,4 @@
+import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { changePasswordRequestSchema } from '@/models/change-password-request-schema'
 import { useChangePasswordRequestQuery } from '@/queries/use-change-password-request-query'
@@ -49,16 +50,14 @@ export function ChangedPasswordRequests() {
             name="newPasswordDefault"
             placeholder="Digite a senha padrão aqui"
             label="newPasswordDefault"
-            type="text"
           />
 
-          <InputForm
+          <InputFile
             title="Status da requisição"
             id="requestStatus"
             name="requestStatus"
             placeholder="Digite o status da requisição de troca de senha"
             label="requestStatus"
-            type="text"
           />
         </Form>
       </Formik>

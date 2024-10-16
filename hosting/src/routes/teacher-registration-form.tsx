@@ -1,5 +1,5 @@
 import { InputForm } from '@/components/custom/text-input'
-import { FileInput } from '@/components/custom/file-input'
+import { InputFile } from '@/components/custom/file-input'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
@@ -18,7 +18,6 @@ export function TeacherRegistration() {
             <InputForm
                     title="Nome completo"
                     placeholder="nomecompleto.."
-                    type="text"
                     id="nameProfessor"
                     name="nameProfessor"
                     label="nameProfessor"
@@ -28,7 +27,6 @@ export function TeacherRegistration() {
                 <InputForm
                     title="Email"
                     placeholder="@gmail.com"
-                    type="text"
                     id="emailProfessor"
                     name="emailProfessor"
                     label="emailProfessor"
@@ -38,7 +36,6 @@ export function TeacherRegistration() {
                 <InputForm
                     title="Telefone"
                     placeholder="(99) 99999-9999"
-                    type="text"
                     id="phoneNumberTeacher"
                     name="phoneNumberTeacher"
                     label="phoneNumberTeacher"
@@ -49,7 +46,6 @@ export function TeacherRegistration() {
                   <InputForm
                       title="Estado"
                       placeholder="PR"
-                      type="text"
                       id="state"
                       name="state"
                       label="state"
@@ -59,7 +55,6 @@ export function TeacherRegistration() {
                   <InputForm
                       title="Muncipio"
                       placeholder="Dois vizinhos"
-                      type="text"
                       id="city"
                       name="city"
                       label="city"
@@ -70,7 +65,6 @@ export function TeacherRegistration() {
                 <InputForm
                       title="Rua"
                       placeholder="Rua"
-                      type="text"
                       id="street"
                       name="street"
                       label="street"
@@ -82,7 +76,6 @@ export function TeacherRegistration() {
                   <InputForm
                       title="Bairro"
                       placeholder="Bairro"
-                      type="text"
                       id="neighborhood"
                       name="neighborhood"
                       label="neighborhood"
@@ -94,7 +87,6 @@ export function TeacherRegistration() {
                   <InputForm
                       title="Numero"
                       placeholder="ex: 77"
-                      type="text"
                       id="HouseNumber"
                       name="HouseNumber"
                       label="HouseNumber"
@@ -107,7 +99,6 @@ export function TeacherRegistration() {
                 <InputForm
                       title="Data de nascimento"
                       placeholder="00/00/0000"
-                      type="text"
                       id="Date of birth"
                       name="Date of birth"
                       label="Date of birth"
@@ -116,7 +107,6 @@ export function TeacherRegistration() {
                   <InputForm
                       title="CPF"
                       placeholder="000.000.000-00"
-                      type="text"
                       id="CPFadmin"
                       name="CPFadmin"
                       label="CPFadmin"
@@ -125,7 +115,6 @@ export function TeacherRegistration() {
                   <InputForm
                       title="RG"
                       placeholder="00.000.000-0"
-                      type="text"
                       id="RGadmin"
                       name="RGadmin"
                       label="RGadmin"
@@ -136,7 +125,6 @@ export function TeacherRegistration() {
                 <InputForm
                       title="Data de expedição RG"
                       placeholder="data de expedição"
-                      type="text"
                       id="shippingDate"
                       name="shippingDate"
                       label="shippingDate"
@@ -145,7 +133,6 @@ export function TeacherRegistration() {
                  <InputForm
                       title="Estado de expedição RG"
                       placeholder="estado de expedição"
-                      type="text"
                       id="shippingState"
                       name="shippingState"
                       label="shippingState"
@@ -154,7 +141,6 @@ export function TeacherRegistration() {
                 <InputForm
                       title="Estado de nascimento"
                       placeholder="Estado"
-                      type="text"
                       id="stateOfBirth"
                       name="stateOfBirth"
                       label="stateOfBirth"
@@ -163,13 +149,12 @@ export function TeacherRegistration() {
                 <InputForm
                       title="Cidade de nascimento"
                       placeholder="  Cidade"
-                      type="text"
                       id="cityOfBirth"
                       name="cityOfBirth"
                       label="cityOfBirth"
                       customStyleButton='rounded-lg border-2 p-[6px]'
                 />
-                 <FileInput
+                 <InputFile
                       title='Anexar arquivos'
                       placeholder="ImagemDocumentoAnexado.png 90kb"
                       id="AttachDocuments"

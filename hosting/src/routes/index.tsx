@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { createFileRoute } from '@tanstack/react-router';
 import { FaCheck } from 'react-icons/fa';
+import { CoppyButton } from '@/components/custom/coppy-button'; 
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -18,20 +19,14 @@ function Index() {
           Cancelar
         </Button>
       </div>
-
-      <div className="mt-2.5">
-        <Button variant="copyButton" icon={<FaCheck />} size="fixed">
-          Copiar
-        </Button>
-      </div>
-
+      
       <div className="mt-2.5">
         <Button variant="blueButton" size="medium">
           Escolher Foto
         </Button>
 
         <Button variant="lightTextRed" size="medium">
-          Apargar Foto
+          Apagar Foto
         </Button>
       </div>
 
@@ -46,13 +41,19 @@ function Index() {
       </div>
 
       <div className="mt-3">
-        <Button variant="ghostBlack" icon={<FaCheck />} iconPosition='left' size="small">
+        <Button variant="ghostBlack" icon={<FaCheck />} size="small">
           Enviar
         </Button>
 
-        <Button variant="ghostBlack" icon={<FaCheck />} iconPosition='left' notificationCount={10} size="small">
+        <Button variant="ghostBlack" icon={<FaCheck />} iconPosition="left" notificationCount={10} size="small">
           Respostas
         </Button>
+      </div>
+
+      <div className="mt-3">
+        <CoppyButton>
+          Copiar Senha
+        </CoppyButton>
       </div>
     </div>
   );
