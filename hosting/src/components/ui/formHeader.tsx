@@ -9,7 +9,7 @@ const FormHeader: React.FC<{ imagemUrl: string; nome: string }> = ({ imagemUrl, 
   );
 };
 
-const styles = {
+const styles = { // Renomeado de 'style' para 'styles'
   container: {
     display: 'flex',
     alignItems: 'center',
@@ -20,11 +20,11 @@ const styles = {
     height: '60px',
     borderRadius: '50%',
     objectFit: 'cover' as 'cover',
-  } as React.CSSProperties,
+  },
   nome: {
     fontSize: '20px',
-    fontWeight: 'semiMold',
-  } as React.CSSProperties,
+    fontWeight: 600,
+  },
 };
 
 export default FormHeader;

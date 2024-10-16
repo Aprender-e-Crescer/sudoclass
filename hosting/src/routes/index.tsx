@@ -1,4 +1,4 @@
-import FormHeader from '@/components/formHeader';
+import FormHeader from '@/components/ui/formHeader';
 import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { RiEditLine } from "react-icons/ri";
