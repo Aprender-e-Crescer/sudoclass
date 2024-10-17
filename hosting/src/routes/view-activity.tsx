@@ -3,6 +3,8 @@ import LeftMenu from '@/components/custom/left-menu'
 import ListStudents from '@/components/custom/list-students'
 import { SubHeader } from '@/components/custom/subheader'
 import { TeacherComment } from '@/components/custom/teacher-comment'
+import { InputForm } from '@/components/custom/text-input'
+import { InputTextarea } from '@/components/custom/textarea-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
@@ -46,8 +48,9 @@ function ViewActivity() {
               <div>
                 <Input type="file" className="h-96 w-80" />
               </div>
-              <div className="">
+              <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
                 <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
+                <Input placeholder="escreva seu comentário" />
               </div>
             </div>
           </div>
