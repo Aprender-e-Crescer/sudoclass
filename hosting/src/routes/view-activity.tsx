@@ -21,7 +21,7 @@ function ViewActivity() {
       <div className="flex">
         <LeftMenu type="TeacherClassroom" />
         <div className="max-h-screen border border-gray-300"></div>
-        <div className="flex flex-col w-full h-full flex-1">
+        <div className="flex flex-col w-full">
           <div className="flex flex-col md:flex-row items-center justify-around px-4 py-2">
             <SubHeader />
             <Button variant="blueButton" size="small">
