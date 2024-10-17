@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
@@ -9,6 +8,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/confirmation-screen')({
   component: ConfirmationScreen,
@@ -17,7 +17,7 @@ export const Route = createFileRoute('/confirmation-screen')({
 export function ConfirmationScreen() {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="font-medium text-5xl text-red-700">x</AlertDialogTrigger>
+      <AlertDialogTrigger className="font-semibold text-5xl text-red-700">x</AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -25,7 +25,7 @@ export function ConfirmationScreen() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <Button variant="destructive">Continue</Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
