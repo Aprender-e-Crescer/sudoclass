@@ -34,11 +34,16 @@ function ViewActivity() {
               ))}
             </div>
             <div className="max-h-screen border border-gray-300"></div>
-            <div className=" hidden lg:flex justify-center w-full items-center gap-x-10">
-              <Input placeholder="Nota" className="w-48" />
-              <Button variant="blueButton" size="small">
-                Devolver
-              </Button>
+            <div className=" hidden lg:flex flex-col justify-center w-full items-center gap-y-10 mt">
+              <div className="flex gap-x-10">
+                <Input placeholder="Nota" className="w-48" />
+                <Button variant="blueButton" size="small">
+                  Devolver
+                </Button>
+              </div>
+              <div>
+                <Input type="file" className="h-96 w-80" />
+              </div>
             </div>
           </div>
         </div>
