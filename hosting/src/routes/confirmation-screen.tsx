@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import {
   AlertDialog,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -24,8 +23,8 @@ export function ConfirmationScreen() {
           <AlertDialogTitle>Você Deseja Exluir Esse Plano de Aula?</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button variant="destructive">Continue</Button>
+          <Button variant="lightTextBlack">Cancel</Button>
+          <Button variant="blueButton">Continue</Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
