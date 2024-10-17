@@ -5,8 +5,7 @@ import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { ErrorMessage, Form, Formik } from 'formik'
-import { InputWithoutLabel } from '@/components/custom/without-label-input'
+import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
@@ -76,10 +75,26 @@ function ViewActivity() {
             <AccordionContent>
               <div className="flex flex-col justify-center w-full items-center gap-y-10 mt-5">
                 <div className="flex gap-x-10">
-                  <Input placeholder="Nota" className="w-48" />
-                  <Button variant="blueButton" size="small">
-                    Devolver
-                  </Button>
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={toFormikValidationSchema(InputNoteSchema)}
+                    onSubmit={(values) => {
+                      console.log(values)
+                    }}
+                  >
+                    {({ handleSubmit }) => (
+                      <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
+                        <div className="flex gap-x-4 items-start">
+                          <div className="h-screen max-h-16">
+                            <InputForm name="value" id="value" label="nota" />
+                          </div>
+                          <Button type="submit" variant="blueButton" size="small" className="mt-3">
+                            Devolver
+                          </Button>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
                 </div>
                 <div>
                   <Input type="file" className="h-96 w-80" />
