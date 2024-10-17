@@ -2,6 +2,7 @@ import { Header } from '@/components/custom/header'
 import LeftMenu from '@/components/custom/left-menu'
 import ListStudents from '@/components/custom/list-students'
 import { SubHeader } from '@/components/custom/subheader'
+import { TeacherComment } from '@/components/custom/teacher-comment'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
@@ -34,7 +35,7 @@ function ViewActivity() {
               ))}
             </div>
             <div className="max-h-screen border border-gray-300"></div>
-            <div className=" hidden lg:flex flex-col justify-center w-full items-center gap-y-10 mt">
+            <div className=" hidden lg:flex flex-col justify-center w-full items-center gap-y-10 mt-5">
               <div className="flex gap-x-10">
                 <Input placeholder="Nota" className="w-48" />
                 <Button variant="blueButton" size="small">
@@ -43,6 +44,9 @@ function ViewActivity() {
               </div>
               <div>
                 <Input type="file" className="h-96 w-80" />
+              </div>
+              <div className="">
+                <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
               </div>
             </div>
           </div>
