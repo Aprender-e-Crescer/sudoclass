@@ -3,8 +3,6 @@ import LeftMenu from '@/components/custom/left-menu'
 import ListStudents from '@/components/custom/list-students'
 import { SubHeader } from '@/components/custom/subheader'
 import { TeacherComment } from '@/components/custom/teacher-comment'
-import { InputForm } from '@/components/custom/text-input'
-import { InputTextarea } from '@/components/custom/textarea-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
@@ -19,7 +17,7 @@ function ViewActivity() {
 
   return (
     <div>
-      <Header avatarImage="" avatarFallBack="" logo="" />
+      <Header avatarImage="" avatarFallBack="" />
       <div className="flex">
         <LeftMenu type="TeacherClassroom" />
         <div className="max-h-screen border border-gray-300"></div>
@@ -32,7 +30,7 @@ function ViewActivity() {
           </div>
           <hr />
           <div className="flex flex-grow">
-            <div className="px-4 py-2">
+            <div>
               {students?.map((student) => (
                 <ListStudents key={student.id} name={student.name} picture="" variant="corrected" />
               ))}
