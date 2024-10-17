@@ -56,7 +56,8 @@ function Index() {
         </CoppyButton>
       </div>
     </div>
-  );
+  )
 }
+
 
 export default Index;
