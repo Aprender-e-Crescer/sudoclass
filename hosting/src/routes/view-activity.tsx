@@ -9,6 +9,7 @@ import { ErrorMessage, Form, Formik } from 'formik'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
+import { InputForm } from '@/components/custom/text-input'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
@@ -30,23 +31,27 @@ function ViewActivity() {
           ))}
         </div>
         <div className="max-h-screen border border-gray-300"></div>
-        <div className=" hidden md:flex flex-col justify-center w-full items-center gap-y-10 mt-5">
-          <div className="flex gap-x-10">
-            <Formik
-              onSubmit={() => {}}
-              initialValues={initialValues}
-              validationSchema={toFormikValidationSchema(InputNoteSchema)}
-            >
-              <Form>
-                <InputWithoutLabel name="nota" id="value" />
-                <ErrorMessage name="name" component="div" className="text-red-600" />
+        <div className="hidden md:flex flex-col justify-center w-full items-center gap-y-10 mt-5">
+          <Formik
+            initialValues={initialValues}
+            validationSchema={toFormikValidationSchema(InputNoteSchema)}
+            onSubmit={(values) => {
+              console.log(values)
+            }}
+          >
+            {({ handleSubmit }) => (
+              <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
+                <div className="flex gap-x-4 items-start">
+                  <div className="h-screen max-h-16">
+                    <InputForm name="value" id="value" label="nota" />
+                  </div>
+                  <Button type="submit" variant="blueButton" size="small" className="mt-3">
+                    Devolver
+                  </Button>
+                </div>
               </Form>
-            </Formik>
-            <Input placeholder="Nota" className="w-48" />
-            <Button variant="blueButton" size="small">
-              Devolver
-            </Button>
-          </div>
+            )}
+          </Formik>
           <div>
             <Input type="file" className="h-96 w-80" />
           </div>
@@ -60,7 +65,6 @@ function ViewActivity() {
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>
-              {' '}
               <div className="flex justify-center items-center w-full">
                 <div>
                   {students?.map((student) => (
