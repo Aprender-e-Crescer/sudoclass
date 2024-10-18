@@ -1,5 +1,3 @@
-import { Header } from '@/components/custom/header'
-import LeftMenu from '@/components/custom/left-menu'
 import { SubHeader } from '@/components/custom/subheader'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
@@ -11,19 +9,29 @@ export const Route = createFileRoute('/create-activity-material')({
 export function CreateActivityMaterial() {
   return (
     <>
-      <div>
-        <Header avatarFallBack="" avatarImage="" />
-        <div className="flex ">
-          <LeftMenu type="TeacherClassroom" />
-          <div className="flex items-center">
-            <div className="border-l border-gray-300 h-full mx-1"></div>
+      <div className="flex flex-col h-full w-full justify-center items-center">
+        <div className="flex w-full h-14 items-center justify-around">
+          <SubHeader />
+          <Button variant="blueButton" size="small">
+            Reunião
+          </Button>
+        </div>
+        <hr />
+        <div className="flex justify-between w-full h-full mx-40">
+          <div></div>
+          <div className="flex flex-col w-2/3 h-56 border rounded-lg p-6">
+            <p>Titulo</p>
+            <input type="text" className="border rounded-sm" />
+            <p>instruções</p>
+            <input type="text" className="border p-7 rounded-sm" />
           </div>
-          <div className="flex w-full h-10 items-center justify-around">
-            <SubHeader />
-            <Button variant="blueButton" size="small">
-              Reunião
-            </Button>
+          <div className="w-1/5 border p-5">
+            <p>Titulo</p>
+            <input type="text" className="border rounded-sm" />
+            <p>instruções</p>
+            <input type="text" className="border w-full h-2/3 rounded-sm" />
           </div>
+          <div></div>
         </div>
       </div>
     </>
