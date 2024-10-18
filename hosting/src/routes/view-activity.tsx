@@ -5,10 +5,18 @@ import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { ErrorMessage, Form, Formik } from 'formik'
+import { InputWithoutLabel } from '@/components/custom/without-label-input'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { InputNoteSchema } from '@/models/input-note-schema'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
 })
+
+const initialValues = {
+  value: '',
+}
 
 function ViewActivity() {
   const { data: students } = useStudentsListQuery()
@@ -24,6 +32,16 @@ function ViewActivity() {
         <div className="max-h-screen border border-gray-300"></div>
         <div className=" hidden md:flex flex-col justify-center w-full items-center gap-y-10 mt-5">
           <div className="flex gap-x-10">
+            <Formik
+              onSubmit={() => {}}
+              initialValues={initialValues}
+              validationSchema={toFormikValidationSchema(InputNoteSchema)}
+            >
+              <Form>
+                <InputWithoutLabel name="nota" id="value" />
+                <ErrorMessage name="name" component="div" className="text-red-600" />
+              </Form>
+            </Formik>
             <Input placeholder="Nota" className="w-48" />
             <Button variant="blueButton" size="small">
               Devolver
