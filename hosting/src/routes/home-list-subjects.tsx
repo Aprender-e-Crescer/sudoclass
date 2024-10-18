@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { CardSubject } from '@/components/custom/card-subject'
 
 export const Route = createFileRoute('/home-list-subjects')({
   component: HomeListSubjects,
@@ -6,8 +7,12 @@ export const Route = createFileRoute('/home-list-subjects')({
 
 function HomeListSubjects() {
   return (
-    <div>
-      <p>oi</p>
+    <div className="grid grid-cols-2 gap-4 mt-32">
+      <CardSubject />
+      <CardSubject />
+      <CardSubject />
+      <CardSubject />
+      <p>oi </p>
     </div>
   )
 }
