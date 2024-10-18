@@ -27,7 +27,7 @@ export function InputForm({
           placeholder={placeholder}
           id={id}
           name={name}
-          className={`${customStyleButton ? customStyleButton : 'p-1 border border-gray-200'}`}
+          className={`${customStyleButton ? customStyleButton : 'border rounded-lg p-1 border-gray-200'}`}
         />
         <div className="text-red-500">
           <ErrorMessage name={name} />
