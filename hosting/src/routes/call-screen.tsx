@@ -59,21 +59,18 @@ export const Route = createFileRoute('/call-screen')({
                 />
                 <ListStudents
                     name=''
-                    variant='lack'
+                    variant='present'
                     picture=''
                 />
             </div>
-            <div className='px-28 pt-11 pb-16 w-full'>
+            <div className='pt-11 px-28 pb-16 w-full'>
                 <StudentPoster
                     imgStudent=''
-                    nameStudent='Dumbo'
+                    nameStudent=''
                 />
             </div>
         </div>
     </>
     
     )
-
-
-
   }
