@@ -69,7 +69,7 @@ function AddNewCourseForm() {
               title="Termino das inscrições"
               label="Termino das inscrições"
               name="endOfRegistration"
-              placeholder="Termino das inscrições"
+              placeholder="00/00/0000"
               id="endOfRegistration"
             />
             <InputForm
@@ -79,7 +79,8 @@ function AddNewCourseForm() {
               placeholder="30"
               id="numberOfVacancies"
             />
-            <Button type="submit">Adicionar curso</Button>
+            <Button variant="lightTextBlack">Cancelar</Button>
+            <Button variant="blueButton">Criar</Button>
           </form>
         )
       }}
