@@ -1,5 +1,4 @@
 import { Field } from 'formik'
-import { Input } from '../ui/input'
 
 interface InputProps {
   placeholder?: string
@@ -11,7 +10,7 @@ interface InputProps {
 export function InputWithoutLabel({ placeholder, id, icon, name }: InputProps) {
   return (
     <div className="relative w-full">
-      <Field placeholder={placeholder} id={id} name={name} className="w-full pr-10" as={Input} />
+      <Field placeholder={placeholder} id={id} name={name} className="w-full pr-10" />
       <span className="absolute right-2 top-1/2 transform -translate-y-1/2">{icon}</span>
     </div>
   )
