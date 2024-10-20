@@ -1,3 +1,4 @@
+import { useEffect } from 'react'; // Importando o useEffect
 import { Formik } from 'formik';
 import login from '@/assets/login.png';
 import { AiOutlineIdcard } from 'react-icons/ai';
@@ -15,6 +16,16 @@ export const Route = createFileRoute('/login')({
 
 export function Login() {
   const checkboxOptions = [{ value: 'Lembre-me', label: 'Lembre-me' }];
+
+  // useEffect para remover a rolagem ao carregar o componente
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'; // Impede a rolagem
+
+    // Limpeza ao desmontar o componente para restaurar a rolagem
+    return () => {
+      document.body.style.overflow = ''; // Permite a rolagem novamente
+    };
+  }, []);
 
   return (
     <Formik
@@ -77,7 +88,7 @@ export function Login() {
                   <div className="w-full">
                     <InputAuth
                       icon={<FaKey />}
-                      placeholder="************"
+                      placeholder=""
                       id="senha"
                       name="senha"
                       isPasswordInput={true}
