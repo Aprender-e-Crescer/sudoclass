@@ -1,3 +1,4 @@
+
 import { createFileRoute } from '@tanstack/react-router';
 import FormHeader from "@/components/ui/formHeader"; // Importação correta
 
@@ -17,3 +18,17 @@ export const Route = createFileRoute('/teste')({
     </div>
   ),
 });
+=======
+import { createFileRoute } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
+
+export const Route = createFileRoute('/teste')({
+  component: () =>
+    
+    
+    
+    
+    
+    <Button variant="outline">Button</Button>
+})
+
