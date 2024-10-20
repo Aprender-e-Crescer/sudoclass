@@ -13,8 +13,7 @@ function Index() {
     <div>
       <div className='flex items-center justify-between'>
         <FormHeader 
-          imagemUrl="https://via.placeholder.com/60"
-          nome="Aluno tal" 
+          imagemUrl="https://via.placeholder.com/60"  nome="Aluno tal" 
         />
         <Button icon={<RiEditLine />} size="small">
           Editar

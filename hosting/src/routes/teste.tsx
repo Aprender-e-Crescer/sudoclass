@@ -1,14 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { FormHeaders } from '@/components/ui/form-header'; // Certifique-se de que o nome está correto (capitalizado)
+import FormHeader from "@/components/ui/formHeader"; // Importação correta
 
 export const Route = createFileRoute('/teste')({
-  component: () =>
-  <div>
-    <form>
-      <FormHeaders>
-        Enviar
-      </FormHeaders>
-    </form>
-  </div>
+  component: () => (
+    <div>
+      <form>
+        {/* Passe as propriedades necessárias para o FormHeader */}
+        <FormHeader 
+          nome="Professor Tal" 
+        
+          
+        />
+        {/* Agora você pode adicionar o botão ou outro conteúdo abaixo */}
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  ),
 });
-
