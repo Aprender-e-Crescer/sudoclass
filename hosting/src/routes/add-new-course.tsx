@@ -36,7 +36,9 @@ function AddNewCourseForm() {
         console.log(values)
         return (
           <form onSubmit={handleSubmit}>
-            <div className="p-5">
+            <h1 className="font-semibold p-5 ml-10">Adicionar curso</h1>
+            <hr />
+            <div className="p-6">
               <InputForm title="Nome" label="Nome" name="name" placeholder="Nome" id="name" />
               <InputForm
                 title="Data de inicio"
