@@ -11,13 +11,79 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TesteImport } from './routes/teste'
 import { Route as TeachersListingImport } from './routes/teachers-listing'
+import { Route as TeachersListImport } from './routes/teachers-list'
+import { Route as TeachersFormImport } from './routes/teachers-form'
+import { Route as TeacherRegistrationFormImport } from './routes/teacher-registration-form'
+import { Route as SchoolMatricesImport } from './routes/school-matrices'
+import { Route as PasswordChangesImport } from './routes/password-changes'
+import { Route as ListSubjectsImport } from './routes/list-subjects'
+import { Route as ListResponsibleImport } from './routes/list-responsible'
+import { Route as ConfirmationScreenImport } from './routes/confirmation-screen'
+import { Route as ClassUserResgistrationImport } from './routes/class-user-resgistration'
+import { Route as ActivitiesImport } from './routes/activities'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
+const TesteRoute = TesteImport.update({
+  path: '/teste',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const TeachersListingRoute = TeachersListingImport.update({
   path: '/teachers-listing',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TeachersListRoute = TeachersListImport.update({
+  path: '/teachers-list',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TeachersFormRoute = TeachersFormImport.update({
+  path: '/teachers-form',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TeacherRegistrationFormRoute = TeacherRegistrationFormImport.update({
+  path: '/teacher-registration-form',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SchoolMatricesRoute = SchoolMatricesImport.update({
+  path: '/school-matrices',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PasswordChangesRoute = PasswordChangesImport.update({
+  path: '/password-changes',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ListSubjectsRoute = ListSubjectsImport.update({
+  path: '/list-subjects',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ListResponsibleRoute = ListResponsibleImport.update({
+  path: '/list-responsible',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ConfirmationScreenRoute = ConfirmationScreenImport.update({
+  path: '/confirmation-screen',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ClassUserResgistrationRoute = ClassUserResgistrationImport.update({
+  path: '/class-user-resgistration',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ActivitiesRoute = ActivitiesImport.update({
+  path: '/activities',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -37,11 +103,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesImport
+      parentRoute: typeof rootRoute
+    }
+    '/class-user-resgistration': {
+      id: '/class-user-resgistration'
+      path: '/class-user-resgistration'
+      fullPath: '/class-user-resgistration'
+      preLoaderRoute: typeof ClassUserResgistrationImport
+      parentRoute: typeof rootRoute
+    }
+    '/confirmation-screen': {
+      id: '/confirmation-screen'
+      path: '/confirmation-screen'
+      fullPath: '/confirmation-screen'
+      preLoaderRoute: typeof ConfirmationScreenImport
+      parentRoute: typeof rootRoute
+    }
+    '/list-responsible': {
+      id: '/list-responsible'
+      path: '/list-responsible'
+      fullPath: '/list-responsible'
+      preLoaderRoute: typeof ListResponsibleImport
+      parentRoute: typeof rootRoute
+    }
+    '/list-subjects': {
+      id: '/list-subjects'
+      path: '/list-subjects'
+      fullPath: '/list-subjects'
+      preLoaderRoute: typeof ListSubjectsImport
+      parentRoute: typeof rootRoute
+    }
+    '/password-changes': {
+      id: '/password-changes'
+      path: '/password-changes'
+      fullPath: '/password-changes'
+      preLoaderRoute: typeof PasswordChangesImport
+      parentRoute: typeof rootRoute
+    }
+    '/school-matrices': {
+      id: '/school-matrices'
+      path: '/school-matrices'
+      fullPath: '/school-matrices'
+      preLoaderRoute: typeof SchoolMatricesImport
+      parentRoute: typeof rootRoute
+    }
+    '/teacher-registration-form': {
+      id: '/teacher-registration-form'
+      path: '/teacher-registration-form'
+      fullPath: '/teacher-registration-form'
+      preLoaderRoute: typeof TeacherRegistrationFormImport
+      parentRoute: typeof rootRoute
+    }
+    '/teachers-form': {
+      id: '/teachers-form'
+      path: '/teachers-form'
+      fullPath: '/teachers-form'
+      preLoaderRoute: typeof TeachersFormImport
+      parentRoute: typeof rootRoute
+    }
+    '/teachers-list': {
+      id: '/teachers-list'
+      path: '/teachers-list'
+      fullPath: '/teachers-list'
+      preLoaderRoute: typeof TeachersListImport
+      parentRoute: typeof rootRoute
+    }
     '/teachers-listing': {
       id: '/teachers-listing'
       path: '/teachers-listing'
       fullPath: '/teachers-listing'
       preLoaderRoute: typeof TeachersListingImport
+      parentRoute: typeof rootRoute
+    }
+    '/teste': {
+      id: '/teste'
+      path: '/teste'
+      fullPath: '/teste'
+      preLoaderRoute: typeof TesteImport
       parentRoute: typeof rootRoute
     }
   }
@@ -51,37 +194,132 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/class-user-resgistration': typeof ClassUserResgistrationRoute
+  '/confirmation-screen': typeof ConfirmationScreenRoute
+  '/list-responsible': typeof ListResponsibleRoute
+  '/list-subjects': typeof ListSubjectsRoute
+  '/password-changes': typeof PasswordChangesRoute
+  '/school-matrices': typeof SchoolMatricesRoute
+  '/teacher-registration-form': typeof TeacherRegistrationFormRoute
+  '/teachers-form': typeof TeachersFormRoute
+  '/teachers-list': typeof TeachersListRoute
   '/teachers-listing': typeof TeachersListingRoute
+  '/teste': typeof TesteRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/class-user-resgistration': typeof ClassUserResgistrationRoute
+  '/confirmation-screen': typeof ConfirmationScreenRoute
+  '/list-responsible': typeof ListResponsibleRoute
+  '/list-subjects': typeof ListSubjectsRoute
+  '/password-changes': typeof PasswordChangesRoute
+  '/school-matrices': typeof SchoolMatricesRoute
+  '/teacher-registration-form': typeof TeacherRegistrationFormRoute
+  '/teachers-form': typeof TeachersFormRoute
+  '/teachers-list': typeof TeachersListRoute
   '/teachers-listing': typeof TeachersListingRoute
+  '/teste': typeof TesteRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/class-user-resgistration': typeof ClassUserResgistrationRoute
+  '/confirmation-screen': typeof ConfirmationScreenRoute
+  '/list-responsible': typeof ListResponsibleRoute
+  '/list-subjects': typeof ListSubjectsRoute
+  '/password-changes': typeof PasswordChangesRoute
+  '/school-matrices': typeof SchoolMatricesRoute
+  '/teacher-registration-form': typeof TeacherRegistrationFormRoute
+  '/teachers-form': typeof TeachersFormRoute
+  '/teachers-list': typeof TeachersListRoute
   '/teachers-listing': typeof TeachersListingRoute
+  '/teste': typeof TesteRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/teachers-listing'
+  fullPaths:
+    | '/'
+    | '/activities'
+    | '/class-user-resgistration'
+    | '/confirmation-screen'
+    | '/list-responsible'
+    | '/list-subjects'
+    | '/password-changes'
+    | '/school-matrices'
+    | '/teacher-registration-form'
+    | '/teachers-form'
+    | '/teachers-list'
+    | '/teachers-listing'
+    | '/teste'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/teachers-listing'
-  id: '__root__' | '/' | '/teachers-listing'
+  to:
+    | '/'
+    | '/activities'
+    | '/class-user-resgistration'
+    | '/confirmation-screen'
+    | '/list-responsible'
+    | '/list-subjects'
+    | '/password-changes'
+    | '/school-matrices'
+    | '/teacher-registration-form'
+    | '/teachers-form'
+    | '/teachers-list'
+    | '/teachers-listing'
+    | '/teste'
+  id:
+    | '__root__'
+    | '/'
+    | '/activities'
+    | '/class-user-resgistration'
+    | '/confirmation-screen'
+    | '/list-responsible'
+    | '/list-subjects'
+    | '/password-changes'
+    | '/school-matrices'
+    | '/teacher-registration-form'
+    | '/teachers-form'
+    | '/teachers-list'
+    | '/teachers-listing'
+    | '/teste'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivitiesRoute: typeof ActivitiesRoute
+  ClassUserResgistrationRoute: typeof ClassUserResgistrationRoute
+  ConfirmationScreenRoute: typeof ConfirmationScreenRoute
+  ListResponsibleRoute: typeof ListResponsibleRoute
+  ListSubjectsRoute: typeof ListSubjectsRoute
+  PasswordChangesRoute: typeof PasswordChangesRoute
+  SchoolMatricesRoute: typeof SchoolMatricesRoute
+  TeacherRegistrationFormRoute: typeof TeacherRegistrationFormRoute
+  TeachersFormRoute: typeof TeachersFormRoute
+  TeachersListRoute: typeof TeachersListRoute
   TeachersListingRoute: typeof TeachersListingRoute
+  TesteRoute: typeof TesteRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivitiesRoute: ActivitiesRoute,
+  ClassUserResgistrationRoute: ClassUserResgistrationRoute,
+  ConfirmationScreenRoute: ConfirmationScreenRoute,
+  ListResponsibleRoute: ListResponsibleRoute,
+  ListSubjectsRoute: ListSubjectsRoute,
+  PasswordChangesRoute: PasswordChangesRoute,
+  SchoolMatricesRoute: SchoolMatricesRoute,
+  TeacherRegistrationFormRoute: TeacherRegistrationFormRoute,
+  TeachersFormRoute: TeachersFormRoute,
+  TeachersListRoute: TeachersListRoute,
   TeachersListingRoute: TeachersListingRoute,
+  TesteRoute: TesteRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,14 +335,58 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/teachers-listing"
+        "/activities",
+        "/class-user-resgistration",
+        "/confirmation-screen",
+        "/list-responsible",
+        "/list-subjects",
+        "/password-changes",
+        "/school-matrices",
+        "/teacher-registration-form",
+        "/teachers-form",
+        "/teachers-list",
+        "/teachers-listing",
+        "/teste"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/activities": {
+      "filePath": "activities.tsx"
+    },
+    "/class-user-resgistration": {
+      "filePath": "class-user-resgistration.tsx"
+    },
+    "/confirmation-screen": {
+      "filePath": "confirmation-screen.tsx"
+    },
+    "/list-responsible": {
+      "filePath": "list-responsible.tsx"
+    },
+    "/list-subjects": {
+      "filePath": "list-subjects.tsx"
+    },
+    "/password-changes": {
+      "filePath": "password-changes.tsx"
+    },
+    "/school-matrices": {
+      "filePath": "school-matrices.tsx"
+    },
+    "/teacher-registration-form": {
+      "filePath": "teacher-registration-form.tsx"
+    },
+    "/teachers-form": {
+      "filePath": "teachers-form.tsx"
+    },
+    "/teachers-list": {
+      "filePath": "teachers-list.tsx"
+    },
     "/teachers-listing": {
       "filePath": "teachers-listing.tsx"
+    },
+    "/teste": {
+      "filePath": "teste.tsx"
     }
   }
 }
