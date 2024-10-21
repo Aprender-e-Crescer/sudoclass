@@ -23,12 +23,13 @@ export function ComboboxDemo() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="lightTextBlack"
+          size="small"
+          variant="ghostBlack"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-center items-center"
+          className="bg-slate-200 w-[200px] justify-center items-center"
         >
-          {value ? OpcaoDePontos.find((pontos) => pontos.value === value)?.label : 'Selecione os pontos...'}
+          {value ? OpcaoDePontos.find((pontos) => pontos.value === value)?.label : 'Valor'}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-1 bg-white z-50">
@@ -65,10 +66,10 @@ export function DatePickerDemo() {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="lightTextBlack"
-          className={cn(' justify-start text-left font-normal', !date && 'text-muted-foreground')}
+          variant="ghostBlack"
+          className={cn(' bg-slate-200 justify-start text-left ', !date && 'text-muted-foreground')}
         >
-          {date ? format(date, 'PPP') : <span>Pick a date</span>}
+          {date ? format(date, 'PPP') : <span>Escolha a data</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 z-50 bg-gray-200">
@@ -91,10 +92,9 @@ export function CreateActivityMaterial() {
           Reunião
         </Button>
       </div>
-
-
-      <div className="flex flex-col h-full w-full gap-2 justify-center items-center ">
-        <div className="h-[1px] bg-gray-200 w-full"></div>
+      <div className="h-[1px] bg-gray-200 w-full"></div>
+      <div className="flex flex-col h-full w-full gap-2 justify-center items-center ml-10 ">
+        
         <div className="flex justify-between w-full h-full mx-40">
           <div className="flex flex-col w-2/3">
             <div className="flex flex-col w-full h-56 border rounded-lg p-6">
@@ -105,7 +105,7 @@ export function CreateActivityMaterial() {
             </div>
           </div>
 
-          <div className="w-1/5 border p-5">
+          <div className="w-1/5 border p-5 ml-4"> {/* Adicionando margem à esquerda */}
             <SheetActivies />
             <p>Pontos</p>
             <ComboboxDemo />
@@ -116,11 +116,10 @@ export function CreateActivityMaterial() {
           </div>
           <div></div>
         </div>
-
         <div className="flex w-full justify-start">
           <div className="flex justify-center border w-2/3 p-4 rounded-sm">
             <div className="relative inline-block">
-              <div className="w-24 h-24 bg-white border rounded-full flex items-center  justify-center text-white text-lg transition duration-200 hover:bg-blue-700 cursor-pointer">
+              <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center text-white text-lg transition duration-200 hover:bg-blue-700 cursor-pointer">
                 <Download color="black" size={50} />
               </div>
               <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
