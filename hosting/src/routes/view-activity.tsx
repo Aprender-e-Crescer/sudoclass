@@ -9,6 +9,7 @@ import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
+import { User } from 'lucide-react'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
@@ -55,6 +56,10 @@ function ViewActivity() {
             <Input type="file" className="h-96 w-80" />
           </div>
           <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
+            <div className="flex gap-x-2 text-gray-500">
+              <User />
+              <p>Comentarios</p>
+            </div>
             <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
             <Input placeholder="escreva seu comentário" />
           </div>
