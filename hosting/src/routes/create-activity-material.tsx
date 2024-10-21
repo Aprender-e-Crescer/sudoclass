@@ -3,54 +3,17 @@ import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import * as React from 'react'
 import { format } from 'date-fns'
-import { Check } from 'lucide-react'
+import { Check, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { SheetActivies } from '@/components/custom/sheet-activies'
 
-const OpcaoDePontos = [
-  {
-    value: '100',
-    label: '100 pontos',
-  },
-  {
-    value: '90',
-    label: '90 pontos',
-  },
-  {
-    value: '80',
-    label: '80 pontos',
-  },
-  {
-    value: '70',
-    label: '70 pontos',
-  },
-  {
-    value: '60',
-    label: '60 pontos',
-  },
-  {
-    value: '50',
-    label: '50 pontos',
-  },
-  {
-    value: '40',
-    label: '40 pontos',
-  },
-  {
-    value: '30',
-    label: '30 pontos',
-  },
-  {
-    value: '20',
-    label: '20 pontos',
-  },
-  {
-    value: '10',
-    label: '10 pontos',
-  },
-]
+const OpcaoDePontos = Array.from({ length: 10 }, (_, index) => ({
+  value: `${(10 - index) * 10}`,
+  label: `${(10 - index) * 10} pontos`,
+}))
 
 export function ComboboxDemo() {
   const [open, setOpen] = React.useState(false)
@@ -68,7 +31,7 @@ export function ComboboxDemo() {
           {value ? OpcaoDePontos.find((pontos) => pontos.value === value)?.label : 'Selecione os pontos...'}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-1 bg-white z-50 bg-gray-200">
+      <PopoverContent className="w-[200px] p-1 bg-white z-50">
         <Command>
           <CommandInput placeholder="Search pontos..." />
           <CommandList>
@@ -122,34 +85,28 @@ export const Route = createFileRoute('/create-activity-material')({
 export function CreateActivityMaterial() {
   return (
     <>
-      <div className="flex flex-col h-full w-full gap-2 justify-center items-center">
-        <div className="flex w-full h-14 items-center justify-around">
-          <SubHeader />
-          <Button variant="blueButton" size="small">
-            Reunião
-          </Button>
-        </div>
-        <div className='h-[1px] bg-gray-200 w-full' ></div>
+      <div className="flex w-full h-14 items-center justify-around">
+        <SubHeader />
+        <Button variant="blueButton" size="small">
+          Reunião
+        </Button>
+      </div>
+
+
+      <div className="flex flex-col h-full w-full gap-2 justify-center items-center ">
+        <div className="h-[1px] bg-gray-200 w-full"></div>
         <div className="flex justify-between w-full h-full mx-40">
-          
-          <div></div>
-          <div className='flex flex-col w-2/3'>
-          <div className="flex flex-col w-full h-56 border rounded-lg p-6">
-            <p>Titulo</p>
-            <input type="text" className="border rounded-sm" />
-            <p>instruções</p>
-            <input type="text" className="border p-7 rounded-sm" />
-
-
+          <div className="flex flex-col w-2/3">
+            <div className="flex flex-col w-full h-56 border rounded-lg p-6">
+              <p>Título</p>
+              <input type="text" className="border rounded-sm" />
+              <p>Instruções</p>
+              <input type="text" className="border p-7 rounded-sm" />
+            </div>
           </div>
 
-          </div>
-          
           <div className="w-1/5 border p-5">
-            <p>Atribuir a</p>
-            <Button variant="lightTextBlack" size="large">
-              Todos os estudantes
-            </Button>
+            <SheetActivies />
             <p>Pontos</p>
             <ComboboxDemo />
             <p>Data</p>
@@ -158,6 +115,17 @@ export function CreateActivityMaterial() {
             </div>
           </div>
           <div></div>
+        </div>
+
+        <div className="flex w-full justify-start">
+          <div className="flex justify-center border w-2/3 p-4 rounded-sm">
+            <div className="relative inline-block">
+              <div className="w-24 h-24 bg-white border rounded-full flex items-center  justify-center text-white text-lg transition duration-200 hover:bg-blue-700 cursor-pointer">
+                <Download color="black" size={50} />
+              </div>
+              <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
+            </div>
+          </div>
         </div>
       </div>
     </>
