@@ -6,7 +6,6 @@ import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
-import LeftMenu from '@/components/custom/left-menu'
 
 export const Route = createFileRoute('/profile-changes')({
   component: ProfileChanges,
