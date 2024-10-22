@@ -69,32 +69,32 @@ export function ProfileChanges() {
             <div key={index} className="flex flex-col gap-6 max-[420px]:w-[400px] ">
               <div className="flex flex-col gap-2  ">
                 <label>Nome</label>
-                <div className="h-10 w-[700px] flex items-center  rounded-lg border border-gray-200">
+                <div className="h-10 w-[700px] flex items-center rounded-lg border border-gray-200">
                   <p className="text-[#B3B3B3] pl-4">{user.name}</p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2 ">
                 <label>CPF</label>
-                <div className="h-10 w-[700px] flex items-center  rounded-lg border border-gray-200">
+                <div className="h-10 w-[700px] flex items-center rounded-lg border border-gray-200">
                   <p className="text-[#B3B3B3] pl-4">{user.cpf}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2 ">
                 <label>E-mail</label>
-                <div className="h-10 w-[700px] flex items-center  rounded-lg border border-gray-200">
+                <div className="h-10 w-[700px] flex items-center rounded-lg border border-gray-200">
                   <p className="text-[#B3B3B3] pl-4">{user.email}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2 ">
                 <label>Cidade</label>
-                <div className="h-10 w-[700px] flex items-center  rounded-lg border border-gray-200">
+                <div className="h-10 w-[700px] flex items-center rounded-lg border border-gray-200">
                   <p className="text-[#B3B3B3] pl-4">{user.cityOfBirth}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2 ">
                 <label>Telefone</label>
-                <div className="h-10 w-[700px] flex items-center  rounded-lg border border-gray-200">
+                <div className="h-10 w-[700px] flex items-center rounded-lg border border-gray-200">
                   <p className="text-[#B3B3B3] pl-4">{user.telephone}</p>
                 </div>
               </div>
