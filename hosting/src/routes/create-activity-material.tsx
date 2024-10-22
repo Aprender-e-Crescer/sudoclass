@@ -86,47 +86,55 @@ export const Route = createFileRoute('/create-activity-material')({
 export function CreateActivityMaterial() {
   return (
     <>
-      <div className="flex w-full h-14 items-center justify-around">
-        <SubHeader />
-        <Button variant="blueButton" size="small">
-          Reunião
-        </Button>
-      </div>
-      <div className="h-[1px] bg-gray-200 w-full"></div>
-      <div className="flex flex-col h-full w-full gap-2 justify-center items-center ml-10 ">
-        
-        <div className="flex justify-between w-full h-full mx-40">
-          <div className="flex flex-col w-2/3">
-            <div className="flex flex-col w-full h-56 border rounded-lg p-6">
-              <p>Título</p>
-              <input type="text" className="border rounded-sm" />
-              <p>Instruções</p>
-              <input type="text" className="border p-7 rounded-sm" />
+      {/*mobile*/}
+      <div className="flex md:hidden">
+        <div className="flex flex-col w-full">
+          <div className="flex flex-col h-16 md:flex-row w-full items-center justify-around">
+            <SubHeader />
+            <Button variant="blueButton" size="small">
+              Reunião
+            </Button>
+          </div>
+
+          <div className="flex w-full justify-around gap-4 p-5">
+            <div>
+              <SheetActivies />
+            </div>
+            <div>
+              <p>Pontos</p>
+              <ComboboxDemo />
+            </div>
+            <div>
+              <p>Data</p>
+              <div className="flex justify-start">
+                <DatePickerDemo />
+              </div>
             </div>
           </div>
 
-          <div className="w-1/5 border p-5 ml-4"> {/* Adicionando margem à esquerda */}
-            <SheetActivies />
-            <p>Pontos</p>
-            <ComboboxDemo />
-            <p>Data</p>
-            <div className="flex justify-start">
-              <DatePickerDemo />
+          <div className="flex flex-col h-full w-full gap-2 justify-center items-center">
+            <div className="flex flex-col w-full h-56 border p-6">
+              <p>Título</p>
+              <input type="text" className="border rounded-sm w-full" />
+              <p>Instruções</p>
+              <input type="text" className="border p-7 rounded-sm w-full" />
             </div>
-          </div>
-          <div></div>
-        </div>
-        <div className="flex w-full justify-start">
-          <div className="flex justify-center border w-2/3 p-4 rounded-sm">
-            <div className="relative inline-block">
-              <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center text-white text-lg transition duration-200 hover:bg-blue-700 cursor-pointer">
-                <Download color="black" size={50} />
+            <div className='inline-block'>
+
+            </div>
+            <div className="flex w-full justify-center">
+              <div className="flex justify-center border w-full md:w-2/3 p-4 rounded-sm *:">
+                <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center text-white text-lg transition duration-200 hover:bg-blue-700 cursor-pointer">
+                  <Download color="black" size={50} />
+                </div>
+                <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
               </div>
-              <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
             </div>
           </div>
         </div>
       </div>
+
+      {/*mobile*/}
     </>
   )
 }
