@@ -60,10 +60,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className })) + (isCopyButton && size === "fixed" ? " justify-between" : "")}
-
-    return (
-      <Comp
         className={buttonVariants({ variant, size, className })}
 
         ref={ref}
