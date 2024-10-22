@@ -1,6 +1,6 @@
 import { GenericTable } from '@/components/custom/generic-table'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
-import { getInputSchema } from '@/models/get-input=shcema'
+import { getInputSchema } from '@/models/get-input-schema'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { Download, Search } from 'lucide-react'
