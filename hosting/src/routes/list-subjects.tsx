@@ -71,7 +71,7 @@ function ListSubjects() {
             title="Nome professor"
             label="teacher"
             name="teacher"
-            placeholder='digite professor'
+            placeholder='Digite nome professor'
             id="teacher"
             />
             <div className="flex gap-4">
