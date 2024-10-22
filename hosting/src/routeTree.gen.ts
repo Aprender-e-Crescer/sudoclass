@@ -28,66 +28,79 @@ import { Route as IndexImport } from './routes/index'
 // Create/Update Routes
 
 const TesteRoute = TesteImport.update({
+  id: '/teste',
   path: '/teste',
   getParentRoute: () => rootRoute,
 } as any)
 
 const TeachersListingRoute = TeachersListingImport.update({
+  id: '/teachers-listing',
   path: '/teachers-listing',
   getParentRoute: () => rootRoute,
 } as any)
 
 const TeachersListRoute = TeachersListImport.update({
+  id: '/teachers-list',
   path: '/teachers-list',
   getParentRoute: () => rootRoute,
 } as any)
 
 const TeachersFormRoute = TeachersFormImport.update({
+  id: '/teachers-form',
   path: '/teachers-form',
   getParentRoute: () => rootRoute,
 } as any)
 
 const TeacherRegistrationFormRoute = TeacherRegistrationFormImport.update({
+  id: '/teacher-registration-form',
   path: '/teacher-registration-form',
   getParentRoute: () => rootRoute,
 } as any)
 
 const SchoolMatricesRoute = SchoolMatricesImport.update({
+  id: '/school-matrices',
   path: '/school-matrices',
   getParentRoute: () => rootRoute,
 } as any)
 
 const PasswordChangesRoute = PasswordChangesImport.update({
+  id: '/password-changes',
   path: '/password-changes',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ListSubjectsRoute = ListSubjectsImport.update({
+  id: '/list-subjects',
   path: '/list-subjects',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ListResponsibleRoute = ListResponsibleImport.update({
+  id: '/list-responsible',
   path: '/list-responsible',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ConfirmationScreenRoute = ConfirmationScreenImport.update({
+  id: '/confirmation-screen',
   path: '/confirmation-screen',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ClassUserResgistrationRoute = ClassUserResgistrationImport.update({
+  id: '/class-user-resgistration',
   path: '/class-user-resgistration',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ActivitiesRoute = ActivitiesImport.update({
+  id: '/activities',
   path: '/activities',
   getParentRoute: () => rootRoute,
 } as any)
 
 const IndexRoute = IndexImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)

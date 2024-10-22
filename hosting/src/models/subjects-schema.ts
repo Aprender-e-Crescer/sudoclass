@@ -6,7 +6,7 @@ export const subjectsSchema = z.object({
   endDate: z.string().min(1, { message: 'Insira uma data valida' }),
   startDate: z.string().min(1, { message: 'Insira uma data valida' }),
   workload: z.string().min(1, { message: 'Insira uma hora valida' }),
-  
+  teacher: z.string().min(1, {message: 'insira um nome valido'})
 });
 
 

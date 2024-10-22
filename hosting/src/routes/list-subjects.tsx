@@ -18,8 +18,10 @@ function ListSubjects() {
 
   return (
     <>
+   <h1 className="text-left text-2xl font-bold mb-2 ml-4 mt-4">Adicionar Disciplina</h1>
+   <hr className="mb-4" />
       <Formik
-        initialValues={{ name: '', description: '', startDate: '', endDate: '', workload: '',}}
+        initialValues={{ name: '', description: '', startDate: '', endDate: '', workload: '', teacher: ''}}
         validate={validate}
         onSubmit={async (values, { resetForm }) => {
           await addDoc(collection(firestore, 'schoolMatrices', 'aQjvxCKlEuHc9YQEedCQ', 'subjects'), values);
@@ -64,6 +66,13 @@ function ListSubjects() {
               name="workload"
               placeholder="Digite a carga horária"
               id="workload"
+            />
+            <InputForm
+            title="Nome professor"
+            label="teacher"
+            name="teacher"
+            placeholder='digite professor'
+            id="teacher"
             />
             <div className="flex gap-4">
               <Button
