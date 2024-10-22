@@ -19,7 +19,7 @@ const buttonVariants = cva(
         small: "w-[96px] h-[36px]",
         medium: "w-[160px] h-[36px]",
         large: "w-[222px] h-[36px]",
-        login: "w-[480px] h-[36px]"
+        
       },
     },
     defaultVariants: {

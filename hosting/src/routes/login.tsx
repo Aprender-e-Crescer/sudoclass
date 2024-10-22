@@ -1,4 +1,3 @@
-import { useEffect } from 'react'; // Importando o useEffect
 import { Formik } from 'formik';
 import login from '@/assets/login.png';
 import { AiOutlineIdcard } from 'react-icons/ai';
@@ -17,16 +16,6 @@ export const Route = createFileRoute('/login')({
 export function Login() {
   const checkboxOptions = [{ value: 'Lembre-me', label: 'Lembre-me' }];
 
-  // useEffect para remover a rolagem ao carregar o componente
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'; // Impede a rolagem
-
-    // Limpeza ao desmontar o componente para restaurar a rolagem
-    return () => {
-      document.body.style.overflow = ''; // Permite a rolagem novamente
-    };
-  }, []);
-
   return (
     <Formik
       initialValues={{ cpf: '', senha: '', termos: false }}
@@ -36,10 +25,9 @@ export function Login() {
     >
       <div>
         <Header avatarFallBack="" avatarImage=" " />
-
-        {/* Container principal */}
-        <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 font-poppins px-4  sm:px-0 mb-100">
-          {/* Título para telas pequenas */}
+        
+        <div className="flex flex-col justify-center items-center mb-24 min-h-screen mt-20 font-poppins px-4 sm:px-0">
+          
           <div className="w-full text-center md:hidden mb-4">
             <h1 className="text-[30px] font-bold text-blue-600">
               Bem-vindo a
@@ -51,7 +39,6 @@ export function Login() {
 
           <div className="flex w-full max-w-6xl h-full md:h-[600px] rounded-xl shadow-lg overflow-hidden bg-white flex-col md:flex-row mb-36">
 
-            {/* Imagem da esquerda (em telas grandes) e em cima dos campos (em telas menores) */}
             <div className="w-full flex justify-center items-center bg-blue-600 h-[250px] md:h-full md:w-1/2">
               <img
                 src={login}
@@ -60,9 +47,8 @@ export function Login() {
               />
             </div>
 
-            {/* Seção do formulário */}
             <div className="w-full md:w-1/2 p-8 flex flex-col justify-center items-center h-full space-y-4">
-              {/* Título para telas maiores */}
+              
               <div className="hidden md:block text-center">
                 <h1 className="text-[40px] font-bold text-blue-600">
                   Bem-vindo a
@@ -73,7 +59,7 @@ export function Login() {
               </div>
 
               <div className="w-full">
-                <div className="w-full flex flex-col items-start mb-2 text-blue-600 px-4 space-y-2">
+                <div className="w-full flex flex-col items-start mb-2 text-blue-600 px-4 space-y-1">
                   <p>CPF</p>
                   <div className="w-full">
                     <InputAuth
@@ -89,8 +75,8 @@ export function Login() {
                     <InputAuth
                       icon={<FaKey />}
                       placeholder=""
-                      id="senha"
-                      name="senha"
+                      id="password"
+                      name="password"
                       isPasswordInput={true}
                     />
                   </div>
@@ -103,7 +89,6 @@ export function Login() {
                   </Link>
                 </div>
 
-                {/* Centralizando o botão */}
                 <div className="flex justify-center mt-4 w-full">
                   <Button
                     variant="blueButton"
