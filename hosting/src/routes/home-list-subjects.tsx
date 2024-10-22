@@ -11,7 +11,7 @@ function HomeListSubjects() {
       <CardSubject description="Processo de Desenvolvimento de Sistemas" name="PDS" backgroundColor="amarelo" />
       <CardSubject description="..." name="Marketing" backgroundColor="vermelho" />
       <CardSubject description="Programação Orientada a Objetos" name="POO" backgroundColor="azul" />
-      <CardSubject description="..." name="Algoritmos" backgroundColor="laranja" />
+      <CardSubject description="..." name="Algoritmos" backgroundColor="ciano" />
     </div>
   )
 }
