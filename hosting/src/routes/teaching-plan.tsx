@@ -12,10 +12,10 @@ export function teachingPlan() {
     <div>
       <strong>
      <PlanTable
-     Curso='Curso'
-     Turma='Turma'
-     Turno='Turno'
-     Altura='h-24'
+     curso='Curso'
+     turma='Turma'
+     turno='Turno'
+     altura='h-24'
      variant='undefined'
      />
      </strong>
@@ -23,45 +23,45 @@ export function teachingPlan() {
 
      <div className='flex flex-col'>
      <PlanTable
-     Curso='Aprender e Crescer'
-     Turma='Turma 2024'
-     Turno='Noite'
-     Altura='h-14'
+     curso='Aprender e Crescer'
+     turma='Turma 2024'
+     turno='Noite'
+     altura='h-14'
      variant='checked'
      />
      <PlanTable
-     Curso='Aprender e Crescer'
-     Turma='Turma 2024'
-     Turno='Noite'
-     Altura='h-14'
+     curso='Aprender e Crescer'
+     turma='Turma 2024'
+     turno='Noite'
+     altura='h-14'
      variant='nochecked'
      />
-        <PlanTable
-     Curso='Aprender e Crescer'
-     Turma='Turma 2024'
-     Turno='Noite'
-     Altura='h-14'
+    <PlanTable
+     curso='Aprender e Crescer'
+     turma='Turma 2024'
+     turno='Noite'
+     altura='h-14'
      variant='checked'
      />
         <PlanTable
-     Curso='Aprender e Crescer'
-     Turma='Turma 2024'
-     Turno='Noite'
-     Altura='h-14'
+     curso='Aprender e Crescer'
+     turma='Turma 2024'
+     turno='Noite'
+     altura='h-14'
      variant='nochecked'
      />
-        <PlanTable
-     Curso='Aprender e Crescer'
-     Turma='Turma 2024'
-     Turno='Noite'
-     Altura='h-14'
+    <PlanTable
+     curso='Aprender e Crescer'
+     turma='Turma 2024'
+     turno='Noite'
+     altura='h-14'
      variant='checked'
      />
     <PlanTable 
-     Curso='Aprender e Crescer'
-     Turma='Turma 2024'
-     Turno='Noite'
-     Altura='h-14'
+     curso='Aprender e Crescer'
+     turma='Turma 2024'
+     turno='Noite'
+     altura='h-14'
      variant='nochecked'
      />
      </div>
