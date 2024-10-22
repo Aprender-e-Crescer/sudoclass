@@ -87,9 +87,9 @@ export function CreateActivityMaterial() {
   return (
     <>
       {/*mobile*/}
-      <div className="flex md:hidden">
+      <div className="flex h-full w-full md:hidden">
         <div className="flex flex-col w-full">
-          <div className="flex flex-col h-16 md:flex-row w-full items-center justify-around">
+          <div className="flex-col sm:flex w-full items-center justify-around border p-5 ">
             <SubHeader />
             <Button variant="blueButton" size="small">
               Reunião
@@ -113,18 +113,16 @@ export function CreateActivityMaterial() {
           </div>
 
           <div className="flex flex-col h-full w-full gap-2 justify-center items-center">
-            <div className="flex flex-col w-full h-56 border p-6">
+            <div className="flex flex-col w-full h-64 border p-6">
               <p>Título</p>
               <input type="text" className="border rounded-sm w-full" />
               <p>Instruções</p>
               <input type="text" className="border p-7 rounded-sm w-full" />
             </div>
-            <div className='inline-block'>
-
-            </div>
-            <div className="flex w-full justify-center">
-              <div className="flex justify-center border w-full md:w-2/3 p-4 rounded-sm *:">
-                <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center text-white text-lg transition duration-200 hover:bg-blue-700 cursor-pointer">
+            <div className="inline-block"></div>
+            <div className="flex justify-center border w-full p-4 rounded-sm">
+              <div className="relative inline-block">
+                <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center">
                   <Download color="black" size={50} />
                 </div>
                 <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
@@ -135,6 +133,56 @@ export function CreateActivityMaterial() {
       </div>
 
       {/*mobile*/}
+      {/*PC*/}
+      <div className="hidden md:flex h-full w-full">
+        <div className="flex flex-col w-full gap-10">
+          <div className="flex w-full items-center justify-around border p-5">
+            <SubHeader />
+            <Button variant="blueButton" size="small">
+              Reunião
+            </Button>
+          </div>
+          <div className="flex justify-around mx-10 gap-10">
+            
+            <div className="flex flex-col w-full h-64 border p-6">
+              <p>Título</p>
+              <input type="text" className="border rounded-sm w-full" />
+              <p>Instruções</p>
+              <input type="text" className="border p-7 rounded-sm w-full" />
+            </div>
+            
+
+            <div className="border flex flex-col w-1/4 justify-around gap-4 p-5">
+              <div>
+                <SheetActivies />
+              </div>
+              <div>
+                <p>Pontos</p>
+                <ComboboxDemo />
+              </div>
+              <div>
+                <p>Data</p>
+                <div className="flex justify-start">
+                  <DatePickerDemo />
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+          <div className="inline-block"></div>
+          <div className="flex justify-center border p-4 rounded-sm mx-10">
+            <div className="relative inline-block">
+              <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center">
+                <Download color="black" size={50} />
+              </div>
+              <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/*PC*/}
     </>
   )
 }
