@@ -18,7 +18,7 @@ export const MenuItem: React.FC<Props> = ({ nameItem, activeItem, onClick, Icon 
       <div className="p-2">
         <Icon size={22} color="#787486" />
       </div>
-      <p className="hidden text-[#787486] font-medium min-[160px]:flex">{nameItem}</p>
+      <p className="hidden text-[#787486] font-medium min-[420px]:flex">{nameItem}</p>
     </div>
   )
 }

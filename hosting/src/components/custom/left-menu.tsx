@@ -60,7 +60,7 @@ function LeftMenu({ type }: LeftMenuProps) {
           <MenuItem key={index} nameItem={item.name} activeItem={activeItem} onClick={setActiveItem} Icon={item.icon} />
         ))}
 
-        <div className="flex flex-col gap-4 w-64 border-t-2 hidden min-[160px]:flex">
+        <div className="flex flex-col gap-4 w-64 border-t-2 hidden min-[420px]:flex">
           <div className="w-44 h-10 pt-6 flex items-center rounded-lg">
             <p className="font-bold text-[#787486] text-[12px] pl-3">CURSOS</p>
           </div>
