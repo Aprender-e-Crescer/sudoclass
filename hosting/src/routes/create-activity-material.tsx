@@ -119,8 +119,9 @@ export function CreateActivityMaterial() {
               <p>Instruções</p>
               <input type="text" className="border p-7 rounded-sm w-full" />
             </div>
-            <div className="inline-block"></div>
+            <p>Anexar</p>
             <div className="flex justify-center border w-full p-4 rounded-sm">
+            
               <div className="relative inline-block">
                 <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center">
                   <Download color="black" size={50} />
@@ -169,9 +170,10 @@ export function CreateActivityMaterial() {
             </div>
             
           </div>
-
-          <div className="inline-block"></div>
-          <div className="flex justify-center border p-4 rounded-sm mx-10">
+          
+          
+          <div className="flex justify-around border p-4 rounded-sm mx-10 items-center">
+          <p>Anexar</p>
             <div className="relative inline-block">
               <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center">
                 <Download color="black" size={50} />
