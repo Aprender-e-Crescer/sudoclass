@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CardSubject } from '@/components/custom/card-subject'
-import { Header } from '@/components/custom/header'
 
 export const Route = createFileRoute('/home-list-subjects')({
   component: HomeListSubjects,
@@ -9,13 +8,10 @@ export const Route = createFileRoute('/home-list-subjects')({
 function HomeListSubjects() {
   return (
     <div className="flex flex-wrap gap-5 justify-center">
-      <div className="h-full">
-        <Header />
-      </div>
-      <CardSubject />
-      <CardSubject />
-      <CardSubject />
-      <CardSubject />
+      <CardSubject description="Processo de Desenvolvimento de Sistemas" name="PDS" backgroundColor="amarelo" />
+      <CardSubject description="..." name="Marketing" backgroundColor="vermelho" />
+      <CardSubject description="Programação Orientada a Objetos" name="POO" backgroundColor="azul" />
+      <CardSubject description="..." name="Algoritmos" backgroundColor="laranja" />
     </div>
   )
 }
