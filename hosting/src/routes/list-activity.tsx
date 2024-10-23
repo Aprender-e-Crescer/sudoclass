@@ -1,10 +1,7 @@
-import { Header } from '@/components/custom/header'
 import { SubHeader } from '@/components/custom/subheader'
 import { Button } from '@/components/ui/button'
 import { ActivitiesMaterials } from '@/components/custom/activities-materials'
 import { FaPlus } from 'react-icons/fa'
-import avatarImage from '@/assets/avatarLogo.svg'
-import LeftMenu from '@/components/custom/left-menu'
 import { createFileRoute } from '@tanstack/react-router'
 
 interface ListActivity {
@@ -81,31 +78,16 @@ export const Route = createFileRoute('/list-activity')({
   component: ListActivity,
 })
 
-// Componente principal da lista de atividades
 export function ListActivity() {
   return (
     <>
       <div className="min-h-screen overflow-y-hidden">
-        {' '}
-        {/* Adiciona overflow-y-hidden para remover a barra de rolagem */}
-        <Header avatarFallBack="" avatarImage={avatarImage} />
         <div className="flex flex-col md:flex-row overflow-hidden">
-          <div className="hidden md:block border-r border-gray-300 min-h-full">
-            <LeftMenu type="TeacherClassroom" />
-          </div>
+          <div className="hidden md:block border-r border-gray-300 min-h-full"></div>
 
           <div className="flex flex-col w-full h-auto p-2 md:p-4 overflow-hidden">
-            <div className="flex justify-between w-full">
+            <div className="flex justify-center w-full">
               <SubHeader hasPrivilege="teacher" />
-
-              <Button
-                className="bg-blue-600 ml-2 md:ml-4 text-sm mb-2"
-                iconPosition="right"
-                variant="blueButton"
-                size="small"
-              >
-                Reunião
-              </Button>
             </div>
 
             <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
@@ -129,7 +111,6 @@ export function ListActivity() {
                     activity.type === 'teacher' || activity.type === 'student' ? activity.type : 'teacher'
 
                   return (
-                    // aumenta tamanho de atividades
                     <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
                       <ActivitiesMaterials
                         id={activity.id}
