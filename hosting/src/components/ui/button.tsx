@@ -15,7 +15,7 @@ const buttonVariants = cva(
         lightTextRed: "bg-[#F8FAFC] text-[#B3261E] hover:bg-[#F1F5F9]",
       },
       size: {
-        fixed: "w-[500px] h-[60px]",
+        Login: "w-[480px] h-[36px]",
         small: "w-[96px] h-[36px]",
         medium: "w-[160px] h-[36px]",
         large: "w-[222px] h-[36px]",

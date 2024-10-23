@@ -14,7 +14,7 @@ export function CourseItem({ course, activeItem, onClick, index }: Props): JSX.E
       onClick={() => onClick(course)}
     >
       <div className="rounded-full h-2 w-2 bg-red-500 hidden min-[160px]:flex"></div>
-      <p className="font-semibold text-[#787486] hidden min-[160px]:flex">{course}</p>
+      <p className="font-semibold text-[#787486] hidden min-[420px]:flex">{course}</p>
     </div>
   )
 }

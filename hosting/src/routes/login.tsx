@@ -14,7 +14,7 @@ export const Route = createFileRoute('/login')({
   component: Login,
 });
 
-export function Login() {
+export function Login() {p
   const checkboxOptions = [
     {
       value: 'Lembre-me',
@@ -103,12 +103,12 @@ export function Login() {
                     </div>
 
                     <div className="flex justify-between mt-4 w-full">
-                      <Button variant="blueButton" size="login" type="submit">
+                      <Button variant="blueButton" size="Login" type="submit">
                         Login
                       </Button>
                       <Button
                         variant="blueButton"
-                        size="login"
+                        size="Login"
                         type="button" // Tipo de botão para não enviar o formulário
                         onClick={handleLoginAnonymously} // Chamando a função de login anônimo
                       >

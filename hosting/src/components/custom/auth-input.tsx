@@ -1,7 +1,8 @@
 import { ErrorMessage, Field } from 'formik'
 import { Input } from '@/components/ui/input'
-import { Eye, EyeOff } from 'lucide-react'
+import { Copy, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from '@/hooks/use-toast'
 
 interface AuthInputProps {
   id: string
@@ -9,13 +10,37 @@ interface AuthInputProps {
   placeholder: string
   icon: JSX.Element
   isPasswordInput?: boolean
+  isCopyInput?: boolean
 }
 
-export function InputAuth({ id, name, placeholder, icon, isPasswordInput }: AuthInputProps) {
+export function InputAuth({ id, name, placeholder, icon, isPasswordInput, isCopyInput }: AuthInputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const handleOnToggleIconClick = () => {
     setIsPasswordVisible((oldIsPasswordVisible) => !oldIsPasswordVisible)
+  }
+
+  const handleOnCopyTextInputIconClick = () => {
+    const getInput = document.getElementById(id) as HTMLInputElement
+
+    navigator.clipboard
+      .writeText(getInput.value)
+      .then(() => {
+        toast({
+          duration: 1000,
+          title: 'Sucesso!',
+          description: 'O texto foi copiado.',
+          variant: 'default',
+        })
+      })
+      .catch(() => {
+        toast({
+          duration: 1000,
+          title: 'Erro!',
+          description: 'Não foi possivel copiar o texto.',
+          variant: 'destructive',
+        })
+      })
   }
 
   const EyeIcon = isPasswordVisible ? Eye : EyeOff
@@ -42,6 +67,12 @@ export function InputAuth({ id, name, placeholder, icon, isPasswordInput }: Auth
             className="hidden data-[is-password=true]:block"
           >
             <EyeIcon className="h-5 w-5 text-blue-500" />
+          </button>
+        </div>
+
+        <div className={`${isCopyInput ? 'flex' : 'hidden'} absolute top-2 sm:right-8 right-3 items-center`}>
+          <button type="button" className="w-3 h-3" onClick={handleOnCopyTextInputIconClick}>
+            <Copy className="text-blue-500" />
           </button>
         </div>
       </div>
