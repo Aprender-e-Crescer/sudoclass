@@ -5,11 +5,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog-new-collection'
+} from '@/components/ui/dialog-new-form-collection'
 import { FolderPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export function DialogDemo() {
+export function DialoNewFormCollection() {
   return (
     <Dialog>
       <DialogTrigger asChild>
