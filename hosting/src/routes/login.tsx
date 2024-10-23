@@ -6,7 +6,6 @@ import { FaKey } from 'react-icons/fa6';
 import { InputCheckbox } from '@/components/custom/checkbox-input';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Header } from '@/components/custom/header';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/login')({
@@ -14,7 +13,10 @@ export const Route = createFileRoute('/login')({
 });
 
 export function Login() {
-  const checkboxOptions = [{ value: 'Lembre-me', label: 'Lembre-me' }];
+  const checkboxOptions = [{ 
+    value: 'Lembre-me',
+     label: 'Lembre-me' 
+    }];
 
   return (
     <Formik
@@ -24,7 +26,6 @@ export function Login() {
       }}
     >
       <div>
-        <Header avatarFallBack="" avatarImage=" " />
         
         <div className="flex flex-col justify-center items-center mb-24 min-h-screen mt-20 font-poppins px-4 sm:px-0">
           
@@ -71,7 +72,7 @@ export function Login() {
                   </div>
 
                   <p>Senha</p>
-                  <div className="w-full">
+                  <div className="w-full"> 
                     <InputAuth
                       icon={<FaKey />}
                       placeholder=""
