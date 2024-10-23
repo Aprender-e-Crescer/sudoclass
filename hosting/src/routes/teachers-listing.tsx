@@ -1,8 +1,8 @@
 import { Formik, Form, Field } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { createFileRoute } from '@tanstack/react-router';
-import { registerSchema } from '@/models/register-schema';
-import { useRegisterSchemaQuery } from '@/queries/teachers-listing-query';
+import { teachersSchema } from '@/models/teachers-schema';
+import { teachersSchemaQuery } from '@/queries/teachers-listing-query';
 
 export const Route = createFileRoute('/teachers-listing')({
   component: TeachersListing,
@@ -28,7 +28,7 @@ const initialValues = {
 };
 
 export function TeachersListing() {
-  const { data: registerRequests } = useRegisterSchemaQuery();
+  const { data: registerRequests } = teachersSchemaQuery();
 
   return (
     <>
@@ -49,7 +49,7 @@ export function TeachersListing() {
 
       <Formik
         initialValues={initialValues}
-        validationSchema={toFormikValidationSchema(registerSchema)}
+        validationSchema={toFormikValidationSchema(teachersSchema)}
         onSubmit={(values) => {
           console.log('Valores do formulário:', values);
         }}
