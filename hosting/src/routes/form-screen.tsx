@@ -1,9 +1,9 @@
 import { CardTitleForm } from '@/components/custom/card-title-form'
 import { CardFormStars } from '@/components/custom/card-form-stars'
-
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/form-screen')({
-  component: FormScreen(),
+  component: FormScreen,
 })
 
 export function FormScreen() {

@@ -28,7 +28,7 @@ export function ActivitiesMaterials({
 }: ActivitiesMaterialsProps) {
   if (type === 'teacher') {
     return (
-      <div className="w-3/6 h-auto my-2.5">
+      <div className="w-full h-auto my-2.5">
         <Accordion className="border rounded-2xl px-4" type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>
@@ -98,7 +98,7 @@ export function ActivitiesMaterials({
     return (
       <>
         <Link to={to} search={{ id }}>
-          <div className="flex items-center w-3/6 md:hidden border p-4 rounded-2xl my-2.5">
+          <div className="flex items-center w-full md:hidden border p-4 rounded-2xl my-2.5">
             <div className={clsx('flex justify-center items-center', iconColor, 'w-10 h-10 rounded-full')}>
               <img className="h-6 w-6" src={iconeAtividade} alt="" />
             </div>

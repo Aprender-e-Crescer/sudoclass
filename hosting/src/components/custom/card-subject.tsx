@@ -51,7 +51,7 @@ export function CardSubject({ name, description, backgroundColor }: CardSubjectP
       <div className="bg-white w-full rounded-b-lg flex items-center justify-end py-3">
         <div className="flex gap-x-2">
           <MessageCircleMore />
-          <p className="text-white text-sm mr-4 sm:text-base">notas</p>
+          <p className="text-black text-sm mr-4 sm:text-base">notas</p>
         </div>
       </div>
     </div>
