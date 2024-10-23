@@ -14,7 +14,7 @@ export function ClassList() {
             </div>
             <div className='flex justify-center'>
                 <div className='flex flex-col gap-10 w-full max-w-[1600px] px-4'>
-                    <Button variant={'blueButton'}>Cadastrar nova turma</Button>
+                    <Button variant='blueButton'>Cadastrar nova turma</Button>
 
                     <div className='flex flex-col gap-7 font-bold text-blue-950 text-lg'>
 
