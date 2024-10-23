@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { Toaster } from '@/components/ui/toaster'
 
 export const Route = createRootRoute({
   component: () => (
@@ -7,12 +8,16 @@ export const Route = createRootRoute({
       <div className="p-2 flex gap-2">
         <Link to="/" className="[&.active]:font-bold">
           Home
-        </Link>{' '}
+        </Link>
         <Link to="/" className="[&.active]:font-bold">
           About
         </Link>
+        <Link to="/password-changes" className="[&.active]:font-bold">
+          password changes
+        </Link>
       </div>
       <hr />
+      <Toaster />
       <Outlet />
       <TanStackRouterDevtools />
     </>
