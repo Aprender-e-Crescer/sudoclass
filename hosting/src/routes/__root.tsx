@@ -14,9 +14,6 @@ export const Route = createRootRoute({
         <Link to="/password-changes" className="[&.active]:font-bold">
           password changes
         </Link>
-        <Link to="/create-activity-material" className="[&.active]:font-bold">
-          Create activity Material
-        </Link>
       </div>
       <hr />
       <Outlet />
@@ -24,4 +21,3 @@ export const Route = createRootRoute({
     </>
   ),
 })
-
