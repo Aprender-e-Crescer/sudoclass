@@ -6,6 +6,7 @@ import './index.css'
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
+import { LessonPlanView } from './components/custom/lesson-plan-view'
 const router = createRouter({ routeTree })
 
 declare module '@tanstack/react-router' {
@@ -19,7 +20,8 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      {/* <RouterProvider router={router} /> */}
+      <LessonPlanView/>
       </QueryClientProvider>
     </StrictMode>,
   )
