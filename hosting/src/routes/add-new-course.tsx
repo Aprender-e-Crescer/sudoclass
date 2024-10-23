@@ -21,9 +21,7 @@ const initialValues = {
 }
 
 function AddNewCourseForm() {
-  const { mutate, isPending, error } = useCreateSchoolMatriceMutation()
-
-  console.log(isPending, error)
+  const { mutate } = useCreateSchoolMatriceMutation()
 
   const handleSubmit = (values: typeof initialValues) => mutate(values)
   return (
@@ -32,8 +30,7 @@ function AddNewCourseForm() {
       validationSchema={toFormikValidationSchema(addNewCourseSchema)}
       onSubmit={handleSubmit}
     >
-      {({ handleSubmit, values }) => {
-        console.log(values)
+      {({ handleSubmit }) => {
         return (
           <form onSubmit={handleSubmit}>
             <h1 className="font-semibold p-5 ml-10">Adicionar curso</h1>

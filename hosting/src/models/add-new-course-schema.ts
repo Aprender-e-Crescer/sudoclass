@@ -5,10 +5,10 @@ export const addNewCourseSchema = z.object({
   startDate: z.string({ required_error: `Insira uma data inicial` }).min(1, { message: 'Insira um valor válido' }),
   endDate: z.string({ required_error: `Insira uma data de termino` }).min(1, { message: 'Insira um valor válido' }),
   workload: z
-    .string({ required_error: `Insira uma carga horaria total do curso` })
+    .number({ required_error: `Insira uma carga horaria total do curso` })
     .min(1, { message: 'Insira um valor válido' }),
   numberOfVacancies: z
-    .string({ required_error: `Insira um número de vagas` })
+    .number({ required_error: `Insira um número de vagas` })
     .min(1, { message: 'Insira um valor válido' }),
   endOfRegistration: z
     .string({ required_error: `Insira uma data final para o curso` })
