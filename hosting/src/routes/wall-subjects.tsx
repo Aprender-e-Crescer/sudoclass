@@ -1,6 +1,11 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { CardComponent } from '@/components/custom/card-bolletin-board'
 import { TeacherComment } from '@/components/custom/teacher-comment'
 import { ActivitiesMaterials } from '@/components/custom/activities-materials'
+
+export const Route = createFileRoute('/wall-subjects')({
+  component: WallSubject,
+})
 
 export function WallSubject() {
   return (
