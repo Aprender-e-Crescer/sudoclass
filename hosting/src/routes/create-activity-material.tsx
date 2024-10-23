@@ -131,9 +131,7 @@ export function CreateActivityMaterial() {
       {/*PC*/}
       <div className="hidden md:flex h-full w-full">
         <div className="flex flex-col w-full gap-10">
-          <div className="flex w-full items-center justify-around border p-5">
-            <SubHeader />
-          </div>
+          
           <div className="flex justify-around mx-10 gap-10">
             
             <div className="flex flex-col w-full h-64 border p-6">
