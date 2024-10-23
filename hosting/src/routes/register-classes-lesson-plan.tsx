@@ -63,20 +63,15 @@ export function RegisterClassesLessonPlan() {
                 </div>
               </div>
 
-              <div className="flex ml-10 xl:gap-96 lg:gap-80 sm:gap-40 gap-20">
-                <p>Data</p>
-                <p>Hora inicial</p>
-                <p>Hora final</p>
-              </div>
               <div className="bg-gray-400 py-3 pl-10 text-2xl">
                 <p>Mês de 2024</p>
               </div>
 
-              <div className="flex flex-1 pl-10">
+              <div className="flex sm:flex-row flex-col flex-1 pl-10">
                 <div className="flex flex-col w-60">
                   <InputCheckbox checkboxValues={weekDays} />
                 </div>
-                <div className="flex flex-1 gap-3">
+                <div className="flex sm:flex-row flex-col flex-1 gap-3">
                   <DateOrTimeInput title="Hora Inicial" id="teste1" name="teste1" type="time" />
                   <DateOrTimeInput title="Hora Final" id="teste2" name="teste2" type="time" />
                 </div>
