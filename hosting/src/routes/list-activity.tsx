@@ -1,4 +1,3 @@
-import { SubHeader } from '@/components/custom/subheader'
 import { Button } from '@/components/ui/button'
 import { ActivitiesMaterials } from '@/components/custom/activities-materials'
 import { FaPlus } from 'react-icons/fa'
@@ -86,10 +85,6 @@ export function ListActivity() {
           <div className="hidden md:block border-r border-gray-300 min-h-full"></div>
 
           <div className="flex flex-col w-full h-auto p-2 md:p-4 overflow-hidden">
-            <div className="flex justify-center w-full">
-              <SubHeader hasPrivilege="teacher" />
-            </div>
-
             <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
 
             <div>
