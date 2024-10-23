@@ -1,4 +1,3 @@
-import { SubHeader } from '@/components/custom/subheader'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import * as React from 'react'
@@ -89,9 +88,7 @@ export function CreateActivityMaterial() {
       {/*mobile*/}
       <div className="flex h-full w-full md:hidden">
         <div className="flex flex-col w-full">
-          <div className="flex w-full items-center justify-around border p-5 ">
-            <SubHeader />
-          </div>
+          
 
           <div className="flex flex-col w-full justify-around gap-4 p-5 ">
             <div>
