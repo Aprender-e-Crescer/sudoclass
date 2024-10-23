@@ -52,7 +52,6 @@ export function InputFile({ id, label, title, placeholder, name }: FileInputProp
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
- feature/dialog-remuve-subject
       <label htmlFor={id} className="cursor-pointer bg-white border border-gray-200 rounded w-full py-2">
         {placeholder}
       </label>
