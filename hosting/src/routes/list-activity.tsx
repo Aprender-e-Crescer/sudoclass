@@ -19,7 +19,6 @@ interface ListActivity {
   type: 'teacher' | 'student'
 }
 
-// Array de atividades (este será retornado do banco de dados)
 const activitiesData = [
   {
     id: '1',
