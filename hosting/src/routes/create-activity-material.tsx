@@ -89,14 +89,11 @@ export function CreateActivityMaterial() {
       {/*mobile*/}
       <div className="flex h-full w-full md:hidden">
         <div className="flex flex-col w-full">
-          <div className="flex-col sm:flex w-full items-center justify-around border p-5 ">
+          <div className="flex w-full items-center justify-around border p-5 ">
             <SubHeader />
-            <Button variant="blueButton" size="small">
-              Reunião
-            </Button>
           </div>
 
-          <div className="flex w-full justify-around gap-4 p-5">
+          <div className="flex flex-col w-full justify-around gap-4 p-5 ">
             <div>
               <SheetActivies />
             </div>
@@ -117,7 +114,7 @@ export function CreateActivityMaterial() {
               <p>Título</p>
               <input type="text" className="border rounded-sm w-full" />
               <p>Instruções</p>
-              <input type="text" className="border p-7 rounded-sm w-full" />
+              <input type="text" className="border p-10 rounded-sm w-full" />
             </div>
             <p>Anexar</p>
             <div className="flex justify-center border w-full p-4 rounded-sm">
@@ -139,9 +136,6 @@ export function CreateActivityMaterial() {
         <div className="flex flex-col w-full gap-10">
           <div className="flex w-full items-center justify-around border p-5">
             <SubHeader />
-            <Button variant="blueButton" size="small">
-              Reunião
-            </Button>
           </div>
           <div className="flex justify-around mx-10 gap-10">
             
