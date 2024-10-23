@@ -86,7 +86,7 @@ export const Route = createFileRoute('/create-activity-material')({
 export function CreateActivityMaterial() {
   return (
     <>
-      <div className="flex h-full w-full md:hidden">
+      <div className="flex h-full w-full mt-10 md:hidden">
         <div className="flex flex-col w-full">
           <div className="flex flex-col w-full justify-around gap-4 p-5 ">
             <div>
@@ -124,7 +124,7 @@ export function CreateActivityMaterial() {
         </div>
       </div>
 
-      <div className="hidden md:flex h-full w-full">
+      <div className="hidden md:flex h-full w-full mt-10">
         <div className="flex flex-col w-full gap-10">
           <div className="flex justify-around mx-10 gap-10">
             <div className="flex flex-col w-full h-64 border p-6">
@@ -133,31 +133,31 @@ export function CreateActivityMaterial() {
               <p>Instruções</p>
               <input type="text" className="border p-7 rounded-sm w-full" />
             </div>
-
-            <div className="border flex flex-col w-1/4 justify-around gap-4 p-5">
-              <div>
-                <SheetActivies />
-              </div>
-              <div>
-                <p>Pontos</p>
-                <ComboboxDemo />
-              </div>
-              <div>
-                <p>Data</p>
-                <div className="flex justify-start">
-                  <DatePickerDemo />
-                </div>
-              </div>
-            </div>
           </div>
-
-          <div className="flex justify-around border p-4 rounded-sm mx-10 items-center">
+          <div className="flex justify-center">
             <p>Anexar</p>
+          </div>
+          <div className="flex justify-around border p-4 rounded-sm mx-10 items-center">
             <div className="relative inline-block">
               <div className="w-24 h-24 bg-white border rounded-full flex items-center justify-center">
                 <Download color="black" size={50} />
               </div>
               <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
+            </div>
+          </div>
+        </div>
+        <div className="border flex flex-col w-1/4 h-3/5 justify-around gap-4 p-5 mr-10">
+          <div>
+            <SheetActivies />
+          </div>
+          <div>
+            <p>Pontos</p>
+            <ComboboxDemo />
+          </div>
+          <div>
+            <p>Data</p>
+            <div className="flex justify-start">
+              <DatePickerDemo />
             </div>
           </div>
         </div>
