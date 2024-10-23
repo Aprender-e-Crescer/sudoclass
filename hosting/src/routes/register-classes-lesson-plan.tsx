@@ -5,7 +5,7 @@ import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import { DateInput } from '@/components/custom/date-or-time-input'
+import { DateOrTimeInput } from '@/components/custom/date-or-time-input'
 
 export const Route = createFileRoute('/register-classes-lesson-plan')({
   component: RegisterClassesLessonPlan,
@@ -77,8 +77,8 @@ export function RegisterClassesLessonPlan() {
                   <InputCheckbox checkboxValues={weekDays} />
                 </div>
                 <div className="flex flex-1 gap-3">
-                  <DateInput title="Hora Inicial" id="teste1" name="teste1" type="time" />
-                  <DateInput title="Hora Final" id="teste2" name="teste2" type="time" />
+                  <DateOrTimeInput title="Hora Inicial" id="teste1" name="teste1" type="time" />
+                  <DateOrTimeInput title="Hora Final" id="teste2" name="teste2" type="time" />
                 </div>
               </div>
             </div>

@@ -14,7 +14,7 @@ interface InputProps {
   type: 'time' | 'date'
 }
 
-export function DateInput({
+export function DateOrTimeInput({
   title,
   label,
   name,
