@@ -146,7 +146,7 @@ export function CreateActivityMaterial() {
             </div>
           </div>
         </div>
-        <div className="border flex flex-col w-1/4 h-3/5 justify-around gap-4 p-5 mr-10">
+        <div className="flex flex-col w-1/4 h-3/5 justify-around gap-4 p-5 mr-10">
           <div>
             <SheetActivies />
           </div>
