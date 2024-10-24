@@ -54,6 +54,7 @@ export function InputFile({ id, label, title, placeholder, name }: FileInputProp
         </label>
         {fileName && <CircleX onClick={handleOnRemoveFileClick} className="cursor-pointer absolute right-3" />}
       </div>
+
       <Input
         placeholder={placeholder}
         id={id}
