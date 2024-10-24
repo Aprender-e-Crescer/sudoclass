@@ -6,8 +6,7 @@ import { AiOutlineIdcard } from "react-icons/ai";
 import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/password-reset')({
-  component: PasswordReset,
-
+    component: PasswordReset,
 });
 
 function PasswordReset() {
@@ -38,7 +37,6 @@ function PasswordReset() {
                                 />
                             </div>
 
-
                             <div className="w-full md:w-1/2 p-8 flex flex-col justify-between">
                                 <h1
                                     className="text-[24px] md:text-[28px] font-extrabold mb-2 text-center"
@@ -66,20 +64,23 @@ function PasswordReset() {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col justify-center mt-4 w-full gap-3 ml-4">
+                                <div className="flex flex-col justify-center mt-4 w-full gap-3 px-4 sm:px-0">
                                     <Button
                                         variant="blueButton"
                                         size="Login"
+                                        className="w-full sm:w-auto py-3 px-6 text-[14px] sm:text-[16px]"
                                     >
                                         Solicitar redefinição
                                     </Button>
                                     <Button
                                         variant="blueButton"
                                         size="Login"
+                                        className="w-full sm:w-auto py-3 px-6 text-[14px] sm:text-[16px]"
                                     >
                                         Retornar
                                     </Button>
                                 </div>
+
                             </div>
                         </div>
                     </div>
