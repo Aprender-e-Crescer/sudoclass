@@ -19,7 +19,9 @@ export function SheetActivies() {
     <div>
       <Sheet>
         <SheetTrigger>
-          <button className="py-2 px-4 rounded-lg border border-blue-500 text-blue-400">Todos os alunos</button>
+          <button className="py-2 px-4 rounded-lg border border-blue-500 text-blue-400 duration-200 font-medium hover:bg-blue-500 hover:text-white hover:font-bold">
+            Selecionar alunos
+          </button>
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>

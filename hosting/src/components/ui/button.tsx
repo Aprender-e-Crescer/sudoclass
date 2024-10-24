@@ -2,7 +2,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils";
+
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative",
   {
@@ -13,12 +13,9 @@ const buttonVariants = cva(
         blueButton: "bg-[#1A73E8] text-[#F8FAFC] hover:bg-[#1A60D0]",
         lightTextBlack: "bg-[#F8FAFC] text-[#0F172A] hover:bg-[#F1F5F9]",
         lightTextRed: "bg-[#F8FAFC] text-[#B3261E] hover:bg-[#F1F5F9]",
-
-        copyButton: "border border-[#0F172A] text-[#0F172A] hover:bg-[#F1F5F9] text-[30px]",
-
       },
       size: {
-        fixed: "w-[500px] h-[60px]",
+        Login: "w-[480px] h-[36px]",
         small: "w-[96px] h-[36px]",
         medium: "w-[160px] h-[36px]",
         large: "w-[222px] h-[36px]",
@@ -56,28 +53,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const Comp = asChild ? Slot : "button";
-    const isCopyButton = variant === "copyButton";
-
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className })) + (isCopyButton && size === "fixed" ? " justify-between" : "")}
 
     return (
       <Comp
         className={buttonVariants({ variant, size, className })}
-
         ref={ref}
         {...props}
       >
         {icon && iconPosition === "left" && <span className="mr-2">{icon}</span>}
-        <span className={cn(isCopyButton && size === "fixed" ? "flex-grow text-center" : "")}>
-          {children}
-        </span>
-        {icon && iconPosition === "right" && (
-          <span className={cn(isCopyButton && size === "fixed" ? "ml-2 absolute right-4 w-[35px] h-[35px]" : "ml-2")}>
-            {icon}
-          </span>
-        )}
         <span>
           {children}
         </span>
@@ -92,5 +75,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = "Button";
 export { Button, buttonVariants };
