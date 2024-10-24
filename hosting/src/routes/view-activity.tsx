@@ -40,13 +40,19 @@ interface Student {
 function ViewActivity() {
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-
+  const handleStudentClick = (student: Student) => {
+    if (selectedStudent?.id === student.id) {
+      setSelectedStudent(null)
+    } else {
+      setSelectedStudent(student)
+    }
+  }
   return (
     <>
       <div className="hidden md:flex flex-grow">
         <div>
           {students?.map((student) => (
-            <div key={student.id} onClick={() => setSelectedStudent(student)} className="cursor-pointer">
+            <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
               <ListStudents name={student.name} picture="" variant="corrected" />
             </div>
           ))}
