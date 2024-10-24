@@ -27,9 +27,6 @@ const StudentsData = [
   { name: 'Maria', picture: 'https://example.com/maria.jpg', variant: undefined },
   { name: 'Pedro', picture: 'https://example.com/pedro.jpg', variant: undefined },
   { name: 'Ana', picture: 'https://example.com/ana.jpg', variant: undefined },
-  { name: 'Lucas', picture: 'https://example.com/lucas.jpg', variant: undefined },
-  { name: 'Rafael', picture: 'https://example.com/rafael.jpg', variant: undefined },
-  { name: 'Isabella', picture: 'https://example.com/isabella.jpg', variant: undefined },
 ]
 
 export function PrivateChat() {
@@ -71,24 +68,26 @@ export function PrivateChat() {
         <div className="flex-grow overflow-auto">{}</div>
 
         <div>
-          <Formik
-            onSubmit={() => {}}
-            initialValues={initialValues}
-            validationSchema={toFormikValidationSchema(getInputSchema)}
-          >
-            <Form className="flex items-start flex-col">
-              <InputWithoutLabel
-                name="value"
-                icon={<SendHorizontal className="text-[#787486]" />}
-                placeholder="Digite aqui..."
-                id="value"
-                className="flex-grow"
-              />
-              <div className="text-[#787486] flex gap-4">
-                <Images /> <Paperclip /> <Smile />
-              </div>
-            </Form>
-          </Formik>
+          <div className="text-[#787486] flex flex-col gap-4">
+            <div className="flex gap-4">
+              <Images /> <Paperclip /> <Smile />
+            </div>
+            <Formik
+              onSubmit={() => {}}
+              initialValues={initialValues}
+              validationSchema={toFormikValidationSchema(getInputSchema)}
+            >
+              <Form className="flex items-start flex-col gap-4">
+                <InputWithoutLabel
+                  name="value"
+                  icon={<SendHorizontal className="text-[#787486]" />}
+                  placeholder="Digite aqui..."
+                  id="value"
+                  className="flex-grow"
+                />
+              </Form>
+            </Formik>
+          </div>
         </div>
       </div>
     </div>
