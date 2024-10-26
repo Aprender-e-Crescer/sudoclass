@@ -2,7 +2,10 @@ import { z } from 'zod'
 
 export const InputNoteSchema = z.object({
   value: z.preprocess(
-    (value) => Number(value),
+    (value) => {
+      const num = Number(value)
+      return isNaN(num) ? undefined : num
+    },
     z
       .number({
         required_error: 'Insira um número',

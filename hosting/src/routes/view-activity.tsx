@@ -68,11 +68,16 @@ function ViewActivity() {
                 console.log(values)
               }}
             >
-              {({ handleSubmit }) => (
+              {({ handleSubmit, setFieldValue }) => (
                 <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
                   <div className="flex gap-x-4 items-start">
                     <div className="h-screen max-h-16">
-                      <InputForm name="value" id="value" label="nota" />
+                      <InputForm
+                        name="value"
+                        id="value"
+                        label="nota"
+                        onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
+                      />
                     </div>
                     <Button type="submit" variant="blueButton" size="small" className="mt-3">
                       Devolver
