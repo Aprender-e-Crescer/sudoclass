@@ -18,7 +18,13 @@ const creationClassSchema = z.object({
 })
 
 const initialValues = {
-  days: '',
+  class: '',
+  shift: '',
+  startForeast: '',
+  endPredition: '',
+  registrationFinalDate: '',
+  quantityHours: '',
+  totalVacancies: '',
 }
 
 export const Route = createFileRoute('/class-creation-form')({
