@@ -1,14 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Copy, ChevronLeft} from 'lucide-react'
 import { X } from 'lucide-react'
-import { Check } from 'lucide-react'
 import avatarLogo from '@/assets/avatarLogo.svg'
 import { Button } from '@/components/ui/button'
 import ToastPasswordrequest from '@/components/custom/toast-password-change-request'
 import { useChangePasswordRequestQuery } from '@/queries/use-change-password-request-query'
 import { AlertDialog, AlertDialogHeader, AlertDialogContent, AlertDialogTrigger, AlertDialogTitle, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
-import { ChangedPasswordRequests } from './password-changes'
 import { Avatar } from '@mui/material'
 
 export const Route = createFileRoute('/password-change-request')({
