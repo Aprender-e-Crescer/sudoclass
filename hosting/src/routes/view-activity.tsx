@@ -4,13 +4,15 @@ import { TeacherComment } from '@/components/custom/teacher-comment'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, functionalUpdate } from '@tanstack/react-router'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
+import { collection, doc, updateDoc } from 'firebase/firestore'
+import { firestore } from '@/services/firebase'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
@@ -47,6 +49,10 @@ function ViewActivity() {
       setSelectedStudent(student)
     }
   }
+  async function upgradeNote(activityID: string, grade: number) {
+    const upgradeNoteRef = doc(firestore, 'activities', activityID)
+    await updateDoc(upgradeNoteRef, { grade: grade })
+  }
   return (
     <>
       <div className="hidden md:flex flex-grow">
@@ -65,7 +71,8 @@ function ViewActivity() {
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={(values) => {
-                console.log(values)
+                const grade = parseInt(values.value)
+                upgradeNote(selectedStudent.id, grade)
               }}
             >
               {({ handleSubmit, setFieldValue }) => (
