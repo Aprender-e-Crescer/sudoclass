@@ -14,7 +14,6 @@ export const Route = createRootRoute({
         <Link to="/password-changes" className="[&.active]:font-bold">
           password changes
         </Link>
-        <Link to='/password-change-request'>request Change Password</Link>
       </div>
       <hr />
       <Outlet />
