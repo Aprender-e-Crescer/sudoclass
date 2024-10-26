@@ -12,7 +12,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, setDoc, updateDoc } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 
 export const Route = createFileRoute('/view-activity')({
@@ -44,6 +44,7 @@ function ViewActivity() {
   const { activityID } = useParams()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
+  const [sucessMessage, setSuccessMessage] = useState('')
 
   const handleStudentClick = (student: Student) => {
     if (selectedStudent?.id === student.id) {
@@ -55,7 +56,13 @@ function ViewActivity() {
 
   async function upgradeNote(grade: number) {
     const upgradeNoteRef = doc(firestore, 'activities', activityID!)
-    await updateDoc(upgradeNoteRef, { grade: grade })
+    await setDoc(upgradeNoteRef, { grade: grade })
+    setSuccessMessage('Nota alterada com sucesso!')
+    setTimeout(() => {
+      {
+        setSuccessMessage('')
+      }
+    }, 3000)
   }
 
   return (
@@ -98,6 +105,7 @@ function ViewActivity() {
                 </Form>
               )}
             </Formik>
+            {sucessMessage && <p className="text-green-500">{sucessMessage}</p>}
             <div>
               <Input type="file" className="h-96 w-80" />
             </div>
