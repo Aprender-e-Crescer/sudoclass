@@ -26,7 +26,6 @@ export function RequestChangePassword() {
 
   return (
   <>
-  <div>
         {students?.map(({name}, index) => (
     <div key={index}>
       <div className='rounded-md border-2 w-10/12 flex p-3 items-center my-5 gap-5'>
@@ -61,12 +60,6 @@ export function RequestChangePassword() {
 
     </div>
    ))}
-  </div>
-
-    
-
-  
-
   </>
   )
 }
