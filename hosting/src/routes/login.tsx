@@ -94,7 +94,7 @@ export function Login() {
                       </div>
                     </div>
 
-                    <div className="text-blue-600 flex justify-between items-center gap-4 -mt-8 mr-5 ml-4">
+                    <div className="text-blue-600 flex justify-between items-center gap-4 -mt-6 mr-5 ml-4">
                       <InputCheckbox checkboxValues={checkboxOptions} />
                       <Link to="/" className="text-blue-600 underline text-sm">
                         Esqueceu sua Senha?
