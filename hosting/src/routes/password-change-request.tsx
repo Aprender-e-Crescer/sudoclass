@@ -3,12 +3,13 @@ import { Copy, ChevronLeft} from 'lucide-react'
 import { X } from 'lucide-react'
 import { Check } from 'lucide-react'
 import {toast,Toaster } from 'react-hot-toast'
-import { CheckCheck } from 'lucide-react'
 import avatarLogo from '@/assets/avatarLogo.svg'
 import { Button } from '@/components/ui/button'
 import { useChangePasswordRequestQuery } from '@/queries/use-change-password-request-query'
 import { AlertDialog, AlertDialogHeader, AlertDialogContent, AlertDialogTrigger, AlertDialogTitle, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
+import { Toast } from '@/components/ui/toast'
+import { useToast } from '@/hooks/use-toast'
 
 export const Route = createFileRoute('/password-change-request')({
   component: RequestChangePassword,
@@ -22,7 +23,9 @@ const initialValues = {
 export function RequestChangePassword() {
     const {data: studentPasswordChangeRequests} = useChangePasswordRequestQuery()
     const {data: students} = useStudentsListQuery()
-
+    const {toast} = useToast()
+  
+/* 
     const handleClick = () => {
       toast.custom(
         (t) => (
@@ -39,7 +42,7 @@ export function RequestChangePassword() {
           duration: 2000,
         }
       )
-    }
+    } */
 
   return (
   <>
@@ -56,11 +59,16 @@ export function RequestChangePassword() {
           <div className='gap-3 flex ml-auto'>
             <AlertDialog>
               <AlertDialogTrigger>
-              <div>
-                <div className='flex border h-8 rounded-md justify-center items-center p-1'  onClick={handleClick} >
+              <div  onClick={() => {
+               toast({
+               variant: "sucesss",
+              title: "Atualizado com sucesso ✓",
+              })
+            }}>
+                <div className='flex border h-8 rounded-md justify-center items-center p-1' >
                     <Check className='text-green-500'/>
                 </div>
-                <Toaster />
+                
               </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent className='p-9  h-56 w-full'>
