@@ -2,37 +2,32 @@ import { createFileRoute } from '@tanstack/react-router'
 import NoteValue from '@/components/custom/note-value'
 import AttachmentView from '@/components/custom/attachment-view'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-
-import chatIcon from '@/assets/chatIcon.png'
-import LeftArrow from '@/assets/LeftArrow.png'
-import topArrow from '@/assets/topArrow.png'
+import { ArrowLeft, ArrowUpFromLine, MessageSquareMore } from 'lucide-react'
 
 interface ViewProps {
   activityNote: string
   to: string
   title: string
   dateActivity: string
-  instructions: string
 }
 
 export const Route = createFileRoute('/view-activity-student')({
   component: ViewActivityStudent,
 })
 
-export function ViewActivityStudent({ to, title, dateActivity, instructions }: ViewProps) {
+export function ViewActivityStudent({ to, title, dateActivity, activityNote }: ViewProps) {
   return (
     <>
-      {/* Mobile */}
       <div className=" flex flex-col md:hidden">
         <div className="flex flex-col mx-5 gap-3">
-          <img src={LeftArrow} className="h-5 w-7 my-3" />
+          <ArrowLeft className="mt-4 text-gray-400" />
           <p className="text-gray-500 text-xs">Prazo: {dateActivity}</p>
-          <p className="text-blue-600 text-2xl font-semibold">Web1 - Desafio</p>
+          <p className="text-blue-600 text-2xl font-semibold">{title}</p>
           <div className="flex text-gray-500">
             <NoteValue note={20} maxGrade={100} />
           </div>
           <div className="flex gap-4 items-center ">
-            <img src={chatIcon} className="h-4" />
+            <MessageSquareMore className="text-gray-400" />
             <p className="font-semibold text-gray-400">Fazer comentário para a turma</p>
           </div>
           <div className=" w-full h-0.5 bg-blue-300"></div>
@@ -50,7 +45,7 @@ export function ViewActivityStudent({ to, title, dateActivity, instructions }: V
                 <AccordionTrigger>
                   <div className="flex flex-col w-full gap-4">
                     <div className="flex justify-center items-center">
-                      <img src={topArrow} className="h-6" />
+                      <ArrowUpFromLine />
                     </div>
                     <h1 className="flex text-lg font-bold text-gray-600">Seus trabalhos</h1>
                   </div>
@@ -59,13 +54,13 @@ export function ViewActivityStudent({ to, title, dateActivity, instructions }: V
               <div className=" w-full h-full">
                 <AccordionContent>
                   <div className="flex gap-4 items-center ">
-                    <img src={chatIcon} className="h-4" />
+                    <MessageSquareMore className="text-gray-400" />
                     <p className="font-semibold text-gray-400">Fazer comentário particular</p>
                   </div>
                   <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus anexos</h1>
                   <AttachmentView url="" imageUrl="" title="" linkText="" />
 
-                  <div className="flex flex-col mt-6">
+                  <div className="flex flex-col my-6">
                     <button className="text-blue-500 text-sm font-semibold border border-blue-500 rounded-lg py-2 mb-2">
                       + Adicionar trabalho
                     </button>
@@ -77,13 +72,11 @@ export function ViewActivityStudent({ to, title, dateActivity, instructions }: V
           </Accordion>
         </div>
       </div>
-      {/* Mobile */}
 
-      {/* PC */}
       <div className="hidden md:flex w-full">
         <div className="flex flex-col mx-5 gap-3 w-full">
-          <img src={LeftArrow} className="h-5 w-7 my-3" />
-          <p className="text-blue-600 text-4xl font-semibold">Web1 - Desafio</p>
+          <ArrowLeft className="mt-4 text-gray-400" />
+          <p className="text-blue-600 text-4xl font-semibold">{title}</p>
           <p className="text-gray-500 text-base">Prazo: {dateActivity}</p>
 
           <div className="flex text-gray-500">
@@ -109,13 +102,12 @@ export function ViewActivityStudent({ to, title, dateActivity, instructions }: V
             </button>
             <button className="bg-blue-500 text-white font-semibold rounded-lg py-2">Enviar novamente</button>
             <div className="flex gap-4 items-center mt-10 ">
-              <img src={chatIcon} className="h-4" />
+              <MessageSquareMore className="text-gray-400" />
               <p className="font-semibold text-gray-400">Fazer comentário particular</p>
             </div>
           </div>
         </div>
       </div>
-      {/* PC */}
     </>
   )
 }
