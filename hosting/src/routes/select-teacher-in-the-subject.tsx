@@ -1,35 +1,35 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+import { TeachersSchemaQuery } from '@/queries/teachers-listing-query'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export const Route = createFileRoute('/select-teacher-in-the-subject')({
   component: SelectionTeacher,
 })
 
 export function SelectionTeacher() {
+  const { data } = TeachersSchemaQuery()
+
   return (
     <div>
       <h1 className="font-semibold p-5 border">Selecione professor</h1>
       <h1 className="font-semibold p-3 ml-3 text-gray-400">Professores cadastrados</h1>
       <hr />
-      <div className="flex items-center ml-6 p-4 ">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-500 text-white">A</div>
-        <p className="text-gray-700 ml-4">Alexandre</p>
-      </div>
-      <hr />
-      <div className="flex items-center ml-6 p-4">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-red-500 text-white">P</div>
-        <p className="text-gray-700 ml-4">Pardim</p>
-      </div>
-      <hr />
-      <div className="flex items-center ml-6 p-4">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-yellow-400 text-white">S</div>
-        <p className="text-gray-700 ml-4">Stephani</p>
-      </div>
-      <hr />
-      <div className="flex items-center ml-6 p-4">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-orange-500 text-white">J</div>
-        <p className="text-gray-700 ml-4">José Otavio</p>
-      </div>
+      {data?.map(({ fullName, profilePhoto }) => {
+        return (
+          <div className="hover:bg-blue-50">
+            <div className="flex items-center ml-6 p-4">
+              <Avatar>
+                <AvatarImage src={`data:image/jpeg;base64,${profilePhoto}`} />
+                <AvatarFallback>{fullName[0].toString().toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <p className="text-gray-700 ml-4">{fullName}</p>
+            </div>
+            <hr />
+          </div>
+        )
+      })}
+
       <div className="flex items-center justify-center mt-5">
         <Button variant="lightTextBlack">Cancelar</Button>
         <Button variant="blueButton">Adicionar</Button>
