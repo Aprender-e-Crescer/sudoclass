@@ -2,11 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import NoteValue from '@/components/custom/note-value'
 import AttachmentView from '@/components/custom/attachment-view'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { ArrowLeft, ArrowUpFromLine, MessageSquareMore } from 'lucide-react'
-
+import { ArrowLeft, ChevronUp, MessageSquareMore } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 interface ViewProps {
   activityNote: string
-  to: string
   title: string
   dateActivity: string
 }
@@ -15,7 +14,7 @@ export const Route = createFileRoute('/view-activity-student')({
   component: ViewActivityStudent,
 })
 
-export function ViewActivityStudent({ to, title, dateActivity, activityNote }: ViewProps) {
+export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewProps) {
   return (
     <>
       <div className=" flex flex-col md:hidden">
@@ -45,7 +44,7 @@ export function ViewActivityStudent({ to, title, dateActivity, activityNote }: V
                 <AccordionTrigger>
                   <div className="flex flex-col w-full gap-4">
                     <div className="flex justify-center items-center">
-                      <ArrowUpFromLine />
+                      <ChevronUp />
                     </div>
                     <h1 className="flex text-lg font-bold text-gray-600">Seus trabalhos</h1>
                   </div>
@@ -58,13 +57,18 @@ export function ViewActivityStudent({ to, title, dateActivity, activityNote }: V
                     <p className="font-semibold text-gray-400">Fazer comentário particular</p>
                   </div>
                   <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus anexos</h1>
-                  <AttachmentView url="" imageUrl="" title="" linkText="" />
+                  <div className="flex flex-col w-full gap-3">
+                    <AttachmentView url="" imageUrl="" title="" linkText="" />
+                    <AttachmentView url="" imageUrl="" title="" linkText="" />
+                  </div>
 
-                  <div className="flex flex-col my-6">
-                    <button className="text-blue-500 text-sm font-semibold border border-blue-500 rounded-lg py-2 mb-2">
+                  <div className="flex flex-col gap-5 mt-5">
+                    <Button variant="lightTextBlack" className=" w-full">
                       + Adicionar trabalho
-                    </button>
-                    <button className="bg-blue-500 text-white font-semibold rounded-lg py-2">Enviar novamente</button>
+                    </Button>
+                    <Button variant="blueButton" className=" w-full">
+                      Enviar novamente
+                    </Button>
                   </div>
                 </AccordionContent>
               </div>
@@ -92,15 +96,20 @@ export function ViewActivityStudent({ to, title, dateActivity, activityNote }: V
         </div>
         <div className="flex flex-col w-1/3 border mx-10 p-5 rounded-lg">
           <h1 className="flex text-lg font-bold text-gray-600">Seus trabalhos</h1>
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full gap-3">
             <AttachmentView url="" imageUrl="" title="" linkText="" />
             <AttachmentView url="" imageUrl="" title="" linkText="" />
           </div>
           <div className="flex flex-col mt-6">
-            <button className="text-blue-500 text-sm font-semibold border border-blue-500 rounded-lg py-2 mb-2">
-              + Adicionar trabalho
-            </button>
-            <button className="bg-blue-500 text-white font-semibold rounded-lg py-2">Enviar novamente</button>
+            <div className="flex flex-col gap-5">
+              <Button variant="lightTextBlack" className=" w-full">
+                + Adicionar trabalho
+              </Button>
+              <Button variant="blueButton" className=" w-full">
+                Enviar novamente
+              </Button>
+            </div>
+
             <div className="flex gap-4 items-center mt-10 ">
               <MessageSquareMore className="text-gray-400" />
               <p className="font-semibold text-gray-400">Fazer comentário particular</p>
