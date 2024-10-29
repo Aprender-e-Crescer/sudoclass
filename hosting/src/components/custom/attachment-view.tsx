@@ -26,12 +26,3 @@ export default function AttachmentView({ url, imageUrl, title, linkText }: Props
     </div>
   );
 }
-
-//Props de teste:
-
-           //AttachmentView.defaultProps = {
-            //url: "https://quizizz.com/?lng=pt-BR",
-            //imageUrl: "https://i.imgur.com/bEzh3oE.png",
-            //title: "Desafio",
-            //linkText: "https://quizizz.com/?lng=pt-BR",
-           //};
