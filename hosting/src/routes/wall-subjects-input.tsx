@@ -3,6 +3,7 @@ import { CardComponent } from '@/components/custom/card-bolletin-board'
 import { ActivitiesMaterials } from '@/components/custom/activities-materials'
 import { InputWithAvatar } from '@/components/custom/input-with-avatar'
 import { Form, Formik } from 'formik'
+import { SendHorizontal } from 'lucide-react'
 
 export const Route = createFileRoute('/wall-subjects-input')({
   component: WallSubjectInput,
@@ -29,7 +30,17 @@ export function WallSubjectInput() {
           >
             {({ handleSubmit }) => (
               <Form onSubmit={handleSubmit}>
-                <InputWithAvatar placeholder="Digite algo" id="value" name="value" avatar="" />
+                <InputWithAvatar
+                  placeholder="Digite algo"
+                  id="value"
+                  name="value"
+                  avatar=""
+                  icon={
+                    <button type="button" onClick={() => console.log('aa')}>
+                      <SendHorizontal />
+                    </button>
+                  }
+                />
               </Form>
             )}
           </Formik>
