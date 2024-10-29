@@ -7,13 +7,14 @@ interface InputProps {
   id: string
   name: string
   titleTextArea?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export function InputTextarea({ label, titleTextArea, placeholder, id, name }: InputProps) {
+export function InputTextarea({ label, titleTextArea, placeholder, id, name, onChange }: InputProps) {
   return (
     <div>
       <label htmlFor={label}>{titleTextArea}</label>
-      <Field placeholder={placeholder} id={id} name={name} as={Textarea} className="resize-none" />
+      <Field placeholder={placeholder} id={id} name={name} as={Textarea} className="resize-none" onChange={onChange} />
     </div>
   )
 }

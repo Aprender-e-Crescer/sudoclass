@@ -21,7 +21,8 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
       {/* <RouterProvider router={router} /> */}
-      <LessonPlanView/>
+        <RouterProvider router={router} />
+        <LessonPlanView/>
       </QueryClientProvider>
     </StrictMode>,
   )
