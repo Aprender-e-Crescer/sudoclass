@@ -3,7 +3,7 @@ import approveResetPassword from '@/assets/approveResetPassword.png'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/ApproveResetPassword')({
+export const Route = createFileRoute('/approve-reset-password')({
   component: ApproveResetPassword,
 })
 
@@ -27,23 +27,21 @@ export function ApproveResetPassword() {
 
           <div className="w-full md:w-1/2 p-8 flex flex-col justify-center items-center h-full space-y-4">
             <div className="hidden md:block text-center">
-              <h1 className="text-[24px] font-bold text-blue-600">O aluno(a) solicitou uma redefinição de senha. Caso aprove, copie a nova senha gerada e envie ao aluno(a).</h1>
-              
+              <h1 className="text-[24px] font-bold text-blue-600">
+                O aluno(a) solicitou uma redefinição de senha. Caso aprove,
+                copie a nova senha gerada e envie ao aluno(a).
+              </h1>
             </div>
 
             <div className="w-full">
-         
-
-              //login-outline
-
-              <div className="flex justify-between mt-16 ml-4 w-full">
+              <div className="flex justify-between mt-24 ml-4 w-full">
                 <Button variant="blueButton" size="Login" type="submit">
                   Redefinir senha
                 </Button>
               </div>
 
-              <div className="flex justify-between mt-16 ml-4 w-full">
-                <Button variant="blueButton" size="Login" type="submit">
+              <div className="flex justify-between mt-8 ml-4 w-full">
+                <Button variant="loginoutline" size="Login" type="submit">
                   Retornar
                 </Button>
               </div>
