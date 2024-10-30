@@ -34,7 +34,7 @@
     "classnames": "^2.5.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
-    "firebase": "10.9.0",
+    "firebase": "^10.14.1",
     "formik": "^2.4.6",
     "lucide-react": "^0.453.0",
     "radix-ui": "^1.0.1",
