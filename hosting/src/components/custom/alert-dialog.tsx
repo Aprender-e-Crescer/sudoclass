@@ -14,7 +14,6 @@ type ButtonVariant = 'ghostWhite' | 'ghostBlack' | 'blueButton' | 'lightTextBlac
 interface AlertDialogProps {
   variantCancelButton?: ButtonVariant | null
   variantContinueButton?: ButtonVariant | null
-
   title?: string
   cancelButtonValue?: string
 }
@@ -28,7 +27,7 @@ export function AlertDialogComponent({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <X className="border rounded text-red-500 mr-4 w-8 h-8" onClick={() => console.log(`clique`)} />
+        <X className="border rounded text-red-500 mr-4 w-8 h-8" />
       </AlertDialogTrigger>
 
       <AlertDialogContent>
