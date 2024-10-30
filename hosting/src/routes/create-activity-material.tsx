@@ -127,8 +127,7 @@ export function CreateActivityMaterial() {
         </div>
       </div>
 
-      {/*mobile*/}
-      {/*PC*/}
+     
       <div className="hidden md:flex h-full w-full">
         <div className="flex flex-col w-full gap-10">
           
