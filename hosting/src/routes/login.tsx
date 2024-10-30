@@ -7,7 +7,7 @@ import { InputCheckbox } from '@/components/custom/checkbox-input';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { createFileRoute } from '@tanstack/react-router';
-import { useLoginController } from '@/controllers/use-login-controller'; // Importa o controlador
+import { useLoginController } from '@/controllers/use-login-controller';
 import  { loginSchema } from '@/models/login-schema';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
