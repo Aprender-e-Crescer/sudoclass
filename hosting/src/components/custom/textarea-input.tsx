@@ -9,9 +9,19 @@ interface InputProps {
   titleTextArea?: string
   isDisabled?: boolean
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  customStyle?: string
 }
 
-export function InputTextarea({ label, titleTextArea, placeholder, id, name, onChange, isDisabled }: InputProps) {
+export function InputTextarea({
+  label,
+  titleTextArea,
+  placeholder,
+  id,
+  name,
+  onChange,
+  customStyle,
+  isDisabled,
+}: InputProps) {
   return (
     <div>
       <label htmlFor={label}>{titleTextArea}</label>
@@ -20,7 +30,7 @@ export function InputTextarea({ label, titleTextArea, placeholder, id, name, onC
         id={id}
         name={name}
         as={Textarea}
-        className="resize-none"
+        className={`${customStyle || ''} resize-none`}
         onChange={onChange}
         disabled={isDisabled}
       />
