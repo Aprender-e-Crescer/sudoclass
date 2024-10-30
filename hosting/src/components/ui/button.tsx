@@ -13,6 +13,7 @@ const buttonVariants = cva(
         blueButton: "bg-[#1A73E8] text-[#F8FAFC] hover:bg-[#1A60D0]",
         lightTextBlack: "bg-[#F8FAFC] text-[#0F172A] hover:bg-[#F1F5F9]",
         lightTextRed: "bg-[#F8FAFC] text-[#B3261E] hover:bg-[#F1F5F9]",
+        loginoutline: "bg-[#F8FAFC] text-[#1A73E8] border-[#1A73E8] border-[1.5px]  hover: bg-[#1A73E8] text-[#1A73E8]",
       },
       size: {
         Login: "w-[480px] h-[36px]",
