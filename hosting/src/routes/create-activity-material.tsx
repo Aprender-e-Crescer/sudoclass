@@ -85,7 +85,6 @@ export const Route = createFileRoute('/create-activity-material')({
 export function CreateActivityMaterial() {
   return (
     <>
-      {/*mobile*/}
       <div className="flex h-full w-full md:hidden">
         <div className="flex flex-col w-full">
           
@@ -172,7 +171,7 @@ export function CreateActivityMaterial() {
         </div>
       </div>
 
-      {/*PC*/}
+    
     </>
   )
 }
