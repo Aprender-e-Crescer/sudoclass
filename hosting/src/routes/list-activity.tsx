@@ -17,71 +17,12 @@ interface ListActivity {
   type: 'teacher' | 'student'
 }
 
-const activitiesData = [
-  {
-    id: '1',
-    link: `/atividade/1`,
-    title: `Professor atribuiu uma nova atividade:`,
-    dateActivity: `2024-10-18`,
-    instructions: `Complete a atividade de AOO`,
-    iconColor: 'bg-yellow-500',
-    assigned: Math.floor(Math.random() * 10) + 1,
-    pending: Math.floor(Math.random() * 5),
-    type: 'teacher',
-  },
-  {
-    id: '2',
-    link: `/atividade/2`,
-    title: `Professor atribuiu uma nova atividade:`,
-    dateActivity: `2024-10-18`,
-    instructions: `Complete a atividade de BANCO DE DADOS`,
-    iconColor: 'bg-yellow-500',
-    assigned: Math.floor(Math.random() * 10) + 1,
-    pending: Math.floor(Math.random() * 5),
-    type: 'teacher',
-  },
-  {
-    id: '3',
-    link: `/atividade/3`,
-    title: `Professor atribuiu uma nova atividade:`,
-    dateActivity: `2024-10-18`,
-    instructions: `Complete a atividade de WEB1`,
-    iconColor: 'bg-yellow-500',
-    assigned: Math.floor(Math.random() * 10) + 1,
-    pending: Math.floor(Math.random() * 5),
-    type: 'teacher',
-  },
-  {
-    id: '4',
-    link: `/atividade/4`,
-    title: `Professor atribuiu uma nova atividade:`,
-    dateActivity: `2024-10-18`,
-    instructions: `Complete a atividade de WEB2`,
-    iconColor: 'bg-yellow-500',
-    assigned: Math.floor(Math.random() * 10) + 1,
-    pending: Math.floor(Math.random() * 5),
-    type: 'teacher',
-  },
-  {
-    id: '5',
-    link: `/atividade/5`,
-    title: `Professor atribuiu uma nova atividade:`,
-    dateActivity: `2024-10-18`,
-    instructions: `Complete a atividade de UX/UI`,
-    iconColor: 'bg-yellow-500',
-    assigned: Math.floor(Math.random() * 10) + 1,
-    pending: Math.floor(Math.random() * 5),
-    type: 'teacher',
-  },
-]
-
-const { data: activities } = useListActivitiesQuery()
-
 export const Route = createFileRoute('/list-activity')({
   component: ListActivity,
 })
 
 export function ListActivity() {
+  const { data: activities } = useListActivitiesQuery('aQjvxCKlEuHc9YQEedCQ', 'zGTOAwnKJBjFSmayHxJo')
   return (
     <>
       <div className="min-h-screen overflow-y-hidden">
@@ -115,8 +56,7 @@ export function ListActivity() {
                       <ActivitiesMaterials
                         id={activity.id}
                         title={activity.title}
-                        dateActivity={activity.dateActivity}
-                        instructions={activity.instructions}
+                        instruction={activity.instruction}
                         type="teacher"
                       />
                     </div>

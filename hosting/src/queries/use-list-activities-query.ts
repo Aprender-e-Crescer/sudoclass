@@ -3,15 +3,27 @@ import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 
-export function useListActivitiesQuery() {
+export function useListActivitiesQuery(schoolMatriceId: string, subjectId: string) {
   return useQuery({
-    queryKey: ['getActivies'],
+    queryKey: ['getActivies', schoolMatriceId, subjectId],
     queryFn: async () => {
-      const studentsRef = collection(firestore, 'activities').withConverter({
+      const activiesRef = collection(
+        firestore,
+        'schoolMatrices',
+        schoolMatriceId,
+        'subjects',
+        subjectId,
+        'activities',
+      ).withConverter({
         toFirestore: (activity: Activity) => activity,
-        fromFirestore: (snapshot) => activitySchema.parse({ id: snapshot.id, ...snapshot.data() }),
+        fromFirestore: (snapshot) =>
+          activitySchema.parse({
+            id: snapshot.id,
+            ...snapshot.data(),
+          }),
       })
-      const snapshot = await getDocs(studentsRef)
+
+      const snapshot = await getDocs(activiesRef)
       return snapshot.docs.map((doc) => doc.data())
     },
   })

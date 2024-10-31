@@ -1,11 +1,22 @@
 import { z } from 'zod'
+import { Timestamp } from 'firebase/firestore'
 
 export const activitySchema = z.object({
+  id: z.string(),
   title: z.string(),
-  description: z.string(),
-  valueActivity: z.number(),
-  deliveryDate: z.date(),
-  datePosting: z.date(),
+  instruction: z.string(),
+  deliveryDate: z.preprocess((value) => {
+    if (value instanceof Timestamp) {
+      return value.toDate()
+    }
+    return value
+  }, z.date()),
+  datePosting: z.preprocess((value) => {
+    if (value instanceof Timestamp) {
+      return value.toDate()
+    }
+    return value
+  }, z.date()),
 })
 
 export type Activity = z.infer<typeof activitySchema>
