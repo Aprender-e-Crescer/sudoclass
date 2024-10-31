@@ -5,11 +5,11 @@ import clsx from 'clsx'
 import { Link } from '@tanstack/react-router'
 interface ActivitiesMaterialsProps {
   id: string
-  to: string
+  to?: string
   title: string
   dateActivity: string
   instructions: string
-  iconColor: string
+  iconColor?: string
   assigned?: number
   pending?: number
   type: 'teacher' | 'student'

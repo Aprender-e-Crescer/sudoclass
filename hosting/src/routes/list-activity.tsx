@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { ActivitiesMaterials } from '@/components/custom/activities-materials'
 import { FaPlus } from 'react-icons/fa'
 import { createFileRoute } from '@tanstack/react-router'
+import { useListActivitiesQuery } from '@/queries/use-list-activities-query'
 
 interface ListActivity {
   id: string
@@ -74,6 +75,8 @@ const activitiesData = [
   },
 ]
 
+const { data: activities } = useListActivitiesQuery()
+
 export const Route = createFileRoute('/list-activity')({
   component: ListActivity,
 })
@@ -106,22 +109,15 @@ export function ListActivity() {
 
             <div className="md:ml-5">
               <div>
-                {activitiesData.map((activity) => {
-                  const validType =
-                    activity.type === 'teacher' || activity.type === 'student' ? activity.type : 'teacher'
-
+                {activities?.map((activity) => {
                   return (
                     <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
                       <ActivitiesMaterials
                         id={activity.id}
-                        to={activity.link}
                         title={activity.title}
                         dateActivity={activity.dateActivity}
                         instructions={activity.instructions}
-                        iconColor={activity.iconColor}
-                        assigned={activity.assigned}
-                        pending={activity.pending}
-                        type={validType}
+                        type="teacher"
                       />
                     </div>
                   )
