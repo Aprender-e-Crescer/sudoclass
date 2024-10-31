@@ -51,7 +51,7 @@ export function StudentPoster() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen">
       <div className="relative w-full max-w-[375px] h-[600px]">
         {currentIndex >= 0 && (
           <TinderCard
@@ -60,15 +60,8 @@ export function StudentPoster() {
             onSwipe={(dir) => handleSwipe(dir)}
             preventSwipe={['up', 'down']}
           >
-            <div className="relative bg-white w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
-              <div className="w-full h-[480px] overflow-hidden rounded-lg">
-                {/* Imagem do estudante (descomentada caso tenha imagem) */}
-                {/* <img
-                  src={students[currentIndex].imgStudent}
-                  alt={students[currentIndex].nameStudent}
-                  className="h-full w-full object-cover bg-[#d9d9d9] translate-y-[-20px]"
-                /> */}
-              </div>
+            <div className="relative bg-white border-2 w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
+              <div className="w-full h-[480px] overflow-hidden rounded-lg"></div>
               <h2 className="text-xl font-bold text-[#333333]">{students[currentIndex].name}</h2>
               <div className="flex w-full justify-evenly flex-wrap mt-4">
                 <button
@@ -96,9 +89,7 @@ export function StudentPoster() {
             </div>
           </TinderCard>
         )}
-        {currentIndex < 0 && (
-          <div className="text-center text-lg text-gray-700">Todos os estudantes foram avaliados!</div>
-        )}
+        {currentIndex < 0 && <div className="text-center text-lg text-gray-700">Chamada finalizada!</div>}
       </div>
     </div>
   )
