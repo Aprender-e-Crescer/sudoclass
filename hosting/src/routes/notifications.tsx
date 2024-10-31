@@ -1,39 +1,43 @@
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
-import avatarLogo from '@/assets/avatarLogo.svg'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { TeachersSchemaQuery } from '@/queries/teachers-listing-query'
+import { useStudentsListQuery } from '@/queries/use-students-list-query'
+import avatar from '@/assets/avatar.png'
+import Index from '.'
 
 export const Route = createFileRoute('/notifications')({
-  component: () => <div>Hello /notifications!</div>,
+  component: notifications,
 })
 
 export function notifications(){
-    const { data: teachersList } = TeachersSchemaQuery()
-    console.log(teachersList)
+    const { data: students } = useStudentsListQuery()
+    console.log(students)
   
     return (
-      <div className="p-4">
-        <div className="w-full border rounded-lg overflow-hidden">
-          <div className="flex justify-between items-center p-4 bg-gray-100 border-b text-[#B5B7C0]">
-            <span>Professores cadastrados</span>
-            <Button variant="blueButton" size="large">
-              Cadastrar novo professor +
-            </Button>
-          </div>
-          <div className="flex items-center p-4 border-b">
-            <img src={avatarLogo} alt="Avatar Logo" className="w-16 h-20" />
-            <h1 className="ml-4 text-xl font-semibold">Jane Cooper</h1>
-          </div>
-          {teachersList?.map(({ fullName }, index) => (
-            <div
-              key={index}
-              className={flex items-center p-4 ${index !== teachersList.length - 1 ? 'border-b' : ''}}
-            >
-              <img src={avatarLogo} alt="Avatar" className="w-16 h-20" />
-              <h1 className="ml-4 text-xl font-semibold">{fullName}</h1>
+    <div className='w-11/12 p-3'>
+        <h1 className='text-gray-400 font-[inter] text-xl font-semibold mb-3'>Aprender e crescer - Notificações</h1>   
+      <div className='flex flex-col items-center justify-center '>
+        <h1 className='text-gray-300 font-[inter] font-semibold'>Nome</h1>
+        {students?.map(({name}, index) => (
+          <div key={index}> {/* w-10/12 */}
+            <div className='flex gap-x-4 items-center w-96 border p-3'>
+            <Avatar>
+              <AvatarImage src={avatar}/>
+              <AvatarFallback>carregando...</AvatarFallback>
+            </Avatar>
+              <p className=''>{name}</p>
             </div>
-          ))};
-        </div>
-    </div>
+
+          </div>
+        ))} 
+        
+        
+        
+      
+      </div>
+     
+     
+    </div> 
     )
-  
 }
