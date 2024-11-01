@@ -1,42 +1,33 @@
-import { Button } from "@/components/ui/button"
-import React from "react"
+import { Button } from "@/components/ui/button";
+import React from "react";
 import { 
     Toast, 
     ToastTitle, 
-    ToastDescription, 
     ToastClose, 
-    ToastViewport
-} from "@/components/ui/toast"
+    ToastViewport 
+} from "@/components/ui/toast";
+import { IoCheckmarkDoneSharp } from "react-icons/io5";
 
+export function AdminRegistration() {
+  const [toastOpen, setToastOpen] = React.useState(false);
 
-
-
-
-
-
-export function AdminRegistration(){
-const [toastOpen, setToastOpen] = React.useState(false)
-
-
-const handleShowToast = () => {
-    setToastOpen(true)
+  const handleShowToast = () => {
+    setToastOpen(true);
     setTimeout(() => {
-        setToastOpen(false)
-    },3000)
-}
+      setToastOpen(false);
+    }, 3000);
+  };
 
-    return(
-        <div>
-        <Button onClick={handleShowToast}>teste</Button>
-        <Toast open={toastOpen} onOpenChange={setToastOpen}>
-            <ToastTitle>titulo</ToastTitle>
-            <ToastDescription>descriçãoooooooooooooooo</ToastDescription>
-            <ToastClose />
-        </Toast>
-
-
-
-        <ToastViewport />
-        </div>
-    )
+  return (
+    <div>
+      <div className="flex justify-center">
+        <Button onClick={handleShowToast} size="large">Cadastrar</Button>
+      </div>
+      <Toast open={toastOpen} onOpenChange={setToastOpen} variant="success" icon={<IoCheckmarkDoneSharp/>}>
+        <ToastTitle>Admin cadastrado com sucesso</ToastTitle>
+        <ToastClose />
+      </Toast>
+      <ToastViewport />
+    </div>
+  );
 }
