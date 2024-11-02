@@ -9,11 +9,11 @@ export const Route = createFileRoute('/activy-form')({
 function ActivyForm() {
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center gap-10">
         <CardTitleForm sentBy="PROFESSOR" title="ATIVIDADE" />
-        <QuestionForm falseText="false" question="HTML E BOM?" trueText="true " radioId="q1" />
-        <QuestionForm falseText="false" question="HTML E BOM?" trueText="true " radioId="q2" />
-        <QuestionForm falseText="false" question="HTML E BOM?" trueText="true " radioId="q3" />
+        <QuestionForm question="HTML E BOM?" radioId="q1" options={['true', 'false']} />
+        <QuestionForm question="HTML E BOM?" radioId="q2" options={['true', 'false']} />
+        <QuestionForm question="HTML E BOM?" radioId="q3" options={['true', 'false']} />
       </div>
     </div>
   )
