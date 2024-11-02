@@ -3,42 +3,49 @@ import { InputFile } from '@/components/custom/file-input'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { registerSchema } from '@/models/teachers-schema'
 
 export const Route = createFileRoute('/teacher-registration-form')({
   component: TeacherRegistration,
 })
 
 const initialValues = {
-  teacherName: '',
+  fullName: '',
   email: '',
-  phoneNumber: '',
+  telephone: '',
   state: '',
-  city: '',
+  municipality: '',
   street: '',
   neighborhood: '',
-  houseNumber: '',
+  number: '',
   dateOfBirth: '',
-  CPF: '',
-  RG: '',
+  cpf: '',
+  rgNumber: '',
   shippingDate: '',
   shippingState: '',
-  stateOfBirth: '',
-  cityOfBirth: '',
-  attachDocuments: '',
+  birthStatus: '',
+  birthCity: '',
+  password: '',
+  matter: '',
 }
 
 export function TeacherRegistration() {
   return (
     <>
-      <Formik initialValues={initialValues} onSubmit={() => {}}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={() => {}}
+        validationSchema={toFormikValidationSchema(registerSchema)}
+      >
         <Form className="p-1">
           <div className=" p-2 rounded-sm border-2">
             <InputForm
               title="Nome completo"
               placeholder="Nome completo"
-              id="teacherName"
-              name="teacherName"
-              label="teacherName"
+              id="fullName"
+              name="fullName"
+              label="fullName"
               customStyleInput="rounded-lg border-2 p-[6px]"
             />
             <InputForm
@@ -52,9 +59,9 @@ export function TeacherRegistration() {
             <InputForm
               title="Telefone"
               placeholder="(99) 99999-9999"
-              id="phoneNumber"
-              name="phoneNumber"
-              label="phoneNumber"
+              id="telephone"
+              name="telephone"
+              label="telephone"
               customStyleInput="rounded-lg border-2 p-[6px]"
             />
             <div className="flex gap-5 flex-wrap">
@@ -69,13 +76,12 @@ export function TeacherRegistration() {
               <InputForm
                 title="Municipio"
                 placeholder="Seu Municipio"
-                id="city"
-                name="city"
-                label="city"
+                id="municipality"
+                name="municipality"
+                label="municipality"
                 customStyleInput="rounded-lg border-2 p-[6px]"
               />
             </div>
-
             <InputForm
               title="Rua"
               placeholder="Rua"
@@ -84,7 +90,6 @@ export function TeacherRegistration() {
               label="street"
               customStyleInput="rounded-lg border-2 p-[6px]"
             />
-
             <div className="flex sm:gap-5 sm:flex-row flex-col">
               <InputForm
                 title="Bairro"
@@ -104,7 +109,6 @@ export function TeacherRegistration() {
                 customStyleInput="rounded-lg border-2 p-[6px]"
               />
             </div>
-
             <div className="flex gap-5 max-sm:gap-1 flex-wrap">
               <InputForm
                 title="Data de nascimento"
@@ -117,17 +121,17 @@ export function TeacherRegistration() {
               <InputForm
                 title="CPF"
                 placeholder="000.000.000-00"
-                id="CPF"
-                name="CPF"
-                label="CPF"
+                id="cpf"
+                name="cpf"
+                label="cpf"
                 customStyleInput="rounded-lg border-2 p-[6px]"
               />
               <InputForm
                 title="RG"
                 placeholder="00.000.000-0"
-                id="RG"
-                name="RG"
-                label="RG"
+                id="rgNumber"
+                name="rgNumber"
+                label="rgNumber"
                 customStyleInput="rounded-lg border-2 p-[6px]"
               />
             </div>
@@ -150,19 +154,28 @@ export function TeacherRegistration() {
             <InputForm
               title="Estado de nascimento"
               placeholder="Estado"
-              id="stateOfBirth"
-              name="stateOfBirth"
-              label="stateOfBirth"
+              id="birthStatus"
+              name="birthStatus"
+              label="birthStatus"
               customStyleInput="rounded-lg border-2 p-[6px]"
             />
             <InputForm
               title="Cidade de nascimento"
               placeholder="  Cidade"
-              id="cityOfBirth"
-              name="cityOfBirth"
-              label="cityOfBirth"
+              id="birthCity"
+              name="birthCity"
+              label="birthCity"
               customStyleInput="rounded-lg border-2 p-[6px]"
             />
+            <InputForm
+              title="Senha"
+              placeholder="Senha padrão para o professor"
+              id="password"
+              name="password"
+              label="password"
+              customStyleInput="rounded-lg border-2 p-[6px]"
+            />
+
             <InputFile
               title="Anexar arquivos"
               placeholder="ImagemDocumentoAnexado.png 90kb"
