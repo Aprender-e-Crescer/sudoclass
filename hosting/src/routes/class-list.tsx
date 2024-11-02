@@ -1,7 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { Pencil, X } from 'lucide-react'
+import { Pencil } from 'lucide-react'
 import { AlertDialogComponent } from '@/components/custom/alert-dialog'
+import { Link } from '@tanstack/react-router'
+
 
 export const Route = createFileRoute('/class-list')({
   component: ClassList,
@@ -12,7 +14,10 @@ export function ClassList() {
     <div className="flex flex-col gap-6">
       <div className="flex justify-center">
         <div className="flex flex-col gap-10 w-full max-w-[1600px] px-4">
-          <Button variant="blueButton">Cadastrar nova turma</Button>
+          <Link 
+              to="/class-creation-form">
+              <Button variant="blueButton">Cadastrar nova turma</Button>
+          </Link>
 
           <div className="flex flex-col gap-7 font-bold text-blue-950 text-lg">
             <div className="flex flex-col gap-10 w-full">
@@ -24,7 +29,10 @@ export function ClassList() {
                     cancelButtonValue="Excluir"
                     variantCancelButton="blueButton"
                   />
-                  <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                    <Link 
+                      to="/class-creation-form">
+                      <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                    </Link>
                 </div>
               </p>
             </div>
@@ -38,7 +46,10 @@ export function ClassList() {
                     cancelButtonValue="Excluir"
                     variantCancelButton="blueButton"
                   />
-                  <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                  <Link 
+                    to="/class-creation-form">
+                    <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                  </Link>
                 </div>
               </p>
             </div>
@@ -52,7 +63,10 @@ export function ClassList() {
                     cancelButtonValue="Excluir"
                     variantCancelButton="blueButton"
                   />
-                  <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                  <Link 
+                    to="/class-creation-form">
+                    <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                  </Link>                
                 </div>
               </p>
             </div>
