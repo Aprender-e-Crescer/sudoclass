@@ -20,7 +20,6 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-      {/* <RouterProvider router={router} /> */}
         <RouterProvider router={router} />
         <LessonPlanView/>
       </QueryClientProvider>

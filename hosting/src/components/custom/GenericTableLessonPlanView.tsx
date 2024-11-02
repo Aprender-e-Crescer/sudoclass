@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Edit, X, ChevronDown, ChevronUp, Link } from "lucide-react";
 import React, { useState } from "react";
 import {
   AlertDialog,
@@ -35,11 +35,12 @@ export const GenericTableLessonPlanView = ({
 
   return (
     <>  
+    
       <div className="flex gap-4 pt-4 font-semibold text-[#787486] pb-2 border-b border-gray-300">
-        <a className="cursor-pointer pl-16 max-sm:pl-2 hover:text-black" href="#">Mural</a>
-        <a className="hover:text-black cursor-pointer" href="#">Frequencia</a>
-        <a className="hover:text-black cursor-pointer" href="#">Notas</a>
-        <a className="hover:text-black cursor-pointer" href="#">Plano de Aula</a>
+        <Link to="" className="cursor-pointer pl-16 max-sm:pl-2 hover:text-black" href="#">Mural</Link>
+        <Link to="../" className="hover:text-black cursor-pointer" href="#">Frequencia</Link>
+        <Link to="../" className="hover:text-black cursor-pointer" href="#">Notas</Link>
+       <Link to="../" className="hover:text-black cursor-pointer" href="#">Plano de Aula</Link>
       </div>
       <Table className="w-full">
         <TableHeader>
