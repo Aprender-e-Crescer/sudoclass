@@ -5,6 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { registerSchema } from '@/models/teachers-schema'
+import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
 
 export const Route = createFileRoute('/teacher-registration-form')({
   component: TeacherRegistration,
@@ -30,12 +31,19 @@ const initialValues = {
   matter: '',
 }
 
+function useLogic() {
+  const { registerTeacher } = useRegisterTeacherController()
+
+  return { registerTeacher }
+}
+
 export function TeacherRegistration() {
+  const { registerTeacher } = useLogic()
   return (
     <>
       <Formik
         initialValues={initialValues}
-        onSubmit={() => {}}
+        onSubmit={(values) => registerTeacher(values)}
         validationSchema={toFormikValidationSchema(registerSchema)}
       >
         <Form className="p-1">
