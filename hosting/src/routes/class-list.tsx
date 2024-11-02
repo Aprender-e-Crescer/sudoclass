@@ -20,7 +20,7 @@ export function ClassList() {
                 Aprender e crescer 2024
                 <div className="flex">
                   <AlertDialogComponent
-                    title="Deseja excluir?"
+                    title="Deseja excluir a turma?"
                     cancelButtonValue="Excluir"
                     variantCancelButton="blueButton"
                   />
