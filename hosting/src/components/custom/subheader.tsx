@@ -6,17 +6,15 @@ interface SubHeaderProps {
 
 export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    
     const links = document.querySelectorAll('.menu-link');
     links.forEach((link) => link.classList.remove('font-bold', 'text-gray-800'));
 
-    
     e.currentTarget.classList.add('font-bold', 'text-gray-800');
   };
 
   return (
-    <div className="flex justify-center items-center pb-2">
-      <ul className="flex space-x-6">
+    <div className="flex pb-2">
+      <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
         <li>
           <Link
             to="/"
