@@ -1,42 +1,27 @@
-import { useStudentsListQuery } from '@/queries/use-students-list-query'
-import { Check, Undo2, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { Check, Undo2, X } from 'lucide-react'
 import TinderCard from 'react-tinder-card'
 
-export function StudentPoster() {
-  const { data: students } = useStudentsListQuery()
-  const [currentIndex, setCurrentIndex] = useState(-1)
+export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex }) {
   const [swipedIndices, setSwipedIndices] = useState([])
 
-  useEffect(() => {
-    if (students && students.length > 0) {
-      setCurrentIndex(students.length - 1)
-    }
-  }, [students])
-
   const handleSwipe = (direction) => {
-    if (students && currentIndex > 0) {
+    if (students && currentIndex >= 0) {
+      const studentId = students[currentIndex].id
+
+      if (direction === 'left') {
+        onStudentUpdate(studentId, 'lack')
+      } else if (direction === 'right') {
+        onStudentUpdate(studentId, 'present')
+      }
+
       setSwipedIndices((prev) => [...prev, currentIndex])
       setCurrentIndex((prevIndex) => prevIndex - 1)
     }
-
-    direction == 'left' ? console.log('Faltou:', students[currentIndex].name) : ''
-    direction == 'right' ? console.log('Presente:', students[currentIndex].name) : ''
   }
 
-  const handleReject = () => {
-    if (currentIndex >= 0) {
-      handleSwipe('left')
-      console.log('Faltou:', students[currentIndex].name)
-    }
-  }
-
-  const handleAccept = () => {
-    if (currentIndex >= 0) {
-      handleSwipe('right')
-      console.log('Presente:', students[currentIndex].name)
-    }
-  }
+  const handleReject = () => handleSwipe('left')
+  const handleAccept = () => handleSwipe('right')
 
   const handleUndo = () => {
     if (swipedIndices.length > 0) {
@@ -46,8 +31,8 @@ export function StudentPoster() {
     }
   }
 
-  if (!students) {
-    return <div>Loading...</div>
+  if (!students || students.length === 0) {
+    return <div>loading...</div>
   }
 
   return (
@@ -56,40 +41,36 @@ export function StudentPoster() {
         {currentIndex >= 0 && (
           <TinderCard
             className="absolute w-full h-full"
-            key={students[currentIndex].name}
+            key={students[currentIndex].id}
             onSwipe={(dir) => handleSwipe(dir)}
             preventSwipe={['up', 'down']}
           >
             <div className="relative bg-white border-2 w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
-              <div className="w-full h-[480px] overflow-hidden rounded-lg"></div>
               <h2 className="text-xl font-bold text-[#333333]">{students[currentIndex].name}</h2>
               <div className="flex w-full justify-evenly flex-wrap mt-4">
                 <button
                   onClick={handleReject}
                   className="rounded-full bg-[#DF0404] w-14 h-14 flex items-center justify-center md:w-16 md:h-16"
                 >
-                  <X color="white" size={30} strokeWidth={4} />
+                  <X color="white" size={30} />
                 </button>
-
                 <button
                   onClick={handleUndo}
                   disabled={swipedIndices.length === 0}
                   className="rounded-full bg-[#0C408FCC] w-14 h-14 flex items-center justify-center md:w-16 md:h-16 disabled:bg-gray-400"
                 >
-                  <Undo2 color="white" size={30} strokeWidth={4} />
+                  <Undo2 color="white" size={30} />
                 </button>
-
                 <button
                   onClick={handleAccept}
                   className="rounded-full bg-[#00B087] w-14 h-14 flex items-center justify-center md:w-16 md:h-16"
                 >
-                  <Check color="white" size={30} strokeWidth={4} />
+                  <Check color="white" size={30} />
                 </button>
               </div>
             </div>
           </TinderCard>
         )}
-        {currentIndex < 0 && <div className="text-center text-lg text-gray-700">Chamada finalizada!</div>}
       </div>
     </div>
   )
