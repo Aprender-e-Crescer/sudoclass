@@ -5,6 +5,14 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import { InputTextarea } from '@/components/custom/textarea-input'
+import { z } from 'zod'
+import { useSearchParams } from 'react-router-dom'
+
+const DisciplineSyllabusSchema = z.object({
+  ModeloDaDisciplina: z.string().optional(),
+  CargaHoraria: z.string().optional(),
+  Ementa: z.string().optional(),
+})
 
 export const Route = createFileRoute('/discipline-syllabus')({
   component: DisciplineSyllabus,
@@ -26,7 +34,9 @@ const data = [
 ]
 
 export function DisciplineSyllabus() {
-  const [selectedValue, setSelectedValue] = useState('')
+  const [searchParams] = useSearchParams()
+  const initialDiscipline = searchParams.get('discipline') || ''
+  const [selectedValue, setSelectedValue] = useState(initialDiscipline)
 
   const handleChange = (value: string) => {
     setSelectedValue(value)
@@ -34,7 +44,12 @@ export function DisciplineSyllabus() {
 
   return (
     <Formik
-      initialValues={{ ModeloDaDisciplina: '' }}
+      initialValues={{
+        ModeloDaDisciplina: data.find((item) => item.value === initialDiscipline)?.model || '',
+        CargaHoraria: `${data.find((item) => item.value === initialDiscipline)?.workload || ''} Horas`,
+        Ementa: data.find((item) => item.value === initialDiscipline)?.disciplineSyllabus || '',
+      }}
+      validationSchema={DisciplineSyllabusSchema}
       onSubmit={(values) => {
         console.log('Form submitted', values)
       }}
@@ -53,9 +68,10 @@ export function DisciplineSyllabus() {
                 optionsSelectItem={data.map((item) => ({ selectOption: item.value }))}
                 onChange={(value) => {
                   handleChange(value)
-                  setFieldValue('ModeloDaDisciplina', data.find((item) => item.value === value)?.model || '')
-                  setFieldValue('CargaHoraria', `${data.find((item) => item.value === value)?.workload} Horas` || '')
-                  setFieldValue('Ementa', data.find((item) => item.value === value)?.disciplineSyllabus || '')
+                  const selectedDiscipline = data.find((item) => item.value === value)
+                  setFieldValue('ModeloDaDisciplina', selectedDiscipline?.model || '')
+                  setFieldValue('CargaHoraria', `${selectedDiscipline?.workload} Horas` || '')
+                  setFieldValue('Ementa', selectedDiscipline?.disciplineSyllabus || '')
                 }}
               />
             </div>
