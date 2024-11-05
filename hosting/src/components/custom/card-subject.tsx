@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { cva } from 'class-variance-authority'
 import { EllipsisVertical, MessageCircleMore } from 'lucide-react'
@@ -30,9 +31,11 @@ interface CardSubjectProps {
   backgroundColor?: 'vermelho' | 'amarelo' | 'azul' | 'laranja' | 'rosa' | 'ciano' | 'verde' | 'roxo' | 'marrom'
 }
 
-export function CardSubject({ name, description, backgroundColor }: CardSubjectProps) {
+export function CardSubject({ name, description, backgroundColor = 'amarelo' }: CardSubjectProps) {
+  const [cardColor, setCardColor] = useState(backgroundColor)
+
   return (
-    <div className={cardSubjectStyle({ backgroundColor })}>
+    <div className={cardSubjectStyle({ backgroundColor: cardColor })}>
       <div className="flex justify-between m-6">
         <div className="flex flex-col">
           <div className="text-white font-bold text-xl mr-5 mb-1 line-clamp-2">{name}</div>
@@ -43,8 +46,13 @@ export function CardSubject({ name, description, backgroundColor }: CardSubjectP
             <EllipsisVertical />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>Fixar Matéria</DropdownMenuItem>
-            <DropdownMenuItem>Editar Cor</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setCardColor('vermelho')}>Vermelho</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setCardColor('amarelo')}>Amarelo</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setCardColor('azul')}>Azul</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setCardColor('ciano')}>Ciano</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setCardColor('verde')}>Verde</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setCardColor('roxo')}>Roxo</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setCardColor('marrom')}>Marrom</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -1,6 +1,7 @@
 import { CardTitleForm } from '@/components/custom/card-title-form'
 import { CardFormStars } from '@/components/custom/card-form-stars'
 import { createFileRoute } from '@tanstack/react-router'
+import { CardFormTextArea } from '@/components/custom/card-form-text-area'
 
 export const Route = createFileRoute('/form-screen')({
   component: FormScreen,
@@ -16,16 +17,14 @@ export function FormScreen() {
         <p className="text-sm text-gray-600">Avalie sua experiência abaixo</p>
       </div>
 
-      <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
-      <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
-      <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
-      <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
+      <div className="flex-col w-full flex items-center space-y-6">
+        <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
 
-      <div className="w-full sm:w-[620px]">
-        <textarea
-          placeholder="Escreva suas sugestões"
-          className="border-2 bg-blue-900 rounded-lg w-full h-28 p-3 resize-none"
-        />
+        <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
+        <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
+        <CardFormStars title="Você Gostou dos Conteúdos do curso?" />
+
+        <CardFormTextArea title="Voce gostou dos conteudos?" id="Pergunta5" />
       </div>
     </div>
   )
