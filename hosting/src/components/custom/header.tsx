@@ -1,6 +1,10 @@
+
+import sudotecLogo from '@/assets/sudotecLogo.svg'
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import sudotecLogo from '@/assets/sudotecLogo.svg';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu } from 'lucide-react';
+
 
 interface headerProps {
     avatarFallBack?: string;

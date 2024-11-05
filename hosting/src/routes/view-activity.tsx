@@ -21,6 +21,7 @@ export const Route = createFileRoute('/view-activity')({
 
 const initialValues = {
   value: '',
+  comment: '', // Adicionado para gerenciar o valor do comentário
 }
 
 interface Student {
@@ -44,6 +45,28 @@ function ViewActivity() {
   const { activityID } = useParams()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
+  const [inputValue, setInputValue] = useState<string>('')
+
+  // // Ajuste os parâmetros conforme necessário
+  // const schoolMatriceId = 'yourSchoolMatriceId' // Substitua com a lógica para obter esse valor
+  // const subjectId = 'yourSubjectId' // Substitua com a lógica para obter esse valor
+  // const activityId = 'yourActivityId' // Substitua com a lógica para obter esse valor
+  // const correctionId = 'yourCorrectionId' // Substitua com a lógica para obter esse valor
+  // const userId = 'yourUserId' // Substitua com a lógica para obter esse valor
+
+  // const commentsRef = collection(
+  //   firestore,
+  //   'schoolMatrices',
+  //   schoolMatriceId,
+  //   'subjects',
+  //   subjectId,
+  //   'activities',
+  //   activityId,
+  //   'correction',
+  //   correctionId,
+  //   'comments',
+  // )
+
   const [sucessMessage, setSuccessMessage] = useState('')
 
   const handleStudentClick = (student: Student) => {
@@ -53,6 +76,14 @@ function ViewActivity() {
       setSelectedStudent(student)
     }
   }
+
+  // const handleSendComment = async (e: FormEvent) => {
+  //   e.preventDefault()
+  //   if (inputValue.trim() === '') return
+
+  //   await useCreateCommentMutation(commentsRef, inputValue, userId)
+  //   setInputValue('')
+  // }
 
   async function upgradeNote(grade: number) {
     const upgradeNoteRef = doc(firestore, 'activities', activityID!)
@@ -65,40 +96,25 @@ function ViewActivity() {
     }, 3000)
   }
 
-
-
-
-
-
-  
-
-  
   async function addNote(grade: number) {
     try {
-        const addNoteRef = doc(firestore, 'activities', activityID!);
-        await updateDoc(addNoteRef, {
-            grade: increment(grade)
-        });
+      const addNoteRef = doc(firestore, 'activities', activityID!)
+      await updateDoc(addNoteRef, {
+        grade: increment(grade),
+      })
 
-        setSuccessMessage('Nota alterada com sucesso!');
-        setTimeout(() => setSuccessMessage(''), 3000);
+      setSuccessMessage('Nota alterada com sucesso!')
+      setTimeout(() => setSuccessMessage(''), 3000)
     } catch (error) {
-        setSuccessMessage('Erro ao alterar nota!');
-        setTimeout(() => setSuccessMessage(''), 3000);
+      setSuccessMessage('Erro ao alterar nota!')
+      setTimeout(() => setSuccessMessage(''), 3000)
     }
-} 
-
-
-
-
-
-
-
-
+  }
 
   return (
     <>
       <div className="hidden md:flex flex-grow">
+        ''
         <div>
           {students?.map((student) => (
             <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
@@ -114,17 +130,12 @@ function ViewActivity() {
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={(values) => {
-                const grade = parseInt(values.value);
-                upgradeNote(grade);
+                const grade = parseInt(values.value)
+                upgradeNote(grade)
 
-
-                
-                addNote(grade);
-
-
-
+                addNote(grade)
               }}
-              >
+            >
               {({ handleSubmit, setFieldValue }) => (
                 <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
                   <div className="flex gap-x-4 items-start">
@@ -153,7 +164,18 @@ function ViewActivity() {
                 <p>Comentários</p>
               </div>
               <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-              <Input placeholder="escreva seu comentário" />
+              <form className="flex">
+                <Input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="escreva seu comentário"
+                  className="flex-grow"
+                />
+                <Button type="submit" variant="blueButton" size="small" className="ml-2">
+                  Enviar
+                </Button>
+              </form>
             </div>
           </div>
         )}
@@ -202,7 +224,18 @@ function ViewActivity() {
 
                 <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
                   <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-                  <Input placeholder="escreva seu comentário" />
+                  <form className="flex">
+                    <Input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="escreva seu comentário"
+                      className="flex-grow"
+                    />
+                    <Button type="submit" variant="blueButton" size="small" className="ml-2">
+                      Enviar
+                    </Button>
+                  </form>
                 </div>
               </div>
             </AccordionContent>

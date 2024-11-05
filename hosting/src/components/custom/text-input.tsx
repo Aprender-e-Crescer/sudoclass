@@ -7,7 +7,7 @@ interface InputProps {
   name: string
   titleTextArea?: string
   customStyleLabel?: string
-  customStyleButton?: string
+  customStyleInput?: string
   icon?: JSX.Element
   type?: string
   isDisabled?: boolean
@@ -21,7 +21,7 @@ export function InputForm({
   name,
   placeholder,
   id,
-  customStyleButton,
+  customStyleInput,
   customStyleLabel,
   isDisabled,
   onChange,
@@ -35,7 +35,7 @@ export function InputForm({
         name={name}
         type={type}
         disabled={isDisabled}
-        className={`${customStyleButton ? customStyleButton : 'p-1 border border-gray-200  rounded-md'}
+        className={`${customStyleInput ? customStyleInput : 'p-1 border border-gray-200  rounded-md'}
         ${isDisabled ? 'cursor-not-allowed' : ''}`}
         onChange={onChange}
       />
@@ -46,3 +46,4 @@ export function InputForm({
     </label>
   )
 }
+

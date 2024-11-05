@@ -1,19 +1,24 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { info } from "firebase-functions/logger";
+import { auth, firestore } from "./services/firebase";
+import { loginDataSchema } from "./schemas/login";
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+export const loginWithCPF = onCall(async (request) => {
+    try {
+        const { cpf, password } = loginDataSchema.parse(request.data)
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+        const studentsDocumentSnapshot = await firestore.collection("users")
+            .where("cpf", "==", cpf)
+            .where("password", "==", password)
+            .limit(1)
+            .get()
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+        if (studentsDocumentSnapshot.empty) throw new Error("User not found with this CPF and password.")
+
+        return auth.createCustomToken(cpf)
+    } catch (error) {
+        info(error, { structuredData: true });
+
+        return new HttpsError("unauthenticated", "CPF inválido ou inexistente.")
+    }
+});
