@@ -12,7 +12,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { doc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 
 export const Route = createFileRoute('/view-activity')({
@@ -65,6 +65,37 @@ function ViewActivity() {
     }, 3000)
   }
 
+
+
+
+
+
+  
+
+  
+  async function addNote(grade: number) {
+    try {
+        const addNoteRef = doc(firestore, 'activities', activityID!);
+        await updateDoc(addNoteRef, {
+            grade: increment(grade)
+        });
+
+        setSuccessMessage('Nota alterada com sucesso!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error) {
+        setSuccessMessage('Erro ao alterar nota!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+    }
+} 
+
+
+
+
+
+
+
+
+
   return (
     <>
       <div className="hidden md:flex flex-grow">
@@ -83,10 +114,17 @@ function ViewActivity() {
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={(values) => {
-                const grade = parseInt(values.value)
-                upgradeNote(grade)
+                const grade = parseInt(values.value);
+                upgradeNote(grade);
+
+
+                
+                addNote(grade);
+
+
+
               }}
-            >
+              >
               {({ handleSubmit, setFieldValue }) => (
                 <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
                   <div className="flex gap-x-4 items-start">
