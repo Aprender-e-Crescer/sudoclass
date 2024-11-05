@@ -6,6 +6,8 @@ import { InputForm } from '@/components/custom/text-input'
 import { InputCheckbox } from '@/components/custom/checkbox-input'
 import { Button } from '@/components/ui/button'
 import { InputFile } from '@/components/custom/file-input'
+import { Link } from '@tanstack/react-router'
+
 
 const creationClassSchema = z.object({
   class: z.string().min(4, { message: 'Insira um nome de turma válido.' }),
@@ -118,7 +120,10 @@ export function ClassCreationForm() {
           />
 
           <div className="flex sm:flex-row flex-col gap-3">
-            <Button variant="lightTextBlack">cancelar</Button>
+            <Link
+              to="/class-list">
+              <Button variant="lightTextBlack">Cancelar</Button>
+            </Link>
             <Button variant="blueButton">Cadastrar</Button>
           </div>
         </div>

@@ -17,7 +17,7 @@ export function CardFormTextArea({ title, id }: CardFormTextAreaProps) {
   }
 
   return (
-    <div>
+    <div className="border-[#0C408F] border-2 rounded-xl h-auto flex flex-col items-center px-3 py-5 justify-between max-w-[620px] w-full">
       <Formik
         initialValues={{ [id]: '' }}
         onSubmit={(values) => {
@@ -25,17 +25,19 @@ export function CardFormTextArea({ title, id }: CardFormTextAreaProps) {
         }}
       >
         {({ setFieldValue }) => (
-          <Form>
-            <div className="border-[#0C408F] border-2 rounded-xl h-auto flex flex-col items-center px-3 py-5 justify-between max-w-[620px]">
-              <div className="w-full flex justify-start">
-                <p className="text-xl font-semibold mb-2">{title}</p>
+          <div className="w-full">
+            <Form>
+              <div>
+                <div className="w-full flex justify-start">
+                  <p className="text-xl font-semibold mb-2">{title}</p>
+                </div>
+                <hr className="w-full border-[#0C408F] mb-2" />
+                <div className="w-full">
+                  <InputTextarea id={id} name={id} label={title} onChange={(e) => handleChange(e, setFieldValue)} />
+                </div>
               </div>
-              <hr className="w-full border-[#0C408F] mb-2" />
-              <div className="w-full">
-                <InputTextarea id={id} name={id} label={title} onChange={(e) => handleChange(e, setFieldValue)} />
-              </div>
-            </div>
-          </Form>
+            </Form>
+          </div>
         )}
       </Formik>
     </div>

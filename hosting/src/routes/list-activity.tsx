@@ -27,6 +27,7 @@ export function ListActivity() {
       <div className="min-h-screen overflow-y-hidden">
         <div className="flex flex-col md:flex-row overflow-hidden">
           <div className="flex flex-col w-full h-auto p-2 md:p-4 overflow-hidden">
+            <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
             <div>
               <Button
                 className="bg-blue-600 mt-3 mb-3 ml-[228px] text-sm rounded-s-full rounded-e-full"
