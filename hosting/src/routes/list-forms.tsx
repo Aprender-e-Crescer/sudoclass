@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Form, Formik, Field } from 'formik';
 import { Eye, Search } from 'lucide-react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-import { listFormsQuery } from '@/queries/list-forms-query';
+import { ListFormsQuery } from '@/queries/list-forms-query';
 import { getInputSchema } from '@/models/get-input-schema';
 
 export const Route = createFileRoute('/list-forms')({
@@ -31,7 +31,8 @@ const columns = [
 ];
 
 export function ListForms() {
-  const { data, isLoading, error } = listFormsQuery();
+  const { data, isLoading, error } = ListFormsQuery();
+
 
   const [searchValue, setSearchValue] = useState('');
 
