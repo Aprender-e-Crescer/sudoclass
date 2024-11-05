@@ -24,7 +24,7 @@ const buttonVariants = cva(
     },
     defaultVariants: {
       variant: "blueButton",
-      size: "medium",
+      size: "small",
     },
   }
 );
