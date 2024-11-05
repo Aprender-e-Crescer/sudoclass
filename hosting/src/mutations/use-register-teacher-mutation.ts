@@ -9,7 +9,7 @@ interface MutationResults {
 }
 
 export function useRegisterTeacherMutation({ onSuccess, onError }: MutationResults) {
-  const docRef = doc(collection(firestore, 'cities'))
+  const docRef = doc(collection(firestore, 'teachers'))
 
   return useMutation({
     mutationKey: ['register-teacher'],
