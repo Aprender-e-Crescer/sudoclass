@@ -5,30 +5,11 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Form, Formik, Field } from 'formik';
 import { Eye, Search } from 'lucide-react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-import { useQuery } from '@tanstack/react-query';
-import * as z from 'zod';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
+import { listFormsQuery } from '@/queries/list-forms-query';
+import { getInputSchema } from '@/models/get-input-schema';
 
 export const Route = createFileRoute('/list-forms')({
   component: ListForms,
-});
-
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const inputSchema = z.object({
-  value: z.string().min(1, 'Por favor, insira o valor corretamente'),
 });
 
 const initialValues = {
@@ -37,9 +18,8 @@ const initialValues = {
 
 const columns = [
   { header: 'Formulario', accessor: 'name' },
-  { header: 'Criado Em', accessor: 'creationDate' },
-  { header: 'Criado Por', accessor: 'createdby' },
-  { header: 'Aluno', accessor: 'student' },
+  { header: 'Criado Em', accessor: 'createdDate' },
+  { header: 'Criado Por', accessor: 'createdBy' },
   {
     header: 'Ações',
     Cell: () => (
@@ -50,32 +30,12 @@ const columns = [
   },
 ];
 
-const fetchForms = async () => {
-  const formsCollection = collection(db, 'documents');
-  const formSnapshot = await getDocs(formsCollection);
-
-  return formSnapshot.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      name: typeof data.name === 'string' ? data.name : 'Nome não definido',
-      createdby: data.createdby?.id || 'Autor não definido',
-      creationDate: data.creationDate?.toDate().toLocaleDateString('pt-BR') || 'Data não definida',
-      student: data.student?.id || 'Aluno não definido',
-    };
-  });
-};
-
-
 export function ListForms() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['forms'],
-    queryFn: fetchForms,
-  });
+  const { data, isLoading, error } = listFormsQuery();
 
   const [searchValue, setSearchValue] = useState('');
 
-  const filteredData = data?.filter((form) =>
+  const filteredData = data?.filter((form: any) =>
     form.name?.toLowerCase().includes(searchValue.toLowerCase())
   ) || [];
 
@@ -87,7 +47,7 @@ export function ListForms() {
       <div>
         <Formik
           initialValues={initialValues}
-          validationSchema={toFormikValidationSchema(inputSchema)}
+          validationSchema={toFormikValidationSchema(getInputSchema)}
           onSubmit={(values) => {
             setSearchValue(values.value);
           }}
