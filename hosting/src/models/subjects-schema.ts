@@ -1,13 +1,32 @@
-import { z } from 'zod';
+import { DocumentReference, Timestamp } from 'firebase/firestore'
+import { z } from 'zod'
 
 export const subjectsSchema = z.object({
+  id: z.string(),
   name: z.string().min(2, { message: 'O nome da matéria não pode ser inferior a 2 letras' }),
   description: z.string().min(2, { message: 'A descrição da matéria não pode ser inferior a 2 letras' }),
-  endDate: z.string().min(1, { message: 'Insira uma data valida' }),
-  startDate: z.string().min(1, { message: 'Insira uma data valida' }),
-  workload: z.string().min(1, { message: 'Insira uma hora valida' }),
-  teacher: z.string().min(1, {message: 'insira um nome valido'})
-});
+  endDate: z
+    .preprocess((value) => {
+      if (value instanceof Timestamp) {
+        return value.toDate()
+      }
+      return value
+    }, z.date())
+    .optional(),
+  startDate: z
+    .preprocess((value) => {
+      if (value instanceof Timestamp) {
+        return value.toDate()
+      }
+      return value
+    }, z.date())
+    .optional(),
+  workload: z.number().min(1, { message: 'Insira uma hora valida' }).optional(),
+  teacher: z
+    .any()
+    .refine((teacher: object): teacher is DocumentReference => teacher instanceof DocumentReference)
+    .optional(),
+  menu: z.object({ objective: z.string(), methodology: z.string() }).optional(),
+})
 
-
-export type Subject = z.infer<typeof subjectsSchema>;
+export type Subject = z.infer<typeof subjectsSchema>
