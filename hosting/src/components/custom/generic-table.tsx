@@ -18,7 +18,9 @@ export const GenericTable = ({ data, columns }: { data: any; columns: any }) => 
           <TableRow key={rowIndex}>
             {columns.map((col: any, colIndex: number) => (
               <TableCell key={colIndex}>
-                {col.tooltip ? (
+                {col.Cell ? (
+                  col.Cell(row)
+                ) : col.tooltip ? (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>

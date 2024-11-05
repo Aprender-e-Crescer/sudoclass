@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "sudo-class-data-connect"
+location: "southamerica-east1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "sudo-class-db"
+      cloudSql:
+        instanceId: "sudo-class-cloud-sql"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

@@ -27,8 +27,7 @@ export function teachrsForms() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-center mb-6">
-      </h2>
+      <h2 className="text-2xl font-semibold text-center mb-6"></h2>
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
@@ -214,8 +213,7 @@ export function teachrsForms() {
                 />
               </div>
             </div>
-            <div className="mb-4">
-            </div>
+            <div className="mb-4"></div>
           </Form>
         )}
       </Formik>
