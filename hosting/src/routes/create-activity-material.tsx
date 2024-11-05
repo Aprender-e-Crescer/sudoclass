@@ -23,6 +23,7 @@ export function DatePickerDemo({
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          size="medium"
           variant="ghostBlack"
           className={cn('bg-slate-200 justify-start text-left', !date && 'text-muted-foreground')}
         >
@@ -105,14 +106,15 @@ export function CreateActivityMaterial() {
                         />
                       </div>
 
-
                       <div className="flex justify-between items-center ">
                         <div>
                           <p>Data de entrega</p>
                           <DatePickerDemo date={date} setDate={setDate} />
                         </div>
 
-                        <Button type="submit">Criar atividade</Button>
+                        <Button type="submit" size="medium">
+                          Criar atividade
+                        </Button>
                       </div>
                     </div>
                   </Form>
