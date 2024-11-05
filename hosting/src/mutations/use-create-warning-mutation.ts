@@ -4,13 +4,14 @@ import { firestore } from '@/services/firebase'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addDoc, collection } from 'firebase/firestore'
 
-export function useCreateWarningMutation(schoolMatriceId: string) {
+export function useCreateWarningMutation(schoolMatriceId: string, subjectId: string) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationKey: ['createWarning'],
-    mutationFn: (warning: Warning) => addDoc(collection(firestore, 'schoolMatrices', schoolMatriceId, 'warning'), warning),
+    mutationFn: (values: any) =>
+      addDoc(collection(firestore, 'schoolMatrices', schoolMatriceId, 'subjects', subjectId, 'warning'), values),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: WARNINGS_WALL_QUERY_KEY })
+      queryClient.invalidateQueries({ queryKey: WARNINGS_WALL_QUERY_KEY(schoolMatriceId, subjectId) })
     },
   })
 }
