@@ -6,9 +6,9 @@ export const frequencySchema = z.object({
   data: z.instanceof(Timestamp).refine((data) => {
     return data instanceof Timestamp; 
   }, {
-    message: 'A data deve ser um Timestamp válido do Firestore',
+    message: 'A data deve ser um válido',
   }),
-  status: z.enum(["present", "absent", "late"], { required_error: 'O campo deve ser um status válido' }),
+  status: z.enum(["present", "absent", "late"], { required_error: 'O campo deve ser um status: present, absent ou late' }),
 });
 
 export type Frequency = z.infer<typeof frequencySchema>;
