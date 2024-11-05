@@ -9,10 +9,10 @@ import { Formik } from 'formik'
 import Index from '.'
 
 export const Route = createFileRoute('/notifications')({
-  component: notifications,
+  component: Notifications,
 })
 
-export function notifications(){
+export function Notifications(){
     const { data: students } = useStudentsListQuery()
     console.log(students)
   
