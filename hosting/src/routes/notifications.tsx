@@ -14,7 +14,6 @@ export const Route = createFileRoute('/notifications')({
 
 export function Notifications(){
     const { data: students } = useStudentsListQuery()
-    console.log(students)
   
     return (
   <div className='w-full p-3'>
@@ -24,7 +23,7 @@ export function Notifications(){
       <div className='flex flex-col w-96 max-sm:w-full sm:items-center'> {/**/}
         <h1 className='text-gray-300 font-[inter] font-semibold'>Nome</h1>
         {students?.map(({name}, index) => (
-          <div key={index}> {/* w-10/12 */}
+          <div key={index}>
             <div className='flex gap-x-4 items-center w-96 max-sm:w-full border p-3'>
             <Avatar>
               <AvatarImage src={avatar}/>
