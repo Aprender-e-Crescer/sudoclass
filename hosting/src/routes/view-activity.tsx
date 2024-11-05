@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import ListStudents from '@/components/custom/list-students'
 import { TeacherComment } from '@/components/custom/teacher-comment'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,9 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
+import { collection } from 'firebase/firestore'
+import { firestore } from '@/services/firebase'
+import { useCreateCommentMutation } from '@/mutations/use-create-comment-mutation'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
@@ -18,6 +21,7 @@ export const Route = createFileRoute('/view-activity')({
 
 const initialValues = {
   value: '',
+  comment: '', // Adicionado para gerenciar o valor do comentário
 }
 
 interface Student {
@@ -40,6 +44,28 @@ interface Student {
 function ViewActivity() {
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
+  const [inputValue, setInputValue] = useState<string>('')
+
+  // // Ajuste os parâmetros conforme necessário
+  // const schoolMatriceId = 'yourSchoolMatriceId' // Substitua com a lógica para obter esse valor
+  // const subjectId = 'yourSubjectId' // Substitua com a lógica para obter esse valor
+  // const activityId = 'yourActivityId' // Substitua com a lógica para obter esse valor
+  // const correctionId = 'yourCorrectionId' // Substitua com a lógica para obter esse valor
+  // const userId = 'yourUserId' // Substitua com a lógica para obter esse valor
+
+  // const commentsRef = collection(
+  //   firestore,
+  //   'schoolMatrices',
+  //   schoolMatriceId,
+  //   'subjects',
+  //   subjectId,
+  //   'activities',
+  //   activityId,
+  //   'correction',
+  //   correctionId,
+  //   'comments',
+  // )
+
   const handleStudentClick = (student: Student) => {
     if (selectedStudent?.id === student.id) {
       setSelectedStudent(null)
@@ -47,9 +73,19 @@ function ViewActivity() {
       setSelectedStudent(student)
     }
   }
+
+  // const handleSendComment = async (e: FormEvent) => {
+  //   e.preventDefault()
+  //   if (inputValue.trim() === '') return
+
+  //   await useCreateCommentMutation(commentsRef, inputValue, userId)
+  //   setInputValue('')
+  // }
+
   return (
     <>
       <div className="hidden md:flex flex-grow">
+        ''
         <div>
           {students?.map((student) => (
             <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
@@ -95,7 +131,18 @@ function ViewActivity() {
                 <p>Comentários</p>
               </div>
               <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-              <Input placeholder="escreva seu comentário" />
+              <form className="flex">
+                <Input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="escreva seu comentário"
+                  className="flex-grow"
+                />
+                <Button type="submit" variant="blueButton" size="small" className="ml-2">
+                  Enviar
+                </Button>
+              </form>
             </div>
           </div>
         )}
@@ -144,7 +191,18 @@ function ViewActivity() {
 
                 <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
                   <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-                  <Input placeholder="escreva seu comentário" />
+                  <form className="flex">
+                    <Input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="escreva seu comentário"
+                      className="flex-grow"
+                    />
+                    <Button type="submit" variant="blueButton" size="small" className="ml-2">
+                      Enviar
+                    </Button>
+                  </form>
                 </div>
               </div>
             </AccordionContent>
@@ -154,3 +212,5 @@ function ViewActivity() {
     </>
   )
 }
+
+export default ViewActivity
