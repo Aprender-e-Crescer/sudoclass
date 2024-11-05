@@ -41,7 +41,7 @@ export function ApproveResetPassword({aluno = "Aluno"} : ApproveResetPasswordPro
               </div>
 
               <div className="flex justify-between mt-6 ml-4 w-full">
-                <Button variant="loginoutline" size="Login" type="submit">
+                <Button variant="whiteButtom" size="Login" type="submit">
                   Retornar
                 </Button>
               </div>
