@@ -1,7 +1,7 @@
 import { Subject, subjectsSchema } from '@/models/subjects-schema'
 import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs, QueryDocumentSnapshot } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 
 export function useListSubjectsQuery(schoolMatricesId: string) {
   return useQuery<Subject[]>({
