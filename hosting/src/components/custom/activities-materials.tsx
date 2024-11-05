@@ -3,13 +3,14 @@ import { Switch } from '@/components/ui/switch'
 import iconeAtividade from '@/assets/iconeAtividade.png'
 import clsx from 'clsx'
 import { Link } from '@tanstack/react-router'
+
 interface ActivitiesMaterialsProps {
   id: string
-  to: string
+  to?: string
   title: string
-  dateActivity: string
-  instructions: string
-  iconColor: string
+  dateActivity?: string
+  instruction: string
+  iconColor?: string
   assigned?: number
   pending?: number
   type: 'teacher' | 'student'
@@ -20,7 +21,7 @@ export function ActivitiesMaterials({
   to,
   title,
   dateActivity,
-  instructions,
+  instruction,
   iconColor,
   assigned,
   pending,
@@ -47,7 +48,7 @@ export function ActivitiesMaterials({
               <div className="flex flex-col ml-1 md:flex justify-between  gap-5">
                 <div className="hidden md:flex gap-2">
                   <p className="text-sm text-gray-700">Instruções</p>
-                  <p className="text-sm mx-7">{instructions}</p>
+                  <p className="text-sm mx-7">{instruction}</p>
                 </div>
                 <div className="flex flex-col gap-y-2">
                   <div className="hidden md:flex gap-2">
@@ -127,10 +128,9 @@ export function ActivitiesMaterials({
                 <AccordionContent className="transition-all duration-300">
                   <hr className="my-2" />
                   <div className="flex flex-col ml-1 md:flex p-4 justify-between gap-5">
-                    {/* Conteúdo visível apenas em telas maiores */}
                     <div className="hidden md:flex gap-2">
                       <p className="text-sm text-gray-700">Instruções</p>
-                      <p className="text-sm mx-7">{instructions}</p>
+                      <p className="text-sm mx-7">{instruction}</p>
                     </div>
                   </div>
                 </AccordionContent>
