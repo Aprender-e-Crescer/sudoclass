@@ -11,6 +11,11 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  
   "dependencies": {
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
+    "lucide-react": "^0.453.0",
+    "react-icons": "^5.3.0",
+    "zod": "3.23.8"
   }
 }

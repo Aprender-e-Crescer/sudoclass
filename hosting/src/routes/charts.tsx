@@ -18,7 +18,6 @@ import { SectorChart } from '@/components/custom/sector-chart';
     },
   } satisfies ChartConfig
 
-
 export const Route = createFileRoute('/charts')({
   component: Charts,
 })
@@ -111,3 +110,4 @@ function Charts() {
        </div>
     )
 }
+
