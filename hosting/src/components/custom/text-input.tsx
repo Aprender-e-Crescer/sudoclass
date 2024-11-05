@@ -26,23 +26,6 @@ export function InputForm({
   isDisabled,
   onChange,
 }: InputProps) {
-
-    return (
-      <label htmlFor={label} className={`${customStyleLabel ? customStyleLabel : 'flex flex-col flex-1 w-full mt-3'}`}>
-        {title}
-        <Field
-          placeholder={placeholder}
-          id={id}
-          name={name}
-          className={`${customStyleButton ? customStyleButton : 'border rounded-lg p-1 border-gray-200'}`}
-        />
-        <div className="text-red-500">
-          <ErrorMessage name={name} />
-        </div>
-      </label>
-    )
-  }
-
   return (
     <label htmlFor={label} className={`${customStyleLabel ? customStyleLabel : 'flex flex-col flex-1 w-full mt-3'}`}>
       {title}
