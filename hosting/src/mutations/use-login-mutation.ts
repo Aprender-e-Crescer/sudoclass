@@ -1,18 +1,28 @@
-import { auth } from "@/services/firebase";
-import { useMutation } from "@tanstack/react-query";
-import { signInAnonymously } from "firebase/auth";
+import { auth, functions } from '@/services/firebase'
+import { httpsCallable } from "firebase/functions";
+import { LoginData, loginDataSchema } from '@/models/login'
+import { useMutation } from "@tanstack/react-query"
+import { z } from 'zod';
+import { signInWithCustomToken } from 'firebase/auth';
+
+const loginWithCPF = httpsCallable<LoginData, string>(functions, 'loginWithCPF');
 
 interface LoginResponses {
   onSuccess: () => void;
-  onError: (error: any) => void;
+  onError: (error: unknown) => void;
 }
 
 export function useLoginMutation({ onSuccess, onError }: LoginResponses) {
-  return useMutation({
-    mutationFn: () => {
-      return signInAnonymously(auth);
-    },
-    onSuccess,
-    onError,
-  });
+    return useMutation({
+        mutationKey: ["login"],
+        mutationFn: async (credentials: LoginData) => {
+          const payload = loginDataSchema.parse(credentials);
+          const data = await loginWithCPF(payload)
+          const token = z.string().parse(data);
+
+          return signInWithCustomToken(auth, token);
+        },
+        onSuccess,
+        onError,
+    })
 }
