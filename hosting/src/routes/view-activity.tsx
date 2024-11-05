@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import ListStudents from '@/components/custom/list-students'
 import { TeacherComment } from '@/components/custom/teacher-comment'
 import { Button } from '@/components/ui/button'
@@ -11,9 +12,8 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { collection } from 'firebase/firestore'
+import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
-import { useCreateCommentMutation } from '@/mutations/use-create-comment-mutation'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
@@ -42,6 +42,7 @@ interface Student {
 }
 
 function ViewActivity() {
+  const { activityID } = useParams()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [inputValue, setInputValue] = useState<string>('')
@@ -66,6 +67,8 @@ function ViewActivity() {
   //   'comments',
   // )
 
+  const [sucessMessage, setSuccessMessage] = useState('')
+
   const handleStudentClick = (student: Student) => {
     if (selectedStudent?.id === student.id) {
       setSelectedStudent(null)
@@ -81,6 +84,32 @@ function ViewActivity() {
   //   await useCreateCommentMutation(commentsRef, inputValue, userId)
   //   setInputValue('')
   // }
+
+  async function upgradeNote(grade: number) {
+    const upgradeNoteRef = doc(firestore, 'activities', activityID!)
+    await setDoc(upgradeNoteRef, { grade: grade })
+    setSuccessMessage('Nota alterada com sucesso!')
+    setTimeout(() => {
+      {
+        setSuccessMessage('')
+      }
+    }, 3000)
+  }
+
+  async function addNote(grade: number) {
+    try {
+      const addNoteRef = doc(firestore, 'activities', activityID!)
+      await updateDoc(addNoteRef, {
+        grade: increment(grade),
+      })
+
+      setSuccessMessage('Nota alterada com sucesso!')
+      setTimeout(() => setSuccessMessage(''), 3000)
+    } catch (error) {
+      setSuccessMessage('Erro ao alterar nota!')
+      setTimeout(() => setSuccessMessage(''), 3000)
+    }
+  }
 
   return (
     <>
@@ -101,7 +130,10 @@ function ViewActivity() {
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={(values) => {
-                console.log(values)
+                const grade = parseInt(values.value)
+                upgradeNote(grade)
+
+                addNote(grade)
               }}
             >
               {({ handleSubmit, setFieldValue }) => (
@@ -122,6 +154,7 @@ function ViewActivity() {
                 </Form>
               )}
             </Formik>
+            {sucessMessage && <p className="text-green-500">{sucessMessage}</p>}
             <div>
               <Input type="file" className="h-96 w-80" />
             </div>
