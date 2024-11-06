@@ -5,7 +5,7 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5"
 import { Link } from "@tanstack/react-router"
 import { Formik, Form } from "formik"
 import { Input } from "@/components/ui/input"
-import { adminRegistration } from "@/mutations/admin-registration-mutation"
+import { adminRegistration } from "@/mutations/use-admin-registration-mutation"
 import { firestore } from "@/services/firebase"
 import { z } from "zod"
 

@@ -1,7 +1,7 @@
 import { firestore } from '@/services/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
-export async function getAttendanceStatus() {
+export async function useGetAttendanceStatus() {
   console.log("Executando getAttendanceStatus...");
   try {
     const attendancesCollectionRef = collection(firestore, '/schoolMatrices/aQjvxCKlEuHc9YQEedCQ/subjects/zGTOAwnKJBjFSmayHxJo/attendances');

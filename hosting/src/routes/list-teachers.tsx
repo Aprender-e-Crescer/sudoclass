@@ -1,4 +1,4 @@
-import { TeachersSchemaQuery } from '@/queries/teachers-listing-query'
+import { TeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute } from '@tanstack/react-router'
 import avatarLogo from '@/assets/avatarLogo.svg'
 import { Button } from '@/components/ui/button'
