@@ -1,5 +1,5 @@
-import { DocumentReference } from 'firebase/firestore'
-import { z } from 'zod'
+import { DocumentReference } from 'firebase/firestore';
+import { z } from 'zod';
 
 export const studentSchema = z.object({
   id: z.string(),
@@ -15,14 +15,14 @@ export const studentSchema = z.object({
   dateOfBirth: z.string(),
   email: z.string().email(),
   name: z.string(),
-  responsible: z
-    .any()
-    .refine((responsable: object): responsable is DocumentReference => responsable instanceof DocumentReference),
+  responsible: z.instanceof(DocumentReference).refine(
+    (responsable): responsable is DocumentReference => responsable instanceof DocumentReference,
+  ),
   rg: z.string(),
   shippingDate: z.string(),
   shippingStatus: z.string(),
   stateOfBirth: z.string(),
   telephone: z.string(),
-})
+});
 
-export type Student = z.infer<typeof studentSchema>
+export type Student = z.infer<typeof studentSchema>;

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const getInputSchema = z.object({
-  value: z.string({ required_error: `Insira um valor valido` }),
+  value: z.string().nonempty({ message: 'Insira um valor válido' }),
 })
 
-export type Responsible = z.infer<typeof getInputSchema>
+export type Responsible = z.infer<typeof getInputSchema>;
