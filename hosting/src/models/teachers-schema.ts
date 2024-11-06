@@ -1,5 +1,5 @@
-import { DocumentReference } from 'firebase/firestore';
-import { z } from 'zod';
+import { DocumentReference } from 'firebase/firestore'
+import { z } from 'zod'
 
 export const registerSchema = z.object({
   municipality: z.string().min(1, "O campo 'Município' é obrigatório"),
