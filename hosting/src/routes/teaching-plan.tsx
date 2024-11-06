@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { PlanTable } from '@/components/custom/plan-table'
-import { useListSchoolMatricesQuery } from '@/queries/list-school-matrices-query'
+import { useListSchoolMatricesQuery } from '@/queries/use-list-school-matrices-query'
 
 export const Route = createFileRoute('/teaching-plan')({
   component: teachingPlan,

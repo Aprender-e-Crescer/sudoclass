@@ -1,6 +1,6 @@
 import { matriceSchema } from '@/models/matrice-schema'
 import { useCreateSchoolMatriceMutation } from '@/mutations/use-create-school-matrice-mutation'
-import { useListSchoolMatricesQuery } from '@/queries/list-school-matrices-query'
+import { useListSchoolMatricesQuery } from '@/queries/use-list-school-matrices-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
