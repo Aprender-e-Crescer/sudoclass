@@ -10,48 +10,15 @@ export const registerSchema = z.object({
   birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
   birthStatus: z.string().min(1, "O campo 'Estado civil' é obrigatório"),
   cpf: z.string().min(1, "O campo 'CPF' é obrigatório"),
-  dateOfBirth: z.preprocess((value) => {
-    if (typeof value === 'string') {
-      const date = new Date(value);
-      return isNaN(date.getTime()) ? undefined : date; 
-    }
-    return value;
-  }, z.date().refine(date => date instanceof Date, { message: 'Insira uma data válida' })),
-  email: z.string().email("Email inválido"),
+  dateOfBirth: z.preprocess((value) => value, z.date(), { message: 'Insira uma data valida' }),
+  email: z.string().email('Email inválido'),
   fullName: z.string().min(1, "O campo 'Nome completo' é obrigatório"),
-  rgNumber: z.string().min(7, "RG deve ter no mínimo 7 dígitos"),
+  rgNumber: z.string().min(7, 'RG deve ter no mínimo 7 dígitos'),
   rgDispatchStatus: z.string().min(1, "O campo 'Status de emissão do RG' é obrigatório"),
-  rgDispatchDate: z.preprocess((value) => {
-    if (typeof value === 'string') {
-      const date = new Date(value);
-      return isNaN(date.getTime()) ? undefined : date;
-    }
-    return value;
-  }, z.date().refine(date => date instanceof Date, { message: 'Insira uma data válida' })),
+  rgDispatchDate: z.preprocess((value) => value, z.date(), { message: 'Insira uma data valida' }),
   telephone: z.string().min(1, "O campo 'Telefone' é obrigatório"),
-  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
-  matter: z.instanceof(DocumentReference).refine(
-    (provider): provider is DocumentReference => provider instanceof DocumentReference,
-  ),
-});
-
-export const listTeacherSchema = z.object({
-  birthCity: z.string(),
-  birthStatus: z.string(),
-  cpf: z.string(),
-  email: z.string(),
-  fullName: z.string(),
-  municipality: z.string(),
-  neighborhood: z.string(),
-  number: z.number().or(z.string()),
-  password: z.string(),
-  profilePhoto: z.string(),
-  rgDispatchDate: z.string(),
-  rgDispatchStatus: z.string(),
-  rgNumber: z.number(),
-  state: z.string(),
-  street: z.string(),
-  telephone: z.number(),
+  password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
+  matter: z.any().refine((provider: object): provider is DocumentReference => provider instanceof DocumentReference),
 })
 
 export type RegisterRequests = z.infer<typeof registerSchema>
