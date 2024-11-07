@@ -5,6 +5,5 @@ export const loginSchema = z.object({
     password: z.string({message: "Senha invalida!"}).min(8,{message: "Sua senha deve ter pelo menos oito catacteres!"}),
   })
 
-  export type UserLogin = z.infer< typeof loginSchema>;
-
-  
+export type UserLogin = z.infer< typeof loginSchema>;
+export { type LoginData, loginDataSchema } from '../../../functions/src/schemas/login';
