@@ -3,11 +3,7 @@ import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 
-<<<<<<< HEAD
 export function useTeachersSchemaQuery() {
-=======
-export function TeachersSchemaQuery() {
->>>>>>> f724c18c13d176eafacf0d6e256ae282de8e7978
   return useQuery({
     queryKey: ['teachers'],
     queryFn: async () => {
