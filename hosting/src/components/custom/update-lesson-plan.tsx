@@ -1,17 +1,9 @@
 import React from 'react';
 import { Formik, Form, Field, FieldProps } from 'formik';
-import { z } from 'zod';
-import { InputForm } from '@/components/custom/text-input';
 import { Button } from '@/components/ui/button';
-
-const validationSchema = z.object({
-  data: z.string().min(8, 'A data é obrigatória.'),
-  horaInicio: z.string().min(4, 'A hora de início é obrigatória.'),
-  horaFim: z.string().min(4, 'A hora de fim é obrigatória.'),
-  conteudoFormativo: z.string().min(3, 'O conteúdo formativo é obrigatório.'),
-  metodologiaDeEnsino: z.string().min(3, 'A metodologia de ensino é obrigatória.'),
-  recursosDidaticos: z.string().min(3, 'Os recursos didáticos são obrigatórios.'),
-});
+import { InputForm } from '@/components/custom/text-input';
+import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema';
+import { updateLessonPlan } from './updateLessonPlanMutations';
 
 interface FormValues {
   data: string;
@@ -38,15 +30,15 @@ const UpdateLessonPlan: React.FC = () => {
           validate={async (values) => {
             const errors: any = {};
             try {
-              await validationSchema.parseAsync(values);
+              await updateLessonPlanSchema.parseAsync(values);
             } catch (error) {
               const fieldErrors = (error as any).flatten().fieldErrors;
               Object.assign(errors, fieldErrors);
             }
             return errors;
           }}
-          onSubmit={(values) => {
-            console.log('Valores do formulário:', values);
+          onSubmit={async (values) => {
+            await updateLessonPlan(values); // Chama a mutação
           }}
         >
           {({ errors, touched }) => (
