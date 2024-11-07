@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
-import { useListResponsibleQuery } from '@/queries/list-responsible-queries'
+import { useListResponsibleQuery } from '@/queries/use-list-responsible-queries'
 import { responsibleSchema } from '@/models/list-responsible-schema'
 
 export const Route = createFileRoute('/list-responsible')({

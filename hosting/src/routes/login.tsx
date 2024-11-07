@@ -49,7 +49,7 @@ export function Login() {
     >
         <Form>
           <div>
-            <div className="flex flex-col justify-center items-center mb-24 min-h-screen mt-20 font-poppins px-4 sm:px-0">
+            <div className="flex flex-col justify-center items-center mb-24 mt-20 font-poppins px-4 sm:px-0">
               <div className="w-full text-center md:hidden mb-4">
                 <h1 className="text-[30px] font-bold text-blue-600">Bem-vindo a</h1>
                 <span className="text-[40px] font-bold text-blue-900">Sudotec</span>

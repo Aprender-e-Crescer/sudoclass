@@ -7,7 +7,7 @@ export const Route = createFileRoute('/home-list-subjects')({
 
 function HomeListSubjects() {
   return (
-    <div className="flex flex-wrap gap-5 justify-center">
+    <div className="flex flex-wrap gap-5 justify-center mt-5">
       <CardSubject description="Processo de Desenvolvimento de Sistemas" name="PDS" backgroundColor="amarelo" />
       <CardSubject description="..." name="Marketing" backgroundColor="vermelho" />
       <CardSubject description="Programação Orientada a Objetos" name="POO" backgroundColor="azul" />
