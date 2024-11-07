@@ -3,8 +3,7 @@ import { Formik, Form, Field, FieldProps } from 'formik';
 import { Button } from '@/components/ui/button';
 import { InputForm } from '@/components/custom/text-input';
 import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan-mutation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema'; 
+import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema';
 
 interface FormValues {
   id: string;
@@ -24,16 +23,16 @@ const UpdateLessonPlan: React.FC = () => {
       <div className="flex-grow flex flex-col items-center justify-start mt-5">
         <Formik<FormValues>
           initialValues={{
-            id: 'some-existing-id',
-            data: '18/10/2020',
+            id: 'mY1EIVyB4sZ6WWALNtne',
+            data: '2023-10-18',
             horaInicio: '18:30',
             horaFim: '20:30',
             conteudoFormativo: '',
             metodologiaDeEnsino: '',
             recursosDidaticos: '',
           }}
-          validationSchema={zodResolver(updateLessonPlanSchema)} 
-          onSubmit={async (values) => {
+          validationSchema={updateLessonPlanSchema}
+          onSubmit={(values) => {
             mutate(values);
           }}
         >
@@ -52,9 +51,7 @@ const UpdateLessonPlan: React.FC = () => {
                       />
                     )}
                   </Field>
-                  {errors.data && touched.data && (
-                    <div className="text-red-600">{errors.data}</div>
-                  )}
+                  {errors.data && touched.data && <div className="text-red-500">{errors.data}</div>}
                 </div>
 
                 <div>
@@ -70,7 +67,7 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.horaInicio && touched.horaInicio && (
-                    <div className="text-red-600">{errors.horaInicio}</div>
+                    <div className="text-red-500">{errors.horaInicio}</div>
                   )}
                 </div>
 
@@ -87,7 +84,7 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.horaFim && touched.horaFim && (
-                    <div className="text-red-600">{errors.horaFim}</div>
+                    <div className="text-red-500">{errors.horaFim}</div>
                   )}
                 </div>
 
@@ -104,7 +101,7 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.conteudoFormativo && touched.conteudoFormativo && (
-                    <div className="text-red-600">{errors.conteudoFormativo}</div>
+                    <div className="text-red-500">{errors.conteudoFormativo}</div>
                   )}
                 </div>
 
@@ -121,7 +118,7 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.metodologiaDeEnsino && touched.metodologiaDeEnsino && (
-                    <div className="text-red-600">{errors.metodologiaDeEnsino}</div>
+                    <div className="text-red-500">{errors.metodologiaDeEnsino}</div>
                   )}
                 </div>
 
@@ -138,7 +135,7 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.recursosDidaticos && touched.recursosDidaticos && (
-                    <div className="text-red-600">{errors.recursosDidaticos}</div>
+                    <div className="text-red-500">{errors.recursosDidaticos}</div>
                   )}
                 </div>
               </div>
