@@ -8,7 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover
 import { Form, Formik, Field } from 'formik'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
-import { z } from 'zod'
+import { activitySchema } from '@/models/activity-schema'
+
 
 export const Route = createFileRoute('/create-activity-material')({
   component: CreateActivityMaterial,
@@ -18,131 +19,103 @@ export function CreateActivityMaterial() {
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const { mutate: createActivity } = useCreateActivityMutation()
 
-  const activitySchema = z.object({
-    title: z
-      .string()
-      .min(3, 'O título precisa ter no mínimo 3 caracteres')
-      .max(100, 'O título pode ter no máximo 100 caracteres')
-      .nonempty('O título é obrigatório'),
-    instructions: z
-      .string()
-      .min(5, 'As instruções precisam ter no mínimo 5 caracteres')
-      .max(500, 'As instruções podem ter no máximo 500 caracteres')
-      .nonempty('As instruções são obrigatórias'),
-      value: z
-      .string()
-      .regex(/^\d+$/, 'O valor precisa ser um número') 
-      .nonempty('O valor (peso) é obrigatório') 
-      .transform((val) => parseInt(val, 10)) 
-      .refine((val) => val >= 0, 'O valor não pode ser negativo')
-      .refine((val) => val <= 100, 'O valor não pode ser maior que 100'),
-    
-    date: z.date().refine((val) => !isNaN(val.getTime()), 'A data de entrega é obrigatória'),
-  })
-
   const initialValues = {
     title: '',
-    instructions: '',
+    instruction: '',
     value: '',
-    date: date,
+    deliveryDate: date,
   }
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: any, { setErrors }: any) => {
     try {
+      const parsed = activitySchema.safeParse(values)
+      if (!parsed.success) {
+        const errors: Record<string, string> = {}
+        parsed.error.errors.forEach((error) => {
+          errors[error.path[0]] = error.message
+        })
+        setErrors(errors)
+        return
+      }
+
       const newActivity = {
         title: values.title,
-        instructions: values.instructions,
-        value: values.value,
-        date: date,
+        instruction: values.instruction,
+        value: parseInt(values.value, 10),
+        deliveryDate: date,
+      }
+
+      if (!newActivity.deliveryDate) {
+        setErrors({ deliveryDate: 'A data de entrega é obrigatória' })
+        return
       }
 
       await createActivity(newActivity)
-      alert('Atividade criada com sucesso!')
     } catch (e) {
       console.error('Erro ao adicionar atividade: ', e)
-      alert('Erro ao criar atividade.')
     }
   }
 
   return (
-    <>
-      <div className="flex h-full w-full mt-10 ">
-        <div className="flex flex-col w-full">
-          <div className="flex justify-around mx-10">
-            <div className="flex flex-col w-full h-full border p-6 ">
-              <Formik
-                initialValues={initialValues}
-                onSubmit={handleSubmit}
-                validate={async (values) => {
-                  try {
-                    activitySchema.parse(values) // Validando com Zod
-                    return {}
-                  } catch (e) {
-                    if (e instanceof z.ZodError) {
-                      const errors: Record<string, string> = {}
-                      e.errors.forEach((error) => {
-                        errors[error.path[0]] = error.message
-                      })
-                      return errors
-                    }
-                    return {}
-                  }
-                }}
-              >
-                {({ setFieldValue, errors, touched }) => (
-                  <Form>
-                    <div className="flex flex-col gap-12">
+    <div className="flex h-full w-full mt-10 ">
+      <div className="flex flex-col w-full">
+        <div className="flex justify-around mx-10">
+          <div className="flex flex-col w-full h-full border p-6 ">
+            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+              {({ setFieldValue, errors, touched }) => (
+                <Form>
+                  <div className="flex flex-col gap-12">
+                    <div>
+                      <p>Título</p>
+                      <Field name="title" placeholder="Digite o título" className="border rounded-sm w-full p-2" />
+                      {touched.title && errors.title && <div className="text-red-500 text-sm">{errors.title}</div>}
+                    </div>
+                    <div>
+                      <p>Instruções</p>
+                      <Field
+                        name="instruction"
+                        placeholder="Digite as instruções"
+                        className="border p-7 rounded-sm w-full"
+                      />
+                      {touched.instruction && errors.instruction && (
+                        <div className="text-red-500 text-sm">{errors.instruction}</div>
+                      )}
+                    </div>
+                    <div className="w-32">
+                      <p>Peso</p>
+                      <InputWithoutLabel
+                        id="value"
+                        name="value"
+                        placeholder="Digite o valor da atividade"
+                        onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
+                      />
+                      {touched.value && errors.value && <div className="text-red-500 text-sm">{errors.value}</div>}
+                    </div>
+
+                    <div className="flex justify-between items-center">
                       <div>
-                        <p>Título</p>
-                        <Field name="title" placeholder="Digite o título" className="border rounded-sm w-full p-2" />
-                        {touched.title && errors.title && <div className="text-red-500 text-sm">{errors.title}</div>}
-                      </div>
-                      <div>
-                        <p>Instruções</p>
-                        <Field
-                          name="instructions"
-                          placeholder="Digite as instruções"
-                          className="border p-7 rounded-sm w-full"
-                        />
-                        {touched.instructions && errors.instructions && (
-                          <div className="text-red-500 text-sm">{errors.instructions}</div>
+                        <p>Data de entrega</p>
+                        <DatePickerDemo date={date} setDate={setDate} />
+                        {touched.deliveryDate && errors.deliveryDate && (
+                          <div className="text-red-500 text-sm">{errors.deliveryDate}</div>
                         )}
                       </div>
-                      <div className="w-32">
-                        <p>Peso</p>
-                        <InputWithoutLabel
-                          id="value"
-                          name="value"
-                          placeholder="Digite o valor da atividade"
-                          onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
-                        />
-                        {touched.value && errors.value && <div className="text-red-500 text-sm">{errors.value}</div>}
-                      </div>
 
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p>Data de entrega</p>
-                          <DatePickerDemo date={date} setDate={setDate} />
-                          {touched.date && errors.date && <div className="text-red-500 text-sm">{errors.date}</div>}
-                        </div>
-
-                        <Button type="submit" size="medium">
-                          Criar atividade
-                        </Button>
-                      </div>
+                      <Button type="submit" size="medium">
+                        Criar atividade
+                      </Button>
                     </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
-// Componente DatePickerDemo
 export function DatePickerDemo({
   date,
   setDate,
