@@ -16,12 +16,7 @@ export function DatePickerDemo({
   setDate,
 }: {
   date: Date | undefined
-  date,
-  setDate,
-}: {
-  date: Date | undefined
 
-  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
 }) {
   return (
@@ -52,18 +47,12 @@ export function DatePickerDemo({
 export const Route = createFileRoute('/call-screen')({
   component: callScreen,
 })
-  component: callScreen,
-})
 
 export function callScreen() {
   const { data: students } = useStudentsListQuery()
   const [studentList, setStudentList] = useState(students || [])
   const [currentIndex, setCurrentIndex] = useState(-1)
   const [date, setDate] = useState<Date | undefined>(undefined)
-  const { data: students } = useStudentsListQuery()
-  const [studentList, setStudentList] = useState(students || [])
-  const [currentIndex, setCurrentIndex] = useState(-1)
-  const [date, setDate] = useState<Date | undefined>(undefined)
 
   useEffect(() => {
     if (students && students.length > 0) {
@@ -72,40 +61,13 @@ export function callScreen() {
       console.log('Lista de alunos carregada:', students)
     }
   }, [students])
-  useEffect(() => {
-    if (students && students.length > 0) {
-      setStudentList(students)
-      setCurrentIndex(students.length - 1)
-      console.log('Lista de alunos carregada:', students)
-    }
-  }, [students])
 
-  const updateStudentStatus = (id, status) => {
-    setStudentList((prevList) =>
-      prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
   const updateStudentStatus = (id, status) => {
     setStudentList((prevList) =>
       prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
     )
   }
-  }
 
-  const addCall = async (values: any) => {
-    try {
-      const callRef = collection(firestore, 'student', 'U2IvXW4yX8IE5QksHSox', 'call')
-      const newCall = {
-        studentId: values.studentId,
-        status: values.status,
-        date: values.date,
-      }
-
-      console.log('Tentando adicionar chamada:', newCall)
-      await addDoc(callRef, newCall)
-      console.log('Chamada adicionada com sucesso:', newCall)
-    } catch (error) {
-      console.error('Erro ao adicionar chamada:', error.message || error)
-    }
-  }
   const addCall = async (values: { studentId: string; status: string; date: Date }) => {
     try {
       const callRef = collection(firestore, 'student', 'U2IvXW4yX8IE5QksHSox', 'call')
@@ -123,29 +85,6 @@ export function callScreen() {
     }
   }
 
-  const handleAddCall = () => {
-    console.log('Current Index:', currentIndex)
-    console.log('Student List:', studentList)
-
-    if (currentIndex === 0 || !studentList[currentIndex]) {
-      console.error('Nenhum aluno selecionado.')
-      return
-    }
-
-    if (!date) {
-      console.error('Data não está definida.')
-      return
-    }
-
-    const values = {
-      studentId: studentList[currentIndex].id,
-      status: 'active',
-      date: date,
-    }
-
-    console.log('Valores antes de adicionar a chamada:', values)
-    addCall(values)
-  }
   const handleAddCall = () => {
     console.log('Current Index:', currentIndex)
     console.log('Student List:', studentList)
