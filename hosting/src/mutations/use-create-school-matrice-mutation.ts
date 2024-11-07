@@ -1,4 +1,4 @@
-import { LIST_SCHOOL_MATRICES_QUERY_KEY } from '@/queries/list-school-matrices'
+import { LIST_SCHOOL_MATRICES_QUERY_KEY } from '@/queries/use-list-school-matrices-query'
 import { firestore } from '@/services/firebase'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addDoc, collection } from 'firebase/firestore'

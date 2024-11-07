@@ -1,7 +1,7 @@
 import { Button } from '../ui/button'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import { useCreateDailyTeachingPlan } from '@/mutations/use-add-teaching-plan'
-import { dailyTeachingPlanSchema } from '@/models/daily-teaching-plan'
+import { useCreateDailyTeachingPlan } from '@/mutations/use-add-teaching-plan-mutation'
+import { dailyTeachingPlanSchema } from '@/models/daily-teaching-plan-schema'
 import { InputForm } from './text-input'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 
