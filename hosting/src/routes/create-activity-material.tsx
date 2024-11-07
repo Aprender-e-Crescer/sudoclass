@@ -49,7 +49,7 @@ export function CreateActivityMaterial() {
     value: '',
   }
 
-  const addActivity = async (values: any) => {
+  const addActivity = async (values: typeof initialValues) => {
     try {
       const activitiesRef = collection(
         firestore,
@@ -104,7 +104,6 @@ export function CreateActivityMaterial() {
                           onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
                         />
                       </div>
-
 
                       <div className="flex justify-between items-center ">
                         <div>
