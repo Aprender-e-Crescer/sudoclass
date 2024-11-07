@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputForm } from '@/components/custom/text-input'
@@ -7,17 +6,8 @@ import { InputCheckbox } from '@/components/custom/checkbox-input'
 import { Button } from '@/components/ui/button'
 import { InputFile } from '@/components/custom/file-input'
 import { Link } from '@tanstack/react-router'
-
-
-const creationClassSchema = z.object({
-  class: z.string().min(4, { message: 'Insira um nome de turma válido.' }),
-  shift: z.string().min(4, { message: 'Insira um válido.' }),
-  startForecast: z.date({ message: 'Insira uma data válida.' }),
-  endPrediction: z.date({ message: 'Insira um data válida.' }),
-  registrationFinalDate: z.date({ message: 'Insira uma data válida' }),
-  quantityHours: z.string().min(2, { message: `Insira um valor válido` }),
-  totalVacancies: z.string().min(2, { message: `Insira um valor válido` }),
-})
+import { useRegisterClassController } from '@/controllers/use-register-class-form'
+import { creationClassSchema } from '@/models/creation-class-schema'
 
 const initialValues = {
   class: '',
@@ -44,10 +34,17 @@ const checkboxValues = [
   },
 ]
 
+function useLogic() {
+  const { registerClassForm } = useRegisterClassController()
+
+  return { registerClassForm }
+}
+
 export function ClassCreationForm() {
+  const { registerClassForm } = useLogic()
   return (
     <Formik
-      onSubmit={() => {}}
+      onSubmit={(values) => registerClassForm(values)}
       initialValues={initialValues}
       validationSchema={toFormikValidationSchema(creationClassSchema)}
     >
@@ -120,8 +117,7 @@ export function ClassCreationForm() {
           />
 
           <div className="flex sm:flex-row flex-col gap-3">
-            <Link
-              to="/class-list">
+            <Link to="/class-list">
               <Button variant="lightTextBlack">Cancelar</Button>
             </Link>
             <Button variant="blueButton">Cadastrar</Button>
