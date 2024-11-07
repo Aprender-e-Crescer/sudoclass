@@ -2,10 +2,12 @@ import React from 'react';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import { Button } from '@/components/ui/button';
 import { InputForm } from '@/components/custom/text-input';
-import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema';
-import { updateLessonPlan } from './updateLessonPlanMutations';
+import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan-mutation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema'; 
 
 interface FormValues {
+  id: string;
   data: string;
   horaInicio: string;
   horaFim: string;
@@ -15,11 +17,14 @@ interface FormValues {
 }
 
 const UpdateLessonPlan: React.FC = () => {
+  const { mutate } = useUpdateLessonPlanMutation();
+
   return (
     <div className="flex flex-row h-screen relative mx-5">
       <div className="flex-grow flex flex-col items-center justify-start mt-5">
         <Formik<FormValues>
           initialValues={{
+            id: 'some-existing-id',
             data: '18/10/2020',
             horaInicio: '18:30',
             horaFim: '20:30',
@@ -27,18 +32,9 @@ const UpdateLessonPlan: React.FC = () => {
             metodologiaDeEnsino: '',
             recursosDidaticos: '',
           }}
-          validate={async (values) => {
-            const errors: any = {};
-            try {
-              await updateLessonPlanSchema.parseAsync(values);
-            } catch (error) {
-              const fieldErrors = (error as any).flatten().fieldErrors;
-              Object.assign(errors, fieldErrors);
-            }
-            return errors;
-          }}
+          validationSchema={zodResolver(updateLessonPlanSchema)} 
           onSubmit={async (values) => {
-            await updateLessonPlan(values); // Chama a mutação
+            mutate(values);
           }}
         >
           {({ errors, touched }) => (
@@ -56,7 +52,9 @@ const UpdateLessonPlan: React.FC = () => {
                       />
                     )}
                   </Field>
-                  {errors.data && touched.data && <div className="text-red-500">{errors.data}</div>}
+                  {errors.data && touched.data && (
+                    <div className="text-red-600">{errors.data}</div>
+                  )}
                 </div>
 
                 <div>
@@ -71,7 +69,9 @@ const UpdateLessonPlan: React.FC = () => {
                       />
                     )}
                   </Field>
-                  {errors.horaInicio && touched.horaInicio && <div className="text-red-500">{errors.horaInicio}</div>}
+                  {errors.horaInicio && touched.horaInicio && (
+                    <div className="text-red-600">{errors.horaInicio}</div>
+                  )}
                 </div>
 
                 <div>
@@ -86,7 +86,9 @@ const UpdateLessonPlan: React.FC = () => {
                       />
                     )}
                   </Field>
-                  {errors.horaFim && touched.horaFim && <div className="text-red-500">{errors.horaFim}</div>}
+                  {errors.horaFim && touched.horaFim && (
+                    <div className="text-red-600">{errors.horaFim}</div>
+                  )}
                 </div>
 
                 <div>
@@ -102,7 +104,7 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.conteudoFormativo && touched.conteudoFormativo && (
-                    <div className="text-red-500">{errors.conteudoFormativo}</div>
+                    <div className="text-red-600">{errors.conteudoFormativo}</div>
                   )}
                 </div>
 
@@ -119,7 +121,7 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.metodologiaDeEnsino && touched.metodologiaDeEnsino && (
-                    <div className="text-red-500">{errors.metodologiaDeEnsino}</div>
+                    <div className="text-red-600">{errors.metodologiaDeEnsino}</div>
                   )}
                 </div>
 
@@ -136,14 +138,18 @@ const UpdateLessonPlan: React.FC = () => {
                     )}
                   </Field>
                   {errors.recursosDidaticos && touched.recursosDidaticos && (
-                    <div className="text-red-500">{errors.recursosDidaticos}</div>
+                    <div className="text-red-600">{errors.recursosDidaticos}</div>
                   )}
                 </div>
               </div>
 
               <div className="flex justify-center mt-5 gap-2">
-                <Button type="button" variant="lightTextBlack" size="large">Cancelar</Button>
-                <Button type="submit" size="large">Atualizar</Button>
+                <Button type="button" variant="lightTextBlack" size="large">
+                  Cancelar
+                </Button>
+                <Button type="submit" size="large">
+                  Atualizar
+                </Button>
               </div>
             </Form>
           )}
