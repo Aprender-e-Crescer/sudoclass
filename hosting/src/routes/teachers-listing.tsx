@@ -2,7 +2,11 @@ import { Formik, Form, Field } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { createFileRoute } from '@tanstack/react-router';
 import { registerSchema } from '@/models/teachers-schema';
+<<<<<<< HEAD
 import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query';
+=======
+import { TeachersSchemaQuery } from '@/queries/use-teachers-listing-query';
+>>>>>>> f724c18c13d176eafacf0d6e256ae282de8e7978
 
 export const Route = createFileRoute('/teachers-listing')({
   component: TeachersListing,

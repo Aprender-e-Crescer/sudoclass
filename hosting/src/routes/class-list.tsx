@@ -10,9 +10,9 @@ export const Route = createFileRoute('/class-list')({
 
 export function ClassList() {
   return (
-    <div className="w-full px-4 flex justify-center flex-col gap-6">
+    <div className="w-full px-4 flex justify-center flex-col gap-6 mt-5">
       <Link to="/class-creation-form">
-        <Button variant="blueButton">Cadastrar nova turma</Button>
+        <Button variant="blueButton" size="medium" >Cadastrar nova turma</Button>
       </Link>
 
       <div className="flex flex-col gap-7 font-bold text-blue-950 text-lg">

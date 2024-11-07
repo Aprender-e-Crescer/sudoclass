@@ -1,6 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+<<<<<<< HEAD
 import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+=======
+import { TeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+>>>>>>> f724c18c13d176eafacf0d6e256ae282de8e7978
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export const Route = createFileRoute('/select-teacher-in-the-subject')({
