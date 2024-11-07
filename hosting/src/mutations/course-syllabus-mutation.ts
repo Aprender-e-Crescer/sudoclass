@@ -4,13 +4,17 @@ import { firestore } from '@/services/firebase'
 
 export const LIST_SYLLABUS_QUERY_KEY = 'syllabus'
 
+type SyllabusValues = {
+  description: string
+}
+
 export function useCreateOrEditSyllabusMutation(syllabusID: string) {
   const queryClient = useQueryClient()
-  const syllbusRef = doc(firestore, 'syllabus', syllabusID)
+  const syllabusRef = doc(firestore, 'syllabus', syllabusID)
 
   return useMutation({
     mutationKey: ['createOrEditSyllabus'],
-    mutationFn: async (values: any) => await updateDoc(syllbusRef, { description: values }),
+    mutationFn: async (values: SyllabusValues) => await updateDoc(syllabusRef, { description: values.description }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [LIST_SYLLABUS_QUERY_KEY] })
     },
