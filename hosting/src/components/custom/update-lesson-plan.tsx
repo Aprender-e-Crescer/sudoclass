@@ -1,155 +1,158 @@
 import React from 'react';
-import { Formik, Form, Field, FieldProps } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { Button } from '@/components/ui/button';
 import { InputForm } from '@/components/custom/text-input';
 import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan-mutation';
 import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema';
 
-interface FormValues {
+interface LessonPlanUpdate {
   id: string;
-  data: string;
-  horaInicio: string;
-  horaFim: string;
-  conteudoFormativo: string;
-  metodologiaDeEnsino: string;
-  recursosDidaticos: string;
+  date: string;
+  timeStart: string;
+  timeEnd: string;
+  trainingContent: string;
+  teachingMethodology: string;
+  teachingResources: string;
 }
 
 const UpdateLessonPlan: React.FC = () => {
-  const { mutate } = useUpdateLessonPlanMutation();
+  const { mutate } = useUpdateLessonPlanMutation({
+    onSuccess: () => {
+      console.log('Plano de aula atualizado com sucesso!');
+    },
+    onError: (err) => {
+      console.error('Erro ao atualizar o plano de aula:', err);
+    },
+  });
+
+  const initialValues: Omit<LessonPlanUpdate, 'id'> = {
+    date: '2000-10-20',
+    timeStart: '10:10',
+    timeEnd: '20:30',
+    trainingContent: 'ttt',
+    teachingMethodology: 'teste',
+    teachingResources: 'test',
+  };
+
+  // Função para validação usando Zod
+  const validateSchema = (values: Omit<LessonPlanUpdate, 'id'>) => {
+    try {
+      updateLessonPlanSchema.parse({ id: 'mY1EIVyB4sZ6WWALNtne', ...values });
+      return {}; // Validação bem-sucedida
+    } catch (error) {
+      return error.errors.reduce((acc: any, curr: any) => {
+        acc[curr.path[0]] = curr.message;
+        return acc;
+      }, {});
+    }
+  };
 
   return (
     <div className="flex flex-row h-screen relative mx-5">
       <div className="flex-grow flex flex-col items-center justify-start mt-5">
-        <Formik<FormValues>
-          initialValues={{
-            id: 'mY1EIVyB4sZ6WWALNtne',
-            data: '2023-10-18',
-            horaInicio: '18:30',
-            horaFim: '20:30',
-            conteudoFormativo: '',
-            metodologiaDeEnsino: '',
-            recursosDidaticos: '',
-          }}
-          validationSchema={updateLessonPlanSchema}
+        <Formik
+          initialValues={initialValues}
+          validate={validateSchema}  // Usando o método de validação Zod
           onSubmit={(values) => {
-            mutate(values);
+            mutate({ id: 'mY1EIVyB4sZ6WWALNtne', ...values } as LessonPlanUpdate);
           }}
         >
-          {({ errors, touched }) => (
-            <Form className="flex flex-col space-y-6 w-full">
-              <div className="w-full border border-[#C6C6C6] rounded-lg p-5">
-                <div>
-                  <h1>Data</h1>
-                  <Field name="data">
-                    {({ field }: FieldProps) => (
-                      <InputForm
-                        type="date"
-                        placeholder="Selecione a data"
-                        id="data"
-                        {...field}
-                      />
-                    )}
-                  </Field>
-                  {errors.data && touched.data && <div className="text-red-500">{errors.data}</div>}
-                </div>
-
-                <div>
-                  <h1>Início</h1>
-                  <Field name="horaInicio">
-                    {({ field }: FieldProps) => (
-                      <InputForm
-                        type="time"
-                        placeholder="Selecione a hora de início"
-                        id="horaInicio"
-                        {...field}
-                      />
-                    )}
-                  </Field>
-                  {errors.horaInicio && touched.horaInicio && (
-                    <div className="text-red-500">{errors.horaInicio}</div>
+          <Form className="flex flex-col space-y-6 w-full">
+            <div className="w-full border border-[#C6C6C6] rounded-lg p-5">
+              <div>
+                <h1>Data</h1>
+                <Field name="date">
+                  {({ field }) => (
+                    <InputForm
+                      type="date"
+                      placeholder="Selecione a data"
+                      id="date"
+                      {...field}
+                    />
                   )}
-                </div>
-
-                <div>
-                  <h1>Fim</h1>
-                  <Field name="horaFim">
-                    {({ field }: FieldProps) => (
-                      <InputForm
-                        type="time"
-                        placeholder="Selecione a hora de fim"
-                        id="horaFim"
-                        {...field}
-                      />
-                    )}
-                  </Field>
-                  {errors.horaFim && touched.horaFim && (
-                    <div className="text-red-500">{errors.horaFim}</div>
-                  )}
-                </div>
-
-                <div>
-                  <h1>Conteúdo formativo</h1>
-                  <Field name="conteudoFormativo">
-                    {({ field }: FieldProps) => (
-                      <InputForm
-                        type="text"
-                        placeholder="Descreva o conteúdo formativo"
-                        id="conteudoFormativo"
-                        {...field}
-                      />
-                    )}
-                  </Field>
-                  {errors.conteudoFormativo && touched.conteudoFormativo && (
-                    <div className="text-red-500">{errors.conteudoFormativo}</div>
-                  )}
-                </div>
-
-                <div>
-                  <h1>Metodologia de ensino</h1>
-                  <Field name="metodologiaDeEnsino">
-                    {({ field }: FieldProps) => (
-                      <InputForm
-                        type="text"
-                        placeholder="Descreva a metodologia de ensino"
-                        id="metodologiaDeEnsino"
-                        {...field}
-                      />
-                    )}
-                  </Field>
-                  {errors.metodologiaDeEnsino && touched.metodologiaDeEnsino && (
-                    <div className="text-red-500">{errors.metodologiaDeEnsino}</div>
-                  )}
-                </div>
-
-                <div>
-                  <h1>Recursos didáticos</h1>
-                  <Field name="recursosDidaticos">
-                    {({ field }: FieldProps) => (
-                      <InputForm
-                        type="text"
-                        placeholder="Descreva os recursos didáticos"
-                        id="recursosDidaticos"
-                        {...field}
-                      />
-                    )}
-                  </Field>
-                  {errors.recursosDidaticos && touched.recursosDidaticos && (
-                    <div className="text-red-500">{errors.recursosDidaticos}</div>
-                  )}
-                </div>
+                </Field>
               </div>
 
-              <div className="flex justify-center mt-5 gap-2">
-                <Button type="button" variant="lightTextBlack" size="large">
-                  Cancelar
-                </Button>
-                <Button type="submit" size="large">
-                  Atualizar
-                </Button>
+              <div>
+                <h1>Hora de Início</h1>
+                <Field name="timeStart">
+                  {({ field }) => (
+                    <InputForm
+                      type="time"
+                      placeholder="Selecione a hora de início"
+                      id="timeStart"
+                      {...field}
+                    />
+                  )}
+                </Field>
               </div>
-            </Form>
-          )}
+
+              <div>
+                <h1>Hora de Fim</h1>
+                <Field name="timeEnd">
+                  {({ field }) => (
+                    <InputForm
+                      type="time"
+                      placeholder="Selecione a hora de fim"
+                      id="timeEnd"
+                      {...field}
+                    />
+                  )}
+                </Field>
+              </div>
+
+              <div>
+                <h1>Conteúdo Formativo</h1>
+                <Field name="trainingContent">
+                  {({ field }) => (
+                    <InputForm
+                      type="text"
+                      placeholder="Descreva o conteúdo formativo"
+                      id="trainingContent"
+                      {...field}
+                    />
+                  )}
+                </Field>
+              </div>
+
+              <div>
+                <h1>Metodologia de Ensino</h1>
+                <Field name="teachingMethodology">
+                  {({ field }) => (
+                    <InputForm
+                      type="text"
+                      placeholder="Descreva a metodologia de ensino"
+                      id="teachingMethodology"
+                      {...field}
+                    />
+                  )}
+                </Field>
+              </div>
+
+              <div>
+                <h1>Recursos Didáticos</h1>
+                <Field name="teachingResources">
+                  {({ field }) => (
+                    <InputForm
+                      type="text"
+                      placeholder="Descreva os recursos didáticos"
+                      id="teachingResources"
+                      {...field}
+                    />
+                  )}
+                </Field>
+              </div>
+            </div>
+
+            <div className="flex justify-center mt-5 gap-2">
+              <Button type="button" variant="lightTextBlack" size="large">
+                Cancelar
+              </Button>
+              <Button type="submit" size="large">
+                Atualizar
+              </Button>
+            </div>
+          </Form>
         </Formik>
       </div>
     </div>
