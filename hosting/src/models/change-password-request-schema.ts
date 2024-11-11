@@ -1,12 +1,16 @@
-import { DocumentReference } from 'firebase/firestore'
-import { z } from 'zod'
+import { DocumentReference } from 'firebase/firestore';
+import { z } from 'zod';
 
 export const changePasswordRequestSchema = z.object({
-  newPasswordDefault: z.string().min(6, { message: 'A string deve conter no minimo 6 caracteres.' }),
+  newPasswordDefault: z.string().min(6, { message: 'A string deve conter no mínimo 6 caracteres.' }),
   requestStatus: z.enum(['accepted', 'refused', 'pending']),
-  student: z.unknown().refine(
-    (student: unknown): student is DocumentReference => student instanceof DocumentReference
-  ),
-})
+  student: z.custom((student) => {
 
-export type ChangeRequests = z.infer<typeof changePasswordRequestSchema>
+    return student instanceof DocumentReference;
+  }, {
+    message: "O campo 'student' deve ser uma referência válida do Firestore."
+  }),
+});
+
+
+export type ChangeRequests = z.infer<typeof changePasswordRequestSchema>;
