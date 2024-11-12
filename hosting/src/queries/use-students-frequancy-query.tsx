@@ -1,5 +1,8 @@
-import { firestore } from '@/services/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '@/services/firebase'
+import { collection, getDocs } from 'firebase/firestore'
+import { useQuery } from '@tanstack/react-query'
+import { attendanceSchema, Attendance } from '@/models/students-frequancy-schema'
+
 
 export async function useGetAttendanceStatus() {
   console.log("Executando getAttendanceStatus...");
@@ -7,25 +10,32 @@ export async function useGetAttendanceStatus() {
     const attendancesCollectionRef = collection(firestore, '/schoolMatrices/aQjvxCKlEuHc9YQEedCQ/subjects/zGTOAwnKJBjFSmayHxJo/attendances');
     const querySnapshot = await getDocs(attendancesCollectionRef);
 
-    const allStudentsAttendance = querySnapshot.docs.map(docSnap => {
-      const data = docSnap.data();
-      const createdAtTimestamp = data.createdAt;
+export function useAttendanceQuery(schoolMatriceId: string, subjectId: string) {
+  return useQuery({
+    queryKey: ['getAttendances', schoolMatriceId, subjectId],
+    queryFn: async () => {
+      const attendancesRef = collection(
+        firestore,
+        'schoolMatrices',
+        schoolMatriceId,
+        'subjects',
+        subjectId,
+        'attendances',
+      ).withConverter({
+        toFirestore: (attendance: Attendance) => ({
+          createdAt: attendance.createdAt,
+          students: attendance.students,
+        }),
+        fromFirestore: (snapshot) =>
+          attendanceSchema.parse({
+            id: snapshot.id,
+            ...snapshot.data(),
+          }),
+      })
 
-      const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate() : null;
 
-      return {
-        createdAt: createdAt ? createdAt.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : 'Data não disponível',
-        students: data.students.map((studentEntry: { student: any; present: any; }) => ({
-          student: studentEntry.student,
-          present: studentEntry.present,
-        }))
-      };
-    });
-
-    console.log("Dados de presença dos estudantes:", allStudentsAttendance);
-    return allStudentsAttendance;
-  } catch (error) {
-    console.error("Erro ao buscar dados de presença:", error);
-    return [];
-  }
+      const snapshot = await getDocs(attendancesRef)
+      return snapshot.docs.map((doc) => doc.data())
+    },
+  })
 }
