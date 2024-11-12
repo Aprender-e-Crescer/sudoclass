@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { registerSchema } from '@/models/teachers-schema'
+import { RegisterRequests, registerSchema } from '@/models/teachers-schema'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
+import { parse } from "date-fns";
 
 export const Route = createFileRoute('/teacher-registration-form')({
   component: TeacherRegistration,
@@ -32,18 +33,22 @@ const initialValues = {
 }
 
 function useLogic() {
-  const { registerTeacher } = useRegisterTeacherController()
+  const { registerTeacher } = useRegisterTeacherController();
 
-  return { registerTeacher }
+  const handleOnTeacherSubmit = (values: typeof initialValues) => {
+    registerTeacher(values);
+  };
+
+  return { handleOnTeacherSubmit };
 }
 
 export function TeacherRegistration() {
-  const { registerTeacher } = useLogic()
+  const { handleOnTeacherSubmit } = useLogic()
   return (
     <>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => registerTeacher(values)}
+        onSubmit={handleOnTeacherSubmit}
         validationSchema={toFormikValidationSchema(registerSchema)}
       >
         <Form className="p-1">
@@ -205,3 +210,4 @@ export function TeacherRegistration() {
     </>
   )
 }
+

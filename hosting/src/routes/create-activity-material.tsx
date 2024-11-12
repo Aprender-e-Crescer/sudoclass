@@ -50,7 +50,7 @@ export function CreateActivityMaterial() {
     value: '',
   }
 
-  const addActivity = async (values: any) => {
+  const addActivity = async (values: typeof initialValues) => {
     try {
       const activitiesRef = collection(
         firestore,

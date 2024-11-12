@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import ListStudents from '@/components/custom/list-students'
 import { Images, Paperclip, SendHorizontal, Smile, ArrowLeft } from 'lucide-react'
-import { useState } from 'react'
+import { SetStateAction, useState } from 'react'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
@@ -14,6 +14,8 @@ export const Route = createFileRoute('/private-chat')({
 const initialValues = {
   ProcurarDocumentos: '',
 }
+
+
 
 const StudentsData = [
   { name: 'João', picture: '', variant: undefined },
@@ -30,9 +32,9 @@ const StudentsData = [
 ]
 
 export function PrivateChat() {
-  const [selectedStudent, setSelectedStudent] = useState(null)
+  const [selectedStudent, setSelectedStudent] = useState<null | typeof StudentsData[0]>(null)
 
-  const handleStudentSelect = (student) => {
+  const handleStudentSelect = (student: typeof StudentsData[0]) => {
     setSelectedStudent(student)
   }
 

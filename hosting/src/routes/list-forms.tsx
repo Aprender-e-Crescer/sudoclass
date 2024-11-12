@@ -36,7 +36,11 @@ export function ListForms() {
 
   const [searchValue, setSearchValue] = useState('');
 
-  const filteredData = data?.filter((form: any) =>
+  const filteredData = data?.filter((form: {
+    name: string;
+    createdDate: string;
+    createdBy: string;
+  }) =>
     form.name?.toLowerCase().includes(searchValue.toLowerCase())
   ) || [];
 

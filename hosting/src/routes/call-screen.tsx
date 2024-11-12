@@ -63,13 +63,17 @@ export function callScreen() {
     }
   }, [students])
 
-  const updateStudentStatus = (id, status) => {
+  const updateStudentStatus = (id: string, status: any) => {
     setStudentList((prevList) =>
       prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
     )
   }
 
-  const addCall = async (values: any) => {
+  const addCall = async (values: {
+    studentId: string;
+    status: string;
+    date: Date;
+}) => {
     try {
       const callRef = collection(firestore, 'student', 'U2IvXW4yX8IE5QksHSox', 'call')
       const newCall = {

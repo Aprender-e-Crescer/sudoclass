@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { SetStateAction, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { ChartArea, CheckCircle2Icon, Plus, Send, Star, Text, Trash } from 'lucide-react'
 import { Dialog, DialogContent, DialogTitle, TextField, Checkbox, InputLabel } from '@mui/material'
@@ -32,7 +32,7 @@ export function NewForm() {
     }))
   }
 
-  const handleOptionChange = (index, value) => {
+  const handleOptionChange = (index: number, value: string) => {
     const updatedOptions = [...newQuestion.options]
     updatedOptions[index] = value
     setNewQuestion((prev) => ({
@@ -41,7 +41,7 @@ export function NewForm() {
     }))
   }
 
-  const handleRemoveOption = (index) => {
+  const handleRemoveOption = (index: number) => {
     const updatedOptions = newQuestion.options.filter((_, i) => i !== index)
     setNewQuestion((prev) => ({
       ...prev,
@@ -60,7 +60,7 @@ export function NewForm() {
     })
   }
 
-  const handleTitleChange = (e) => {
+  const handleTitleChange = (e: { target: { value: SetStateAction<string> } }) => {
     setTitleForm(e.target.value)
   }
 
