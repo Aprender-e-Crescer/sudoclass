@@ -1,12 +1,11 @@
-import { firestore } from '@/services/firebase'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { addDoc, collection, endAt, getDocs } from 'firebase/firestore'
-import { ErrorMessage, Field, Form, Formik } from 'formik'
+import { Formik } from 'formik'
 import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { ChartConfig } from '@/components/ui/chart'
 import { SectorChart } from '@/components/custom/sector-chart'
+import { useChartsQuery } from '@/queries/use-charts-query'
+import { useChartsMutation } from '@/mutations/use-charts-mutation'
 
 const chartConfig = {
   visitors: {
@@ -39,29 +38,6 @@ export const chartsSchema = z.object({
 })
 
 export type Charts = z.infer<typeof chartsSchema>
-
-export function useChartsQuery() {
-  return useQuery({
-    queryKey: ['getCharts'],
-    queryFn: async () => {
-      const chartsRef = collection(firestore, 'charts').withConverter({
-        toFirestore: (charts: Charts) => charts,
-        fromFirestore: (snapshot) => chartsSchema.parse(snapshot.data()),
-      })
-      const snapshot = await getDocs(chartsRef)
-      return snapshot.docs.map((doc) => doc.data())
-    },
-  })
-}
-
-export function useChartsMutation() {
-  return useMutation({
-    mutationKey: ['addCharts'],
-    mutationFn: async (values: Charts) => {
-      return addDoc(collection(firestore, 'charts'), values)
-    },
-  })
-}
 
 function Charts() {
   const { data: chartDocs, isLoading, error } = useChartsQuery()
