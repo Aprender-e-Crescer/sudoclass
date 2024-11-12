@@ -16,7 +16,7 @@ export const Route = createFileRoute('/password-reset-success')({
   })
   
   const initialValues = {
-      password: ""
+      password: "Exemplo123"
   }
 
   export function PasswordResetSuccess() {
