@@ -1,26 +1,21 @@
-import { addDoc, collection, Firestore } from "firebase/firestore"
-import { z } from "zod"
-
+import { addDoc, collection, Firestore } from "firebase/firestore";
+import { useMutation } from '@tanstack/react-query';
+ 
 interface AdminData {
-    nome: string
-    cpf: string
+  nome: string;
+  cpf: string;
 }
-
-const adminSchema = z.object({
-    nome: z.string().min(3, 'Nome precisa ter no mínimo 3 caracteres'),
-    cpf: z.string().length(11, 'CPF precisa ter 11 caracteres')
-})
-
-export async function adminRegistration(db: Firestore, adminData: AdminData) {
-    try {
-        adminSchema.parse(adminData)
-        const newAdminRef = await addDoc(collection(db, 'admins'), adminData)
-        console.log("Admin cadastrado com sucesso", newAdminRef.id)
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            console.log("Erro de validação:", error.errors)
-        } else {
-            console.log("Erro ao cadastrar admin:", error)
-        }
-    }
+ 
+export function useAdminRegistrationMutation(db: Firestore) {
+  return useMutation({
+    mutationKey: ['adminRegistration'],
+    mutationFn: async (adminData: AdminData) => {
+      try {
+        const newAdminRef = await addDoc(collection(db, 'admins'), adminData);
+        console.log("Admin cadastrado com sucesso", newAdminRef.id);
+      } catch (error) {
+        console.log("Erro ao cadastrar admin:", (error as Error).message);
+      }
+    },
+  });
 }

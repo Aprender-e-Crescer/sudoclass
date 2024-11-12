@@ -1,47 +1,28 @@
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { LuPencilLine } from "react-icons/lu";
 
 interface FormHeaderProps {
-  imagemUrl: string;
   nome: string;
+  imagemUrl: string;  
 }
 
-const FormHeader: React.FC<FormHeaderProps> = ({ imagemUrl, nome }) => {
+const FormHeader: React.FC<FormHeaderProps> = ({ nome, imagemUrl }) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px',
-        borderBottom: '1px solid #ddd',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
+    <div className="flex items-center justify-between p-2 border-b border-gray-300">
+      <div className="flex items-center">
         <img
-          src={imagemUrl}
+          src={imagemUrl}  
           alt={`${nome}'s avatar`}
-          style={{
-            marginRight: '10px',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-          }}
+          className="mr-8 w-12 h-12 rounded-full"
         />
-        <h1
-          style={{
-            fontSize: '1.2rem',
-            fontWeight: 'normal',
-            margin: '0',
-          }}
-        >
-          {nome}
+        <h1 className="text-lg font-normal m-0">
+          {nome}  
         </h1>
       </div>
+      <Button type="submit" className='flex items-center space-x-2 px-4 py-2' icon={<LuPencilLine />}  >
+        Editar 
+      </Button>
     </div>
   );
 };

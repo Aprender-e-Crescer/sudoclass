@@ -18,15 +18,18 @@ export const registerSchema = z.object({
   rgDispatchDate: z.preprocess((value) => value, z.date(), { message: 'Insira uma data valida' }),
   telephone: z.string().min(1, "O campo 'Telefone' é obrigatório"),
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
-  matter: z.custom((matter) => {
-    return matter instanceof DocumentReference;
-  }, {
-    message: "O campo 'matter' deve ser uma referência válida do Firestore.",
-  }),
+  matter: z.custom(
+    (matter) => {
+      return matter instanceof DocumentReference
+    },
+    {
+      message: "O campo 'matter' deve ser uma referência válida do Firestore.",
+    },
+  ),
 })
 
 export const listTeacherSchema = z.object({
-  birthCity: z.string(), 
+  birthCity: z.string(),
   birthStatus: z.string(),
   cpf: z.string(),
   email: z.string(),

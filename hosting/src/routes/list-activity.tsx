@@ -30,7 +30,7 @@ export function ListActivity() {
             <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
             <div>
               <Button
-                className="bg-blue-600 mt-3 mb-3 ml-[228px] text-sm rounded-s-full rounded-e-full"
+                className="md:ml-5 bg-blue-600 mt-5  mb-3 text-sm rounded-s-full rounded-e-full"
                 iconPosition="left"
                 icon={<Plus />}
                 variant="blueButton"
