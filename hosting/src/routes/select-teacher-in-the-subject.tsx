@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { TeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export const Route = createFileRoute('/select-teacher-in-the-subject')({
@@ -8,7 +8,7 @@ export const Route = createFileRoute('/select-teacher-in-the-subject')({
 })
 
 export function SelectionTeacher() {
-  const { data } = TeachersSchemaQuery()
+  const { data } = useTeachersSchemaQuery()
 
   return (
     <div>

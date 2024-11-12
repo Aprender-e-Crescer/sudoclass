@@ -1,6 +1,6 @@
 import { auth, functions } from '@/services/firebase'
 import { httpsCallable } from "firebase/functions";
-import { LoginData, loginDataSchema } from '@/models/login'
+import { LoginData, loginDataSchema } from '@/models/login-schema'
 import { useMutation } from "@tanstack/react-query"
 import { z } from 'zod';
 import { signInWithCustomToken } from 'firebase/auth';
