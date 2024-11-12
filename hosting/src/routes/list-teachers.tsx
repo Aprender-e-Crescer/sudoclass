@@ -1,4 +1,5 @@
-import { TeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+
 import { createFileRoute } from '@tanstack/react-router'
 import avatarLogo from '@/assets/avatarLogo.svg'
 import { Button } from '@/components/ui/button'
@@ -8,7 +9,7 @@ export const Route = createFileRoute('/list-teachers')({
 })
 
 export function TeacherList() {
-  const { data: teachersList } = TeachersSchemaQuery()
+  const { data: teachersList } = useTeachersSchemaQuery()
   return (
     <div className="p-2">
       <div className="w-full border ">
