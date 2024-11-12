@@ -15,7 +15,6 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
   return (
     <div className="flex pb-2">
       <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        {/* Exibir links comuns se o privilégio não for 'pedagogue' */}
         {hasPrivilege !== 'pedagogue' ? (
           <>
             <li>
@@ -75,7 +74,6 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
             </li>
           </>
         ) : (
-          // Exibir links específicos para 'pedagogue' apenas
           <>
             <li>
               <Link
