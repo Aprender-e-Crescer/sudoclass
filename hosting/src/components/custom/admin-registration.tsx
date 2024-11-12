@@ -1,18 +1,13 @@
-import { Button } from "@/components/ui/button"
-import React from "react"
-import { Toast, ToastTitle, ToastClose, ToastViewport } from "@/components/ui/toast"
-import { IoCheckmarkDoneSharp } from "react-icons/io5"
-import { Link } from "@tanstack/react-router"
-import { Formik, Form } from "formik"
-import { Input } from "@/components/ui/input"
-import { adminRegistration } from "@/mutations/admin-registration-mutation"
-import { firestore } from "@/services/firebase"
-import { z } from "zod"
-
-const schema = z.object({
-  nome: z.string().min(1, "Nome é obrigatório"),
-  cpf: z.string().length(11, "CPF deve ter exatamente 11 dígitos")
-})
+import { Button } from '@/components/ui/button'
+import React from 'react'
+import { Toast, ToastTitle, ToastClose, ToastViewport } from '@/components/ui/toast'
+import { IoCheckmarkDoneSharp } from 'react-icons/io5'
+import { Link } from '@tanstack/react-router'
+import { Formik, Form } from 'formik'
+import { Input } from '@/components/ui/input'
+import { adminRegistration } from '@/mutations/admin-registration-mutation'
+import { firestore } from '@/services/firebase'
+import { RegistrationAdminSchema } from '@/models/admin-registration-schema'
 
 export function AdminRegistration() {
   const [toastOpen, setToastOpen] = React.useState(false)
@@ -27,14 +22,14 @@ export function AdminRegistration() {
   return (
     <div className="flex flex-col items-center p-6">
       <Formik
-        initialValues={{ nome: "", cpf: "" }}
-        validationSchema={schema}
+        initialValues={{ nome: '', cpf: '' }}
+        validationSchema={RegistrationAdminSchema}
         onSubmit={async (values) => {
           try {
             await adminRegistration(firestore, values)
             handleShowToast()
           } catch (error) {
-            console.error("Erro ao cadastrar admin:", error)
+            console.error('Erro ao cadastrar admin:', error)
           }
         }}
       >
@@ -70,9 +65,13 @@ export function AdminRegistration() {
             </div>
             <div className="flex gap-2 justify-center mt-5">
               <Link to="/">
-                <Button variant="lightTextBlack" size="large">Cancelar</Button>
+                <Button variant="lightTextBlack" size="large">
+                  Cancelar
+                </Button>
               </Link>
-              <Button type="submit" size="large">Cadastrar</Button>
+              <Button type="submit" size="large">
+                Cadastrar
+              </Button>
             </div>
           </Form>
         )}
