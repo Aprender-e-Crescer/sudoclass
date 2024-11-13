@@ -12,98 +12,106 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
     e.currentTarget.classList.add('font-bold', 'text-gray-800');
   };
 
+  let content;
+
+  if (hasPrivilege === 'student' || hasPrivilege === 'teacher') {
+    content = (
+      <>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Mural
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Atividades
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Notas
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Plano de Aula
+          </Link>
+        </li>
+        <li>
+          {hasPrivilege === 'teacher' ? (
+            <Link
+              to="/"
+              onClick={handleClick}
+              className="menu-link cursor-pointer text-gray-500"
+            >
+              Chamada
+            </Link>
+          ) : (
+            <Link
+              to="/"
+              onClick={handleClick}
+              className="menu-link cursor-pointer text-gray-500"
+            >
+              Frequência
+            </Link>
+          )}
+        </li>
+      </>
+    );
+  } else if (hasPrivilege === 'pedagogue') {
+    content = (
+      <>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Aluno
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Professor
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Pedagogo
+          </Link>
+        </li>
+      </>
+    );
+  }
+
   return (
     <div className="flex pb-2">
       <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        {hasPrivilege !== 'pedagogue' ? (
-          <>
-            <li>
-              <Link
-                to="/"
-                onClick={handleClick}
-                className="menu-link cursor-pointer text-gray-500"
-              >
-                Mural
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/"
-                onClick={handleClick}
-                className="menu-link cursor-pointer text-gray-500"
-              >
-                Atividades
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/"
-                onClick={handleClick}
-                className="menu-link cursor-pointer text-gray-500"
-              >
-                Notas
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/"
-                onClick={handleClick}
-                className="menu-link cursor-pointer text-gray-500"
-              >
-                Plano de Aula
-              </Link>
-            </li>
-            <li>
-              {hasPrivilege === 'teacher' ? (
-                <Link
-                  to="/"
-                  onClick={handleClick}
-                  className="menu-link cursor-pointer text-gray-500"
-                >
-                  Chamada
-                </Link>
-              ) : (
-                <Link
-                  to="/"
-                  onClick={handleClick}
-                  className="menu-link cursor-pointer text-gray-500"
-                >
-                  Frequência
-                </Link>
-              )}
-            </li>
-          </>
-        ) : (
-          <>
-            <li>
-              <Link
-                to="/aluno"
-                onClick={handleClick}
-                className="menu-link cursor-pointer text-gray-500"
-              >
-                Aluno
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/professor"
-                onClick={handleClick}
-                className="menu-link cursor-pointer text-gray-500"
-              >
-                Professor
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/pedagogo"
-                onClick={handleClick}
-                className="menu-link cursor-pointer text-gray-500"
-              >
-                Pedagogo
-              </Link>
-            </li>
-          </>
-        )}
+        {content}
       </ul>
     </div>
   );
