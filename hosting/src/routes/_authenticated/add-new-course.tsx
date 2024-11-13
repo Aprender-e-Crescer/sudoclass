@@ -6,7 +6,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 
-export const Route = createFileRoute('/add-new-course')({
+export const Route = createFileRoute('/_authenticated/add-new-course')({
   component: AddNewCourseForm,
 })
 
@@ -36,7 +36,13 @@ function AddNewCourseForm() {
             <h1 className="font-semibold p-5 ml-10">Adicionar curso</h1>
             <hr />
             <div className="p-6">
-              <InputForm title="Nome" label="Nome" name="name" placeholder="Nome" id="name" />
+              <InputForm
+                title="Nome"
+                label="Nome"
+                name="name"
+                placeholder="Nome"
+                id="name"
+              />
               <InputForm
                 title="Data de inicio"
                 label="Data de inicio"

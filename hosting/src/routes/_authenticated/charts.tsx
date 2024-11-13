@@ -17,7 +17,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export const Route = createFileRoute('/charts')({
+export const Route = createFileRoute('/_authenticated/charts')({
   component: Charts,
 })
 
@@ -62,7 +62,18 @@ function Charts() {
     <div>
       <div className="flex flex-wrap justify-center gap-5">
         {chartDocs?.map(
-          ({ data, descriptionChart, endAngle, innerRadius, outerRadius, polarRadius, valueSize }, index) => (
+          (
+            {
+              data,
+              descriptionChart,
+              endAngle,
+              innerRadius,
+              outerRadius,
+              polarRadius,
+              valueSize,
+            },
+            index,
+          ) => (
             <div key={index} className="flex-1 min-w-56">
               <SectorChart
                 chartData={data}
@@ -91,7 +102,9 @@ function Charts() {
             valueSize: '',
           }}
           validationSchema={toFormikValidationSchema(chartsSchema)}
-          onSubmit={(values, { resetForm }) => searchSubmitForm(values, resetForm)}
+          onSubmit={(values, { resetForm }) =>
+            searchSubmitForm(values, resetForm)
+          }
         ></Formik>
       </div>
     </div>

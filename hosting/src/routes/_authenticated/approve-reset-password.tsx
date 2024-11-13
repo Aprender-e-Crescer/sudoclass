@@ -4,15 +4,16 @@ import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 
 interface ApproveResetPasswordProps {
-  aluno : string
+  aluno: string
 }
 
-
-export const Route = createFileRoute('/approve-reset-password')({
+export const Route = createFileRoute('/_authenticated/approve-reset-password')({
   component: ApproveResetPassword,
 })
 
-export function ApproveResetPassword({aluno = "Aluno"} : ApproveResetPasswordProps) {
+export function ApproveResetPassword({
+  aluno = 'Aluno',
+}: ApproveResetPasswordProps) {
   return (
     <div>
       <div className="flex flex-col justify-center items-center mb-24 min-h-screen font-poppins px-4 sm:px-0">
@@ -28,8 +29,8 @@ export function ApproveResetPassword({aluno = "Aluno"} : ApproveResetPasswordPro
           <div className="w-full md:w-1/2 p-8 flex flex-col justify-center items-center h-full space-y-4">
             <div className="hidden md:block text-center">
               <h1 className="text-[24px] font-semibold text-blue-600 font-poppins">
-                O aluno {aluno} solicitou uma redefinição de senha. Caso aprove, copie a nova senha gerada e envie ao
-                aluno(a).
+                O aluno {aluno} solicitou uma redefinição de senha. Caso aprove,
+                copie a nova senha gerada e envie ao aluno(a).
               </h1>
             </div>
 

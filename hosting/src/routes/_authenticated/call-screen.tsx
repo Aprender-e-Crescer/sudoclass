@@ -6,7 +6,11 @@ import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { collection, addDoc } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover'
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@radix-ui/react-popover'
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
@@ -25,7 +29,10 @@ export function DatePickerDemo({
         <Button
           size="medium"
           variant="ghostBlack"
-          className={cn('bg-slate-200 justify-start text-left', !date && 'text-muted-foreground')}
+          className={cn(
+            'bg-slate-200 justify-start text-left',
+            !date && 'text-muted-foreground',
+          )}
         >
           {date ? format(date, 'PPP') : <span>Escolha a data</span>}
         </Button>
@@ -45,7 +52,7 @@ export function DatePickerDemo({
   )
 }
 
-export const Route = createFileRoute('/call-screen')({
+export const Route = createFileRoute('/_authenticated/call-screen')({
   component: callScreen,
 })
 
@@ -65,17 +72,24 @@ export function callScreen() {
 
   const updateStudentStatus = (id: string, status: any) => {
     setStudentList((prevList) =>
-      prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
+      prevList.map((student) =>
+        student.id === id ? { ...student, variant: status } : student,
+      ),
     )
   }
 
   const addCall = async (values: {
-    studentId: string;
-    status: string;
-    date: Date;
-}) => {
+    studentId: string
+    status: string
+    date: Date
+  }) => {
     try {
-      const callRef = collection(firestore, 'student', 'U2IvXW4yX8IE5QksHSox', 'call')
+      const callRef = collection(
+        firestore,
+        'student',
+        'U2IvXW4yX8IE5QksHSox',
+        'call',
+      )
       const newCall = {
         studentId: values.studentId,
         status: values.status,
@@ -121,7 +135,12 @@ export function callScreen() {
       <div className="flex flex-1">
         <div className="flex-1">
           {studentList.map((student) => (
-            <ListStudents key={student.id} name={student.name} picture={student.picture} variant={student.variant} />
+            <ListStudents
+              key={student.id}
+              name={student.name}
+              picture={student.picture}
+              variant={student.variant}
+            />
           ))}
         </div>
         <div className="w-full">
@@ -132,7 +151,9 @@ export function callScreen() {
             setCurrentIndex={setCurrentIndex}
           />
           <div className="flex justify-around mb-10">
-            <Button onClick={handleAddCall} size="medium" >Finalizar Chamada</Button>
+            <Button onClick={handleAddCall} size="medium">
+              Finalizar Chamada
+            </Button>
           </div>
           <div className="flex justify-around mb-6">
             <DatePickerDemo date={date} setDate={setDate} />
