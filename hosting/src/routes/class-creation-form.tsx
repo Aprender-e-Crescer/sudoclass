@@ -8,17 +8,18 @@ import { InputFile } from '@/components/custom/file-input'
 import { Link } from '@tanstack/react-router'
 import { useRegisterClassController } from '@/controllers/use-register-class-form'
 import { creationClassSchema } from '@/models/creation-class-schema'
+import { parse } from "date-fns";
+
 
 const initialValues = {
   class: '',
   shift: '',
-  startForeast: '',
-  endPredition: '',
+  startForecast: '',
+  endPrediction: '',
   registrationFinalDate: '',
   quantityHours: '',
   totalVacancies: '',
-}
-
+};
 export const Route = createFileRoute('/class-creation-form')({
   component: ClassCreationForm,
 })
@@ -35,16 +36,35 @@ const checkboxValues = [
 ]
 
 function useLogic() {
-  const { registerClassForm } = useRegisterClassController()
+  const { registerClassForm } = useRegisterClassController();
 
-  return { registerClassForm }
+  const handleOnClassCreationSubmit = (values: {
+    class: string;
+    shift: string;
+    startForecast: string;
+    endPrediction: string;
+    registrationFinalDate: string;
+    quantityHours: string;
+    totalVacancies: string;
+  }) => {
+    const formattedValues = {
+      ...values,
+      startForecast: parse(values.startForecast, 'dd/MM/yyyy', new Date()),
+      endPrediction: parse(values.endPrediction, 'dd/MM/yyyy', new Date()),
+      registrationFinalDate: parse(values.registrationFinalDate, 'dd/MM/yyyy', new Date()),
+    };
+
+    registerClassForm(formattedValues);
+  };
+
+  return { handleOnClassCreationSubmit };
 }
 
 export function ClassCreationForm() {
-  const { registerClassForm } = useLogic()
+  const { handleOnClassCreationSubmit } = useLogic()
   return (
     <Formik
-      onSubmit={(values) => registerClassForm(values)}
+      onSubmit={handleOnClassCreationSubmit}
       initialValues={initialValues}
       validationSchema={toFormikValidationSchema(creationClassSchema)}
     >

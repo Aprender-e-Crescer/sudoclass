@@ -26,6 +26,7 @@ export function CreateActivityMaterial() {
     deliveryDate: date,
   }
 
+  const addActivity = async (values: typeof initialValues) => {
   const handleSubmit = async (values: any, { setErrors }: any) => {
     try {
       const parsed = activitySchema.safeParse(values)
