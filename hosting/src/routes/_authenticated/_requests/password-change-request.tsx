@@ -4,7 +4,6 @@ import { X } from 'lucide-react'
 import { Check } from 'lucide-react'
 import avatarLogo from '@/assets/avatarLogo.svg'
 import { Button } from '@/components/ui/button'
-import { useChangePasswordRequestQuery } from '@/queries/use-change-password-request-query'
 import { AlertDialog, AlertDialogHeader, AlertDialogContent, AlertDialogTrigger, AlertDialogTitle, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { useToast } from '@/hooks/use-toast'
@@ -14,7 +13,6 @@ export const Route = createFileRoute('/password-change-request')({
 })
 
 export function RequestChangePassword() {
-    const {data: studentPasswordChangeRequests} = useChangePasswordRequestQuery()
     const {data: students} = useStudentsListQuery()
     const {toast} = useToast()
   

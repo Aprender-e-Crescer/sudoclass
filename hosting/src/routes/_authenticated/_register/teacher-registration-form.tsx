@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { RegisterRequests, registerSchema } from '@/models/teachers-schema'
+import { registerSchema } from '@/models/teachers-schema'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
-import { parse } from "date-fns";
 
 export const Route = createFileRoute('/teacher-registration-form')({
   component: TeacherRegistration,
