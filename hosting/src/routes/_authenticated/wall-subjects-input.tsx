@@ -12,7 +12,7 @@ import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutatio
 import { collection, getDocs } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 
-export const Route = createFileRoute('/wall-subjects-input')({
+export const Route = createFileRoute('/_authenticated/wall-subjects-input')({
   component: WallSubjectInput,
 })
 
@@ -27,8 +27,18 @@ const initialValues = {
 }
 
 // Função para buscar os comentários do Firestore
-const fetchCommentsFromFirestore = async (schoolMatriceId: string, subjectId: string) => {
-  const commentsRef = collection(firestore, 'schoolMatrices', schoolMatriceId, 'subjects', subjectId, 'warning')
+const fetchCommentsFromFirestore = async (
+  schoolMatriceId: string,
+  subjectId: string,
+) => {
+  const commentsRef = collection(
+    firestore,
+    'schoolMatrices',
+    schoolMatriceId,
+    'subjects',
+    subjectId,
+    'warning',
+  )
   const querySnapshot = await getDocs(commentsRef)
   return querySnapshot.docs.map((doc) => doc.data())
 }
@@ -43,10 +53,16 @@ export function WallSubjectInput() {
     queryFn: () => fetchCommentsFromFirestore(schoolMatriceId, subjectId),
   })
 
-  const createWarningMutation = useCreateWarningMutation(schoolMatriceId, subjectId)
+  const createWarningMutation = useCreateWarningMutation(
+    schoolMatriceId,
+    subjectId,
+  )
 
   // Definindo os tipos para o handleFormSubmit
-  const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
+  const handleFormSubmit = (
+    values: typeof initialValues,
+    { resetForm }: FormikHelpers<typeof initialValues>,
+  ) => {
     // Chame a mutação com os valores do formulário
     createWarningMutation.mutate({
       message: values.message,
@@ -88,7 +104,9 @@ export function WallSubjectInput() {
                     </button>
                   }
                 />
-                {errors.message && touched.message && <div className="text-red-500 text-sm">{errors.message}</div>}
+                {errors.message && touched.message && (
+                  <div className="text-red-500 text-sm">{errors.message}</div>
+                )}
               </Form>
             )}
           </Formik>

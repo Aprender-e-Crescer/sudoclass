@@ -1,13 +1,28 @@
 import { SetStateAction, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { ChartArea, CheckCircle2Icon, Plus, Send, Star, Text, Trash } from 'lucide-react'
-import { Dialog, DialogContent, DialogTitle, TextField, Checkbox, InputLabel } from '@mui/material'
+import {
+  ChartArea,
+  CheckCircle2Icon,
+  Plus,
+  Send,
+  Star,
+  Text,
+  Trash,
+} from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Checkbox,
+  InputLabel,
+} from '@mui/material'
 import { Button } from '@/components/ui/button'
 import { QuestionForm } from '@/components/custom/question-form'
 import { CardFormTextArea } from '@/components/custom/card-form-text-area'
 import { CardFormStars } from '@/components/custom/card-form-stars'
 
-export const Route = createFileRoute('/new-form')({
+export const Route = createFileRoute('/_authenticated/new-form')({
   component: () => NewForm(),
 })
 
@@ -60,7 +75,9 @@ export function NewForm() {
     })
   }
 
-  const handleTitleChange = (e: { target: { value: SetStateAction<string> } }) => {
+  const handleTitleChange = (e: {
+    target: { value: SetStateAction<string> }
+  }) => {
     setTitleForm(e.target.value)
   }
 
@@ -86,10 +103,16 @@ export function NewForm() {
         </div>
       </div>
       <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-600">
-        <button onClick={() => setOpenDialogTittle(true)} className="text-2xl font-bold mb-4">
+        <button
+          onClick={() => setOpenDialogTittle(true)}
+          className="text-2xl font-bold mb-4"
+        >
           {titleForm}
         </button>
-        <Dialog open={openDialogTittle} onClose={() => setOpenDialogTittle(false)}>
+        <Dialog
+          open={openDialogTittle}
+          onClose={() => setOpenDialogTittle(false)}
+        >
           <DialogContent>
             <div className="mb-5">
               <InputLabel>Título do Formulario</InputLabel>
@@ -110,7 +133,12 @@ export function NewForm() {
                 id="descriptionForm"
               />
             </div>
-            <Button onClick={saveTitle} variant="blueButton" color="primary" className="mt-4">
+            <Button
+              onClick={saveTitle}
+              variant="blueButton"
+              color="primary"
+              className="mt-4"
+            >
               Salvar
             </Button>
           </DialogContent>
@@ -121,12 +149,20 @@ export function NewForm() {
             <div key={index}>
               {question.type === 'multiple-choice' && (
                 <div>
-                  <QuestionForm question={question.title} options={question.options} radioId={`question-${index}`} />
+                  <QuestionForm
+                    question={question.title}
+                    options={question.options}
+                    radioId={`question-${index}`}
+                  />
                 </div>
               )}
               {question.type === 'text' && (
                 <div>
-                  <CardFormTextArea title={question.title} id="Text" key="Text" />
+                  <CardFormTextArea
+                    title={question.title}
+                    id="Text"
+                    key="Text"
+                  />
                 </div>
               )}
               {question.type === 'rating' && (
@@ -138,12 +174,18 @@ export function NewForm() {
           ))}
         </div>
 
-        <button onClick={() => setOpenDialogQuestion(true)} className="flex items-center gap-2 text-blue-500 mt-4">
+        <button
+          onClick={() => setOpenDialogQuestion(true)}
+          className="flex items-center gap-2 text-blue-500 mt-4"
+        >
           <Plus />
           Nova pergunta
         </button>
 
-        <Dialog open={openDialogQuestion} onClose={() => setOpenDialogQuestion(false)}>
+        <Dialog
+          open={openDialogQuestion}
+          onClose={() => setOpenDialogQuestion(false)}
+        >
           <DialogTitle>Nova Pergunta</DialogTitle>
           <DialogContent>
             <div className="flex gap-2 mb-4">
@@ -180,7 +222,9 @@ export function NewForm() {
             </div>
             <div className="mb-5">
               <TextField
-                onChange={(e) => setNewQuestion({ ...newQuestion, title: e.target.value })}
+                onChange={(e) =>
+                  setNewQuestion({ ...newQuestion, title: e.target.value })
+                }
                 name="title"
                 placeholder="Título da pergunta"
                 id="title"
@@ -192,10 +236,15 @@ export function NewForm() {
                   <div key={index} className="flex items-center gap-2 mb-2">
                     <TextField
                       value={option}
-                      onChange={(e) => handleOptionChange(index, e.target.value)}
+                      onChange={(e) =>
+                        handleOptionChange(index, e.target.value)
+                      }
                       label={`Opção ${index + 1}`}
                     />
-                    <Button variant="ghostBlack" onClick={() => handleRemoveOption(index)}>
+                    <Button
+                      variant="ghostBlack"
+                      onClick={() => handleRemoveOption(index)}
+                    >
                       <Trash />
                     </Button>
                   </div>
@@ -208,11 +257,18 @@ export function NewForm() {
             <div className="flex items-center gap-2">
               <Checkbox
                 checked={newQuestion.required}
-                onChange={(e) => setNewQuestion({ ...newQuestion, required: e.target.checked })}
+                onChange={(e) =>
+                  setNewQuestion({ ...newQuestion, required: e.target.checked })
+                }
               />
               <span>Obrigatória</span>
             </div>
-            <Button onClick={handleSaveQuestion} variant="blueButton" color="primary" className="mt-4">
+            <Button
+              onClick={handleSaveQuestion}
+              variant="blueButton"
+              color="primary"
+              className="mt-4"
+            >
               Salvar Pergunta
             </Button>
           </DialogContent>

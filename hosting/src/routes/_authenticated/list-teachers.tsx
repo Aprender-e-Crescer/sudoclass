@@ -4,7 +4,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import avatarLogo from '@/assets/avatarLogo.svg'
 import { Button } from '@/components/ui/button'
 
-export const Route = createFileRoute('/list-teachers')({
+export const Route = createFileRoute('/_authenticated/list-teachers')({
   component: TeacherList,
 })
 
@@ -20,16 +20,16 @@ export function TeacherList() {
           </Button>
         </div>
         <div className="flex items-center  p-4">
-          <img src={avatarLogo} alt="Avatar Logo" className="w-12 h-18 ml-16" /> 
-          <h1 className="ml-16 text-xl font-semibold">Jane Cooper</h1> 
+          <img src={avatarLogo} alt="Avatar Logo" className="w-12 h-18 ml-16" />
+          <h1 className="ml-16 text-xl font-semibold">Jane Cooper</h1>
         </div>
         {teachersList?.map(({ fullName }, index) => (
           <div
             key={index}
             className={`flex items-center p-4 ${index !== teachersList.length - 1 ? 'border' : ''}`}
           >
-            <img src={avatarLogo} alt="Avatar" className="w-12 h-18 ml-16" /> 
-            <h1 className="ml-16 text-xl font-semibold">{fullName}</h1> 
+            <img src={avatarLogo} alt="Avatar" className="w-12 h-18 ml-16" />
+            <h1 className="ml-16 text-xl font-semibold">{fullName}</h1>
           </div>
         ))}
       </div>

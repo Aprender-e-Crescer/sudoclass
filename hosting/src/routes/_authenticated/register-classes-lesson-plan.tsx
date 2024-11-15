@@ -7,7 +7,9 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { DateOrTimeInput } from '@/components/custom/date-or-time-input'
 
-export const Route = createFileRoute('/register-classes-lesson-plan')({
+export const Route = createFileRoute(
+  '/_authenticated/register-classes-lesson-plan',
+)({
   component: RegisterClassesLessonPlan,
 })
 
@@ -54,7 +56,13 @@ export function RegisterClassesLessonPlan() {
                       title="Hora inicial"
                       placeholder="19:00"
                     />
-                    <InputForm id="endHour" name="endHour" label="endHour" title="Hora final" placeholder="22:00" />
+                    <InputForm
+                      id="endHour"
+                      name="endHour"
+                      label="endHour"
+                      title="Hora final"
+                      placeholder="22:00"
+                    />
                   </div>
                   <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                     <Button variant={'blueButton'}>Marcar</Button>
@@ -72,8 +80,18 @@ export function RegisterClassesLessonPlan() {
                   <InputCheckbox checkboxValues={weekDays} />
                 </div>
                 <div className="flex sm:flex-row flex-col flex-1 gap-3">
-                  <DateOrTimeInput title="Hora Inicial" id="teste1" name="teste1" type="time" />
-                  <DateOrTimeInput title="Hora Final" id="teste2" name="teste2" type="time" />
+                  <DateOrTimeInput
+                    title="Hora Inicial"
+                    id="teste1"
+                    name="teste1"
+                    type="time"
+                  />
+                  <DateOrTimeInput
+                    title="Hora Final"
+                    id="teste2"
+                    name="teste2"
+                    type="time"
+                  />
                 </div>
               </div>
             </div>

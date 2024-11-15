@@ -1,12 +1,14 @@
-import { Formik, Form, Field } from 'formik';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
-import { createFileRoute } from '@tanstack/react-router';
-import { registerSchema } from '@/models/teachers-schema';
-import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query';
+import { Formik, Form, Field } from 'formik'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { createFileRoute } from '@tanstack/react-router'
+import { registerSchema } from '@/models/teachers-schema'
+import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
 
-export const Route = createFileRoute('/teachers-listing')({
+export const Route = createFileRoute(
+  '/_authenticated/_register/teachers-listing',
+)({
   component: TeachersListing,
-});
+})
 
 const initialValues = {
   municipality: '',
@@ -25,10 +27,10 @@ const initialValues = {
   rgDispatchDate: '',
   telephone: '',
   password: '',
-};
+}
 
 export function TeachersListing() {
-  const { data: registerRequests } = useTeachersSchemaQuery();
+  const { data: registerRequests } = useTeachersSchemaQuery()
 
   return (
     <>
@@ -51,7 +53,7 @@ export function TeachersListing() {
         initialValues={initialValues}
         validationSchema={toFormikValidationSchema(registerSchema)}
         onSubmit={(values) => {
-          console.log('Valores do formulário:', values);
+          console.log('Valores do formulário:', values)
         }}
       >
         {({ errors, touched }) => (
@@ -129,7 +131,9 @@ export function TeachersListing() {
             <div>
               <label>Nome Completo:</label>
               <Field type="text" name="fullName" />
-              {touched.fullName && errors.fullName && <div>{errors.fullName}</div>}
+              {touched.fullName && errors.fullName && (
+                <div>{errors.fullName}</div>
+              )}
             </div>
 
             <div>
@@ -167,7 +171,9 @@ export function TeachersListing() {
             <div>
               <label>Senha:</label>
               <Field type="password" name="password" />
-              {touched.password && errors.password && <div>{errors.password}</div>}
+              {touched.password && errors.password && (
+                <div>{errors.password}</div>
+              )}
             </div>
 
             <button type="submit">Cadastrar</button>
@@ -175,5 +181,5 @@ export function TeachersListing() {
         )}
       </Formik>
     </>
-  );
+  )
 }

@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 
-export const Route = createFileRoute('/school-matrices')({
+export const Route = createFileRoute('/_authenticated/school-matrices')({
   component: SchoolMatrices,
 })
 
@@ -55,19 +55,31 @@ function SchoolMatrices() {
             <div>
               <label htmlFor="name">Nome:</label>
               <Field type="text" name="name" />
-              <ErrorMessage name="name" component="div" className="text-red-600" />
+              <ErrorMessage
+                name="name"
+                component="div"
+                className="text-red-600"
+              />
             </div>
 
             <div>
               <label htmlFor="numberOfClasses">Número de aulas:</label>
               <Field type="number" name="numberOfClasses" />
-              <ErrorMessage name="numberOfClasses" component="div" className="text-red-600" />
+              <ErrorMessage
+                name="numberOfClasses"
+                component="div"
+                className="text-red-600"
+              />
             </div>
 
             <div>
               <label htmlFor="workload">Carga Horária:</label>
               <Field type="number" name="workload" />
-              <ErrorMessage name="workload" component="div" className="text-red-600" />
+              <ErrorMessage
+                name="workload"
+                component="div"
+                className="text-red-600"
+              />
             </div>
 
             <button type="submit">Adicionar</button>

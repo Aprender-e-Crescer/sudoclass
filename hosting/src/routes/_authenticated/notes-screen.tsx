@@ -4,7 +4,7 @@ import { NotesTable } from '@/components/custom/notes-table'
 import { Avatar } from '@/components/ui/avatar'
 import Avatarimg from '@/assets/avatar.png'
 
-export const Route = createFileRoute('/notes-screen')({
+export const Route = createFileRoute('/_authenticated/notes-screen')({
   component: () => {
     return (
       <>
@@ -19,12 +19,42 @@ export const Route = createFileRoute('/notes-screen')({
               <HeaderNotes subtitle="Para cada aluno" title="Média Geral" />
             </div>
             <div className="flex">
-              <NotesTable name="Ronald Richards" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Marvin McKinney" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Jerome Bell" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Kathryn Murphy" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Jacob Jones" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Kristin Watson" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
+              <NotesTable
+                name="Ronald Richards"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Marvin McKinney"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Jerome Bell"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Kathryn Murphy"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Jacob Jones"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Kristin Watson"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
             </div>
           </div>
         </div>
@@ -42,12 +72,42 @@ export const Route = createFileRoute('/notes-screen')({
 
           <div className="flex flex-col font-medium">
             <div className="flex flex-col">
-              <NotesTable name="Ronald Richards" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Marvin McKinney" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Jerome Bell" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Kathryn Murphy" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Jacob Jones" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
-              <NotesTable name="Kristin Watson" overallRating="_/100" rating="_/100" avatar={Avatarimg} />
+              <NotesTable
+                name="Ronald Richards"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Marvin McKinney"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Jerome Bell"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Kathryn Murphy"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Jacob Jones"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
+              <NotesTable
+                name="Kristin Watson"
+                overallRating="_/100"
+                rating="_/100"
+                avatar={Avatarimg}
+              />
             </div>
           </div>
         </div>

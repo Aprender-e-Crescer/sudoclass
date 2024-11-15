@@ -7,7 +7,9 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { registerSchema } from '@/models/teachers-schema'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
 
-export const Route = createFileRoute('/teacher-registration-form')({
+export const Route = createFileRoute(
+  '/_authenticated/_register/teacher-registration-form',
+)({
   component: TeacherRegistration,
 })
 
@@ -32,13 +34,13 @@ const initialValues = {
 }
 
 function useLogic() {
-  const { registerTeacher } = useRegisterTeacherController();
+  const { registerTeacher } = useRegisterTeacherController()
 
   const handleOnTeacherSubmit = (values: typeof initialValues) => {
-    registerTeacher(values);
-  };
+    registerTeacher(values)
+  }
 
-  return { handleOnTeacherSubmit };
+  return { handleOnTeacherSubmit }
 }
 
 export function TeacherRegistration() {
@@ -209,4 +211,3 @@ export function TeacherRegistration() {
     </>
   )
 }
-

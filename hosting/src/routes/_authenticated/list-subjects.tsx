@@ -8,7 +8,7 @@ import { firestore } from '@/services/firebase'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 
-export const Route = createFileRoute('/list-subjects')({
+export const Route = createFileRoute('/_authenticated/list-subjects')({
   component: ListSubjects,
 })
 
@@ -18,13 +18,31 @@ function ListSubjects() {
 
   return (
     <>
-      <h1 className="text-left text-2xl font-bold mb-2 ml-4 mt-4">Adicionar Disciplina</h1>
+      <h1 className="text-left text-2xl font-bold mb-2 ml-4 mt-4">
+        Adicionar Disciplina
+      </h1>
       <hr className="mb-4" />
       <Formik
-        initialValues={{ id: '', name: '', description: '', startDate: '', endDate: '', workload: 1, teacher: '' }}
+        initialValues={{
+          id: '',
+          name: '',
+          description: '',
+          startDate: '',
+          endDate: '',
+          workload: 1,
+          teacher: '',
+        }}
         validate={validate}
         onSubmit={async (values, { resetForm }) => {
-          await addDoc(collection(firestore, 'schoolMatrices', 'aQjvxCKlEuHc9YQEedCQ', 'subjects'), values)
+          await addDoc(
+            collection(
+              firestore,
+              'schoolMatrices',
+              'aQjvxCKlEuHc9YQEedCQ',
+              'subjects',
+            ),
+            values,
+          )
           console.log('Valores do formulário:', values)
           resetForm()
         }}
@@ -77,7 +95,12 @@ function ListSubjects() {
             <Button type="button" variant="ghostBlack" size="medium">
               Cancelar
             </Button>
-            <Button type="submit" variant="blueButton" size="medium" iconPosition="right">
+            <Button
+              type="submit"
+              variant="blueButton"
+              size="medium"
+              iconPosition="right"
+            >
               Cadastrar Aulas
             </Button>
           </div>

@@ -1,13 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
 import ListStudents from '@/components/custom/list-students'
-import { Images, Paperclip, SendHorizontal, Smile, ArrowLeft } from 'lucide-react'
+import {
+  Images,
+  Paperclip,
+  SendHorizontal,
+  Smile,
+  ArrowLeft,
+} from 'lucide-react'
 import { SetStateAction, useState } from 'react'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { getInputSchema } from '@/models/get-input-schema'
 
-export const Route = createFileRoute('/private-chat')({
+export const Route = createFileRoute('/_authenticated/private-chat')({
   component: PrivateChat,
 })
 
@@ -15,26 +21,54 @@ const initialValues = {
   ProcurarDocumentos: '',
 }
 
-
-
 const StudentsData = [
   { name: 'João', picture: '', variant: undefined },
-  { name: 'Maria', picture: 'https://example.com/maria.jpg', variant: undefined },
-  { name: 'Pedro', picture: 'https://example.com/pedro.jpg', variant: undefined },
+  {
+    name: 'Maria',
+    picture: 'https://example.com/maria.jpg',
+    variant: undefined,
+  },
+  {
+    name: 'Pedro',
+    picture: 'https://example.com/pedro.jpg',
+    variant: undefined,
+  },
   { name: 'Ana', picture: 'https://example.com/ana.jpg', variant: undefined },
-  { name: 'Lucas', picture: 'https://example.com/lucas.jpg', variant: undefined },
-  { name: 'Rafael', picture: 'https://example.com/rafael.jpg', variant: undefined },
-  { name: 'Isabella', picture: 'https://example.com/isabella.jpg', variant: undefined },
+  {
+    name: 'Lucas',
+    picture: 'https://example.com/lucas.jpg',
+    variant: undefined,
+  },
+  {
+    name: 'Rafael',
+    picture: 'https://example.com/rafael.jpg',
+    variant: undefined,
+  },
+  {
+    name: 'Isabella',
+    picture: 'https://example.com/isabella.jpg',
+    variant: undefined,
+  },
   { name: 'João', picture: '', variant: undefined },
-  { name: 'Maria', picture: 'https://example.com/maria.jpg', variant: undefined },
-  { name: 'Pedro', picture: 'https://example.com/pedro.jpg', variant: undefined },
+  {
+    name: 'Maria',
+    picture: 'https://example.com/maria.jpg',
+    variant: undefined,
+  },
+  {
+    name: 'Pedro',
+    picture: 'https://example.com/pedro.jpg',
+    variant: undefined,
+  },
   { name: 'Ana', picture: 'https://example.com/ana.jpg', variant: undefined },
 ]
 
 export function PrivateChat() {
-  const [selectedStudent, setSelectedStudent] = useState<null | typeof StudentsData[0]>(null)
+  const [selectedStudent, setSelectedStudent] = useState<
+    null | (typeof StudentsData)[0]
+  >(null)
 
-  const handleStudentSelect = (student: typeof StudentsData[0]) => {
+  const handleStudentSelect = (student: (typeof StudentsData)[0]) => {
     setSelectedStudent(student)
   }
 
@@ -44,10 +78,16 @@ export function PrivateChat() {
 
   return (
     <div className="flex flex-col lg:flex-row w-full gap-4 h-screen">
-      <div className={`flex-col ${selectedStudent ? 'hidden lg:flex h-full' : 'flex'}`}>
+      <div
+        className={`flex-col ${selectedStudent ? 'hidden lg:flex h-full' : 'flex'}`}
+      >
         {StudentsData.map((student, index) => (
           <div key={index} onClick={() => handleStudentSelect(student)}>
-            <ListStudents name={student.name} picture={student.picture} variant={student.variant} />
+            <ListStudents
+              name={student.name}
+              picture={student.picture}
+              variant={student.variant}
+            />
           </div>
         ))}
       </div>
@@ -61,7 +101,10 @@ export function PrivateChat() {
           </button>
           {selectedStudent && (
             <>
-              <img src={selectedStudent.picture} className="w-16 h-16 rounded-full mr-2" />
+              <img
+                src={selectedStudent.picture}
+                className="w-16 h-16 rounded-full mr-2"
+              />
               <span>{selectedStudent.name}</span>
             </>
           )}

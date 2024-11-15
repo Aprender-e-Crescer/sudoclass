@@ -3,17 +3,24 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import imageProfile from '@/assets/image-profile.png'
 import { Button } from '@/components/ui/button'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
 
-export const Route = createFileRoute('/profile-changes')({
+export const Route = createFileRoute('/_authenticated/profile-changes')({
   component: ProfileChanges,
 })
 
 export function ProfileChanges() {
   const { data: students } = useStudentsListQuery()
-  const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null)
+  const [selectedImage, setSelectedImage] = useState<
+    string | ArrayBuffer | null
+  >(null)
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -39,7 +46,9 @@ export function ProfileChanges() {
         <div className="flex flex-row gap-10 items-center max-[420px]:flex-col max-[420px]:w-[380px]">
           <div>
             <Avatar className="w-24 h-24">
-              <AvatarImage src={selectedImage ? selectedImage.toString() : imageProfile} />
+              <AvatarImage
+                src={selectedImage ? selectedImage.toString() : imageProfile}
+              />
             </Avatar>
           </div>
           <div className="flex gap-6 max-[420px]:flex-col">
@@ -49,16 +58,28 @@ export function ProfileChanges() {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>
-                  <label onClick={handleChoosePhotoClick} className="flex gap-2 items-center cursor-pointer">
+                  <label
+                    onClick={handleChoosePhotoClick}
+                    className="flex gap-2 items-center cursor-pointer"
+                  >
                     Carregar do dispositivo
                     <Upload className="h-4 w-4" />
                   </label>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
 
-            <Button onClick={() => setSelectedImage(null)} variant={'lightTextRed'}>
+            <Button
+              onClick={() => setSelectedImage(null)}
+              variant={'lightTextRed'}
+            >
               Apagar Foto{' '}
             </Button>
           </div>
@@ -66,7 +87,10 @@ export function ProfileChanges() {
 
         <div>
           {students?.map((user, index) => (
-            <div key={index} className="flex flex-col gap-6 max-[420px]:w-[400px] ">
+            <div
+              key={index}
+              className="flex flex-col gap-6 max-[420px]:w-[400px] "
+            >
               <div className="flex flex-col gap-2  ">
                 <label>Nome</label>
                 <div className="h-10 w-[700px] flex items-center rounded-lg border border-gray-200">

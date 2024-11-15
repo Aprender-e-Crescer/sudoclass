@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { PlanTable } from '@/components/custom/plan-table'
 import { useListSchoolMatricesQuery } from '@/queries/use-list-school-matrices-query'
 
-export const Route = createFileRoute('/teaching-plan')({
+export const Route = createFileRoute('/_authenticated/teaching-plan')({
   component: teachingPlan,
 })
 
@@ -25,14 +25,25 @@ export function teachingPlan() {
     <>
       <div>
         <strong>
-          <PlanTable curso="Curso" turma="Turma" turno="Turno" variant="undefined" />
+          <PlanTable
+            curso="Curso"
+            turma="Turma"
+            turno="Turno"
+            variant="undefined"
+          />
         </strong>
       </div>
 
       <div className="w-full flex-col flex-1">
         {data?.map((matrice, index) => (
           <a href="input-teaching-plan">
-            <PlanTable key={index} curso={matrice.name} turma="Turma 2024" turno="Noite" variant="checked" />
+            <PlanTable
+              key={index}
+              curso={matrice.name}
+              turma="Turma 2024"
+              turno="Noite"
+              variant="checked"
+            />
           </a>
         ))}
       </div>

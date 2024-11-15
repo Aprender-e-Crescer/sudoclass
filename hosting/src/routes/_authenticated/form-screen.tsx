@@ -3,7 +3,7 @@ import { CardFormStars } from '@/components/custom/card-form-stars'
 import { createFileRoute } from '@tanstack/react-router'
 import { CardFormTextArea } from '@/components/custom/card-form-text-area'
 
-export const Route = createFileRoute('/form-screen')({
+export const Route = createFileRoute('/_authenticated/form-screen')({
   component: FormScreen,
 })
 

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form, ErrorMessage, Field } from 'formik'
 
-export const Route = createFileRoute('/teachers-form')({
+export const Route = createFileRoute('/_authenticated/teachers-form')({
   component: teachrsForms,
 })
 

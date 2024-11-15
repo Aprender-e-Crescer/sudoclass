@@ -9,7 +9,7 @@ import { Download, Search } from 'lucide-react'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/student-documents')({
+export const Route = createFileRoute('/_authenticated/student-documents')({
   component: StudentDocuments,
 })
 
@@ -60,12 +60,17 @@ export function StudentDocuments() {
     createdby: item.createdby.nome || 'Desconhecido',
   }))
 
-  const filteredData = formattedData.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredData = formattedData.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   return (
     <div className="flex flex-col gap-4 mx-20 my-10">
       <div>
-        <Formik initialValues={{ value: '' }} validationSchema={toFormikValidationSchema(getInputSchema)}>
+        <Formik
+          initialValues={{ value: '' }}
+          validationSchema={toFormikValidationSchema(getInputSchema)}
+        >
           {({ setFieldValue }) => (
             <Form className="flex items-start flex-col gap-4">
               <InputWithoutLabel
@@ -74,7 +79,8 @@ export function StudentDocuments() {
                 placeholder="Digite aqui..."
                 id="value"
                 onChange={(e) => {
-                  setFieldValue('value', e.target.value), setSearchTerm(e.target.value)
+                  setFieldValue('value', e.target.value),
+                    setSearchTerm(e.target.value)
                 }}
               />
             </Form>

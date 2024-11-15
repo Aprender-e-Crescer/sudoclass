@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { useListResponsibleQuery } from '@/queries/use-list-responsible-queries'
 import { responsibleSchema } from '@/models/list-responsible-schema'
 
-export const Route = createFileRoute('/list-responsible')({
+export const Route = createFileRoute('/_authenticated/list-responsible')({
   component: ListResponsible,
 })
 
@@ -23,21 +23,26 @@ function ListResponsible() {
   return (
     <div>
       <div>
-        {data?.map(({ cpf, dateOfBirth, email, name, rg, telephone, address }, index) => (
-          <div key={index}>
-            <p>Nome: {name}</p>
-            <p>CPF: {cpf}</p>
-            <p>Data de Nascimento: {dateOfBirth}</p>
-            <p>E-mail: {email}</p>
-            <p>RG: {rg}</p>
-            <p>Telefone: {telephone}</p>
-            <p>address.city: {address.city}</p>
-            <p>address.neighborhood: {address.neighborhood}</p>
-            <p>address.state: {address.state}</p>
-            <p>address.street: {address.street}</p>
-            <p>address.streetNumber: {address.streetNumber}</p>
-          </div>
-        ))}
+        {data?.map(
+          (
+            { cpf, dateOfBirth, email, name, rg, telephone, address },
+            index,
+          ) => (
+            <div key={index}>
+              <p>Nome: {name}</p>
+              <p>CPF: {cpf}</p>
+              <p>Data de Nascimento: {dateOfBirth}</p>
+              <p>E-mail: {email}</p>
+              <p>RG: {rg}</p>
+              <p>Telefone: {telephone}</p>
+              <p>address.city: {address.city}</p>
+              <p>address.neighborhood: {address.neighborhood}</p>
+              <p>address.state: {address.state}</p>
+              <p>address.street: {address.street}</p>
+              <p>address.streetNumber: {address.streetNumber}</p>
+            </div>
+          ),
+        )}
       </div>
       <div>
         <Formik
