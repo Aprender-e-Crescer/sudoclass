@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { addDoc, collection } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
-import { Charts } from '@/routes/charts'
+import { Charts } from '@/routes/_authenticated/charts'
 
 export function useChartsMutation() {
   return useMutation({
