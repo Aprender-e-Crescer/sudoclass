@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { DateOrTimeInput } from '@/components/custom/date-or-time-input'
 
 export const Route = createFileRoute(
-  '/_authenticated/register-classes-lesson-plan',
+  '/_authenticated/_matter/register-classes-lesson-plan',
 )({
   component: RegisterClassesLessonPlan,
 })
