@@ -6,7 +6,6 @@ import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { registerSchema } from '@/models/teachers-schema'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
-
 import { z } from 'zod'
 import { Else, If, Then } from 'react-if'
 
