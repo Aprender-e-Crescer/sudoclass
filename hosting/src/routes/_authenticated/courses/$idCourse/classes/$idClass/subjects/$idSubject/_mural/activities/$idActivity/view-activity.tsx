@@ -14,13 +14,17 @@ import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
 import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
+import { z } from 'zod'
 
-// validar rota como o id da atividade como opcional (eu acho)
+const validateSearch = z.object({
+  idStudent: z.string().optional(),
+})
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/$idActivity/view-activity',
 )({
   component: ViewActivity,
+  validateSearch,
 })
 
 const initialValues = {
@@ -46,7 +50,6 @@ interface Student {
 }
 
 function ViewActivity() {
-  const { activityID } = useParams()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [inputValue, setInputValue] = useState<string>('')
@@ -118,7 +121,6 @@ function ViewActivity() {
   return (
     <>
       <div className="hidden md:flex flex-grow">
-        ''
         <div>
           {students?.map((student) => (
             <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">

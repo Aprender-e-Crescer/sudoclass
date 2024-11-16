@@ -9,6 +9,7 @@ import { Form, Formik, Field } from 'formik'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
 import { activitySchema } from '@/models/activity-schema'
+import { z } from 'zod'
 
 // validar rota como o id da atividade como opcional
 const validateSearch = z.object({
