@@ -11,11 +11,16 @@ import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutat
 import { activitySchema } from '@/models/activity-schema'
 
 // validar rota como o id da atividade como opcional
+const validateSearch = z.object({
+  action: z.enum(['create', 'edit']),
+  idActivity: z.string().optional(),
+})
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/create',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/manage',
 )({
   component: CreateActivityMaterial,
+  validateSearch,
 })
 
 export function CreateActivityMaterial() {
