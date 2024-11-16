@@ -6,11 +6,17 @@ import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { registerSchema } from '@/models/teachers-schema'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
+import { z } from 'zod'
+import { Else, If, Then } from 'react-if'
 
-export const Route = createFileRoute(
-  '/_authenticated/_register/teacher-registration-form',
-)({
+const validateSearch = z.object({
+  action: z.enum(['create', 'edit']),
+  idTeacher: z.string().optional(),
+})
+
+export const Route = createFileRoute('/_authenticated/register/_register/teachers/manage')({
   component: TeacherRegistration,
+  validateSearch,
 })
 
 const initialValues = {
@@ -45,6 +51,9 @@ function useLogic() {
 
 export function TeacherRegistration() {
   const { handleOnTeacherSubmit } = useLogic()
+  const { action, idTeacher } = Route.useSearch()
+  console.log(idTeacher)
+
   return (
     <>
       <Formik
@@ -130,6 +139,7 @@ export function TeacherRegistration() {
                 id="DateOfBirth"
                 name="DateOfBirth"
                 label="DateOfBirth"
+                type="date"
                 customStyleInput="rounded-lg border-2 p-[6px]"
               />
               <InputForm
@@ -202,7 +212,10 @@ export function TeacherRegistration() {
                 Cancelar
               </Button>
               <Button variant="blueButton" size="large" className="w-64">
-                Atualizar
+                <If condition={action === 'create'}>
+                  <Then>Cadastrar</Then>
+                  <Else>Atualizar</Else>
+                </If>
               </Button>
             </div>
           </div>

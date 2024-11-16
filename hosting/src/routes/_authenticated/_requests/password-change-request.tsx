@@ -41,12 +41,12 @@ export function RequestChangePassword() {
               <AlertDialog>
                 <AlertDialogTrigger>
                   <div
-                    onClick={() => {
+                    onClick={() => 
                       toast({
                         variant: 'sucesss',
                         title: 'Atualizado com sucesso ✓',
                       })
-                    }}
+                    }
                   >
                     <div className="flex border h-8 rounded-md justify-center items-center p-1">
                       <Check className="text-green-500" />

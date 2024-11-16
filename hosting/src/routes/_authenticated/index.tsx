@@ -4,7 +4,6 @@ export const Route = createFileRoute('/_authenticated/')({
   component: Index,
 })
 
-function Index() {
-  return <div></div>
+export function Index() {
+  return <div>gffgfg</div>
 }
-export default Index

@@ -5,7 +5,7 @@ import { registerSchema } from '@/models/teachers-schema'
 import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
 
 export const Route = createFileRoute(
-  '/_authenticated/_register/teachers-listing',
+  '/_authenticated/register/_register/teachers/',
 )({
   component: TeachersListing,
 })
