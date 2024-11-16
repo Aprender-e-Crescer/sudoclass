@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 import { InputCheckbox } from '@/components/custom/checkbox-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Form, Formik } from 'formik'
@@ -7,11 +7,11 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { DateOrTimeInput } from '@/components/custom/date-or-time-input'
 
-export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/register-classes-lesson-plan',
-)({
-  component: RegisterClassesLessonPlan,
-})
+export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/$idClass/register-classes-lesson-plan')(
+  {
+    component: RegisterClassesLessonPlan,
+  },
+)
 
 const weekDays = [
   { value: 'Segunda-feira', label: 'monday' },
@@ -30,6 +30,11 @@ const initialValues = {
 }
 
 export function RegisterClassesLessonPlan() {
+  const { idSubject, idClass } = useParams({
+    from: '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject',
+  })
+
+  console.log('a', idSubject, idClass)
   return (
     <div>
       <Formik
@@ -56,13 +61,7 @@ export function RegisterClassesLessonPlan() {
                       title="Hora inicial"
                       placeholder="19:00"
                     />
-                    <InputForm
-                      id="endHour"
-                      name="endHour"
-                      label="endHour"
-                      title="Hora final"
-                      placeholder="22:00"
-                    />
+                    <InputForm id="endHour" name="endHour" label="endHour" title="Hora final" placeholder="22:00" />
                   </div>
                   <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                     <Button variant={'blueButton'}>Marcar</Button>
@@ -80,18 +79,8 @@ export function RegisterClassesLessonPlan() {
                   <InputCheckbox checkboxValues={weekDays} />
                 </div>
                 <div className="flex sm:flex-row flex-col flex-1 gap-3">
-                  <DateOrTimeInput
-                    title="Hora Inicial"
-                    id="teste1"
-                    name="teste1"
-                    type="time"
-                  />
-                  <DateOrTimeInput
-                    title="Hora Final"
-                    id="teste2"
-                    name="teste2"
-                    type="time"
-                  />
+                  <DateOrTimeInput title="Hora Inicial" id="teste1" name="teste1" type="time" />
+                  <DateOrTimeInput title="Hora Final" id="teste2" name="teste2" type="time" />
                 </div>
               </div>
             </div>
