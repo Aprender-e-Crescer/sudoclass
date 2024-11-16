@@ -9,7 +9,7 @@ interface InputProps {
   customStyleLabel?: string
   customStyleInput?: string
   icon?: JSX.Element
-  type?: string
+  type?: 'text' | 'date'
   isDisabled?: boolean
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
@@ -46,4 +46,3 @@ export function InputForm({
     </label>
   )
 }
-

@@ -15,9 +15,7 @@ const validateSearch = z.object({
   idTeacher: z.string().optional(),
 })
 
-export const Route = createFileRoute(
-  '/_authenticated/register/_register/teachers/manage',
-)({
+export const Route = createFileRoute('/_authenticated/register/_register/teachers/manage')({
   component: TeacherRegistration,
   validateSearch,
 })
@@ -142,6 +140,7 @@ export function TeacherRegistration() {
                 id="DateOfBirth"
                 name="DateOfBirth"
                 label="DateOfBirth"
+                type="date"
                 customStyleInput="rounded-lg border-2 p-[6px]"
               />
               <InputForm
@@ -215,12 +214,8 @@ export function TeacherRegistration() {
               </Button>
               <Button variant="blueButton" size="large" className="w-64">
                 <If condition={action === 'create'}>
-                  <Then>
-                    Cadastrar
-                  </Then>
-                  <Else>
-                    Atualizar
-                  </Else>
+                  <Then>Cadastrar</Then>
+                  <Else>Atualizar</Else>
                 </If>
               </Button>
             </div>
