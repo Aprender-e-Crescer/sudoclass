@@ -21,12 +21,6 @@ const weekDays = [
   { value: 'Sexta-feira', label: 'friday' },
 ]
 
-const { idSubject, idClass } = useParams({
-  from: '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject',
-})
-
-console.log('a', idSubject, idClass)
-
 const registerClassesSchema = z.object({
   days: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday']),
 })
@@ -36,6 +30,11 @@ const initialValues = {
 }
 
 export function RegisterClassesLessonPlan() {
+  const { idSubject, idClass } = useParams({
+    from: '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject',
+  })
+
+  console.log('a', idSubject, idClass)
   return (
     <div>
       <Formik
