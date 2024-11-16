@@ -4,7 +4,7 @@ import { TeacherComment } from '@/components/custom/teacher-comment'
 import { ActivitiesMaterials } from '@/components/custom/activities-materials'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/wall-subjects',
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/wall-subjects',
 )({
   component: WallSubject,
 })

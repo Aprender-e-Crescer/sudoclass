@@ -20,7 +20,9 @@ import { User } from 'lucide-react'
 import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 
-export const Route = createFileRoute('/_authenticated/view-activity')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity',
+)({
   component: ViewActivity,
 })
 

@@ -5,7 +5,7 @@ import { Avatar } from '@/components/ui/avatar'
 import Avatarimg from '@/assets/avatar.png'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/view-notes/notes-screen',
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/view-notes/notes-screen',
 )({
   component: () => {
     return (

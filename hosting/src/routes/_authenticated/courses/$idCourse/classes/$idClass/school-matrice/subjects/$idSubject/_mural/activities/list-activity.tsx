@@ -17,7 +17,7 @@ interface ListActivity {
 }
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/list-activity',
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/list-activity',
 )({
   component: ListActivity,
 })

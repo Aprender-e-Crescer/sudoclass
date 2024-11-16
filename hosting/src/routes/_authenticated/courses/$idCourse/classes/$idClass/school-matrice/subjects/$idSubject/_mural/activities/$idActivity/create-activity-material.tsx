@@ -15,7 +15,7 @@ import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutat
 import { activitySchema } from '@/models/activity-schema'
 
 export const Route = createFileRoute(
-  '/_authenticated/create-activity-material',
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/create-activity-material',
 )({
   component: CreateActivityMaterial,
 })
