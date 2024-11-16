@@ -3,22 +3,20 @@ import { useRegisterTeacherMutation } from "@/mutations/use-register-teacher-mut
 
 export function useRegisterTeacherController() {
     const { mutateAsync: registerTeacher } = useRegisterTeacherMutation({
-        onSuccess: () => {
+        onSuccess: () => 
             toast({
                 title: "Sucesso!",
                 duration: 2000,
                 description: "O professor foi cadastrado.",
                 variant: "sucesss",
-            });
-        },
-        onError: () => {
+            }),
+        onError: () => 
             toast({
                 duration: 2000,
                 title: "Erro!",
                 description: "Não foi possivel cadastrar o professor",
                 variant: "destructive",
-            });
-        }
+            }),
     })
     return {
         registerTeacher
