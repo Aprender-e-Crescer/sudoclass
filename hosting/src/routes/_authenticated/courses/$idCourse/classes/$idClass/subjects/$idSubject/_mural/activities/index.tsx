@@ -17,16 +17,13 @@ interface ListActivity {
 }
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/list-activity',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/',
 )({
   component: ListActivity,
 })
 
 export function ListActivity() {
-  const { data: activities } = useListActivitiesQuery(
-    'aQjvxCKlEuHc9YQEedCQ',
-    'zGTOAwnKJBjFSmayHxJo',
-  )
+  const { data: activities } = useListActivitiesQuery('aQjvxCKlEuHc9YQEedCQ', 'zGTOAwnKJBjFSmayHxJo')
   return (
     <>
       <div className="min-h-screen overflow-y-hidden">
@@ -49,10 +46,7 @@ export function ListActivity() {
               <div>
                 {activities?.map((activity) => {
                   return (
-                    <div
-                      className="flex flex-col justify-center items-center w-full"
-                      key={activity.id}
-                    >
+                    <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
                       <ActivitiesMaterials
                         id={activity.id}
                         title={activity.title}

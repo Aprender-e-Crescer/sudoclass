@@ -10,8 +10,10 @@ import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
 import { activitySchema } from '@/models/activity-schema'
 
+// validar rota como o id da atividade como opcional
+
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/$idActivity',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/create',
 )({
   component: CreateActivityMaterial,
 })
