@@ -4,9 +4,10 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { registerSchema } from '@/models/teachers-schema'
 import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
 import { z } from 'zod'
-import { If, Then, When } from 'react-if'
+import { When } from 'react-if'
 
 const validateSearch = z.object({
+  action: z.enum(['create', 'edit']).optional(),
   idTeacher: z.string().optional(),
 })
 
@@ -38,13 +39,16 @@ const initialValues = {
 
 export function TeachersListing() {
   const { data: registerRequests } = useTeachersSchemaQuery()
-  const { idTeacher } = Route.useSearch()
+  const { idTeacher, action } = Route.useSearch()
 
   return (
     <>
+      <Link to='/register/teachers' search={{ action: "create" }}>
+        Cadastrar professor
+      </Link>
       <div>
         {registerRequests?.map(({ fullName, email, cpf }, index) => (
-          <Link key={index} to='/register/teachers' search={{ idTeacher: cpf }}>
+          <Link key={index} to='/register/teachers' search={{ action: "edit",  idTeacher: cpf }}>
             <p>
               Nome: {fullName}, Email: {email}, CPF: {cpf}
             </p>
@@ -56,7 +60,7 @@ export function TeachersListing() {
       <br />
       <br />
 
-      <When condition={!!idTeacher}>
+      <When condition={!!action}>
         <h1>Cadastro de Professor</h1>
 
         <Formik
