@@ -1,7 +1,9 @@
 import { InputTeachingPlans } from '@/components/custom/input-teaching-plan'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_authenticated/input-teaching-plan')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/lesson-plan/$idLessonPlan/input-teaching-plan',
+)({
   component: InputTeachingPlan,
 })
 

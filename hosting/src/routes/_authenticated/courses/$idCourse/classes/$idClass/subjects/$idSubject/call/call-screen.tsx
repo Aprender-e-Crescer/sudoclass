@@ -52,7 +52,9 @@ export function DatePickerDemo({
   )
 }
 
-export const Route = createFileRoute('/_authenticated/call-screen')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/call/call-screen',
+)({
   component: callScreen,
 })
 
