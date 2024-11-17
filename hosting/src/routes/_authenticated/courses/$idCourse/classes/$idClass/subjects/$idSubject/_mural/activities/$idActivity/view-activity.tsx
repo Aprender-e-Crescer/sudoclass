@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
 import ListStudents from '@/components/custom/list-students'
 import { TeacherComment } from '@/components/custom/teacher-comment'
 import { Button } from '@/components/ui/button'
@@ -12,8 +11,6 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
 import { z } from 'zod'
 
 const validateSearch = z.object({
@@ -91,7 +88,7 @@ function ViewActivity() {
   //   await useCreateCommentMutation(commentsRef, inputValue, userId)
   //   setInputValue('')
   // }
-
+  /*
   async function upgradeNote(grade: number) {
     const upgradeNoteRef = doc(firestore, 'activities', activityID!)
     await setDoc(upgradeNoteRef, { grade: grade })
@@ -117,6 +114,7 @@ function ViewActivity() {
       setTimeout(() => setSuccessMessage(''), 3000)
     }
   }
+  */
 
   return (
     <>
@@ -136,10 +134,7 @@ function ViewActivity() {
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={(values) => {
-                const grade = parseInt(values.value)
-                upgradeNote(grade)
-
-                addNote(grade)
+                console.log(values)
               }}
             >
               {({ handleSubmit, setFieldValue }) => (
