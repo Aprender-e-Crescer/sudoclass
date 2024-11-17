@@ -1,16 +1,16 @@
-import { Timestamp } from 'firebase/firestore'
-import { GenericTable } from '@/components/custom/generic-table'
-import { InputWithoutLabel } from '@/components/custom/without-label-input'
-import { getInputSchema } from '@/models/get-input-schema'
-import { useListStudentDocumentsQuery } from '@/queries/use-list-student-documents'
 import { createFileRoute } from '@tanstack/react-router'
-import { Form, Formik } from 'formik'
-import { Download, Search } from 'lucide-react'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { useListStudentDocumentsQuery } from '@/queries/use-list-student-documents'
 import { useState } from 'react'
+import { Timestamp } from 'firebase/firestore'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { getInputSchema } from '@/models/get-input-schema'
+import { InputWithoutLabel } from '@/components/custom/without-label-input'
+import { Download, Search } from 'lucide-react'
+import { Form, Formik } from 'formik'
+import { GenericTable } from '@/components/custom/generic-table'
 
-export const Route = createFileRoute('/_authenticated/student-documents')({
-  component: StudentDocuments,
+export const Route = createFileRoute('/_authenticated/documents/')({
+  component: RouteComponent,
 })
 
 const columns = [
@@ -30,7 +30,7 @@ const columns = [
   },
 ]
 
-export function StudentDocuments() {
+function RouteComponent() {
   const { data, isLoading, error } = useListStudentDocumentsQuery()
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -51,7 +51,7 @@ export function StudentDocuments() {
     )
   }
 
-  const formattedData = data.map((item) => ({
+  const formattedData = data?.map((item) => ({
     ...item,
     creationDate:
       item.creationDate instanceof Timestamp
@@ -60,7 +60,7 @@ export function StudentDocuments() {
     createdby: item.createdby.nome || 'Desconhecido',
   }))
 
-  const filteredData = formattedData.filter((item) =>
+  const filteredData = formattedData?.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
