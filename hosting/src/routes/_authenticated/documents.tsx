@@ -8,8 +8,9 @@ import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { Download, Search } from 'lucide-react'
 import { Form, Formik } from 'formik'
 import { GenericTable } from '@/components/custom/generic-table'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 
-export const Route = createFileRoute('/_authenticated/documents/')({
+export const Route = createFileRoute('/_authenticated/documents')({
   component: RouteComponent,
 })
 
@@ -31,7 +32,8 @@ const columns = [
 ]
 
 function RouteComponent() {
-  const { data, isLoading, error } = useListStudentDocumentsQuery('U2IvXW4yX8IE5QksHSox')
+  const { data: user } = useCurrentUserQuery()
+  const { data, isLoading, error } = useListStudentDocumentsQuery(user?.uid)
   const [searchTerm, setSearchTerm] = useState('')
 
   if (isLoading) {

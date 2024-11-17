@@ -8,7 +8,9 @@ import { Field, Form, Formik } from 'formik'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { GenericTable } from '@/components/custom/generic-table'
 
-export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/$idClass/forms/')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/forms',
+)({
   component: RouteComponent,
 })
 
@@ -36,8 +38,9 @@ function RouteComponent() {
   const [searchValue, setSearchValue] = useState('')
 
   const filteredData =
-    data?.filter((form: { name: string; createdDate: string; createdBy: string }) =>
-      form.name?.toLowerCase().includes(searchValue.toLowerCase()),
+    data?.filter(
+      (form: { name: string; createdDate: string; createdBy: string }) =>
+        form.name?.toLowerCase().includes(searchValue.toLowerCase()),
     ) || []
 
   if (isLoading) return <p>Carregando...</p>
@@ -61,7 +64,9 @@ function RouteComponent() {
                 icon={<Search />}
                 placeholder="Procurar Formularios"
                 id="value"
-                onChange={(e: { target: { value: SetStateAction<string> } }) => {
+                onChange={(e: {
+                  target: { value: SetStateAction<string> }
+                }) => {
                   handleChange(e)
                   setSearchValue(e.target.value)
                 }}
@@ -71,7 +76,9 @@ function RouteComponent() {
         </Formik>
       </div>
       <div>
-        <h1 className="font-bold text-blue-950 text-4xl">Formulários Disponíveis</h1>
+        <h1 className="font-bold text-blue-950 text-4xl">
+          Formulários Disponíveis
+        </h1>
       </div>
       <GenericTable data={filteredData} columns={columns} />
     </div>
