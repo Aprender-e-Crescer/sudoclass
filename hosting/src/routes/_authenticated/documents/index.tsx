@@ -15,10 +15,10 @@ export const Route = createFileRoute('/_authenticated/documents/')({
 
 const columns = [
   { header: 'Documento', accessor: 'name' },
-  { header: 'Criado Por', accessor: 'createdby' },
+  { header: 'Criado Por', accessor: 'createdBy' },
   {
     header: 'Criado Em',
-    accessor: 'creationDate',
+    accessor: 'createdDate',
   },
   {
     header: 'Ações',
@@ -31,7 +31,7 @@ const columns = [
 ]
 
 function RouteComponent() {
-  const { data, isLoading, error } = useListStudentDocumentsQuery()
+  const { data, isLoading, error } = useListStudentDocumentsQuery('U2IvXW4yX8IE5QksHSox')
   const [searchTerm, setSearchTerm] = useState('')
 
   if (isLoading) {
@@ -53,24 +53,19 @@ function RouteComponent() {
 
   const formattedData = data?.map((item) => ({
     ...item,
-    creationDate:
-      item.creationDate instanceof Timestamp
-        ? new Date(item.creationDate.toDate()).toLocaleDateString()
-        : new Date(item.creationDate).toLocaleDateString(),
-    createdby: item.createdby.nome || 'Desconhecido',
+    createdBy: item.createdBy.name,
+    createdDate:
+      item.createdDate instanceof Timestamp
+        ? new Date(item.createdDate.toDate()).toLocaleDateString()
+        : new Date(item.createdDate).toLocaleDateString(),
   }))
 
-  const filteredData = formattedData?.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  const filteredData = formattedData?.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
     <div className="flex flex-col gap-4 mx-20 my-10">
       <div>
-        <Formik
-          initialValues={{ value: '' }}
-          validationSchema={toFormikValidationSchema(getInputSchema)}
-        >
+        <Formik initialValues={{ value: '' }} validationSchema={toFormikValidationSchema(getInputSchema)}>
           {({ setFieldValue }) => (
             <Form className="flex items-start flex-col gap-4">
               <InputWithoutLabel
@@ -79,8 +74,7 @@ function RouteComponent() {
                 placeholder="Digite aqui..."
                 id="value"
                 onChange={(e) => {
-                  setFieldValue('value', e.target.value),
-                    setSearchTerm(e.target.value)
+                  setFieldValue('value', e.target.value), setSearchTerm(e.target.value)
                 }}
               />
             </Form>
