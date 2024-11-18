@@ -73,8 +73,6 @@ export function TeachersListing() {
       <br />
 
       <When condition={!!action}>
-        <h1>Cadastro de Professor</h1>
-
         <Formik
           initialValues={initialValues}
           onSubmit={handleOnTeacherSubmit}
