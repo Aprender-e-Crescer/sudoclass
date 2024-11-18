@@ -12,7 +12,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
+import { doc, updateDoc } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 
 export const Route = createFileRoute('/view-activity')({
@@ -85,24 +85,23 @@ function ViewActivity() {
   //   setInputValue('')
   // }
 
-  async function upgradeNote(grade: number) {
-    const upgradeNoteRef = doc(firestore, 'activities', activityID!)
-    await setDoc(upgradeNoteRef, { grade: grade })
-    setSuccessMessage('Nota alterada com sucesso!')
-    setTimeout(() => {
-      {
-        setSuccessMessage('')
-      }
-    }, 3000)
-  }
-
   async function addNote(grade: number) {
+    if (isNaN(grade) || grade <= 0) {
+      setSuccessMessage('Por favor, insira um número válido.')
+      return
+    }
+    setSuccessMessage('')
+  
     try {
+      if (!activityID) {
+        setSuccessMessage('Erro: ID da atividade não encontrado.')
+        return
+      }
       const addNoteRef = doc(firestore, 'activities', activityID!)
       await updateDoc(addNoteRef, {
-        grade: increment(grade),
+        grade: grade,
       })
-
+  
       setSuccessMessage('Nota alterada com sucesso!')
       setTimeout(() => setSuccessMessage(''), 3000)
     } catch (error) {
@@ -131,8 +130,6 @@ function ViewActivity() {
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={(values) => {
                 const grade = parseInt(values.value)
-                upgradeNote(grade)
-
                 addNote(grade)
               }}
             >
