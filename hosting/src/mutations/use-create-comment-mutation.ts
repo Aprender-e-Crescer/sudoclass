@@ -1,45 +1,26 @@
-import { Comment } from '@/models/comment-schema'
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { addDoc, collection } from 'firebase/firestore'
+import { useState } from 'react'
 
-interface UseCreateCommentMutationProps {
-  schoolMatriceId: string
-  subjectId: string
-  activityId: string
-  correctionId: string
-}
+export const useCreateCommentMutation = () => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-export function useCreateCommentMutation({
-  schoolMatriceId,
-  subjectId,
-  activityId,
-  correctionId,
-}: UseCreateCommentMutationProps) {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationKey: ['createComment'],
-    mutationFn: (comment: Comment) =>
-      addDoc(
-        collection(
-          firestore,
-          'schoolMatrices',
-          schoolMatriceId,
-          'subjects',
-          subjectId,
-          'activities',
-          activityId,
-          'correction',
-          correctionId,
-          'comments',
-        ),
-        comment,
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['getComments', schoolMatriceId, subjectId, activityId, correctionId],
+  const createComment = async (activityID: string, commentData: { message: string; sentBy: string }) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const commentsRef = collection(firestore, 'activities', activityID, 'comments')
+      await addDoc(commentsRef, {
+        ...commentData,
+        timestamp: Timestamp.now(), // Adiciona um timestamp ao comentário
       })
-    },
-  })
+    } catch (err) {
+      setError('Erro ao criar comentário.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { createComment, loading, error }
 }

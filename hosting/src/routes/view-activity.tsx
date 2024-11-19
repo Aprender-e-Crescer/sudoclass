@@ -14,6 +14,8 @@ import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
 import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
+import { useCreateCommentMutation } from '@/mutations/use-create-comment-mutation'
+import { useCommentsQuery } from '@/queries/use-comment-query'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
@@ -21,7 +23,7 @@ export const Route = createFileRoute('/view-activity')({
 
 const initialValues = {
   value: '',
-  comment: '', // Adicionado para gerenciar o valor do comentário
+  comment: '',
 }
 
 interface Student {
@@ -42,32 +44,14 @@ interface Student {
 }
 
 function ViewActivity() {
-  const { activityID } = useParams()
+  const { activityID } = useParams<{ activityID: string }>()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-  const [inputValue, setInputValue] = useState<string>('')
+  const [inputValue, setInputValue] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
-  // // Ajuste os parâmetros conforme necessário
-  // const schoolMatriceId = 'yourSchoolMatriceId' // Substitua com a lógica para obter esse valor
-  // const subjectId = 'yourSubjectId' // Substitua com a lógica para obter esse valor
-  // const activityId = 'yourActivityId' // Substitua com a lógica para obter esse valor
-  // const correctionId = 'yourCorrectionId' // Substitua com a lógica para obter esse valor
-  // const userId = 'yourUserId' // Substitua com a lógica para obter esse valor
-
-  // const commentsRef = collection(
-  //   firestore,
-  //   'schoolMatrices',
-  //   schoolMatriceId,
-  //   'subjects',
-  //   subjectId,
-  //   'activities',
-  //   activityId,
-  //   'correction',
-  //   correctionId,
-  //   'comments',
-  // )
-
-  const [sucessMessage, setSuccessMessage] = useState('')
+  const { comments, fetchComments } = useCommentsQuery(activityID!)
+  const { createComment, loading: isSendingComment } = useCreateCommentMutation()
 
   const handleStudentClick = (student: Student) => {
     if (selectedStudent?.id === student.id) {
@@ -77,23 +61,23 @@ function ViewActivity() {
     }
   }
 
-  // const handleSendComment = async (e: FormEvent) => {
-  //   e.preventDefault()
-  //   if (inputValue.trim() === '') return
+  const handleSendComment = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (inputValue.trim() === '') return
 
-  //   await useCreateCommentMutation(commentsRef, inputValue, userId)
-  //   setInputValue('')
-  // }
+    await createComment(activityID!, {
+      message: inputValue,
+      sentBy: 'User ID or Name', // Ajuste o identificador do usuário aqui
+    })
+    setInputValue('')
+    fetchComments()
+  }
 
   async function upgradeNote(grade: number) {
     const upgradeNoteRef = doc(firestore, 'activities', activityID!)
     await setDoc(upgradeNoteRef, { grade: grade })
     setSuccessMessage('Nota alterada com sucesso!')
-    setTimeout(() => {
-      {
-        setSuccessMessage('')
-      }
-    }, 3000)
+    setTimeout(() => setSuccessMessage(''), 3000)
   }
 
   async function addNote(grade: number) {
@@ -114,7 +98,6 @@ function ViewActivity() {
   return (
     <>
       <div className="hidden md:flex flex-grow">
-        ''
         <div>
           {students?.map((student) => (
             <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
@@ -132,7 +115,6 @@ function ViewActivity() {
               onSubmit={(values) => {
                 const grade = parseInt(values.value)
                 upgradeNote(grade)
-
                 addNote(grade)
               }}
             >
@@ -154,7 +136,7 @@ function ViewActivity() {
                 </Form>
               )}
             </Formik>
-            {sucessMessage && <p className="text-green-500">{sucessMessage}</p>}
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
             <div>
               <Input type="file" className="h-96 w-80" />
             </div>
@@ -163,84 +145,32 @@ function ViewActivity() {
                 <User />
                 <p>Comentários</p>
               </div>
-              <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-              <form className="flex">
+              {comments.map((comment) => (
+                <TeacherComment
+                  key={comment.id}
+                  avatarSrc=""
+                  comment={comment.message}
+                  date={comment.timestamp.toLocaleString()}
+                  name={comment.sentBy}
+                  textAvatar={comment.sentBy.charAt(0)}
+                />
+              ))}
+              <form onSubmit={handleSendComment} className="flex">
                 <Input
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="escreva seu comentário"
+                  placeholder="Escreva seu comentário"
                   className="flex-grow"
+                  disabled={isSendingComment}
                 />
                 <Button type="submit" variant="blueButton" size="small" className="ml-2">
-                  Enviar
+                  {isSendingComment ? 'Enviando...' : 'Enviar'}
                 </Button>
               </form>
             </div>
           </div>
         )}
-      </div>
-
-      <div className="flex justify-center items-center md:hidden">
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>
-              <div className="flex justify-center items-center w-full">
-                <div>
-                  {students?.map((student) => (
-                    <ListStudents key={student.id} name={student.name} picture="" variant="corrected" />
-                  ))}
-                </div>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-col justify-center w-full items-center gap-y-10 mt-5">
-                <div className="flex gap-x-10">
-                  <Formik
-                    initialValues={initialValues}
-                    validationSchema={toFormikValidationSchema(InputNoteSchema)}
-                    onSubmit={(values) => {
-                      console.log(values)
-                    }}
-                  >
-                    {({ handleSubmit }) => (
-                      <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
-                        <div className="flex gap-x-4 items-start">
-                          <div className="h-screen max-h-16">
-                            <InputForm name="value" id="value" label="nota" />
-                          </div>
-                          <Button type="submit" variant="blueButton" size="small" className="mt-3">
-                            Devolver
-                          </Button>
-                        </div>
-                      </Form>
-                    )}
-                  </Formik>
-                </div>
-
-                <div>
-                  <Input type="file" className="h-96 w-80" />
-                </div>
-
-                <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
-                  <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-                  <form className="flex">
-                    <Input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="escreva seu comentário"
-                      className="flex-grow"
-                    />
-                    <Button type="submit" variant="blueButton" size="small" className="ml-2">
-                      Enviar
-                    </Button>
-                  </form>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
       </div>
     </>
   )

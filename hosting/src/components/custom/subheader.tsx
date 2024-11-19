@@ -9,7 +9,7 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
     const links = document.querySelectorAll('.menu-link');
     links.forEach((link) => link.classList.remove('font-bold', 'text-gray-800'));
 
-    e.currentTarget.classList.add('font-bold', 'text-gray-800');
+    e.currentTarget.classList.add('font-bold', 'text-gray-800'); 
   };
 
   return (
