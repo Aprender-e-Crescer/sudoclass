@@ -8,9 +8,7 @@ import { Field, Form, Formik } from 'formik'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { GenericTable } from '@/components/custom/generic-table'
 
-export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/forms',
-)({
+export const Route = createFileRoute('/_authenticated/forms')({
   component: RouteComponent,
 })
 
@@ -35,16 +33,20 @@ const columns = [
 function RouteComponent() {
   const { data, isLoading, error } = ListFormsQuery()
 
+  console.log(data)
+
   const [searchValue, setSearchValue] = useState('')
 
   const filteredData =
-    data?.filter(
-      (form: { name: string; createdDate: string; createdBy: string }) =>
-        form.name?.toLowerCase().includes(searchValue.toLowerCase()),
+    data?.filter((form: { name: string; createdDate: string; createdBy: string }) =>
+      form.name?.toLowerCase().includes(searchValue.toLowerCase()),
     ) || []
 
   if (isLoading) return <p>Carregando...</p>
-  if (error) return <p>Erro ao carregar dados</p>
+  if (error) {
+    console.log(error.message)
+    return <p>Erro ao carregar dados</p>
+  }
 
   return (
     <div className="flex flex-col gap-4 mx-20 my-10">
@@ -64,9 +66,7 @@ function RouteComponent() {
                 icon={<Search />}
                 placeholder="Procurar Formularios"
                 id="value"
-                onChange={(e: {
-                  target: { value: SetStateAction<string> }
-                }) => {
+                onChange={(e: { target: { value: SetStateAction<string> } }) => {
                   handleChange(e)
                   setSearchValue(e.target.value)
                 }}
@@ -76,9 +76,7 @@ function RouteComponent() {
         </Formik>
       </div>
       <div>
-        <h1 className="font-bold text-blue-950 text-4xl">
-          Formulários Disponíveis
-        </h1>
+        <h1 className="font-bold text-blue-950 text-4xl">Formulários Disponíveis</h1>
       </div>
       <GenericTable data={filteredData} columns={columns} />
     </div>
