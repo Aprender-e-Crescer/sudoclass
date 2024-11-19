@@ -5,8 +5,8 @@ import { useMutation } from '@tanstack/react-query'
 
 export function useAddGradeMutation(schoolMatriceId: string, subjectId: string, activityId: string) {
     return useMutation({
-      mutationKey: ['createSchoolMatrice', schoolMatriceId, subjectId, activityId  ],
+      mutationKey: ['createGrade', schoolMatriceId, subjectId, activityId  ],
       mutationFn: (values: any) => addDoc(collection(firestore, 'schoolMatrices', schoolMatriceId, 'subjects', subjectId, 'activities', activityId, 'correction'), values)
     })
   }
-  
+   

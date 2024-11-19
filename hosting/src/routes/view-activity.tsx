@@ -12,8 +12,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { doc, updateDoc } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
+import { useAddGradeMutation } from '@/mutations/use-add-grade-mutation'
 
 export const Route = createFileRoute('/view-activity')({
   component: ViewActivity,
@@ -67,6 +66,12 @@ function ViewActivity() {
   //   'comments',
   // )
 
+  const { mutate: addGrade } = useAddGradeMutation(
+    'schoolMatriceId',  
+    'subjectId',        
+    activityID!      
+  )
+
   const [sucessMessage, setSuccessMessage] = useState('')
 
   const handleStudentClick = (student: Student) => {
@@ -85,27 +90,32 @@ function ViewActivity() {
   //   setInputValue('')
   // }
 
-  async function addNote(grade: number) {
-    if (isNaN(grade) || grade <= 0) {
+  const handleSubmitNote = async (values: any) => {
+    const grade = parseInt(values.value)
+
+    if (isNaN(grade) || grade < 0) {
       setSuccessMessage('Por favor, insira um número válido.')
       return
     }
+
     setSuccessMessage('')
-  
+
     try {
       if (!activityID) {
         setSuccessMessage('Erro: ID da atividade não encontrado.')
         return
       }
-      const addNoteRef = doc(firestore, 'activities', activityID!)
-      await updateDoc(addNoteRef, {
-        grade: grade,
+
+      await addGrade({
+        grade, 
+        studentId: selectedStudent?.id,
+        comment: values.comment,
       })
-  
-      setSuccessMessage('Nota alterada com sucesso!')
+
+      setSuccessMessage('Nota adicionada com sucesso!')
       setTimeout(() => setSuccessMessage(''), 3000)
     } catch (error) {
-      setSuccessMessage('Erro ao alterar nota!')
+      setSuccessMessage('Erro ao adicionar nota!')
       setTimeout(() => setSuccessMessage(''), 3000)
     }
   }
@@ -128,10 +138,7 @@ function ViewActivity() {
             <Formik
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
-              onSubmit={(values) => {
-                const grade = parseInt(values.value)
-                addNote(grade)
-              }}
+              onSubmit={handleSubmitNote}
             >
               {({ handleSubmit, setFieldValue }) => (
                 <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
