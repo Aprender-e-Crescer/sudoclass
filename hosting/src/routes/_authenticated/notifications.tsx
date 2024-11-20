@@ -30,8 +30,6 @@ export function Notifications() {
       <hr className="mb-3" />
       <div className="flex flex-wrap-reverse w-full gap-4">
         <div className="flex flex-col w-96 max-sm:w-full sm:items-center">
-        {' '}
-        {/**/}
           <h1 className="text-gray-300 font-[inter] font-semibold">Nome</h1>
           {students?.map(({ name }, index) => (
             <div key={index} onClick={() => toggleStudentSelection(index)}>
@@ -46,9 +44,7 @@ export function Notifications() {
           ))}
         </div>
         <div className='max-xl:w-full xl:w-[70%]'>
-          <Formik>
-            {/* <div className="text-3xl w-full font-[inter] flex-1 font-semibold p-5"> */}
-              {/* <h1 className="mb-2">Digite a notificação</h1> */}
+          <Formik>                          
               <InputTextarea
               titleTextArea='Digite a notificação'
                 placeholder=" Não Haverá aula no dia 17/10/2024 🎉🎉🎉"
@@ -57,7 +53,6 @@ export function Notifications() {
                 name="textareaNotificacion"
                 customStyle="h-[230px] w-full p-3 max-sm:h-[130px] max-sm:text-base text-xl"
               />
-            {/* </div> */}
           </Formik>
           <div className='flex sm:gap-10 max-sm:flex-col'>
             <Button variant='blueButton' className='mt-2 w-full' >Enviar Apenas para alunos selecionados</Button>
