@@ -52,11 +52,13 @@ export function DatePickerDemo({
   )
 }
 
-export const Route = createFileRoute('/_authenticated/call-screen')({
-  component: callScreen,
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/call',
+)({
+  component: Call,
 })
 
-export function callScreen() {
+export function Call() {
   const { data: students } = useStudentsListQuery()
   const [studentList, setStudentList] = useState(students || [])
   const [currentIndex, setCurrentIndex] = useState(-1)
