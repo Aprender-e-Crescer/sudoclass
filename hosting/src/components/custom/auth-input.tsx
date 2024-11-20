@@ -1,4 +1,4 @@
-import { ErrorMessage, Field } from 'formik'
+import { ErrorMessage, Field, useFormikContext } from 'formik'
 import { Input } from '@/components/ui/input'
 import { Copy, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
@@ -16,6 +16,7 @@ interface AuthInputProps {
 
 export function InputAuth({ id, name, placeholder, icon, isPasswordInput, isCopyInput, onChange }: AuthInputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const { setFieldValue } = useFormikContext()
 
   const handleOnToggleIconClick = () => {
     setIsPasswordVisible((oldIsPasswordVisible) => !oldIsPasswordVisible)
@@ -59,7 +60,10 @@ export function InputAuth({ id, name, placeholder, icon, isPasswordInput, isCopy
           type={newType}
           placeholder={placeholder}
           className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold text-[#2F2F2F]"
-          // onChange={onChange}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            onChange?.(event)
+            setFieldValue(name, event.target.value)
+          }}
         />
         <div className={`${isPasswordInput ? 'flex' : 'hidden'} absolute inset-y-0 right-0 pr-3 items-center`}>
           <button
