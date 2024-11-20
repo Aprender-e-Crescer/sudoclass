@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
+import { useState } from 'react'
 
 type ButtonVariant = 'ghostWhite' | 'ghostBlack' | 'blueButton' | 'lightTextBlack' | 'lightTextRed'
 
@@ -24,10 +25,12 @@ export function AlertDialogComponent({
   variantCancelButton,
   cancelButtonValue,
 }: AlertDialogProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <X className="border rounded text-red-500 mr-4 w-8 h-8" />
+    <AlertDialog open={isOpen}>
+      <AlertDialogTrigger asChild onClick={() => setIsOpen(true)}>
+        <X className="border rounded text-red-500 mr-4 w-8 h-8 cursor-pointer" />
       </AlertDialogTrigger>
 
       <AlertDialogContent>
@@ -36,7 +39,7 @@ export function AlertDialogComponent({
         </AlertDialogHeader>
         <AlertDialogFooter>
           {variantCancelButton && (
-            <Button className="w-full" variant={variantCancelButton}>
+            <Button className="w-full" variant={variantCancelButton} onClick={() => setIsOpen(false)}>
               {cancelButtonValue}
             </Button>
           )}

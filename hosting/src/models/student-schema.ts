@@ -15,9 +15,12 @@ export const studentSchema = z.object({
   dateOfBirth: z.string(),
   email: z.string().email(),
   name: z.string(),
-  responsible: z
-    .any()
-    .refine((responsable: object): responsable is DocumentReference => responsable instanceof DocumentReference),
+  responsible: z.custom((responsible) => {
+    return responsible instanceof DocumentReference;
+  }, {
+    message: "O campo 'responsible' deve ser uma referência válida do Firestore.",
+  }),
+
   rg: z.string(),
   shippingDate: z.string(),
   shippingStatus: z.string(),

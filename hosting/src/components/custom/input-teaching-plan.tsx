@@ -1,7 +1,7 @@
 import { Button } from '../ui/button'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import { useCreateDailyTeachingPlan } from '@/mutations/use-add-teaching-plan'
-import { dailyTeachingPlanSchema } from '@/models/daily-teaching-plan'
+import { useCreateDailyTeachingPlan } from '@/mutations/use-add-teaching-plan-mutation'
+import { dailyTeachingPlanSchema } from '@/models/daily-teaching-plan-schema'
 import { InputForm } from './text-input'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 
@@ -20,7 +20,6 @@ export function InputTeachingPlans({ schoolMatrixId }: InputTeachingPlansProps) 
             trainingContent: '',
             teachingMethodology: '',
             teachingResources: '',
-            date: new Date().toISOString().substring(0, 10),
           }}
           validationSchema={toFormikValidationSchema(dailyTeachingPlanSchema)}
           onSubmit={(values, { resetForm }) => {
@@ -83,22 +82,6 @@ export function InputTeachingPlans({ schoolMatrixId }: InputTeachingPlansProps) 
                   )}
                 />
                 <ErrorMessage name="teachingResources" component="div" className="text-red-500" />
-              </div>
-
-              <div className="mb-4 sm:mb-6">
-                <Field
-                  name="date"
-                  render={({ field }) => (
-                    <InputForm
-                      {...field}
-                      title="Data"
-                      placeholder="Insira uma data..."
-                      type="date"
-                      customStyleInput="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                    />
-                  )}
-                />
-                <ErrorMessage name="date" component="div" className="text-red-500" />
               </div>
 
               <div className="flex justify-end">

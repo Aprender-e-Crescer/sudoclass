@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
 interface SubHeaderProps {
-  hasPrivilege?: 'teacher' | 'student';
+  hasPrivilege?: 'teacher' | 'student' | 'pedagogue';
 }
 
 export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
@@ -9,12 +9,14 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
     const links = document.querySelectorAll('.menu-link');
     links.forEach((link) => link.classList.remove('font-bold', 'text-gray-800'));
 
-    e.currentTarget.classList.add('font-bold', 'text-gray-800');
+    e.currentTarget.classList.add('font-bold', 'text-gray-800'); 
   };
 
-  return (
-    <div className="flex pb-2">
-      <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
+  let content;
+
+  if (hasPrivilege === 'student' || hasPrivilege === 'teacher') {
+    content = (
+      <>
         <li>
           <Link
             to="/"
@@ -70,6 +72,46 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
             </Link>
           )}
         </li>
+      </>
+    );
+  } else if (hasPrivilege === 'pedagogue') {
+    content = (
+      <>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Aluno
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Professor
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/"
+            onClick={handleClick}
+            className="menu-link cursor-pointer text-gray-500"
+          >
+            Pedagogo
+          </Link>
+        </li>
+      </>
+    );
+  }
+
+  return (
+    <div className="flex pb-2">
+      <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
+        {content}
       </ul>
     </div>
   );

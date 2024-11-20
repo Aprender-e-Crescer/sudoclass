@@ -2,16 +2,22 @@ import { DocumentReference, Timestamp } from 'firebase/firestore'
 import { z } from 'zod'
 
 export const documentSchema = z.object({
-  createdby: z
-    .any()
-    .refine((createdby: object): createdby is DocumentReference => createdby instanceof DocumentReference),
-  creationDate: z.preprocess((value) => {
+  createdBy: z.custom(
+    (createdBy) => {
+      return createdBy instanceof DocumentReference
+    },
+    {
+      message: "O campo 'createdBy' deve ser uma referência válida do Firestore.",
+    },
+  ),
+
+  createdDate: z.preprocess((value) => {
     if (value instanceof Timestamp) {
       return value.toDate()
     }
     return value
   }, z.date()),
-  student: z.any().refine((student: object): student is DocumentReference => student instanceof DocumentReference),
+
   name: z.string(),
 })
 
