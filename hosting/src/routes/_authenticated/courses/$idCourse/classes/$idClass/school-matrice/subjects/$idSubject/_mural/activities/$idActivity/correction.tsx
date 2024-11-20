@@ -6,23 +6,24 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
 import { useAddGradeMutation } from '@/mutations/use-add-grade-mutation'
+import { z } from 'zod'
+
+const validateSearch = z.object({
+  idStudent: z.string().optional(),
+})
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/correction',
 )({
   component: Correction,
+  validateSearch,
 })
 
 const initialValues = {
@@ -53,11 +54,7 @@ function Correction() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [inputValue, setInputValue] = useState<string>('')
 
-  const { mutate: addGrade } = useAddGradeMutation(
-    'schoolMatriceId',
-    'subjectId',
-    activityID!,
-  )
+  const { mutate: addGrade } = useAddGradeMutation('schoolMatriceId', 'subjectId', activityID!)
 
   const [sucessMessage, setSuccessMessage] = useState('')
 
@@ -97,16 +94,8 @@ function Correction() {
         ''
         <div>
           {students?.map((student) => (
-            <div
-              key={student.id}
-              onClick={() => handleStudentClick(student)}
-              className="cursor-pointer"
-            >
-              <ListStudents
-                name={student.name}
-                picture=""
-                variant="corrected"
-              />
+            <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
+              <ListStudents name={student.name} picture="" variant="corrected" />
             </div>
           ))}
         </div>
@@ -120,30 +109,17 @@ function Correction() {
               onSubmit={handleSubmitNote}
             >
               {({ handleSubmit, setFieldValue }) => (
-                <Form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col items-center justify-start gap-y-4"
-                >
+                <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
                   <div className="flex gap-x-4 items-start">
                     <div className="h-screen max-h-16">
                       <InputForm
                         name="value"
                         id="value"
                         label="nota"
-                        onChange={(e) =>
-                          setFieldValue(
-                            'value',
-                            e.target.value.replace(/\D/g, ''),
-                          )
-                        }
+                        onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
                       />
                     </div>
-                    <Button
-                      type="submit"
-                      variant="blueButton"
-                      size="small"
-                      className="mt-3"
-                    >
+                    <Button type="submit" variant="blueButton" size="small" className="mt-3">
                       Devolver
                     </Button>
                   </div>
@@ -159,13 +135,7 @@ function Correction() {
                 <User />
                 <p>Comentários</p>
               </div>
-              <TeacherComment
-                avatarSrc=""
-                comment="teste"
-                date="17/10/2024"
-                name="Enzo Guis"
-                textAvatar="EG"
-              />
+              <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
               <form className="flex">
                 <Input
                   type="text"
@@ -174,12 +144,7 @@ function Correction() {
                   placeholder="escreva seu comentário"
                   className="flex-grow"
                 />
-                <Button
-                  type="submit"
-                  variant="blueButton"
-                  size="small"
-                  className="ml-2"
-                >
+                <Button type="submit" variant="blueButton" size="small" className="ml-2">
                   Enviar
                 </Button>
               </form>
@@ -195,12 +160,7 @@ function Correction() {
               <div className="flex justify-center items-center w-full">
                 <div>
                   {students?.map((student) => (
-                    <ListStudents
-                      key={student.id}
-                      name={student.name}
-                      picture=""
-                      variant="corrected"
-                    />
+                    <ListStudents key={student.id} name={student.name} picture="" variant="corrected" />
                   ))}
                 </div>
               </div>
@@ -216,20 +176,12 @@ function Correction() {
                     }}
                   >
                     {({ handleSubmit }) => (
-                      <Form
-                        onSubmit={handleSubmit}
-                        className="flex flex-col items-center justify-start gap-y-4"
-                      >
+                      <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
                         <div className="flex gap-x-4 items-start">
                           <div className="h-screen max-h-16">
                             <InputForm name="value" id="value" label="nota" />
                           </div>
-                          <Button
-                            type="submit"
-                            variant="blueButton"
-                            size="small"
-                            className="mt-3"
-                          >
+                          <Button type="submit" variant="blueButton" size="small" className="mt-3">
                             Devolver
                           </Button>
                         </div>
@@ -243,13 +195,7 @@ function Correction() {
                 </div>
 
                 <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
-                  <TeacherComment
-                    avatarSrc=""
-                    comment="teste"
-                    date="17/10/2024"
-                    name="Enzo Guis"
-                    textAvatar="EG"
-                  />
+                  <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
                   <form className="flex">
                     <Input
                       type="text"
@@ -258,12 +204,7 @@ function Correction() {
                       placeholder="escreva seu comentário"
                       className="flex-grow"
                     />
-                    <Button
-                      type="submit"
-                      variant="blueButton"
-                      size="small"
-                      className="ml-2"
-                    >
+                    <Button type="submit" variant="blueButton" size="small" className="ml-2">
                       Enviar
                     </Button>
                   </form>
