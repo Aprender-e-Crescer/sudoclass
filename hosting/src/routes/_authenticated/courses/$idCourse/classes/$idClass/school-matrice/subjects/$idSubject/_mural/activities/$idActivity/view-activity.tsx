@@ -17,8 +17,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
+import { useAddGradeMutation } from '@/mutations/use-add-grade-mutation'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity',
@@ -74,6 +73,12 @@ function ViewActivity() {
   //   'comments',
   // )
 
+  const { mutate: addGrade } = useAddGradeMutation(
+    'schoolMatriceId',  
+    'subjectId',        
+    activityID!      
+  )
+
   const [sucessMessage, setSuccessMessage] = useState('')
 
   const handleStudentClick = (student: Student) => {
@@ -92,28 +97,32 @@ function ViewActivity() {
   //   setInputValue('')
   // }
 
-  async function upgradeNote(grade: number) {
-    const upgradeNoteRef = doc(firestore, 'activities', activityID!)
-    await setDoc(upgradeNoteRef, { grade: grade })
-    setSuccessMessage('Nota alterada com sucesso!')
-    setTimeout(() => {
-      {
-        setSuccessMessage('')
-      }
-    }, 3000)
-  }
+  const handleSubmitNote = async (values: any) => {
+    const grade = parseInt(values.value)
 
-  async function addNote(grade: number) {
+    if (isNaN(grade) || grade < 0) {
+      setSuccessMessage('Por favor, insira um número válido.')
+      return
+    }
+
+    setSuccessMessage('')
+
     try {
-      const addNoteRef = doc(firestore, 'activities', activityID!)
-      await updateDoc(addNoteRef, {
-        grade: increment(grade),
+      if (!activityID) {
+        setSuccessMessage('Erro: ID da atividade não encontrado.')
+        return
+      }
+
+      await addGrade({
+        grade, 
+        studentId: selectedStudent?.id,
+        comment: values.comment,
       })
 
-      setSuccessMessage('Nota alterada com sucesso!')
+      setSuccessMessage('Nota adicionada com sucesso!')
       setTimeout(() => setSuccessMessage(''), 3000)
     } catch (error) {
-      setSuccessMessage('Erro ao alterar nota!')
+      setSuccessMessage('Erro ao adicionar nota!')
       setTimeout(() => setSuccessMessage(''), 3000)
     }
   }
@@ -144,12 +153,7 @@ function ViewActivity() {
             <Formik
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
-              onSubmit={(values) => {
-                const grade = parseInt(values.value)
-                upgradeNote(grade)
-
-                addNote(grade)
-              }}
+              onSubmit={handleSubmitNote}
             >
               {({ handleSubmit, setFieldValue }) => (
                 <Form
