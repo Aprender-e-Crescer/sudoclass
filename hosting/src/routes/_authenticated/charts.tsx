@@ -6,6 +6,7 @@ import { ChartConfig } from '@/components/ui/chart'
 import { SectorChart } from '@/components/custom/sector-chart'
 import { useChartsQuery } from '@/queries/use-charts-query'
 import { useChartsMutation } from '@/mutations/use-charts-mutation'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 // Ajustar o código
 // Definir quais informaçaões a gente precisa mostrar no front
@@ -87,82 +88,82 @@ function Charts() {
         )}
       </div>
 
-    <table className="min-w-full mt-16">
-     <thead>
-        <tr className="bg-gray-200 text-gray-600  text-md">
-            <th className="py-3 px-6 text-center border-r">Nome</th>
-            <th className="py-3 px-6 text-center border-r">Score Geral</th>
-            <th className="py-3 px-6 text-center border-r">Presença</th>
-            <th className="py-3 px-6 text-center border-r">Notas</th>
-            <th className="py-3 px-6 text-center border-r">Atividades entregues</th>
-        </tr>
-     </thead>
-     <tbody className="text-md">
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno1</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">100.0</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno2</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">100.0</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno3</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">100.0</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-            <td className="py-3 px-6 text-center border-r">100.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno4</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-            <td className="py-3 px-6 text-center border-r">100.0</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-            <td className="py-3 px-6 text-center border-r">80.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno5</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-            <td className="py-3 px-6 text-center border-r">100.0</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">75.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno6</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">85.0</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno7</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">90.0</td>
-            <td className="py-3 px-6 text-center border-r">85.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno8</td>
-            <td className="py-3 px-6 text-center border-r">85.0</td>
-            <td className="py-3 px-6 text-center border-r">100.0</td>
-            <td className="py-3 px-6 text-center border-r">85.0</td>
-            <td className="py-3 px-6 text-center border-r">70.0</td>
-        </tr>
-        <tr className="border-b">
-            <td className="py-3 px-6 text-center border-r">NomeDoAluno9</td>
-            <td className="py-3 px-6 text-center border-r">85.0</td>
-            <td className="py-3 px-6 text-center border-r">95.0</td>
-            <td className="py-3 px-6 text-center border-r">80.0</td>
-            <td className="py-3 px-6 text-center border-r">80.0</td>
-        </tr>
-      </tbody>
-     </table>
+    <Table className="min-w-full mt-16">
+     <TableHeader>
+        <TableRow className="bg-gray-200 text-gray-600  text-md">
+            <TableHead className="py-3 px-6 text-center border-r">Nome</TableHead>
+            <TableHead className="py-3 px-6 text-center border-r">Score Geral</TableHead>
+            <TableHead className="py-3 px-6 text-center border-r">Presença</TableHead>
+            <TableHead className="py-3 px-6 text-center border-r">Notas</TableHead>
+            <TableHead className="py-3 px-6 text-center border-r">Atividades entregues</TableHead>
+        </TableRow>
+     </TableHeader>
+     <TableBody className="text-md">
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno1</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno2</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno3</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno4</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno5</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">75.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno6</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno7</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno8</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">70.0</TableCell>
+        </TableRow>
+        <TableRow className="border-b">
+            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno9</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
+            <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
+        </TableRow>
+      </TableBody>
+     </Table>
 
       <div>
         <Formik
