@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const chartsSchema = z.object({
+    id: z.string(),
     data: z.array(
       z.object({
         browser: z.string(),

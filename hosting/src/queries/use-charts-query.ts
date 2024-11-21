@@ -9,7 +9,7 @@ export function useChartsQuery() {
     queryFn: async () => {
       const chartsRef = collection(firestore, 'charts').withConverter({
         toFirestore: (charts: Charts) => charts,
-        fromFirestore: (snapshot) => chartsSchema.parse(snapshot.data()),
+        fromFirestore: (snapshot) => chartsSchema.parse({ ...snapshot.data(), id: snapshot.id}),
       })
       const snapshot = await getDocs(chartsRef)
       return snapshot.docs.map((doc) => doc.data())

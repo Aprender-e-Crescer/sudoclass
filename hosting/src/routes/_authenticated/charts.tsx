@@ -43,6 +43,7 @@ function ChartsScreen() {
         {chartDocs?.map(
           (
             {
+              id,
               data,
               descriptionChart,
               endAngle,
@@ -51,9 +52,8 @@ function ChartsScreen() {
               polarRadius,
               valueSize,
             },
-            index,
           ) => (
-            <div key={index} className="flex-1 min-w-80 p-2">
+            <div key={id} className="flex-1 min-w-80 p-2">
               <SectorChart chartData={data} chartConfig={chartConfig} descriptionChart={descriptionChart} endAngle={endAngle} polarRadius={polarRadius} innerRadius={innerRadius} outerRadius={outerRadius} valueSize={valueSize}/>
             </div>
           ),
