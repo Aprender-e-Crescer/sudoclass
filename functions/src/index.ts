@@ -1,7 +1,9 @@
 import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { onRequest } from "firebase-functions/v1/https";
 import { info } from "firebase-functions/logger";
 import { auth, firestore } from "./services/firebase";
 import { loginDataSchema } from "./schemas/login";
+import app from "./app";
 
 export const loginWithCPF = onCall(async (request) => {
     try {
@@ -22,3 +24,5 @@ export const loginWithCPF = onCall(async (request) => {
         return new HttpsError("unauthenticated", "CPF inválido ou inexistente.")
     }
 });
+
+export const api = onRequest(app)
