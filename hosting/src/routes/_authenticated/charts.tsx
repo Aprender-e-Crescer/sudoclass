@@ -4,8 +4,101 @@ import { SectorChart } from '@/components/custom/sector-chart'
 import { useChartsQuery } from '@/queries/use-charts-query'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-// Ajustar o código
 // Definir quais informaçaões a gente precisa mostrar no front
+// - Score médio da turma - média entre notas, presença e atividades entregues
+//   - Notas - média das notas dos alunos
+//     - Buscar a nota de cada um dos alunos
+//   - Presença - média das presenças dos alunos
+//     - Buscar a presença de cada um dos alunos
+//   - Atividades entregues - média das atividades entregues dos alunos
+//     - Buscar as atividades entregues de cada um dos alunos
+// - Score médio em Banco de Dados
+//   - Notas
+//   - Presença
+//   - Atividades entregues
+// ...outras materias
+
+// - Para pegar as notas ficou complicado, melhor criar uma ou mais rotas para isso
+// - getAllSchoolCalls - Vamos buscar todas chamadas que existem no banco
+// - Ideal, é que tenha uma rota que a gente consiga pegar todas as informações da dashboard
+
+// Rota - Geral
+//   - Uma rota para listar os alunos de uma turma especifica
+
+// Rota - Tela dempenho - geral / turma
+//   - Uma rota para listar as presenças e faltas de todos os alunos de uma turma especifica, tem que vir de qual máteria é
+const schoolCalls = [
+  {
+    id_chamada: 1,
+    id_materia: 1,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 1,
+    status: true,
+  },
+  {
+    id_chamada: 2,
+    id_materia: 1,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 2,
+    status: false,
+  },
+  {
+    id_chamada: 1,
+    id_materia: 2,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 1,
+    status: true,
+  },
+  {
+    id_chamada: 2,
+    id_materia: 2,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 2,
+    status: false,
+  }
+]
+//   - Uma rota para listar as notas de todos os alunos de uma turma especifica, tem que vir de qual máteria é
+//   - Uma rota para listar o status de cada atividade de todos os alunos de uma turma especifica, tem que vir de qual máteria é
+
+// Rota - Tela dempenho - geral / materia de uma turma
+//   - Uma rota para listar as presenças e faltas de todos os alunos de uma máteria especifica, tem que vir de qual máteria é
+const schoolCalls = [
+  {
+    id_chamada: 1,
+    id_materia: 1,
+    data: '2024-11-20',
+    id_aluno: 1,
+    status: true,
+  },
+  {
+    id_chamada: 2,
+    id_materia: 1,
+    data: '2024-11-20',
+    id_aluno: 2,
+    status: false,
+  }
+]
+
+const student = {
+  id: 1,
+}
+
+const absences = schoolCalls.reduce((currentAbsences, { id_aluno, status }) => student.id === id_aluno && status === false ? currentAbsences++ : currentAbsences, 0)
+
+//   - Uma rota para listar as notas de todos os alunos de uma máteria especifica, tem que vir de qual máteria é  além de qual atividade é
+const subjects = [
+  {
+    
+  },
+]
+//   - Uma rota para listar o status de cada atividade de todos os alunos de uma máteria especifica, tem que vir de qual máteria é
+
+
+
 // Definir como calcular isso, o formato desses dados
 // Pegar informações do back end
 //   - Queries, 
