@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 
-interface ModalJustificationProps {
+interface ModalUploadProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   hasInput: boolean
 }
 
-export default function ModalJustification({ open, onOpenChange, hasInput }: ModalJustificationProps) {
+export default function ModalUpload({ open, onOpenChange, hasInput }: ModalUploadProps) {
   const [files, setFiles] = React.useState<File[]>([])
   const [isDragging, setIsDragging] = React.useState(false)
 

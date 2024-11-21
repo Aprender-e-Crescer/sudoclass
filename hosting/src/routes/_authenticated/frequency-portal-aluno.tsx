@@ -6,8 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { createFileRoute } from '@tanstack/react-router'
-import ModalJustification from '@/components/custom/modal-justification'
-import { boolean } from 'zod'
+import ModalUpload from '@/components/custom/modal-upload'
 
 export const Route = createFileRoute('/_authenticated/frequency-portal-aluno')({
   component: FrenquencyPortalAluno,
@@ -142,7 +141,7 @@ export default function FrenquencyPortalAluno() {
           <div className="px-4 py-6 sm:px-0">
             <div className="rounded-lg border bg-white overflow-hidden">
               <div className="overflow-x-auto">
-                <ModalJustification open={openModal} onOpenChange={setOpenModal} hasInput={true} />
+                <ModalUpload open={openModal} onOpenChange={setOpenModal} hasInput={true} />
                 <Table>
                   <TableHeader>
                     <TableRow>
