@@ -6,7 +6,7 @@ interface InputProps {
   name: string
   icon?: JSX.Element
   avatar: string
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export function InputWithAvatar({ placeholder, id, name, icon, avatar, onChange }: InputProps) {
