@@ -45,18 +45,46 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
           <div className="flex text-gray-500">
             <NoteValue note={20} maxGrade={100} />
           </div>
-          <div className="flex gap-4 items-center ">
-            <MessageSquareMore className="text-gray-400" />
-            <p className="font-semibold text-gray-400">Fazer comentário para a turma</p>
+
+          <div className="flex flex-col gap-4 ">
+            <div className="flex">
+              <MessageSquareMore className="text-gray-400" />
+              <p className="font-semibold text-gray-400">Fazer comentário para a turma</p>
+            </div>
+
+            <div className="flex flex-col gap-4 max-h-96 overflow-auto">
+              {comments.map((comment) => (
+                <div key={comment.id} className="p-3 border rounded-md shadow-sm">
+                  <p className="text-gray-500 text-sm font-bold">{comment.sendBy}</p>
+                  <p className="text-gray-500 text-sm">{comment.text}</p>
+                </div>
+              ))}
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleSubmitComment()
+              }}
+              className="flex justify-center items-center gap-x-3"
+            >
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Escreva seu comentário"
+                className="flex-grow border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500"
+              />
+              <Button type="submit" variant="blueButton" size="medium">
+                Enviar
+              </Button>
+            </form>
           </div>
+
           <div className=" w-full h-0.5 bg-blue-300"></div>
           <p className="text-gray-400 text-sm ">Clique no link abaixo para iniciar o jogo</p>
           <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
           <AttachmentView url="" imageUrl="" title="" linkText="" />
 
-          <div className="flex justify-center items-center border-2 h-12 rounded-lg">
-            <p className="text-gray-400">Todos os arquivos foram salvos off-line</p>
-          </div>
           <div className=" w-full h-0.5 bg-gray-400"></div>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
@@ -72,10 +100,6 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
               </div>
               <div className=" w-full h-full">
                 <AccordionContent>
-                  <div className="flex gap-4 items-center ">
-                    <MessageSquareMore className="text-gray-400" />
-                    <p className="font-semibold text-gray-400">Fazer comentário particular</p>
-                  </div>
                   <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus anexos</h1>
                   <div className="flex flex-col w-full gap-3">
                     <AttachmentView url="" imageUrl="" title="" linkText="" />
@@ -114,8 +138,8 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
             <p className="font-semibold text-gray-400">Fazer comentário para a turma</p>
           </div>
 
-          <div className="flex flex-col gap-4">
-            {comments.map((comment) => (
+          <div className="flex flex-col gap-4 max-h-96 overflow-auto">
+          {comments.map((comment) => (
               <div key={comment.id} className="p-3 border rounded-md shadow-sm">
                 <p className="text-gray-500 text-sm font-bold">{comment.sendBy}</p>
                 <p className="text-gray-500 text-sm">{comment.text}</p>
