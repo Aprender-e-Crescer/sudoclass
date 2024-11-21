@@ -4,6 +4,7 @@ interface InputProps {
   label: string
   placeholder?: string
   id: string
+  value?: string
   name: string
   titleTextArea?: string
   customStyleLabel?: string
@@ -25,6 +26,7 @@ export function InputForm({
   customStyleLabel,
   isDisabled,
   onChange,
+  value,
 }: InputProps) {
   const { setFieldValue } = useFormikContext()
 
@@ -35,6 +37,7 @@ export function InputForm({
         placeholder={placeholder}
         id={id}
         name={name}
+        value={value}
         type={type}
         disabled={isDisabled}
         className={`${customStyleInput ? customStyleInput : 'p-1 border border-gray-200  rounded-md'}
