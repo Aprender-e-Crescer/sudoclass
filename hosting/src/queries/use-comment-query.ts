@@ -1,37 +1,39 @@
-import { Comment, commentSchema } from '@/models/comment-schema'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
-import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs } from 'firebase/firestore'
+import { useState, useEffect } from 'react'
 
-interface ListCommentsQueryProps {
-  schoolMatriceId: string
-  subjectId: string
-  activityId: string
-  correctionId: string
+interface Comment {
+  id: string
+  message: string
+  sentBy: string
+  timestamp: Date
 }
 
-export function useListCommentsQuery({ schoolMatriceId, subjectId, activityId, correctionId }: ListCommentsQueryProps) {
-  return useQuery<Comment[]>({
-    queryKey: ['getComments', schoolMatriceId, subjectId, activityId, correctionId],
-    queryFn: async () => {
-      const commentsRef = collection(
-        firestore,
-        'schoolMatrices',
-        schoolMatriceId,
-        'subjects',
-        subjectId,
-        'activities',
-        activityId,
-        'correction',
-        correctionId,
-        'comments',
-      ).withConverter({
-        toFirestore: (comment: Comment) => comment,
-        fromFirestore: (snapshot) => commentSchema.parse(snapshot.data()),
-      })
+export const useCommentsQuery = (activityID: string) => {
+  const [comments, setComments] = useState<Comment[]>([])
+  const [loading, setLoading] = useState(false)
 
-      const snapshot = await getDocs(commentsRef)
-      return snapshot.docs.map((doc) => doc.data())
-    },
-  })
+  const fetchComments = async () => {
+    setLoading(true)
+    try {
+      const commentsRef = collection(firestore, 'activities', activityID, 'comments')
+      const querySnapshot = await getDocs(query(commentsRef, orderBy('timestamp', 'asc')))
+      const commentsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Comment[]
+
+      setComments(commentsData)
+    } catch (err) {
+      console.error('Erro ao buscar comentários:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchComments()
+  }, [activityID])
+
+  return { comments, loading, fetchComments }
 }

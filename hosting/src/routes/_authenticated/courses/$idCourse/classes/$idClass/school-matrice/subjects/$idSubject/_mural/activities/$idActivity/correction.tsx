@@ -6,29 +6,29 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { User } from 'lucide-react'
-import { doc, setDoc, updateDoc, increment } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
+import { useAddGradeMutation } from '@/mutations/use-add-grade-mutation'
+import { z } from 'zod'
+
+const validateSearch = z.object({
+  idStudent: z.string().optional(),
+})
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity',
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/correction',
 )({
-  component: ViewActivity,
+  component: Correction,
+  validateSearch,
 })
 
 const initialValues = {
   value: '',
-  comment: '', // Adicionado para gerenciar o valor do comentário
+  comment: '',
 }
 
 interface Student {
@@ -48,31 +48,13 @@ interface Student {
   telephone: string
 }
 
-function ViewActivity() {
+function Correction() {
   const { activityID } = useParams()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [inputValue, setInputValue] = useState<string>('')
 
-  // // Ajuste os parâmetros conforme necessário
-  // const schoolMatriceId = 'yourSchoolMatriceId' // Substitua com a lógica para obter esse valor
-  // const subjectId = 'yourSubjectId' // Substitua com a lógica para obter esse valor
-  // const activityId = 'yourActivityId' // Substitua com a lógica para obter esse valor
-  // const correctionId = 'yourCorrectionId' // Substitua com a lógica para obter esse valor
-  // const userId = 'yourUserId' // Substitua com a lógica para obter esse valor
-
-  // const commentsRef = collection(
-  //   firestore,
-  //   'schoolMatrices',
-  //   schoolMatriceId,
-  //   'subjects',
-  //   subjectId,
-  //   'activities',
-  //   activityId,
-  //   'correction',
-  //   correctionId,
-  //   'comments',
-  // )
+  const { mutate: addGrade } = useAddGradeMutation('schoolMatriceId', 'subjectId', activityID!)
 
   const [sucessMessage, setSuccessMessage] = useState('')
 
@@ -84,36 +66,24 @@ function ViewActivity() {
     }
   }
 
-  // const handleSendComment = async (e: FormEvent) => {
-  //   e.preventDefault()
-  //   if (inputValue.trim() === '') return
-
-  //   await useCreateCommentMutation(commentsRef, inputValue, userId)
-  //   setInputValue('')
-  // }
-
-  async function upgradeNote(grade: number) {
-    const upgradeNoteRef = doc(firestore, 'activities', activityID!)
-    await setDoc(upgradeNoteRef, { grade: grade })
-    setSuccessMessage('Nota alterada com sucesso!')
-    setTimeout(() => {
-      {
-        setSuccessMessage('')
-      }
-    }, 3000)
-  }
-
-  async function addNote(grade: number) {
+  const handleSubmitNote = async (values: any) => {
+    const grade = parseInt(values.value)
     try {
-      const addNoteRef = doc(firestore, 'activities', activityID!)
-      await updateDoc(addNoteRef, {
-        grade: increment(grade),
+      if (!activityID) {
+        setSuccessMessage('Erro: ID da atividade não encontrado.')
+        return
+      }
+
+      await addGrade({
+        grade,
+        studentId: selectedStudent?.id,
+        comment: values.comment,
       })
 
-      setSuccessMessage('Nota alterada com sucesso!')
+      setSuccessMessage('Nota adicionada com sucesso!')
       setTimeout(() => setSuccessMessage(''), 3000)
     } catch (error) {
-      setSuccessMessage('Erro ao alterar nota!')
+      setSuccessMessage('Erro ao adicionar nota!')
       setTimeout(() => setSuccessMessage(''), 3000)
     }
   }
@@ -124,16 +94,8 @@ function ViewActivity() {
         ''
         <div>
           {students?.map((student) => (
-            <div
-              key={student.id}
-              onClick={() => handleStudentClick(student)}
-              className="cursor-pointer"
-            >
-              <ListStudents
-                name={student.name}
-                picture=""
-                variant="corrected"
-              />
+            <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
+              <ListStudents name={student.name} picture="" variant="corrected" />
             </div>
           ))}
         </div>
@@ -144,38 +106,20 @@ function ViewActivity() {
             <Formik
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
-              onSubmit={(values) => {
-                const grade = parseInt(values.value)
-                upgradeNote(grade)
-
-                addNote(grade)
-              }}
+              onSubmit={handleSubmitNote}
             >
               {({ handleSubmit, setFieldValue }) => (
-                <Form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col items-center justify-start gap-y-4"
-                >
+                <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
                   <div className="flex gap-x-4 items-start">
                     <div className="h-screen max-h-16">
                       <InputForm
                         name="value"
                         id="value"
                         label="nota"
-                        onChange={(e) =>
-                          setFieldValue(
-                            'value',
-                            e.target.value.replace(/\D/g, ''),
-                          )
-                        }
+                        onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
                       />
                     </div>
-                    <Button
-                      type="submit"
-                      variant="blueButton"
-                      size="small"
-                      className="mt-3"
-                    >
+                    <Button type="submit" variant="blueButton" size="small" className="mt-3">
                       Devolver
                     </Button>
                   </div>
@@ -191,13 +135,7 @@ function ViewActivity() {
                 <User />
                 <p>Comentários</p>
               </div>
-              <TeacherComment
-                avatarSrc=""
-                comment="teste"
-                date="17/10/2024"
-                name="Enzo Guis"
-                textAvatar="EG"
-              />
+              <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
               <form className="flex">
                 <Input
                   type="text"
@@ -206,12 +144,7 @@ function ViewActivity() {
                   placeholder="escreva seu comentário"
                   className="flex-grow"
                 />
-                <Button
-                  type="submit"
-                  variant="blueButton"
-                  size="small"
-                  className="ml-2"
-                >
+                <Button type="submit" variant="blueButton" size="small" className="ml-2">
                   Enviar
                 </Button>
               </form>
@@ -227,12 +160,7 @@ function ViewActivity() {
               <div className="flex justify-center items-center w-full">
                 <div>
                   {students?.map((student) => (
-                    <ListStudents
-                      key={student.id}
-                      name={student.name}
-                      picture=""
-                      variant="corrected"
-                    />
+                    <ListStudents key={student.id} name={student.name} picture="" variant="corrected" />
                   ))}
                 </div>
               </div>
@@ -248,20 +176,12 @@ function ViewActivity() {
                     }}
                   >
                     {({ handleSubmit }) => (
-                      <Form
-                        onSubmit={handleSubmit}
-                        className="flex flex-col items-center justify-start gap-y-4"
-                      >
+                      <Form onSubmit={handleSubmit} className="flex flex-col items-center justify-start gap-y-4">
                         <div className="flex gap-x-4 items-start">
                           <div className="h-screen max-h-16">
                             <InputForm name="value" id="value" label="nota" />
                           </div>
-                          <Button
-                            type="submit"
-                            variant="blueButton"
-                            size="small"
-                            className="mt-3"
-                          >
+                          <Button type="submit" variant="blueButton" size="small" className="mt-3">
                             Devolver
                           </Button>
                         </div>
@@ -275,13 +195,7 @@ function ViewActivity() {
                 </div>
 
                 <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
-                  <TeacherComment
-                    avatarSrc=""
-                    comment="teste"
-                    date="17/10/2024"
-                    name="Enzo Guis"
-                    textAvatar="EG"
-                  />
+                  <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
                   <form className="flex">
                     <Input
                       type="text"
@@ -290,12 +204,7 @@ function ViewActivity() {
                       placeholder="escreva seu comentário"
                       className="flex-grow"
                     />
-                    <Button
-                      type="submit"
-                      variant="blueButton"
-                      size="small"
-                      className="ml-2"
-                    >
+                    <Button type="submit" variant="blueButton" size="small" className="ml-2">
                       Enviar
                     </Button>
                   </form>
@@ -309,4 +218,4 @@ function ViewActivity() {
   )
 }
 
-export default ViewActivity
+export default Correction

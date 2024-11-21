@@ -1,45 +1,28 @@
-import { Comment } from '@/models/comment-schema'
 import { firestore } from '@/services/firebase'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { addDoc, collection } from 'firebase/firestore'
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import { useMutation } from '@tanstack/react-query'
 
-interface UseCreateCommentMutationProps {
-  schoolMatriceId: string
-  subjectId: string
-  activityId: string
-  correctionId: string
-}
-
-export function useCreateCommentMutation({
-  schoolMatriceId,
-  subjectId,
-  activityId,
-  correctionId,
-}: UseCreateCommentMutationProps) {
-  const queryClient = useQueryClient()
-
+export function useCreateCommentMutation(courseID: string, classID: string, subjectID: string, activityID: string) {
   return useMutation({
-    mutationKey: ['createComment'],
-    mutationFn: (comment: Comment) =>
+    mutationKey: ['createComment', courseID, classID, subjectID, activityID],
+    mutationFn: (commentData: { message: string; sentBy: string }) =>
       addDoc(
         collection(
           firestore,
-          'schoolMatrices',
-          schoolMatriceId,
+          'courses',
+          courseID,
+          'classes',
+          classID,
           'subjects',
-          subjectId,
+          subjectID,
           'activities',
-          activityId,
-          'correction',
-          correctionId,
+          activityID,
           'comments',
         ),
-        comment,
+        {
+          ...commentData,
+          timestamp: Timestamp.now(), // Adiciona o timestamp ao comentário
+        },
       ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['getComments', schoolMatriceId, subjectId, activityId, correctionId],
-      })
-    },
   })
 }
