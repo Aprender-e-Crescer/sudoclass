@@ -7,6 +7,12 @@ import { SectorChart } from '@/components/custom/sector-chart'
 import { useChartsQuery } from '@/queries/use-charts-query'
 import { useChartsMutation } from '@/mutations/use-charts-mutation'
 
+// Ajustar o código
+// Definir quais informaçaões a gente precisa mostrar no front
+// Definir como calcular isso, o formato desses dados
+// Pegar informações do back end
+//   - Queries, 
+
 const chartConfig = {
   visitors: {
     label: 'Visitors',
@@ -74,7 +80,7 @@ function Charts() {
             },
             index,
           ) => (
-            <div key={index} className="flex-1 min-w-56">
+            <div key={index} className="flex-1 min-w-80 p-2">
               <SectorChart chartData={data} chartConfig={chartConfig} descriptionChart={descriptionChart} endAngle={endAngle} polarRadius={polarRadius} innerRadius={innerRadius} outerRadius={outerRadius} valueSize={valueSize}/>
             </div>
           ),
