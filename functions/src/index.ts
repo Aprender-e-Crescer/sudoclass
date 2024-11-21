@@ -2,6 +2,7 @@ import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { info } from "firebase-functions/logger";
 import { auth, firestore } from "./services/firebase";
 import { loginDataSchema } from "./schemas/login";
+import { getTitleDataSchema } from "./schemas/form";
 
 export const loginWithCPF = onCall(async (request) => {
     try {
@@ -21,4 +22,14 @@ export const loginWithCPF = onCall(async (request) => {
 
         return new HttpsError("unauthenticated", "CPF inválido ou inexistente.")
     }
+});
+
+export const getTitleByUrl = onCall(async (request) => {
+    const { url } = getTitleDataSchema.parse(request.data)
+
+    const form = await fetch(url)
+    const text = await form.text()
+    const title = text.match(/<title>(.*?)<\/title>/)?.[1] ?? null
+
+    return title
 });
