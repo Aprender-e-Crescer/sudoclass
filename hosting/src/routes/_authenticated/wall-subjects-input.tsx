@@ -22,7 +22,7 @@ const initialValues = {
 export function WallSubjectInput() {
   const schoolMatriceId = 'aQjvxCKlEuHc9YQEedCQ'
   const subjectId = 'zGTOAwnKJBjFSmayHxJo'
-  const { data: initialComments = [], isLoading } = useWarningWallQuery('a', 'a')
+  const { data: initialComments = [], isLoading } = useWarningWallQuery(schoolMatriceId, subjectId)
   const createWarningMutation = useCreateWarningMutation(schoolMatriceId, subjectId)
   const [comments, setComments] = useState(initialComments)
 
