@@ -6,9 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 
-export default function ModalJustification() {
+interface ModalUploadProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  hasInput: boolean
+}
+
+export default function ModalUpload({ open, onOpenChange, hasInput }: ModalUploadProps) {
   const [files, setFiles] = React.useState<File[]>([])
-  const [open, setOpen] = React.useState(true)
   const [isDragging, setIsDragging] = React.useState(false)
 
   const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'application/pdf']
@@ -44,7 +49,7 @@ export default function ModalJustification() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex justify-between items-center">Upload</DialogTitle>
@@ -70,10 +75,12 @@ export default function ModalJustification() {
           </div>
         </div>
 
-        <div className="mt-4">
-          <label className="text-sm font-medium">Justificativa</label>
-          <Textarea placeholder="Insira sua justificativa..." className="mt-1.5" />
-        </div>
+        {hasInput ? (
+          <div className="mt-4">
+            <label className="text-sm font-medium">Justificativa</label>
+            <Textarea placeholder="Insira sua justificativa..." className="mt-1.5" />
+          </div>
+        ) : null}
 
         <div className="mt-4 space-y-2">
           {files.map((file, index) => (
