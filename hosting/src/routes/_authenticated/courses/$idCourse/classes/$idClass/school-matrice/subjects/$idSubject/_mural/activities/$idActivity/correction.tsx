@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ListStudents from '@/components/custom/list-students'
-import { TeacherComment } from '@/components/custom/teacher-comment'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
@@ -52,7 +51,7 @@ function Correction() {
   const { activityID } = useParams()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-  const [inputValue, setInputValue] = useState<string>('')
+  // const [inputValue, setInputValue] = useState<string>('')
 
   const { mutate: addGrade } = useAddGradeMutation('schoolMatriceId', 'subjectId', activityID!)
 
@@ -135,7 +134,7 @@ function Correction() {
                 <User />
                 <p>Comentários</p>
               </div>
-              <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
+              {/* <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
               <form className="flex">
                 <Input
                   type="text"
@@ -147,7 +146,7 @@ function Correction() {
                 <Button type="submit" variant="blueButton" size="small" className="ml-2">
                   Enviar
                 </Button>
-              </form>
+              </form> */}
             </div>
           </div>
         )}
@@ -195,7 +194,7 @@ function Correction() {
                 </div>
 
                 <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
-                  <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
+                  {/* <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
                   <form className="flex">
                     <Input
                       type="text"
@@ -207,7 +206,7 @@ function Correction() {
                     <Button type="submit" variant="blueButton" size="small" className="ml-2">
                       Enviar
                     </Button>
-                  </form>
+                  </form> */}
                 </div>
               </div>
             </AccordionContent>

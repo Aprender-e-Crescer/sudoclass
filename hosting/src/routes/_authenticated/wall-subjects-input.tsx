@@ -3,7 +3,7 @@ import { CardComponent } from '@/components/custom/card-bolletin-board'
 import { InputWithAvatar } from '@/components/custom/input-with-avatar'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { SendHorizontal } from 'lucide-react'
-import { TeacherComment } from '@/components/custom/teacher-comment'
+import { Warning } from '@/components/custom/warning'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
 import { useWarningWallQuery } from '@/queries/use-warning-wall-query'
@@ -74,7 +74,7 @@ export function WallSubjectInput() {
         </div>
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full flex flex-col gap-4">
           {comments.map((comment, index) => (
-            <TeacherComment key={index} name={comment.sentBy} date="Agora" avatarSrc="" comment={comment.message} />
+            <Warning key={index} name={comment.sentBy} date="Agora" avatarSrc="" comment={comment.message} />
           ))}
         </div>
       </div>

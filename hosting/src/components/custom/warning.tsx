@@ -1,6 +1,6 @@
 import * as Avatar from '@radix-ui/react-avatar'
 
-interface TeacherCommentProps {
+interface WarningProps {
   name: string
   date: string
   comment: string
@@ -8,7 +8,7 @@ interface TeacherCommentProps {
   avatarSrc: string
 }
 
-export function TeacherComment({ name, date, comment, textAvatar, avatarSrc }: TeacherCommentProps) {
+export function Warning({ name, date, comment, textAvatar, avatarSrc }: WarningProps) {
   return (
     <div className="flex">
       <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex gap-x-3">
