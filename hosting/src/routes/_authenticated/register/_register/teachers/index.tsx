@@ -1,13 +1,23 @@
-import { Formik, Form, Field } from 'formik'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { createFileRoute } from '@tanstack/react-router'
+import { InputFile } from '@/components/custom/file-input'
+import { InputForm } from '@/components/custom/text-input'
+import { Button } from '@/components/ui/button'
+import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
 import { registerSchema } from '@/models/teachers-schema'
 import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { Form, Formik } from 'formik'
+import { Else, If, Then, When } from 'react-if'
+import { z } from 'zod'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
-export const Route = createFileRoute(
-  '/_authenticated/register/_register/teachers/',
-)({
+const validateSearch = z.object({
+  action: z.enum(['create', 'edit']).optional(),
+  idTeacher: z.string().optional(),
+})
+
+export const Route = createFileRoute('/_authenticated/register/_register/teachers/')({
   component: TeachersListing,
+  validateSearch,
 })
 
 const initialValues = {
@@ -29,157 +39,206 @@ const initialValues = {
   password: '',
 }
 
-export function TeachersListing() {
+function useLogic() {
+  const { registerTeacher } = useRegisterTeacherController()
   const { data: registerRequests } = useTeachersSchemaQuery()
+  const { idTeacher, action } = Route.useSearch()
+
+  const handleOnTeacherSubmit = (values: typeof initialValues) => {
+    registerTeacher(values)
+  }
+
+  return { handleOnTeacherSubmit, registerRequests, action }
+}
+
+export function TeachersListing() {
+  const { handleOnTeacherSubmit, registerRequests, action } = useLogic()
 
   return (
     <>
+      <Link to="/register/teachers" search={{ action: 'create' }}>
+        Cadastrar professor
+      </Link>
       <div>
         {registerRequests?.map(({ fullName, email, cpf }, index) => (
-          <div key={index}>
+          <Link key={index} to="/register/teachers" search={{ action: 'edit', idTeacher: cpf }}>
             <p>
               Nome: {fullName}, Email: {email}, CPF: {cpf}
             </p>
-          </div>
+          </Link>
         ))}
       </div>
 
       <br />
       <br />
 
-      <h1>Cadastro de Professor</h1>
+      <When condition={!!action}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleOnTeacherSubmit}
+          validationSchema={toFormikValidationSchema(registerSchema)}
+        >
+          <Form className="p-1">
+            <div className=" p-2 rounded-sm border-2">
+              <InputForm
+                title="Nome completo"
+                placeholder="Nome completo"
+                id="fullName"
+                name="fullName"
+                label="fullName"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <InputForm
+                title="Email"
+                placeholder="professor@gmail.com"
+                id="email"
+                name="email"
+                label="email"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <InputForm
+                title="Telefone"
+                placeholder="(99) 99999-9999"
+                id="telephone"
+                name="telephone"
+                label="telephone"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <div className="flex gap-5 flex-wrap">
+                <InputForm
+                  title="Estado"
+                  placeholder="PR"
+                  id="state"
+                  name="state"
+                  label="state"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
+                <InputForm
+                  title="Municipio"
+                  placeholder="Seu Municipio"
+                  id="municipality"
+                  name="municipality"
+                  label="municipality"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
+              </div>
+              <InputForm
+                title="Rua"
+                placeholder="Rua"
+                id="street"
+                name="street"
+                label="street"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <div className="flex sm:gap-5 sm:flex-row flex-col">
+                <InputForm
+                  title="Bairro"
+                  placeholder="Bairro"
+                  id="neighborhood"
+                  name="neighborhood"
+                  label="neighborhood"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
 
-      <Formik
-        initialValues={initialValues}
-        validationSchema={toFormikValidationSchema(registerSchema)}
-        onSubmit={(values) => {
-          console.log('Valores do formulário:', values)
-        }}
-      >
-        {({ errors, touched }) => (
-          <Form>
-            <div>
-              <label>Município:</label>
-              <Field type="text" name="municipality" />
-              {touched.municipality && errors.municipality && (
-                <div>{errors.municipality}</div>
-              )}
+                <InputForm
+                  title="Numero"
+                  placeholder="ex: 77"
+                  id="houseNumber"
+                  name="houseNumber"
+                  label="houseNumber"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
+              </div>
+              <div className="flex gap-5 max-sm:gap-1 flex-wrap">
+                <InputForm
+                  title="Data de nascimento"
+                  placeholder="00/00/0000"
+                  id="DateOfBirth"
+                  name="DateOfBirth"
+                  label="DateOfBirth"
+                  type="date"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
+                <InputForm
+                  title="CPF"
+                  placeholder="000.000.000-00"
+                  id="cpf"
+                  name="cpf"
+                  label="cpf"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
+                <InputForm
+                  title="RG"
+                  placeholder="00.000.000-0"
+                  id="rgNumber"
+                  name="rgNumber"
+                  label="rgNumber"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
+              </div>
+              <InputForm
+                title="Data de expedição RG"
+                placeholder="data de expedição"
+                id="shippingDate"
+                name="shippingDate"
+                label="shippingDate"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <InputForm
+                title="Estado de expedição RG"
+                placeholder="estado de expedição"
+                id="shippingState"
+                name="shippingState"
+                label="shippingState"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <InputForm
+                title="Estado de nascimento"
+                placeholder="Estado"
+                id="birthStatus"
+                name="birthStatus"
+                label="birthStatus"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <InputForm
+                title="Cidade de nascimento"
+                placeholder="  Cidade"
+                id="birthCity"
+                name="birthCity"
+                label="birthCity"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+              <InputForm
+                title="Senha"
+                placeholder="Senha padrão para o professor"
+                id="password"
+                name="password"
+                label="password"
+                customStyleInput="rounded-lg border-2 p-[6px]"
+              />
+
+              <InputFile
+                title="Anexar arquivos"
+                placeholder="ImagemDocumentoAnexado.png 90kb"
+                id="attachDocuments"
+                name="attachDocuments"
+                label="attachDocuments"
+              />
+              <div className="flex justify-center gap-5">
+                <Button variant="ghostBlack" size="large" className="w-64">
+                  Cancelar
+                </Button>
+                <Button variant="blueButton" size="large" className="w-64">
+                  <If condition={action === 'create'}>
+                    <Then>Cadastrar</Then>
+                    <Else>Atualizar</Else>
+                  </If>
+                </Button>
+              </div>
             </div>
-
-            <div>
-              <label>Bairro:</label>
-              <Field type="text" name="neighborhood" />
-              {touched.neighborhood && errors.neighborhood && (
-                <div>{errors.neighborhood}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Número:</label>
-              <Field type="text" name="number" />
-              {touched.number && errors.number && <div>{errors.number}</div>}
-            </div>
-
-            <div>
-              <label>Rua:</label>
-              <Field type="text" name="road" />
-              {touched.road && errors.road && <div>{errors.road}</div>}
-            </div>
-
-            <div>
-              <label>Estado:</label>
-              <Field type="text" name="state" />
-              {touched.state && errors.state && <div>{errors.state}</div>}
-            </div>
-
-            <div>
-              <label>Cidade de Nascimento:</label>
-              <Field type="text" name="birthCity" />
-              {touched.birthCity && errors.birthCity && (
-                <div>{errors.birthCity}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Estado Civil:</label>
-              <Field type="text" name="birthStatus" />
-              {touched.birthStatus && errors.birthStatus && (
-                <div>{errors.birthStatus}</div>
-              )}
-            </div>
-
-            <div>
-              <label>CPF:</label>
-              <Field type="text" name="cpf" />
-              {touched.cpf && errors.cpf && <div>{errors.cpf}</div>}
-            </div>
-
-            <div>
-              <label>Data de Nascimento:</label>
-              <Field type="text" name="dateOfBirth" />
-              {touched.dateOfBirth && errors.dateOfBirth && (
-                <div>{errors.dateOfBirth}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Email:</label>
-              <Field type="email" name="email" />
-              {touched.email && errors.email && <div>{errors.email}</div>}
-            </div>
-
-            <div>
-              <label>Nome Completo:</label>
-              <Field type="text" name="fullName" />
-              {touched.fullName && errors.fullName && (
-                <div>{errors.fullName}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Número do RG:</label>
-              <Field type="text" name="rgNumber" />
-              {touched.rgNumber && errors.rgNumber && (
-                <div>{errors.rgNumber}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Status de Emissão do RG:</label>
-              <Field type="text" name="rgDispatchStatus" />
-              {touched.rgDispatchStatus && errors.rgDispatchStatus && (
-                <div>{errors.rgDispatchStatus}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Data de Emissão do RG:</label>
-              <Field type="text" name="rgDispatchDate" />
-              {touched.rgDispatchDate && errors.rgDispatchDate && (
-                <div>{errors.rgDispatchDate}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Telefone:</label>
-              <Field type="text" name="telephone" />
-              {touched.telephone && errors.telephone && (
-                <div>{errors.telephone}</div>
-              )}
-            </div>
-
-            <div>
-              <label>Senha:</label>
-              <Field type="password" name="password" />
-              {touched.password && errors.password && (
-                <div>{errors.password}</div>
-              )}
-            </div>
-
-            <button type="submit">Cadastrar</button>
           </Form>
-        )}
-      </Formik>
+        </Formik>
+      </When>
     </>
   )
 }

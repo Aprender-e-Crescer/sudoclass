@@ -13,14 +13,21 @@ import { Form, Formik, Field } from 'formik'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
 import { activitySchema } from '@/models/activity-schema'
+import { z } from 'zod'
 
-export const Route = createFileRoute(
-  '/_authenticated/create-activity-material',
-)({
-  component: CreateActivityMaterial,
+const validateSearch = z.object({
+  action: z.enum(['create', 'edit']),
+  idActivity: z.string().optional(),
 })
 
-export function CreateActivityMaterial() {
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/manage',
+)({
+  component: CreateActivity,
+  validateSearch,
+})
+
+export function CreateActivity() {
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const { mutate: createActivity } = useCreateActivityMutation()
 

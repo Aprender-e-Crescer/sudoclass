@@ -15,9 +15,7 @@ import {
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { useToast } from '@/hooks/use-toast'
 
-export const Route = createFileRoute(
-  '/_authenticated/_requests/password-change-request',
-)({
+export const Route = createFileRoute('/_authenticated/_requests/password-change-request')({
   component: RequestChangePassword,
 })
 
@@ -28,21 +26,20 @@ export function RequestChangePassword() {
   return (
     <>
       {students?.map(({ name }, index) => (
-        <div key={index}>
-          <div className="rounded-md border-2 w-10/12 flex p-3 items-center my-5 gap-5">
+        <div key={index} className="flex flex-col flex-1 p-2">
+          <div className="rounded-md border-2 flex p-3 items-center my-5 gap-5">
             <img className="size-12" src={avatarLogo} />
             <div>
               <h1 className="font-bold font-[inter]">{name}</h1>
-              <p className="text-gray-300 font-[inter]">
-                Curso: Aprender e crescer
-              </p>
+              <p className="text-gray-300 font-[inter]">Curso: Aprender e crescer</p>
             </div>
             <div className="gap-3 flex ml-auto">
               <AlertDialog>
                 <AlertDialogTrigger>
                   <div
-                    onClick={() => 
+                    onClick={() =>
                       toast({
+                        duration: 1500,
                         variant: 'sucesss',
                         title: 'Atualizado com sucesso ✓',
                       })
@@ -58,9 +55,7 @@ export function RequestChangePassword() {
                     <AlertDialogCancel className="w-10">
                       <ChevronLeft className="size-8 mt-[13px]" />
                     </AlertDialogCancel>
-                    <AlertDialogTitle className="text-2xl">
-                      Nova senha - {name}
-                    </AlertDialogTitle>
+                    <AlertDialogTitle className="text-2xl">Nova senha - {name}</AlertDialogTitle>
                   </AlertDialogHeader>
                   <Button
                     iconPosition="right"
@@ -68,8 +63,7 @@ export function RequestChangePassword() {
                     icon={<Copy />}
                     className="w-full p-6 text-xl border-2 border-black"
                   >
-                    {name}{' '}
-                    {/* Mudar para senha mais tarde, tem que mudar na querie do estudante*/}
+                    {name} {/* Mudar para senha mais tarde, tem que mudar na querie do estudante*/}
                   </Button>
                 </AlertDialogContent>
               </AlertDialog>
