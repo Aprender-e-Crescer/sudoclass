@@ -4,7 +4,7 @@ interface TeacherCommentProps {
   name: string
   date: string
   comment: string
-  textAvatar: string
+  textAvatar?: string
   avatarSrc: string
 }
 
