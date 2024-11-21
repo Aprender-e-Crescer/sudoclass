@@ -43,7 +43,6 @@ export function InputForm({
           onChange?.(event)
           setFieldValue(name, event.target.value)
         }}
-        // onChange={onChange}
       />
       <div className="text-red-500">
         &nbsp;
