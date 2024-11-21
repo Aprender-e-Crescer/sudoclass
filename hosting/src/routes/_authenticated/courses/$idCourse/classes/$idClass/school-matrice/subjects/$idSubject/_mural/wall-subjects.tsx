@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CardComponent } from '@/components/custom/card-bolletin-board'
-import { TeacherComment } from '@/components/custom/teacher-comment'
+import { Warning } from '@/components/custom/warning'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/wall-subjects',
@@ -17,13 +17,13 @@ export function WallSubject() {
         </div>
 
         <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <TeacherComment
+          <Warning
             name="Alexandre Martinek"
             date="ontem"
             comment="Prova amanhã pessoal! Não faltem"
             textAvatar="A"
             avatarSrc=""
-          ></TeacherComment>
+          />
         </div>
       </div>
     </div>
