@@ -1,4 +1,4 @@
-import { ErrorMessage, Field } from 'formik'
+import { ErrorMessage, Field, useFormikContext } from 'formik'
 interface InputProps {
   title?: string
   label: string
@@ -26,6 +26,8 @@ export function InputForm({
   isDisabled,
   onChange,
 }: InputProps) {
+  const { setFieldValue } = useFormikContext()
+
   return (
     <label htmlFor={label} className={`${customStyleLabel ? customStyleLabel : 'flex flex-col flex-1 w-full mt-3'}`}>
       {title}
@@ -37,7 +39,11 @@ export function InputForm({
         disabled={isDisabled}
         className={`${customStyleInput ? customStyleInput : 'p-1 border border-gray-200  rounded-md'}
         ${isDisabled ? 'cursor-not-allowed' : ''}`}
-        onChange={onChange}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          onChange?.(event)
+          setFieldValue(name, event.target.value)
+        }}
+        // onChange={onChange}
       />
       <div className="text-red-500">
         &nbsp;
