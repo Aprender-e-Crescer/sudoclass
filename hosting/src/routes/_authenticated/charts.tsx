@@ -1,11 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Formik } from 'formik'
-import { z } from 'zod'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { ChartConfig } from '@/components/ui/chart'
 import { SectorChart } from '@/components/custom/sector-chart'
 import { useChartsQuery } from '@/queries/use-charts-query'
-import { useChartsMutation } from '@/mutations/use-charts-mutation'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 // Ajustar o código
@@ -25,30 +21,11 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export const Route = createFileRoute('/_authenticated/charts')({
-  component: Charts,
+  component: ChartsScreen,
 })
 
-export const chartsSchema = z.object({
-  data: z.array(
-    z.object({
-      browser: z.string(),
-      visitors: z.number().min(0).max(100),
-      fill: z.string(),
-    }),
-  ),
-  descriptionChart: z.string(),
-  endAngle: z.number(),
-  innerRadius: z.number(),
-  outerRadius: z.number(),
-  polarRadius: z.array(z.number()),
-  valueSize: z.string(),
-})
-
-export type Charts = z.infer<typeof chartsSchema>
-
-function Charts() {
+function ChartsScreen() {
   const { data: chartDocs, isLoading, error } = useChartsQuery()
-  const { mutate: addDataSet } = useChartsMutation()
 
   if (isLoading) {
     return (
@@ -59,11 +36,6 @@ function Charts() {
   }
 
   if (error) return <h1>Erro ao carregar os dados: {error.message}</h1>
-
-  const searchSubmitForm = async (values: Charts, resetForm: () => void) => {
-    addDataSet(values)
-    resetForm()
-  }
 
   return (
     <div>
@@ -87,101 +59,82 @@ function Charts() {
           ),
         )}
       </div>
-
-    <Table className="min-w-full mt-16">
-     <TableHeader>
-        <TableRow className="bg-gray-200 text-gray-600  text-md">
-            <TableHead className="py-3 px-6 text-center border-r">Nome</TableHead>
-            <TableHead className="py-3 px-6 text-center border-r">Score Geral</TableHead>
-            <TableHead className="py-3 px-6 text-center border-r">Presença</TableHead>
-            <TableHead className="py-3 px-6 text-center border-r">Notas</TableHead>
-            <TableHead className="py-3 px-6 text-center border-r">Atividades entregues</TableHead>
-        </TableRow>
-     </TableHeader>
-     <TableBody className="text-md">
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno1</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno2</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno3</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno4</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno5</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">75.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno6</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno7</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno8</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">70.0</TableCell>
-        </TableRow>
-        <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno9</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
-            <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
-        </TableRow>
-      </TableBody>
-     </Table>
-
-      <div>
-        <Formik
-          initialValues={{
-            data: [{ browser: '', visitors: 0, fill: '' }],
-            descriptionChart: '',
-            endAngle: 0,
-            innerRadius: 0,
-            outerRadius: 0,
-            polarRadius: [0, 0],
-            valueSize: '',
-          }}
-          validationSchema={toFormikValidationSchema(chartsSchema)}
-          onSubmit={(values, { resetForm }) =>
-            searchSubmitForm(values, resetForm)
-          }
-        ></Formik>
-      </div>
+      <Table className="min-w-full mt-16">
+        <TableHeader>
+            <TableRow className="bg-gray-200 text-gray-600  text-md">
+                <TableHead className="py-3 px-6 text-center border-r">Nome</TableHead>
+                <TableHead className="py-3 px-6 text-center border-r">Score Geral</TableHead>
+                <TableHead className="py-3 px-6 text-center border-r">Presença</TableHead>
+                <TableHead className="py-3 px-6 text-center border-r">Notas</TableHead>
+                <TableHead className="py-3 px-6 text-center border-r">Atividades entregues</TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody className="text-md">
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno1</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno2</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno3</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno4</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno5</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">75.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno6</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno7</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">90.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno8</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">100.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">70.0</TableCell>
+          </TableRow>
+          <TableRow className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r">NomeDoAluno9</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">85.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">95.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
+              <TableCell className="py-3 px-6 text-center border-r">80.0</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   )
 }

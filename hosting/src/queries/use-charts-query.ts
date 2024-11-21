@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
-import { chartsSchema, Charts } from '@/routes/_authenticated/charts'
+import { chartsSchema, Charts } from '@/models/chart-schema'
 
 export function useChartsQuery() {
   return useQuery({
