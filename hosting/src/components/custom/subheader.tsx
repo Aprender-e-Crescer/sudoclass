@@ -51,7 +51,11 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
         </li>
         <li>
           {hasPrivilege === 'teacher' ? (
-            <Link to="/" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
+            <Link
+              to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/call"
+              onClick={handleClick}
+              className="menu-link cursor-pointer text-gray-500"
+            >
               Chamada
             </Link>
           ) : (

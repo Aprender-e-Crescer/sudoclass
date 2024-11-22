@@ -6,7 +6,7 @@ export const Route = createFileRoute(
 )({
   component: () => (
     <div>
-      <SubHeader />
+      <SubHeader hasPrivilege="teacher" />
       <Outlet />
     </div>
   ),
