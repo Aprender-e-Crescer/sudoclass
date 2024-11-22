@@ -11,9 +11,11 @@ export const Route = createFileRoute('/_authenticated')({
 
 export function Authenticated() {
   return (
-    <div>
+    <div className="flex">
       <LeftMenu type="StudentPortal" />
-      <Outlet />
+      <div className="flex-1 ml-5">
+        <Outlet />
+      </div>
     </div>
   )
 }
