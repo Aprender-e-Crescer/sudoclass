@@ -79,10 +79,11 @@ export default function FrenquencyPortalAluno() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen flex flex-col ">
       <main className="flex-grow">
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
+        <h1 className="font-bold text-blue-950 text-4xl">Frequencia</h1>
+        <div>
+          <div className="py-6 sm:px-0">
             <div className="rounded-lg border bg-white overflow-hidden">
               <div className="overflow-x-auto">
                 <ModalUpload open={openModal} onOpenChange={setOpenModal} hasInput={true} />

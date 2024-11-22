@@ -6,7 +6,7 @@ import { InputLabel } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { z } from 'zod'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
@@ -14,9 +14,41 @@ export const Route = createFileRoute(
   component: SubjectDetails,
 })
 
+const data = [
+  {
+    value: 'matematica',
+    label: 'Matemática',
+    workload: 40,
+    disciplineSyllabus: 'Introdução aos conceitos básicos de matemática, incluindo álgebra e geometria.',
+  },
+  {
+    value: 'portugues',
+    label: 'Português',
+    workload: 35,
+    disciplineSyllabus: 'Estudo da gramática normativa, interpretação de textos e redação.',
+  },
+  {
+    value: 'historia',
+    label: 'História',
+    workload: 45,
+    disciplineSyllabus: 'Análise dos eventos históricos do Brasil e do mundo, com foco no período moderno.',
+  },
+  {
+    value: 'biologia',
+    label: 'Biologia',
+    workload: 50,
+    disciplineSyllabus: 'Fundamentos de biologia celular, genética e ecologia.',
+  },
+  {
+    value: 'fisica',
+    label: 'Física',
+    workload: 48,
+    disciplineSyllabus: 'Estudo das leis do movimento, termodinâmica e introdução à ótica.',
+  },
+]
+
 export function SubjectDetails() {
-  const [searchParams] = useSearchParams()
-  const initialDiscipline = searchParams.get('discipline') || ''
+  const initialDiscipline = data[0].value
   const [selectedValue, setSelectedValue] = useState(initialDiscipline)
 
   const handleChange = (value: string) => {
@@ -26,7 +58,6 @@ export function SubjectDetails() {
   return (
     <Formik
       initialValues={{
-        ModeloDaDisciplina: data.find((item) => item.value === initialDiscipline)?.model || '',
         CargaHoraria: `${data.find((item) => item.value === initialDiscipline)?.workload || ''} Horas`,
         Ementa: data.find((item) => item.value === initialDiscipline)?.disciplineSyllabus || '',
       }}
@@ -48,38 +79,26 @@ export function SubjectDetails() {
                 label="Disciplina"
                 optionsSelectItem={data.map((item) => ({
                   selectOption: item.value,
+                  label: item.label,
                 }))}
                 onChange={(value) => {
                   handleChange(value)
                   const selectedDiscipline = data.find((item) => item.value === value)
-                  setFieldValue('ModeloDaDisciplina', selectedDiscipline?.model || '')
-                  setFieldValue('CargaHoraria', `${selectedDiscipline?.workload} Horas` || '')
+                  setFieldValue('CargaHoraria', `${selectedDiscipline?.workload} Horas`)
                   setFieldValue('Ementa', selectedDiscipline?.disciplineSyllabus || '')
                 }}
               />
             </div>
 
             <div>
-              <InputLabel id="ModeloDaDisciplina">Modelo da Disciplina</InputLabel>
-              <InputForm
-                isDisabled={true}
-                id="ModeloDaDisciplina"
-                name="ModeloDaDisciplina"
-                type="text"
-                placeholder="Modelo da disciplina"
-                label="Modelo da disciplina"
-              />
-            </div>
-
-            <div>
-              <InputLabel id="CargaHoraria">Carga Horaria</InputLabel>
+              <InputLabel id="CargaHoraria">Carga Horária</InputLabel>
               <InputForm
                 isDisabled={true}
                 id="CargaHoraria"
                 name="CargaHoraria"
                 type="text"
-                placeholder="Carga Horaria"
-                label="Carga Horaria"
+                placeholder="Carga Horária"
+                label="Carga Horária"
               />
             </div>
 
