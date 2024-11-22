@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { ArrowLeft, ChevronUp, MessageSquareMore } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import ModalUpload from '@/components/custom/modal-upload'
 
 interface ViewProps {
   activityNote: string
@@ -19,6 +20,7 @@ export const Route = createFileRoute('/_authenticated/view-activity-student')({
 export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewProps) {
   const [inputValue, setInputValue] = useState<string>('')
   const [comments, setComments] = useState<{ id: number; sendBy: string; text: string }[]>([])
+  const [openModal, setOpoenModal] = useState<boolean>(false)
 
   const handleSubmitComment = () => {
     if (inputValue.trim() === '') {
@@ -37,6 +39,8 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
 
   return (
     <>
+      <ModalUpload hasInput={false} onOpenChange={setOpoenModal} open={openModal} />
+
       <div className=" flex flex-col md:hidden">
         <div className="flex flex-col mx-5 gap-3">
           <ArrowLeft className="mt-4 text-gray-400" />
@@ -107,7 +111,7 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
                   </div>
 
                   <div className="flex flex-col gap-5 mt-5">
-                    <Button variant="lightTextBlack" className=" w-full">
+                    <Button variant="lightTextBlack" className="w-full" onClick={() => setOpoenModal(true)}>
                       + Adicionar trabalho
                     </Button>
                     <Button variant="blueButton" className=" w-full">
@@ -139,7 +143,7 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
           </div>
 
           <div className="flex flex-col gap-4 max-h-96 overflow-auto">
-          {comments.map((comment) => (
+            {comments.map((comment) => (
               <div key={comment.id} className="p-3 border rounded-md shadow-sm">
                 <p className="text-gray-500 text-sm font-bold">{comment.sendBy}</p>
                 <p className="text-gray-500 text-sm">{comment.text}</p>
@@ -174,7 +178,7 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
           </div>
           <div className="flex flex-col mt-6">
             <div className="flex flex-col gap-5">
-              <Button variant="lightTextBlack" className=" w-full">
+              <Button variant="lightTextBlack" className="w-full" onClick={() => setOpoenModal(true)}>
                 + Adicionar trabalho
               </Button>
               <Button variant="blueButton" className=" w-full">
