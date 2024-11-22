@@ -2,7 +2,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { CardSubject } from '@/components/custom/card-subject'
 import { useListSubjectsQuery } from '@/queries/use-list-subjects-query'
 
-export const Route = createFileRoute('/_authenticated/home-list-subjects')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/',
+)({
   component: HomeListSubjects,
 })
 
