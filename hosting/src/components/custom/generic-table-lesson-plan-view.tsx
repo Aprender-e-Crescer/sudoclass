@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, X, ChevronDown, ChevronUp, Link } from "lucide-react";
+import { Edit, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import React, { useState } from "react";
 import {
   AlertDialog,
@@ -10,7 +11,8 @@ import {
   AlertDialogTitle,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog"; 
+} from "@/components/ui/alert-dialog";
+
 
 export const GenericTableLessonPlanView = ({
   data,
@@ -35,13 +37,6 @@ export const GenericTableLessonPlanView = ({
 
   return (
     <>  
-    
-      <div className="flex gap-4 pt-4 font-semibold text-[#787486] pb-2 border-b border-gray-300">
-        <Link to="" className="cursor-pointer pl-16 max-sm:pl-2 hover:text-black" href="#">Mural</Link>
-        <Link to="../" className="hover:text-black cursor-pointer" href="#">Frequencia</Link>
-        <Link to="../" className="hover:text-black cursor-pointer" href="#">Notas</Link>
-       <Link to="../" className="hover:text-black cursor-pointer" href="#">Plano de Aula</Link>
-      </div>
       <Table className="w-full">
         <TableHeader>
           <TableRow>
@@ -76,7 +71,7 @@ export const GenericTableLessonPlanView = ({
                                 setDialogOpen(true);
                               }}
                             >
-                              <X className="h-6 w-6 text-red-500" />
+                              <X className="h-6 w-6 text-gray-400" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent className="max-sm:max-w-[300px]">
@@ -114,9 +109,12 @@ export const GenericTableLessonPlanView = ({
                       </div>
                     ) : col.accessor === "date" ? (
                       <div className="flex items-center max-sm:-space-x-5">
+                         <Link to='/register/students'>
                         <Button variant="ghostWhite" size="small" className="max-sm:pr-10 hover:bg-transparent focus:outline-none">
+                          <Link to="/documents"></Link>
                           <Edit className="h-4 w-4 text-black" />
                         </Button>
+                        </Link>
                         <span>{row[col.accessor]}</span>
                       </div>
                     ) : (
