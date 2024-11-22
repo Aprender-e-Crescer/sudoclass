@@ -4,6 +4,7 @@ import {RequestWithUser} from "../@types/express";
 
 const activitiesController = {
   createActivity: async (req: RequestWithUser, res: Response): Promise<void> => {
+    const user = req.user.uid;
     const subjectId = parseInt(req.params.subjectId, 10);
     const {title, description, value, deliveryDate} = req.body;
 
