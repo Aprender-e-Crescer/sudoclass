@@ -23,13 +23,10 @@ export const Route = createFileRoute(
 })
 
 export function ListActivity() {
-  const { data: activities } = useListActivitiesQuery(
-    'aQjvxCKlEuHc9YQEedCQ',
-    'zGTOAwnKJBjFSmayHxJo',
-  )
+  const { data: activities } = useListActivitiesQuery('aQjvxCKlEuHc9YQEedCQ', 'zGTOAwnKJBjFSmayHxJo')
   return (
     <>
-      <div className="min-h-screen overflow-y-hidden">
+      <div className="min-h-screen overflow-y-hidden w-full">
         <div className="flex flex-col md:flex-row overflow-hidden">
           <div className="flex flex-col w-full h-auto p-2 md:p-4 overflow-hidden">
             <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
@@ -44,15 +41,15 @@ export function ListActivity() {
                 Criar
               </Button>
             </div>
+            <div>
+              <ActivitiesMaterials id="" instruction="" title="" type="teacher" />
+            </div>
 
             <div className="md:ml-5">
               <div>
                 {activities?.map((activity) => {
                   return (
-                    <div
-                      className="flex flex-col justify-center items-center w-full"
-                      key={activity.id}
-                    >
+                    <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
                       <ActivitiesMaterials
                         id={activity.id}
                         title={activity.title}
