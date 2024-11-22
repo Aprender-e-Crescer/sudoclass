@@ -111,7 +111,9 @@ export function ActivitiesMaterials({
             <img className="h-6 w-6" src={iconeAtividade} alt="" />
           </div>
           <div className="ml-2">
-            <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
+            <Link to={toViewSends}>
+              <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
+            </Link>
             <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
           </div>
         </div>
@@ -139,6 +141,12 @@ export function ActivitiesMaterials({
                       <p className="text-sm mx-7">{instruction}</p>
                     </div>
                   </div>
+                  <div className="flex flex-col p-2">
+                <hr className="my-2" />
+                <Link to={toViewSends}>
+                  <p className="text-blue-600 text-sm">Visualizar Atividade</p>
+                </Link>
+              </div>
                 </AccordionContent>
               </div>
             </AccordionItem>
