@@ -1,3 +1,4 @@
+import LeftMenu from '@/components/custom/left-menu'
 import { auth } from '@/services/firebase'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/_authenticated')({
 export function Authenticated() {
   return (
     <div>
+      <LeftMenu type="StudentPortal" />
       <Outlet />
     </div>
   )
