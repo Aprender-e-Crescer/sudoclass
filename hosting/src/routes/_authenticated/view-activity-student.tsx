@@ -7,17 +7,11 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import ModalUpload from '@/components/custom/modal-upload'
 
-interface ViewProps {
-  activityNote: string
-  title: string
-  dateActivity: string
-}
-
 export const Route = createFileRoute('/_authenticated/view-activity-student')({
   component: ViewActivityStudent,
 })
 
-export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewProps) {
+export function ViewActivityStudent() {
   const [inputValue, setInputValue] = useState<string>('')
   const [comments, setComments] = useState<{ id: number; sendBy: string; text: string }[]>([])
   const [openModal, setOpoenModal] = useState<boolean>(false)
@@ -44,19 +38,20 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
       <div className=" flex flex-col md:hidden">
         <div className="flex flex-col mx-5 gap-3">
           <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-gray-500 text-xs">Prazo: {dateActivity}</p>
-          <p className="text-blue-600 text-2xl font-semibold">{title}</p>
+          <p className="text-gray-500 text-xs">Prazo: Prazo da atv</p>
+          <p className="text-blue-600 text-2xl font-semibold">Titulo da atv</p>
           <div className="flex text-gray-500">
             <NoteValue note={20} maxGrade={100} />
           </div>
 
           <div className="flex flex-col gap-4 ">
-            <div className="flex">
+            <div className="flex gap-5">
               <MessageSquareMore className="text-gray-400" />
-              <p className="font-semibold text-gray-400">Fazer comentário para a turma</p>
+              <p className="font-semibold text-gray-400">Comentários da turma</p>
             </div>
+            <h1 className="text-gray-400">Comentários</h1>
 
-            <div className="flex flex-col gap-4 max-h-96 overflow-auto">
+            <div className="flex flex-col gap-4 max-h-44 overflow-auto">
               {comments.map((comment) => (
                 <div key={comment.id} className="p-3 border rounded-md shadow-sm">
                   <p className="text-gray-500 text-sm font-bold">{comment.sendBy}</p>
@@ -84,7 +79,7 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
             </form>
           </div>
 
-          <div className=" w-full h-0.5 bg-blue-300"></div>
+          <div className=" w-full h-0.5 bg-gray-400"></div>
           <p className="text-gray-400 text-sm ">Clique no link abaixo para iniciar o jogo</p>
           <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
           <AttachmentView url="" imageUrl="" title="" linkText="" />
@@ -128,8 +123,8 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
       <div className="hidden md:flex w-full">
         <div className="flex flex-col mx-5 gap-3 w-full">
           <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-blue-600 text-4xl font-semibold">{title}</p>
-          <p className="text-gray-500 text-base">Prazo: {dateActivity}</p>
+          <p className="text-blue-600 text-4xl font-semibold">Titulo da atv</p>
+          <p className="text-gray-500 text-base">Prazo: Prazo da atv</p>
 
           <div className="flex text-gray-500">
             <NoteValue note={20} maxGrade={100} />
@@ -139,10 +134,12 @@ export function ViewActivityStudent({ title, dateActivity, activityNote }: ViewP
             <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
             <AttachmentView url="" imageUrl="" title="" linkText="" />
             <div className=" w-full h-0.5 bg-gray-300"></div>
-            <p className="font-semibold text-gray-400">Fazer comentário para a turma</p>
+            <div className="flex gap-5">
+              <MessageSquareMore className="text-gray-400" />
+              <p className="font-semibold text-gray-400">Comentários da turma</p>
+            </div>
           </div>
-
-          <div className="flex flex-col gap-4 max-h-96 overflow-auto">
+          <div className="flex flex-col gap-4 max-h-44 overflow-auto">
             {comments.map((comment) => (
               <div key={comment.id} className="p-3 border rounded-md shadow-sm">
                 <p className="text-gray-500 text-sm font-bold">{comment.sendBy}</p>
