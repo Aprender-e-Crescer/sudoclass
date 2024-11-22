@@ -2,14 +2,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Switch } from '@/components/ui/switch'
 import iconeAtividade from '@/assets/iconeAtividade.png'
 import clsx from 'clsx'
-import { Link } from '@tanstack/react-router'
 import { EllipsisVertical } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Link } from '@tanstack/react-router'
 
 interface ActivitiesMaterialsProps {
   id: string
-  to?: string
   toEdit?: string
+  toViewSends?: string
   title: string
   dateActivity?: string
   instruction: string
@@ -21,8 +21,8 @@ interface ActivitiesMaterialsProps {
 
 export function ActivitiesMaterials({
   id,
-  to,
   toEdit,
+  toViewSends,
   title,
   dateActivity,
   instruction,
@@ -53,9 +53,10 @@ export function ActivitiesMaterials({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem>Excluir</DropdownMenuItem>
+
                     <DropdownMenuItem>
-                      <Link to={toEdit} search={{ id }}>
-                        Editar
+                      <Link to={toEdit}>
+                        <div className="w-full h-full">Editar</div>
                       </Link>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -93,7 +94,7 @@ export function ActivitiesMaterials({
 
               <div className="flex flex-col p-2">
                 <hr className="my-2" />
-                <Link to={to} search={{ id }}>
+                <Link to={toViewSends}>
                   <p className="text-blue-600 text-sm">Visualizar Entregues</p>
                 </Link>
               </div>
