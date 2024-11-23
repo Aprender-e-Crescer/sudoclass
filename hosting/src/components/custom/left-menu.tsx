@@ -1,16 +1,4 @@
-import {
-  Home,
-  CalendarDays,
-  History,
-  UniversityIcon,
-  FileText,
-  FormInput,
-  MessageCircle,
-  Settings,
-  Users,
-  MessageSquareLock,
-  User,
-} from 'lucide-react'
+import { Home, History, UniversityIcon, FileText, FormInput, Settings, MessageSquareLock, User } from 'lucide-react'
 import { MenuItem } from './menu-item'
 import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'
