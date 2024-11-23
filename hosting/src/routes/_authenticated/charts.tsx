@@ -59,35 +59,67 @@ const schoolCalls = [
     data: '2024-11-20',
     id_aluno: 2,
     status: false,
+  },
+  {
+    id_chamada: 3,
+    id_materia: 2,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 3,
+    status: false,
   }
 ]
+
+
 //   - Uma rota para listar as notas de todos os alunos de uma turma especifica, tem que vir de qual máteria é
 //   - Uma rota para listar o status de cada atividade de todos os alunos de uma turma especifica, tem que vir de qual máteria é
 
 // Rota - Tela dempenho - geral / materia de uma turma
 //   - Uma rota para listar as presenças e faltas de todos os alunos de uma máteria especifica, tem que vir de qual máteria é
-const schoolCalls = [
+
+const subjetcCalls = [
   {
     id_chamada: 1,
     id_materia: 1,
+    id_turma: 1,
     data: '2024-11-20',
     id_aluno: 1,
     status: true,
   },
   {
-    id_chamada: 2,
+    id_chamada: 1,
     id_materia: 1,
+    id_turma: 1,
     data: '2024-11-20',
     id_aluno: 2,
-    status: false,
-  }
+    status: true,
+  },
+  {
+    id_chamada: 1,
+    id_materia: 1,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 3,
+    status: true,
+  },
+  {
+    id_chamada: 1,
+    id_materia: 1,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 4,
+    status: true,
+  },
+  {
+    id_chamada: 1,
+    id_materia: 1,
+    id_turma: 1,
+    data: '2024-11-20',
+    id_aluno: 5,
+    status: true,
+  },
 ]
 
-const student = {
-  id: 1,
-}
-
-const absences = schoolCalls.reduce((currentAbsences, { id_aluno, status }) => student.id === id_aluno && status === false ? currentAbsences++ : currentAbsences, 0)
 
 //   - Uma rota para listar as notas de todos os alunos de uma máteria especifica, tem que vir de qual máteria é  além de qual atividade é
 const subjects = [
