@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster'
 import { auth } from '@/services/firebase'
 
 export const Route = createRootRoute({
-  beforeLoad: () => {
-    if (auth.currentUser) throw redirect({ to: '/' })
+  beforeLoad: ({ location: { pathname } }) => {
+    if (auth.currentUser && pathname !== '/') throw redirect({ to: '/' })
   },
   component: () => (
     <>
