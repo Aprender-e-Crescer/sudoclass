@@ -5,7 +5,7 @@ export function useLoginController() {
   const navigate = useNavigate()
   const { mutateAsync: login } = useLoginMutation({
     onSuccess: () => {
-      navigate({ to: '/confirmation-screen' })
+      navigate({ to: '/' })
     },
     onError: (error) => {
       console.error('Erro durante a autenticação:', error.message)

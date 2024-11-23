@@ -22,7 +22,7 @@ export function useLoginMutation({ onSuccess, onError }: LoginResponses) {
 
       return signInWithCustomToken(auth, token).then(() => console.log(auth.currentUser?.metadata))
     },
-    // onSuccess,
-    // onError,
+    onSuccess,
+    onError,
   })
 }
