@@ -68,8 +68,8 @@ export function TeachersListing() {
         </div>
 
         <div className="flex sm:flex-row flex-col">
-          <div className="flex flex-1 flex-col p-3 data-[isAction=true]:w-2/6" data-isAction={!!action}>
-            {registerRequests?.map(({ fullName }, teacher, index) => (
+          <div className="flex flex-1 flex-col p-3 data-[isaction=true]:w-2/6" data-isaction={!!action}>
+            {registerRequests?.map(({ name }, index) => (
               <div key={index} className="flex justify-between items-start">
                 <Link to="/register/teachers" search={{ action: 'edit' }} className="flex flex-col flex-1">
                   <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
@@ -77,7 +77,7 @@ export function TeachersListing() {
                       <AvatarImage src={avatar} />
                       <AvatarFallback>carregando...</AvatarFallback>
                     </Avatar>
-                    <p>{fullName}</p>
+                    <p>{name}</p>
                   </div>
                 </Link>
               </div>
