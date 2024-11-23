@@ -14,10 +14,11 @@ export const loginWithCPF = onCall(async (request) => {
     const users = await db.query(
       `
         SELECT 
+            ag.id_usuario,
             s.id_aluno AS id_entidade, 
             s.cpf AS cpf, 
             ag.senha,
-            'aluno' AS tipo_entidade
+            'student' AS tipo_entidade
         FROM 
             usuario ag
         INNER JOIN 
@@ -31,10 +32,11 @@ export const loginWithCPF = onCall(async (request) => {
         UNION ALL
 
         SELECT 
+            ag.id_usuario,
             s.id_professor AS id_entidade, 
             s.cpf AS cpf, 
             ag.senha,
-            'professor' AS tipo_entidade
+            'teacher' AS tipo_entidade
         FROM 
             usuario ag
         INNER JOIN 
@@ -48,10 +50,11 @@ export const loginWithCPF = onCall(async (request) => {
         UNION ALL
 
         SELECT 
+            ag.id_usuario,
             s.id_pedagogo AS id_entidade, 
             s.cpf AS cpf, 
             ag.senha,
-            'pedagogo' AS tipo_entidade
+            'pedagogue' AS tipo_entidade
         FROM 
             usuario ag
         INNER JOIN 
@@ -66,10 +69,10 @@ export const loginWithCPF = onCall(async (request) => {
       [cpf, password]
     )
 
-    if (users.rows.length === 0)
+    if (users.rows.length === 0 || !users.rows[0].id_usuario)
       throw new Error('User not found with this CPF and password.')
 
-    return auth.createCustomToken(cpf)
+    return auth.createCustomToken(users.rows[0].id_usuario.toString())
   } catch (error) {
     info(error, { structuredData: true })
 
@@ -78,6 +81,7 @@ export const loginWithCPF = onCall(async (request) => {
 })
 
 export const api = onRequest(app)
+
 export const getTitleByUrl = onCall(async (request) => {
   const { url } = getTitleDataSchema.parse(request.data)
 
