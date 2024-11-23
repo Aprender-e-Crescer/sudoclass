@@ -28,7 +28,12 @@ export const registerSchema = z.object({
   ),
 })
 
-export const listTeacherSchema = z.object({
+export const listTeacherSchema = z.preprocess((obj) => ({
+  idTeacher: obj?.id_professor,
+  birthDate: obj?.datanasc,
+}), z.object({
+  idTeacher: z.number(),
+  birthDate: z.date(),
   birthCity: z.string(),
   birthStatus: z.string(),
   cpf: z.string(),
@@ -45,6 +50,6 @@ export const listTeacherSchema = z.object({
   state: z.string(),
   street: z.string(),
   telephone: z.number(),
-})
+}))
 
 export type RegisterRequests = z.infer<typeof registerSchema>
