@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { Timestamp } from 'firebase/firestore'
 
 export const activitySchema = z.preprocess(
-  (obj) => ({
+  (obj: any) => ({
     title: obj?.id_professor,
     instruction: obj?.instrucoes,
     value: obj?.valor,
