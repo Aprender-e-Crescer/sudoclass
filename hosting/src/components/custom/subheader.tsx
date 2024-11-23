@@ -1,25 +1,25 @@
-import { Link } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router'
 
 interface SubHeaderProps {
-  hasPrivilege?: 'teacher' | 'student' | 'pedagogue';
+  hasPrivilege?: 'teacher' | 'student' | 'pedagogue'
 }
 
 export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    const links = document.querySelectorAll('.menu-link');
-    links.forEach((link) => link.classList.remove('font-bold', 'text-gray-800'));
+    const links = document.querySelectorAll('.menu-link')
+    links.forEach((link) => link.classList.remove('font-bold', 'text-gray-800'))
 
-    e.currentTarget.classList.add('font-bold', 'text-gray-800'); 
-  };
+    e.currentTarget.classList.add('font-bold', 'text-gray-800')
+  }
 
-  let content;
+  let content
 
   if (hasPrivilege === 'student' || hasPrivilege === 'teacher') {
     content = (
       <>
         <li>
           <Link
-            to="/"
+            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject"
             onClick={handleClick}
             className="menu-link cursor-pointer text-gray-500"
           >
@@ -28,7 +28,7 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
         </li>
         <li>
           <Link
-            to="/"
+            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities"
             onClick={handleClick}
             className="menu-link cursor-pointer text-gray-500"
           >
@@ -37,7 +37,7 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
         </li>
         <li>
           <Link
-            to="/"
+            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/view-notes/notes-screen"
             onClick={handleClick}
             className="menu-link cursor-pointer text-gray-500"
           >
@@ -45,74 +45,52 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
           </Link>
         </li>
         <li>
-          <Link
-            to="/"
-            onClick={handleClick}
-            className="menu-link cursor-pointer text-gray-500"
-          >
+          <Link to="/" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
             Plano de Aula
           </Link>
         </li>
         <li>
           {hasPrivilege === 'teacher' ? (
             <Link
-              to="/"
+              to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/call"
               onClick={handleClick}
               className="menu-link cursor-pointer text-gray-500"
             >
               Chamada
             </Link>
           ) : (
-            <Link
-              to="/"
-              onClick={handleClick}
-              className="menu-link cursor-pointer text-gray-500"
-            >
+            <Link to="/" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
               Frequência
             </Link>
           )}
         </li>
       </>
-    );
+    )
   } else if (hasPrivilege === 'pedagogue') {
     content = (
       <>
         <li>
-          <Link
-            to="/"
-            onClick={handleClick}
-            className="menu-link cursor-pointer text-gray-500"
-          >
+          <Link to="/register/students" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
             Aluno
           </Link>
         </li>
         <li>
-          <Link
-            to="/"
-            onClick={handleClick}
-            className="menu-link cursor-pointer text-gray-500"
-          >
+          <Link to="/register/teachers" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
             Professor
           </Link>
         </li>
         <li>
-          <Link
-            to="/"
-            onClick={handleClick}
-            className="menu-link cursor-pointer text-gray-500"
-          >
+          <Link to="/" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
             Pedagogo
           </Link>
         </li>
       </>
-    );
+    )
   }
 
   return (
-    <div className="flex pb-2">
-      <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        {content}
-      </ul>
+    <div className="flex pb-2 justify-center">
+      <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">{content}</ul>
     </div>
-  );
+  )
 }

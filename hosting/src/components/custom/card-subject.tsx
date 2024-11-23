@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { cva } from 'class-variance-authority'
-import { EllipsisVertical, MessageCircleMore } from 'lucide-react'
+import { EllipsisVertical } from 'lucide-react'
 
 const cardSubjectStyle = cva(
   'w-full max-w-[384px] sm:w-[443px] h-44 sm:h-80 rounded-lg shadow-lg flex flex-col justify-between',
@@ -27,6 +27,7 @@ const cardSubjectStyle = cva(
 
 interface CardSubjectProps {
   name: string
+  onClick?: () => void
   description: string
   backgroundColor?: 'vermelho' | 'amarelo' | 'azul' | 'laranja' | 'rosa' | 'ciano' | 'verde' | 'roxo' | 'marrom'
 }
@@ -56,12 +57,7 @@ export function CardSubject({ name, description, backgroundColor = 'amarelo' }: 
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="bg-white w-full rounded-b-lg flex items-center justify-end py-3">
-        <div className="flex gap-x-2">
-          <MessageCircleMore />
-          <p className="text-black text-sm mr-4 sm:text-base">notas</p>
-        </div>
-      </div>
+      <div className="bg-white w-full rounded-b-lg py-6"></div>
     </div>
   )
 }

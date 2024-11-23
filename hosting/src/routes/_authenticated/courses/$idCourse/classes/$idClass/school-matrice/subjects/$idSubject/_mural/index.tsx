@@ -10,7 +10,9 @@ import { useWarningWallQuery } from '@/queries/use-warning-wall-query'
 import { warningSchema } from '@/models/warning-schema'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/_authenticated/wall-subjects-input')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
+)({
   component: WallSubjectInput,
 })
 
