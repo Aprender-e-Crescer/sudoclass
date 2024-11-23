@@ -1,17 +1,18 @@
-import { HttpsError, onCall } from "firebase-functions/v2/https";
-import { onRequest } from "firebase-functions/v1/https";
-import { info } from "firebase-functions/logger";
-import { auth, firestore } from "./services/firebase";
-import { loginDataSchema } from "./schemas/login";
-import app from "./app";
-import { db } from "./config/database";
-import { getTitleDataSchema } from "./schemas/form";
+import { HttpsError, onCall } from 'firebase-functions/v2/https'
+import { onRequest } from 'firebase-functions/v1/https'
+import { info } from 'firebase-functions/logger'
+import { auth, firestore } from './services/firebase'
+import { loginDataSchema } from './schemas/login'
+import app from './app'
+import { db } from './config/database'
+import { getTitleDataSchema } from './schemas/form'
 
 export const loginWithCPF = onCall(async (request) => {
-    try {
-        const { cpf, password } = loginDataSchema.parse(request.data)
+  try {
+    const { cpf, password } = loginDataSchema.parse(request.data)
 
-        const users = await db.query(`
+    const users = await db.query(
+      `
         SELECT 
             ag.id_usuario,
             s.id_aluno AS id_entidade, 
@@ -64,30 +65,29 @@ export const loginWithCPF = onCall(async (request) => {
         WHERE 
             s.cpf = $1
             AND ag.senha = $2;    
-        `, [
-            cpf,
-            password
-        ])
+        `,
+      [cpf, password]
+    )
 
-        if (users.rows.length === 0 || !users.rows[0].id_usuario) throw new Error("User not found with this CPF and password.")
+    if (users.rows.length === 0 || !users.rows[0].id_usuario)
+      throw new Error('User not found with this CPF and password.')
 
-        return auth.createCustomToken(users.rows[0].id_usuario.toString())
-    } catch (error) {
-        info(error, { structuredData: true });
+    return auth.createCustomToken(users.rows[0].id_usuario.toString())
+  } catch (error) {
+    info(error, { structuredData: true })
 
-        return new HttpsError("unauthenticated", "CPF inválido ou inexistente.")
-    }
-});
-
+    return new HttpsError('unauthenticated', 'CPF inválido ou inexistente.')
+  }
+})
 
 export const api = onRequest(app)
 
 export const getTitleByUrl = onCall(async (request) => {
-    const { url } = getTitleDataSchema.parse(request.data)
+  const { url } = getTitleDataSchema.parse(request.data)
 
-    const form = await fetch(url)
-    const text = await form.text()
-    const title = text.match(/<title>(.*?)<\/title>/)?.[1] ?? null
+  const form = await fetch(url)
+  const text = await form.text()
+  const title = text.match(/<title>(.*?)<\/title>/)?.[1] ?? null
 
-    return title
-});
+  return title
+})

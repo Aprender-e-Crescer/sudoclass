@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useListStudentDocumentsQuery } from '@/queries/use-list-student-documents'
 import { useState } from 'react'
 import { Timestamp } from 'firebase/firestore'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
@@ -8,7 +7,6 @@ import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { Download, Search } from 'lucide-react'
 import { Form, Formik } from 'formik'
 import { GenericTable } from '@/components/custom/generic-table'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 
 export const Route = createFileRoute('/_authenticated/documents')({
   component: RouteComponent,
