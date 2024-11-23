@@ -1,4 +1,4 @@
-import { teacherSchema } from '@/models/teachers-schema'
+import { registerSchema } from '@/models/teachers-schema'
 import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
@@ -8,7 +8,7 @@ export function useTeachersListingQuery() {
     queryKey: ['teachers'],
     queryFn: async () => {
       const { data } = await api.get('/teacher')
-      const teachers = z.array(teacherSchema).parse(data)
+      const teachers = z.array(registerSchema).parse(data)
 
       return teachers
     },
