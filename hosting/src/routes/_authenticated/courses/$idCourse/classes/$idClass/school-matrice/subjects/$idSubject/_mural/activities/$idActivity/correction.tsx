@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
 import ListStudents from '@/components/custom/list-students'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -48,12 +47,12 @@ interface Student {
 }
 
 function Correction() {
-  const { activityID } = useParams()
+  const { idActivity } = Route.useParams()
   const { data: students } = useStudentsListQuery()
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   // const [inputValue, setInputValue] = useState<string>('')
 
-  const { mutate: addGrade } = useAddGradeMutation('schoolMatriceId', 'subjectId', activityID!)
+  const { mutate: addGrade } = useAddGradeMutation('schoolMatriceId', 'subjectId', idActivity!)
 
   const [sucessMessage, setSuccessMessage] = useState('')
 
@@ -68,7 +67,7 @@ function Correction() {
   const handleSubmitNote = async (values: any) => {
     const grade = parseInt(values.value)
     try {
-      if (!activityID) {
+      if (!idActivity) {
         setSuccessMessage('Erro: ID da atividade não encontrado.')
         return
       }
