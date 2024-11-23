@@ -3,7 +3,7 @@ import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 
-export function useActivityQuery(idActivity: number) {
+export function useCommentQuery(idActivity: number) {
   return useQuery({
     queryKey: ['getComments', idActivity],
     queryFn: async () => {
