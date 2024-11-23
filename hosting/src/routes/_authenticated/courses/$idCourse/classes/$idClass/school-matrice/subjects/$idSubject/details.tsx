@@ -6,7 +6,6 @@ import { InputLabel } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { useState } from 'react'
-import { z } from 'zod'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
