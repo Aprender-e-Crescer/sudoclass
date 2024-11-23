@@ -3,7 +3,7 @@ import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
 import { registerSchema } from '@/models/teachers-schema'
-import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { When } from 'react-if'
@@ -43,7 +43,7 @@ const initialValues = {
 
 function useLogic() {
   const { registerTeacher } = useRegisterTeacherController()
-  const { data: registerRequests } = useTeachersSchemaQuery()
+  const { data: registerRequests } = useTeachersListingQuery()
   const { idTeacher, action } = Route.useSearch()
 
   const handleOnTeacherSubmit = (values: typeof initialValues) => {
