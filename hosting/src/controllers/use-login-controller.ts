@@ -2,7 +2,9 @@ import { useLoginMutation } from '@/mutations/use-login-mutation'
 import { useNavigate } from '@tanstack/react-router'
 
 export function useLoginController() {
-  const navigate = useNavigate()
+  const navigate = useNavigate({
+    from: '/login',
+  })
   const { mutateAsync: login } = useLoginMutation({
     onSuccess: () => {
       navigate({ to: '/' })

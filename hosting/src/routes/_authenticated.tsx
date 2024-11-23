@@ -5,8 +5,8 @@ import { auth } from '@/services/firebase'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: () => {
-    if (!auth.currentUser) throw redirect({ to: '/login' })
+  beforeLoad: ({ location: { pathname } }) => {
+    if (!auth.currentUser && pathname !== '/login') throw redirect({ to: '/login' })
   },
   component: Authenticated,
 })
