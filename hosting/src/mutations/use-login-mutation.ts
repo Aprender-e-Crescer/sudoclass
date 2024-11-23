@@ -20,7 +20,7 @@ export function useLoginMutation({ onSuccess, onError }: LoginResponses) {
       const { data } = await loginWithCPF(payload)
       const token = z.string().parse(data)
 
-      return signInWithCustomToken(auth, token).then(() => console.log(auth.currentUser?.metadata))
+      return signInWithCustomToken(auth, token)
     },
     onSuccess,
     onError,
