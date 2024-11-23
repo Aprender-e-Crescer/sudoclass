@@ -2,13 +2,13 @@ import axios from 'axios';
 import { auth } from './firebase';
 
 const api = axios.create({
-    baseURL: 'https://us-central1-sudo-class-staging.cloudfunctions.net/api/',
+    baseURL: 'http://127.0.0.1:5001/sudo-class-staging/us-central1/api',
 });
 
 api.interceptors.request.use(async function (config) {
     await auth.authStateReady()
-
-    config.headers.Authorization = `Bearer ${auth.currentUser?.getIdToken()}`;
+    const token = await auth.currentUser?.getIdToken();
+    config.headers.Authorization = `Bearer ${token}`;
     
     return config;
 }, function (error) {

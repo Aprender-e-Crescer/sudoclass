@@ -1,3 +1,5 @@
+import { db } from "../config/database";
+
 async function createPedagogue(nome: string, cpf: string, senha: string): Promise<string> {
     try {
         if (!nome || !cpf || !senha) {
@@ -36,13 +38,22 @@ async function deletePedagogue(id: string): Promise<string> {
 
 async function getPedagogue(id: string): Promise<string> {
     try {
+        let resposta = "";
         if (!id) {
-            return 'ID é obrigatório para buscar o pedagogo.';
+            resposta = 'ID é obrigatório';
+            return resposta;
         }
-        return `Pedagogo com ID ${id} encontrado com sucesso.`;
+        const response = await db.query(
+            "select * from pedagogo where id_pedagogo = $1",
+            [
+                parseInt(id),
+                ]
+            );
+            return response.rows[0];
+
     } catch (error) {
-        console.error('Erro ao buscar pedagogo:', error);
-        return 'Erro ao buscar pedagogo';
+        console.error('Erro ao buscar o aluno:', error);
+        return 'Erro ao buscar o aluno';
     }
 }
 

@@ -3,26 +3,24 @@ import { formService } from '../services/form.service'
 
 const formController = {
   createForm: async (req: Request, res: Response): Promise<void> => {
-    const { id, id_usuario, link, nome, data_criacao } = req.body
+    const { id, id_usuario, link, nome, data_criacao } = req.body;
+  
+    if (!id || !id_usuario || !link || !nome || !data_criacao) {
+      res.status(400).send('Todos os campos são obrigatórios.');
+      return;
+    }
+  
     try {
-      const ret = await formService.createForm(
-        id,
-        id_usuario,
-        link,
-        nome,
-        data_criacao
-      )
-
-      if (ret === undefined) {
-        res.status(500).send('Não foi possível criar o formulario.')
+      const ret = await formService.createForm(id, id_usuario, data_criacao, link, nome);
+  
+      if (!ret) {
+        res.status(500).send('Não foi possível criar o formulário.');
       } else {
-        res.status(200).send('Formulario criado com sucesso')
+        res.status(201).send('Formulário criado com sucesso.');
       }
     } catch (error) {
-      console.error('Erro ao criar formulario:', error)
-      res
-        .status(500)
-        .send('Ocorreu um erro no servidor ao tentar criar o formulario.')
+      console.error('Erro ao criar formulário:', error);
+      res.status(500).send('Ocorreu um erro no servidor ao tentar criar o formulário.');
     }
   },
 

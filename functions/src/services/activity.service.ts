@@ -11,7 +11,7 @@ async function createActivity(
 
   try {
     if (!title || !description || !value || !deliveryDate || !subjectId) {
-      console.log('Campos obrigatórios faltando')
+      console.log('Campos obrigatórios faltando!')
       return 'Todos os campos são obrigatórios.'
     }
 

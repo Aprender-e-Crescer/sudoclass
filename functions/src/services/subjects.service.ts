@@ -1,111 +1,150 @@
-async function createMateria(
-    nomeMatéria: string, 
-    cargaHorária: string, 
-    dataInício: string, 
-    dataFim: string, 
+import { db } from '../config/database';async function createSubject(
+    nomeMatéria: string,
+    cargaHorária: string,
+    dataInício: Date,
+    dataFim: Date,
     idProfessor: string,
-    id: string 
+    idMateria: string,
+    ementa: string,
+    idCurso: string 
 ): Promise<string> {
     try {
-        // const resultado = db.query('INSERT INTO materias...'); // Substitua por sua query real de inserção   
-        let resposta = "";
-        if (!id || !nomeMatéria || !cargaHorária || !dataInício || !dataFim || !idProfessor) {
-            resposta = 'ID, Nome da matéria, carga horária, data de início, data de fim e ID do professor são obrigatórios.';
-            return resposta;
-        }else{
-            resposta = `Matéria ${nomeMatéria} com carga horária de ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor} foi cadastrada com sucesso.`;
-        
-            console.log(resposta);
-            return resposta;
+        if (!idMateria || !nomeMatéria || !cargaHorária || !dataInício || !dataFim || !idProfessor || !ementa || !idCurso) {
+            return 'ID, Nome da matéria, carga horária, data de início, data de fim, ID do professor, e curso são obrigatórios.';
         }
-        // resposta = `Matéria ${nomeMatéria} com carga horária de ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor} foi criada com sucesso.`;
-        
-        // console.log(resposta, "aaaaaaaaaaa");
-        
+
+        const response = await db.query(
+            `INSERT INTO materia (id_materia, id_curso, id_professor, nome_materia, carga_horaria_materia, datainicio, datafim, ementa)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *`,
+            [idMateria, idCurso, idProfessor, nomeMatéria, cargaHorária, dataInício, dataFim, ementa]
+        );
+
+        const resposta = `Matéria ${nomeMatéria} do curso ${idCurso}, com carga horária de ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor} foi cadastrada com sucesso.`;
+        console.log(resposta);
+        return resposta;
     } catch (error) {
         console.error('Erro ao criar matéria:', error);
         return 'Erro ao cadastrar matéria';
     }
 }
 
-async function updateMateria(
-    id: string,
-    nomeMatéria: string, 
-    cargaHorária: string, 
-    dataInício: string, 
-    dataFim: string, 
-    idProfessor: string
+async function updateSubject(
+    idMateria: string,
+    idCurso: string,
+    idProfessor: string,
+    nomeMatéria: string,
+    cargaHorária: string,
+    dataInício: Date,
+    dataFim: Date,
+    ementa: string
 ): Promise<string> {
     try {
-        // const resultado = db.query('INSERT INTO materias...'); // Substitua por sua query real de inserção
-        let resposta = "";
-        if (!id || !nomeMatéria || !cargaHorária || !dataInício || !dataFim || !idProfessor ) {
-            resposta = 'ID, nome da matéria, carga horária, data de início, data de fim e ID do professor são obrigatórios.';
-            return resposta;
+        if (!idMateria || !idCurso || !idProfessor || !nomeMatéria || !cargaHorária || !dataInício || !dataFim || !ementa) {
+            return 'ID da matéria, ID do curso, ID do professor, nome da matéria, carga horária, datas e ementa são obrigatórios.';
         }
-        resposta = `Matéria com ID ${id} foi atualizada para: nome ${nomeMatéria}, carga horária ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor}.`;
-        console.log(resposta);
-        return resposta;
+
+        const response = await db.query(
+            `UPDATE materia
+             SET nome_materia = $1, carga_horaria_materia = $2, datainicio = $3, datafim = $4, ementa = $5
+             WHERE id_materia = $6 AND id_curso = $7 AND id_professor = $8`,
+            [nomeMatéria, cargaHorária, dataInício, dataFim, ementa, idMateria, idCurso, idProfessor]
+        );
+
+        if (response.rowCount === 0) {
+            return 'Nenhuma matéria encontrada com os parâmetros fornecidos.';
+        }
+
+        const materiaAtualizada = await getSubjectById(idMateria);
+        return materiaAtualizada;
     } catch (error) {
         console.error('Erro ao atualizar matéria:', error);
-        return 'Erro ao atualizar matéria';
+        return 'Erro ao atualizar matéria.';
     }
 }
-async function deleteMateria(id: string, nomeMatéria: string): Promise<string> {
+
+
+
+async function deleteSubject(idMateria: string): Promise<boolean> {
     try {
-        let resposta = '';
-        if (!id || !nomeMatéria) {
-            resposta = 'ID e nome da matéria são obrigatórios para deletar uma matéria.';
-            return resposta;
+        const response = await db.query(
+            "DELETE FROM materia WHERE id_materia = $1",
+            [idMateria]
+        );
+
+        if (response) {
+            return true;
         }
-        // Aqui seria a query real de exclusão no banco de dados, por exemplo:
-        // await db.query('DELETE FROM materias WHERE id = ? AND nome = ?', [id, nomeMatéria]);
-        
-        resposta = `A matéria com ID ${id} e nome ${nomeMatéria} foi deletada com sucesso.`;
-        console.log(resposta);
-        return resposta;
+        return false;
     } catch (error) {
-        console.error('Erro ao deletar matéria:', error);
-        return 'Erro ao deletar matéria';
+        throw new Error("Falha ao excluir matéria");
     }
 }
-async function getMateriaById(id: string): Promise<string> {
+
+
+async function getSubjectById(idMateria: string): Promise<any> {
     try {
-        if (!id) {
-            return "ID da matéria é obrigatório";
-        }
-        // const query = 'SELECT * FROM materias WHERE id = ?';
-        // const result = await db.query(query, [id]);
-        
-        const response = `Matéria com ID ${id} encontrada com sucesso.`;
-        console.log(response);
-        return response;
+        const response = await db.query(
+            "SELECT * FROM materia WHERE id_materia = $1",
+            [idMateria]
+        );
+
+        return response.rows[0];
     } catch (error) {
-        console.error("Erro ao buscar matéria:", error);
-        return "Erro ao buscar matéria";
+        throw new Error("Falha ao buscar matéria");
+    }
+}
+
+async function addSubjectToClass(id_turma: string, idMateria: string): Promise<void> {
+    try {
+        await db.query(
+            `INSERT INTO materiaturma (id_turma, id_materia)
+             VALUES ($1, $2)`,
+            [id_turma, idMateria]
+        );
+    } catch (error) {
+        console.error('Erro ao adicionar matéria ao curso:', error);
+        throw new Error('Erro ao associar matéria ao curso');
     }
 }
 
 export const materiaService = {
-    createMateria: (
-        id: string,
-        nomeMatéria: string, 
-        cargaHorária: string, 
-        dataInício: string, 
-        dataFim: string, 
-        idProfessor: string
-    ) => createMateria(nomeMatéria, cargaHorária, dataInício, dataFim, idProfessor, id),
+    createSubject: (
+        idMateria: string,
+        nomeMatéria: string,
+        cargaHorária: string,
+        dataInício: Date,
+        dataFim: Date,
+        idProfessor: string,
+        ementa: string,
+        idCurso: string
+    ) => createSubject(nomeMatéria,
+        cargaHorária,
+        dataInício,
+        dataFim,
+        idProfessor,
+        idMateria,
+        ementa,
+        idCurso),
+    updateSubject: (
+        idMateria: string,
+        idCurso: string,
+        nomeMatéria: string,
+        cargaHorária: string,
+        dataInício: Date,
+        dataFim: Date,
+        idProfessor: string,
+        ementa: string
+    ) => updateSubject(idMateria,
+        idCurso,
+        idProfessor,
+        nomeMatéria,
+        cargaHorária,
+        dataInício,
+        dataFim,
+        ementa),
 
-    updateMateria: (
-        id: string,
-        nomeMatéria: string, 
-        cargaHorária: string, 
-        dataInício: string, 
-        dataFim: string, 
-        idProfessor: string
-    ) => updateMateria(id, nomeMatéria, cargaHorária, dataInício, dataFim, idProfessor),
-
-    deleteMateria: (id: string, nomeMatéria: string) => deleteMateria(id, nomeMatéria),
-    getMateriaById: (id: string) => getMateriaById(id)
+    deleteSubject: (idMateria: string) => deleteSubject(idMateria),
+    getSubjectById: (idMateria: string) => getSubjectById(idMateria),
+    addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria)
 };
-
