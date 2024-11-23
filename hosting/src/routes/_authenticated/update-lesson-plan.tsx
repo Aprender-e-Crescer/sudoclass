@@ -1,21 +1,17 @@
-import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Button } from '@/components/ui/button';
 import { InputForm } from '@/components/custom/text-input';
 import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan-mutation';
 import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 
-interface LessonPlanUpdate {
-  id: string;
-  date: string;
-  timeStart: string;
-  timeEnd: string;
-  trainingContent: string;
-  teachingMethodology: string;
-  teachingResources: string;
-}
+export const Route = createFileRoute('/_authenticated/update-lesson-plan')({
+  component: UpdateLessonPlan,
+});
 
-const UpdateLessonPlan: React.FC = () => {
+function UpdateLessonPlan() {
+  const router = useRouter();
+
   const { mutate } = useUpdateLessonPlanMutation({
     onSuccess: () => {
       console.log('Plano de aula atualizado com sucesso!');
@@ -25,7 +21,7 @@ const UpdateLessonPlan: React.FC = () => {
     },
   });
 
-  const initialValues: Omit<LessonPlanUpdate, 'id'> = {
+  const initialValues = {
     date: '2000-10-20',
     timeStart: '10:10',
     timeEnd: '20:30',
@@ -34,11 +30,10 @@ const UpdateLessonPlan: React.FC = () => {
     teachingResources: 'test',
   };
 
-  // Função para validação usando Zod
-  const validateSchema = (values: Omit<LessonPlanUpdate, 'id'>) => {
+  const validateSchema = (values: typeof initialValues) => {
     try {
       updateLessonPlanSchema.parse({ id: 'mY1EIVyB4sZ6WWALNtne', ...values });
-      return {}; // Validação bem-sucedida
+      return {};
     } catch (error) {
       return error.errors.reduce((acc: any, curr: any) => {
         acc[curr.path[0]] = curr.message;
@@ -52,9 +47,9 @@ const UpdateLessonPlan: React.FC = () => {
       <div className="flex-grow flex flex-col items-center justify-start mt-5">
         <Formik
           initialValues={initialValues}
-          validate={validateSchema}  // Usando o método de validação Zod
+          validate={validateSchema}
           onSubmit={(values) => {
-            mutate({ id: 'mY1EIVyB4sZ6WWALNtne', ...values } as LessonPlanUpdate);
+            mutate({ id: 'mY1EIVyB4sZ6WWALNtne', ...values });
           }}
         >
           <Form className="flex flex-col space-y-6 w-full">
@@ -145,7 +140,12 @@ const UpdateLessonPlan: React.FC = () => {
             </div>
 
             <div className="flex justify-center mt-5 gap-2">
-              <Button type="button" variant="lightTextBlack" size="large">
+              <Button
+                type="button"
+                variant="lightTextBlack"
+                size="large"
+                onClick={() => router.navigate({ to: '/' })} 
+              >
                 Cancelar
               </Button>
               <Button type="submit" size="large">
@@ -157,6 +157,6 @@ const UpdateLessonPlan: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default UpdateLessonPlan;

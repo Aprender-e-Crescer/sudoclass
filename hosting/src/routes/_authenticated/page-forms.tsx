@@ -18,9 +18,7 @@ export function pageForms() {
       <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-4">
           <div className="flex w-8/12 justify-between items-center">
-            <p className="text-[36px] text-[#16145A] font-bold">
-              Formulários Disponíveis
-            </p>
+            <p className="text-[36px] text-[#16145A] font-bold">Formulários Disponíveis</p>
             <Button variant={'blueButton'}>Novo</Button>
           </div>
           <div className="w-4/6">
@@ -50,25 +48,13 @@ export function pageForms() {
             </div>
           </div>
           <div>
-            <FormCreated
-              createdIn="28/07/2024"
-              nameCreator="Samara Pietrobon"
-              nameForm="Aprender e Crescer"
-            />
+            <FormCreated createdIn="28/07/2024" nameCreator="Samara Pietrobon" nameForm="Aprender e Crescer" />
           </div>
           <div>
-            <FormCreated
-              createdIn="28/07/2024"
-              nameCreator="Samara Pietrobon"
-              nameForm="Aprender e Crescer"
-            />
+            <FormCreated createdIn="28/07/2024" nameCreator="Samara Pietrobon" nameForm="Aprender e Crescer" />
           </div>
           <div>
-            <FormCreated
-              createdIn="28/07/2024"
-              nameCreator="Samara Pietrobon"
-              nameForm="Aprender e Crescer"
-            />
+            <FormCreated createdIn="28/07/2024" nameCreator="Samara Pietrobon" nameForm="Aprender e Crescer" />
           </div>
         </div>
       </div>

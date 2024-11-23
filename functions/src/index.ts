@@ -5,6 +5,7 @@ import { auth, firestore } from "./services/firebase";
 import { loginDataSchema } from "./schemas/login";
 import app from "./app";
 import { db } from "./config/database";
+import { getTitleDataSchema } from "./schemas/form";
 
 export const loginWithCPF = onCall(async (request) => {
     try {
@@ -75,4 +76,15 @@ export const loginWithCPF = onCall(async (request) => {
     }
 });
 
+
 export const api = onRequest(app)
+
+export const getTitleByUrl = onCall(async (request) => {
+    const { url } = getTitleDataSchema.parse(request.data)
+
+    const form = await fetch(url)
+    const text = await form.text()
+    const title = text.match(/<title>(.*?)<\/title>/)?.[1] ?? null
+
+    return title
+});

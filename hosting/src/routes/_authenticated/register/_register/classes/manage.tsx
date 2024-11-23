@@ -21,7 +21,18 @@ export const Route = createFileRoute('/_authenticated/register/_register/classes
   validateSearch,
 })
 
-const checkboxValues = [
+const checkboxFinishedValues = [
+  {
+    value: 'Sim',
+    label: 'yesFinished',
+  },
+  {
+    value: 'Não',
+    label: 'noFinished',
+  },
+]
+
+const checkboxReleasedValues = [
   {
     value: 'Sim',
     label: 'yes',
@@ -76,8 +87,8 @@ export function ClassCreationForm() {
       initialValues={initialValues}
       validationSchema={toFormikValidationSchema(creationClassSchema)}
     >
-      <Form>
-        <div className=" ml-4 flex flex-col">
+      <Form className="flex flex-1">
+        <div className="p-2 flex flex-1 flex-col">
           <InputForm title="Turmas" id="class" name="class" label="class" placeholder="Nome Da Turma" />
 
           <InputForm title="Turno" id="shift" name="shift" label="shift" placeholder="Turno" />
@@ -122,17 +133,19 @@ export function ClassCreationForm() {
             placeholder="Total de Vagas"
           />
 
-          <div className="flex-colum py-6">
-            <p>Concluido</p>
-            <div className="flex space-x-8">
-              <InputCheckbox checkboxValues={checkboxValues} />
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col">
+              <p>Concluido</p>
+              <div className="flex gap-8">
+                <InputCheckbox checkboxValues={checkboxFinishedValues} />
+              </div>
             </div>
-          </div>
 
-          <div className="flex-colum mb-4">
-            <p>Liberado</p>
-            <div className="flex space-x-8">
-              <InputCheckbox checkboxValues={checkboxValues} />
+            <div className="flex flex-col">
+              <p>Liberado</p>
+              <div className="flex gap-8">
+                <InputCheckbox checkboxValues={checkboxReleasedValues} />
+              </div>
             </div>
           </div>
 
@@ -144,8 +157,8 @@ export function ClassCreationForm() {
             placeholder="Anexar Arquivo"
           />
 
-          <div className="flex sm:flex-row flex-col gap-3">
-            <Link to="/register">
+          <div className="flex items-center justify-center gap-3">
+            <Link to="/register/classes">
               <Button variant="lightTextBlack">Cancelar</Button>
             </Link>
             <If condition={action === 'create'}>

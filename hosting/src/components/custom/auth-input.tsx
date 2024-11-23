@@ -8,13 +8,25 @@ interface AuthInputProps {
   id: string
   name: string
   placeholder: string
-  icon: JSX.Element
+  icon?: JSX.Element
   isPasswordInput?: boolean
   isCopyInput?: boolean
+  value?: string
+  disabled?: boolean
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export function InputAuth({ id, name, placeholder, icon, isPasswordInput, isCopyInput, onChange }: AuthInputProps) {
+export function InputAuth({
+  id,
+  value,
+  name,
+  placeholder,
+  icon,
+  isPasswordInput,
+  isCopyInput,
+  onChange,
+  disabled,
+}: AuthInputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const { setFieldValue } = useFormikContext()
 
@@ -58,7 +70,9 @@ export function InputAuth({ id, name, placeholder, icon, isPasswordInput, isCopy
           name={name}
           as={Input}
           type={newType}
+          value={value}
           placeholder={placeholder}
+          disabled={disabled}
           className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold text-[#2F2F2F]"
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             onChange?.(event)
