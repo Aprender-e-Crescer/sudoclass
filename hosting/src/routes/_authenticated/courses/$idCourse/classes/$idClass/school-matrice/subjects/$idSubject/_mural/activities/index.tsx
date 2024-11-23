@@ -23,7 +23,7 @@ export const Route = createFileRoute(
 })
 
 export function ListActivity() {
-  const { data: activities } = useListActivitiesQuery('aQjvxCKlEuHc9YQEedCQ', 'zGTOAwnKJBjFSmayHxJo')
+  const { data: activities } = useListActivitiesQuery()
   const { idClass, idCourse, idSubject } = Route.useParams()
 
   return (

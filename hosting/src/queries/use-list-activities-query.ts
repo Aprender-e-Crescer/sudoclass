@@ -3,9 +3,9 @@ import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 
-export function useListActivitiesQuery(schoolMatriceId: string, subjectId: string) {
+export function useListActivitiesQuery() {
   return useQuery({
-    queryKey: ['getActivies', schoolMatriceId, subjectId],
+    queryKey: ['getActivies'],
     queryFn: async () => {
       const { data } = await api.get('/activities')
       const activities = z.array(activitySchema).parse(data)
