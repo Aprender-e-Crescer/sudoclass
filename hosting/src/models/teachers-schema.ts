@@ -1,3 +1,4 @@
+import { datePreprocessedSchema } from '@/utils/schema'
 import { DocumentReference } from 'firebase/firestore'
 import { z } from 'zod'
 
@@ -47,14 +48,14 @@ export const teacherSchema = z.preprocess((obj) => ({
 }), z.object({
   idTeacher: z.number(),
   name: z.string(),
-  birthDate: z.date(),
+  birthDate: datePreprocessedSchema,
   email: z.string(),
   state: z.string(),
   municipality: z.string(),
   street: z.string(),
   neighborhood: z.string(),
   number: z.number().or(z.string()),
-  rgNumber: z.number(),
+  rgNumber: z.string(),
   cpf: z.string(),
   rgDispatchDate: z.string(),
   rgDispatchStatus: z.string(),
