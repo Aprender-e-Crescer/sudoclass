@@ -18,6 +18,7 @@ import activiesRouter from './routes/activies.routes'
 import commentsRouter from './routes/comments.routes'
 import formRoutes from './routes/form.routes'
 import schoolCallRouter from './routes/school-call.routes'
+import pedagogue from './routes/pedagogue.routes'
 
 const app = express();
 
@@ -44,5 +45,6 @@ app.use(activiesRouter)
 // app.use(commentsRouter)
 app.use(formRoutes)
 app.use(schoolCallRouter)
+app.use(pedagogue)
 
 export default app;

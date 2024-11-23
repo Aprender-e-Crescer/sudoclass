@@ -6,7 +6,7 @@ export function useGetPedagogueQuery(id: number | undefined | null) {
   return useQuery({
     queryKey: ['get-pedagogue', id],
     queryFn: async () => {
-      const { data } = await api.get(`/pedagogue/${id}`)
+      const { data } = await api.get(`/pedagogos/${id}`)
       const pedagogue = pedagogueSchema.parse(data)
 
       return pedagogue
