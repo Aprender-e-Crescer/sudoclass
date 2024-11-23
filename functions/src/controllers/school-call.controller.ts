@@ -68,6 +68,39 @@ const schoolCallController = {
       res.status(500).send('Erro interno do servidor ao buscar a chamada.')
     }
   },
+
+  getSchoolCallBySubject: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const id_materia = Number(req.params.id)
+    try {
+      const ret = await schoolCallService.getSchoolCallBySubject(id_materia)
+      if (!ret) {
+        res.status(404).send('Chamada não encontrada.')
+      } else {
+        res.status(200).json(ret)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao buscar a chamada.')
+    }
+  },
+
+  getSchoolCallByClass: async (req: Request, res: Response): Promise<void> => {
+    const id_turma = Number(req.params.id)
+    try {
+      const ret = await schoolCallService.getSchoolCallByClass(id_turma)
+      if (!ret) {
+        res.status(404).send('Chamada não encontrada.')
+      } else {
+        res.status(200).json(ret)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao buscar a chamada.')
+    }
+  },
 }
 
 export default schoolCallController

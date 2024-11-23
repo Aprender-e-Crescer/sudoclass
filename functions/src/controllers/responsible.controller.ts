@@ -36,7 +36,6 @@ export const responsibleController = {
                     rg,
                     documentos
                 )
-
                 if(!retorno) {
                     res.status(500).send('Erro ao cadastrar responsável')
                 }
@@ -49,8 +48,7 @@ export const responsibleController = {
     },
 
     updateResponsible: async (req: Request, res: Response): Promise<void> => {
-        const { 
-            id,
+        const {
             tipo,
             nome,
             email,
@@ -64,6 +62,7 @@ export const responsibleController = {
             cpf,
             rg,
             documentos } = req.body
+            const {id} = req.params
 
             try {
                 const retorno = await responsibleService.updateResponsible(
@@ -82,7 +81,6 @@ export const responsibleController = {
                     rg,
                     documentos
                 )
-
                 if(!retorno) {
                     res.status(500).send('Erro ao cadastrar responsável')
                 }
@@ -95,7 +93,7 @@ export const responsibleController = {
     },
 
     deleteResponsible: async (req: Request, res: Response): Promise<void> => {
-        const { id } = req.body
+        const { id } = req.params
 
             try {
                 const verificaId = await responsibleService.verificarIdExistente(id)
@@ -120,7 +118,7 @@ export const responsibleController = {
     },
 
     getResponsible: async (req: Request, res: Response): Promise<void> => {
-        const { id } = req.body
+        const { id } = req.params
 
             try {
                 const verificaId = await responsibleService.verificarIdExistente(id)

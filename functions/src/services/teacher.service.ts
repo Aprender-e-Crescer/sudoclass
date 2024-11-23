@@ -1,3 +1,5 @@
+import { db } from "../config/database";
+
 function validateEmail(email: string) {
   const re = /\S+@\S+\.\S+/;
   return re.test(email);
@@ -30,139 +32,215 @@ function validateTeacher(
   return true;
 }
 
-async function updateTeacher(
-  idteacher: string,
-  nome: string,
-  cpf: string,
-  email: string,
-  telefone: string,
-  estado: string,
-  rua: string,
-  bairro: string,
-  municipio: string,
-  numero: number,
-  datadenascimento: Date,
-  RG: string,
-  datadeespedicao: Date,
-  naturalidade: string
-): Promise<string> {
-  try {
-    let resposta = "";
-    if (
-      !idteacher ||
-      !nome ||
-      !cpf ||
-      !email ||
-      !telefone ||
-      !estado ||
-      !rua ||
-      !bairro ||
-      !municipio ||
-      !numero ||
-      !datadenascimento ||
-      !RG ||
-      !datadeespedicao ||
-      !naturalidade
-    ) {
-      resposta = "ID, Nome e CPF são obrigatórios.";
-      return resposta;
-    }
-    resposta = `O professor que atualizamos é ${nome} que possui o CPF ${cpf}`;
-    return resposta;
-  } catch (error) {
-    console.error("Erro ao atualizar professor:", error);
-    return "Erro ao atualizar professor";
-  }
-}
-
 async function createTeacher(
-  idteacher: string,
+  id_professor: string,
   nome: string,
-  cpf: string,
+  datanasc: string,
   email: string,
-  telefone: string,
   estado: string,
+  municipio: string,
   rua: string,
   bairro: string,
-  municipio: string,
-  numero: number,
-  datadenascimento: Date,
-  RG: string,
-  datadeespedicao: Date,
-  naturalidade: string
+  numero: string,
+  cpf: string,
+  rg: string,
+  datadeexpedicaorg: Date,
+  estadodeexpedicaorg: string,
+  estadonascimento: Date,
+  cidadedenascimento: string
 ): Promise<string> {
   try {
     let resposta = "";
-
     if (
-      !idteacher ||
+      !id_professor ||
       !nome ||
       !cpf ||
+      !rg ||
+      !datanasc ||
       !email ||
-      !telefone ||
       !estado ||
+      !municipio ||
       !rua ||
       !bairro ||
-      !municipio ||
       !numero ||
-      !datadenascimento ||
-      !RG ||
-      !datadeespedicao ||
-      !naturalidade
+      !datadeexpedicaorg ||
+      !estadodeexpedicaorg ||
+      !estadonascimento ||
+      !cidadedenascimento
     ) {
       resposta = "Todos os campos são obrigatórios.";
       return resposta;
     }
 
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
+    else {
+      await db.query(
+        `INSERT INTO professor(
+              id_professor,
+              nome, 
+              datanasc,
+              email,
+              estado,
+              municipio,
+              rua, 
+              bairro,
+              numero,
+              rg,
+              cpf,
+              datadeexpedicaorg,
+              estadodeexpedicaorg,
+              estadonascimento,
+              cidadedenascimento) 
+              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+        [
+          parseInt(id_professor),
+          nome,
+          datanasc,
+          email,
+          estado,
+          municipio,
+          rua,
+          bairro,
+          numero,
+          rg,
+          cpf,
+          datadeexpedicaorg,
+          estadodeexpedicaorg,
+          estadonascimento,
+          cidadedenascimento,
+        ]
+      );
+    }
 
-    const cadastroNoBanco = `INSERT INTO teacher values(
-        idteacher
-        nome
-        cpf
-        email
-        telefone
-        estado
-        rua
-        bairro
-        municipio
-        numero
-        datadenascimento
-        RG
-        datadeespedicao
-        naturalidade)`;
-
-    resposta = "O cadastro de professor foi realizado";
+    resposta = await getTeacher(id_professor);
     return resposta;
   } catch (error) {
-    console.log(`Erro ao cadsatrar professor`, error);
-    return `Erro ao cadastrar o professor`;
+    console.error(error);
+    return `Não foi possível cadastrar o professor`;
   }
 }
 
-async function deleteTeacher(
-  idteacher: string,
+async function updateTeacher(
+  id_professor: string,
   nome: string,
-  cpf: string,
+  datanasc: string,
   email: string,
-  telefone: string,
   estado: string,
+  municipio: string,
   rua: string,
   bairro: string,
-  municipio: string,
-  numero: number,
-  datadenascimento: Date,
-  RG: string,
-  datadeespedicao: Date,
-  naturalidade: string
-) {
+  numero: string,
+  cpf: string,
+  rg: string,
+  datadeexpedicaorg: Date,
+  estadodeexpedicaorg: string,
+  estadonascimento: string,
+  cidadedenascimento: string
+): Promise<string> {
   try {
     let resposta = "";
-    if (!idteacher) {
-      resposta = "Usuário não enontrado";
+    if (
+      !id_professor ||
+      !nome ||
+      !cpf ||
+      !rg ||
+      !datanasc ||
+      !email ||
+      !estado ||
+      !municipio ||
+      !rua ||
+      !bairro ||
+      !numero ||
+      !datadeexpedicaorg ||
+      !estadodeexpedicaorg ||
+      !estadonascimento ||
+      !cidadedenascimento
+    ) {
+      resposta = "Todos os dados são obrigatórios.";
       return resposta;
     } else {
-      resposta = `Excluindo o usuário ${nome} id:${idteacher}`;
+      if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
+      else {
+        await db.query(
+          `UPDATE professor
+          SET
+              nome = $2, 
+              datanasc = $3, 
+              email = $4, 
+              estado = $5, 
+              municipio = $6, 
+              rua = $7, 
+              bairro = $8, 
+              numero = $9, 
+              cpf = $11, 
+              rg = $10, 
+              datadeexpedicaorg = $12, 
+              estadodeexpedicaorg = $13, 
+              estadonascimento = $14, 
+              cidadedenascimento = $15
+            WHERE id_professor = $1`,
+          [
+            parseInt(id_professor),
+            nome,
+            datanasc,
+            email,
+            estado,
+            municipio,
+            rua,
+            bairro,
+            numero,
+            rg,
+            cpf,
+            datadeexpedicaorg,
+            estadodeexpedicaorg,
+            estadonascimento,
+            cidadedenascimento,
+          ]
+        );
+      }
+      resposta = await getTeacher(id_professor);
+      return resposta;
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar professor:", error);
+    return "Não foi possível atualizar o professor";
+  }
+}
+
+async function getTeacher(idprofessor: string): Promise<string> {
+  try {
+    if (!idprofessor) {
+      return "ID é obrigatório.";
+    }
+
+    const resposta = await db.query(
+      "SELECT * FROM professor WHERE id_professor = $1",
+      [parseInt(idprofessor)]
+    );
+
+    if (resposta.rows.length === 0) {
+      return `Professor com ID ${idprofessor} não encontrado.`;
+    }
+
+    const professor = resposta.rows[0];
+    return professor;
+  } catch (erro) {
+    console.error("Erro ao buscar professor:", erro);
+    return "Erro ao buscar professor.";
+  }
+}
+
+async function deleteTeacher(idprofessor: string) {
+  try {
+    let resposta = "";
+    if (!idprofessor) {
+      resposta = "Professor não enontrado";
+      return resposta;
+    } else {
+      await db.query("DELETE FROM professor WHERE id_professor = $1", [
+        parseInt(idprofessor),
+      ]);
+      return "Professor removido com seucesso.";
     }
   } catch (error) {
     console.log(`Erro ao cadastrar o professor`, error);
@@ -172,99 +250,73 @@ async function deleteTeacher(
 
 export const teacherService = {
   createTeacher: (
-    idteacher: string,
+    id_professor: string,
     nome: string,
-    cpf: string,
+    datanasc: string,
     email: string,
-    telefone: string,
     estado: string,
+    municipio: string,
     rua: string,
     bairro: string,
-    municipio: string,
-    numero: number,
-    datadenascimento: Date,
-    RG: string,
-    datadeespedicao: Date,
-    naturalidade: string
+    numero: string,
+    cpf: string,
+    rg: string,
+    datadeexpedicaorg: Date,
+    estadodeexpedicaorg: string,
+    estadonascimento: Date,
+    cidadedenascimento: string
   ) =>
     createTeacher(
-      idteacher,
+      id_professor,
       nome,
-      cpf,
+      datanasc,
       email,
-      telefone,
       estado,
+      municipio,
       rua,
       bairro,
-      municipio,
       numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade
+      rg,
+      cpf,
+      datadeexpedicaorg,
+      estadodeexpedicaorg,
+      estadonascimento,
+      cidadedenascimento
     ),
   updateTeacher: (
-    idteacher: string,
+    id_professor: string,
     nome: string,
-    cpf: string,
+    datanasc: string,
     email: string,
-    telefone: string,
     estado: string,
+    municipio: string,
     rua: string,
     bairro: string,
-    municipio: string,
-    numero: number,
-    datadenascimento: Date,
-    RG: string,
-    datadeespedicao: Date,
-    naturalidade: string
+    numero: string,
+    cpf: string,
+    rg: string,
+    datadeexpedicaorg: Date,
+    estadodeexpedicaorg: string,
+    estadonascimento: string,
+    cidadedenascimento: string
   ) =>
     updateTeacher(
-      idteacher,
+      id_professor,
       nome,
-      cpf,
+      datanasc,
       email,
-      telefone,
       estado,
+      municipio,
       rua,
       bairro,
-      municipio,
       numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade
-    ),
-  deleteTeacher: (
-    idteacher: string,
-    nome: string,
-    cpf: string,
-    email: string,
-    telefone: string,
-    estado: string,
-    rua: string,
-    bairro: string,
-    municipio: string,
-    numero: number,
-    datadenascimento: Date,
-    RG: string,
-    datadeespedicao: Date,
-    naturalidade: string
-  ) =>
-    deleteTeacher(
-      idteacher,
-      nome,
+      rg,
       cpf,
-      email,
-      telefone,
-      estado,
-      rua,
-      bairro,
-      municipio,
-      numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade
+      datadeexpedicaorg,
+      estadodeexpedicaorg,
+      estadonascimento,
+      cidadedenascimento
     ),
+  deleteTeacher: (idprofessor: string) => deleteTeacher(idprofessor),
+  getTeacher: (idprofessor: string) => getTeacher(idprofessor),
 };

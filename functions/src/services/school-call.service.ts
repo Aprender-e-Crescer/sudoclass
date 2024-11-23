@@ -12,11 +12,16 @@ async function createSchoolCall(
       return 'Todos os campos obrigatórios devem ser preenchidos.'
     }
 
+    const queryMateria = `SELECT * FROM materiaturma WHERE id_materia = $1`
+    const resultMateria = await db.query(queryMateria, [id_materia])
+
+    const id_turma = resultMateria.rows[0].id_turma
+
     const query = `
-      INSERT INTO chamada (id_chamada, id_materia, data, id_aluno, status)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO chamada (id_chamada, id_materia, data, id_aluno, status, id_turma)
+      VALUES ($1, $2, $3, $4, $5, $6)
     `
-    const values = [id_chamada, id_materia, data, id_aluno, status]
+    const values = [id_chamada, id_materia, data, id_aluno, status, id_turma]
 
     await db.query(query, values)
     const result = await db.query(
@@ -115,10 +120,52 @@ async function getAllSchoolCalls(): Promise<string> {
   }
 }
 
+async function getSchoolCallBySubject(id: number): Promise<string[] | string> {
+  try {
+    if (!id) {
+      return 'ID da chamada é obrigatório.'
+    }
+
+    const query = `SELECT * FROM chamada WHERE id_materia = $1`
+    const result = await db.query(query, [id])
+
+    if (result.rowCount === 0) {
+      return 'Nenhuma chamada encontrada para o ID fornecido.'
+    }
+
+    return result.rows
+  } catch (error) {
+    console.error('Erro ao buscar chamada por ID:', error)
+    return 'Erro ao buscar a chamada'
+  }
+}
+
+async function getSchoolCallByClass(id: number): Promise<string[] | string> {
+  try {
+    if (!id) {
+      return 'ID da chamada é obrigatório.'
+    }
+
+    const query = `SELECT * FROM chamada WHERE id_turma = $1`
+    const result = await db.query(query, [id])
+
+    if (result.rowCount === 0) {
+      return 'Nenhuma chamada encontrada para o ID fornecido.'
+    }
+
+    return result.rows
+  } catch (error) {
+    console.error('Erro ao buscar chamada por ID:', error)
+    return 'Erro ao buscar a chamada'
+  }
+}
+
 export const schoolCallService = {
   createSchoolCall,
   updateSchoolCall,
   removeSchoolCall,
   getSchoolCallById,
   getAllSchoolCalls,
+  getSchoolCallBySubject,
+  getSchoolCallByClass,
 }
