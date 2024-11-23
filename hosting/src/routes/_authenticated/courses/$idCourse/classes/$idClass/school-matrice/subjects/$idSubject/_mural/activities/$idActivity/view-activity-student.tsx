@@ -15,7 +15,9 @@ interface ViewProps {
   dateActivity: string
 }
 
-export const Route = createFileRoute('/_authenticated/view-activity-student')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
+)({
   component: ViewActivityStudent,
 })
 
