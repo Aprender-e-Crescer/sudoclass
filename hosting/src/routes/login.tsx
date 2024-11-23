@@ -10,6 +10,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useLoginController } from '@/controllers/use-login-controller'
 import { loginSchema } from '@/models/login-schema'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 
 export const Route = createFileRoute('/login')({
   component: Login,
