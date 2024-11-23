@@ -66,12 +66,12 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
     content = (
       <>
         <li>
-          <Link to="/" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
+          <Link to="/register/students" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
             Aluno
           </Link>
         </li>
         <li>
-          <Link to="/" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
+          <Link to="/register/teachers" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
             Professor
           </Link>
         </li>
