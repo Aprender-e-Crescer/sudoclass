@@ -59,17 +59,18 @@ export function ActivitiesMaterials({
                     <DropdownMenuItem>Excluir</DropdownMenuItem>
 
                     <DropdownMenuItem>
-                      <Link to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
-                          params={{
-                            idCourse,
-                            idClass,
-                            idSubject,
-                          }}
-                          search={{
-                            action: 'edit',
-                            idActivity: id,
-                          }}
-                        >
+                      <Link
+                        to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
+                        params={{
+                          idCourse,
+                          idClass,
+                          idSubject,
+                        }}
+                        search={{
+                          action: 'edit',
+                          idActivity: id,
+                        }}
+                      >
                         <div className="w-full h-full">Editar</div>
                       </Link>
                     </DropdownMenuItem>
@@ -108,7 +109,8 @@ export function ActivitiesMaterials({
 
               <div className="flex flex-col p-2">
                 <hr className="my-2" />
-                <Link to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/$idActivity/correction"
+                <Link
+                  to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/$idActivity/correction"
                   params={{
                     idActivity: id,
                     idCourse,
@@ -163,11 +165,19 @@ export function ActivitiesMaterials({
                     </div>
                   </div>
                   <div className="flex flex-col p-2">
-                <hr className="my-2" />
-                <Link to={toViewSends}>
-                  <p className="text-blue-600 text-sm">Visualizar Atividade</p>
-                </Link>
-              </div>
+                    <hr className="my-2" />
+                    <Link
+                      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/$idActivity/view-activity-student"
+                      params={{
+                        idActivity: id,
+                        idCourse,
+                        idClass,
+                        idSubject,
+                      }}
+                    >
+                      <p className="text-blue-600 text-sm">Visualizar Atividade</p>
+                    </Link>
+                  </div>
                 </AccordionContent>
               </div>
             </AccordionItem>
