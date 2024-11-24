@@ -2,20 +2,19 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/services/api'
 import { COMMENT_QUERY } from '@/queries/use-comment-query'
 
-export function useCreateCommentMutation() {
+export function useUpdateCommentMutation() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: ['createComment'],
-    mutationFn: async ({ message, userId, activityId }: { message: string; userId: number; activityId: number }) => {
-      const { data } = await api.post('/comments', { message, userId, activityId })
-      return data
+    mutationKey: ['updateComment'],
+    mutationFn: async ({ commentId, message }: { commentId: number; message: string }) => {
+      await api.patch(`/comments/${commentId}`, { message })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: COMMENT_QUERY })
     },
     onError: (error) => {
-      console.error('Erro ao criar comentário:', error)
+      console.error('Erro ao atualizar comentário:', error)
     },
   })
 }

@@ -78,6 +78,31 @@ async function createActivity(
   }
 }
 
+async function updateActivity(
+  title: string,
+  description: string,
+  value: string,
+  deliveryDate: Date,
+  activityId: number
+): Promise<string> {
+  try {
+    if (!activityId || !value || !deliveryDate || !title || !description) {
+      return 'ID da atividade é obrigatório.'
+    }
+    const result = await db.query(
+      `UPDATE atividade
+       SET titulo = $1, descricao = $2, valor = $3, data_entrega = $4
+       WHERE id_atividade = $5`,
+      [title, description, value, deliveryDate, activityId]
+    )
+
+    return `atividade atualizada com sucesso`
+  } catch (err) {
+    console.error('Erro ao atualizar atividade:', err)
+    return 'Erro ao atualizar atividade'
+  }
+}
+
 async function updateActivityGrades(
   activityId: number,
   studentId: number,
@@ -213,4 +238,11 @@ export const activityService = {
   deleteActivity: (activityId: number) => deleteActivity(activityId),
   getActivityById: (activityId: number) => getActivityById(activityId),
   getActivities: () => getActivities(),
+  updateActivity: (
+    title: string,
+    description: string,
+    value: string,
+    deliveryDate: Date,
+    activityId: number
+  ) => updateActivity(title, description, value, deliveryDate, activityId),
 }

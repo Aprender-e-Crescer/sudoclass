@@ -2,41 +2,41 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/services/api'
 import { LIST_ACTIVITIES_QUERY } from '@/queries/use-list-activities-query'
 
-export function useCreateActivityMutation() {
+export function useUpdateActivityMutation() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: ['createActivity'],
+    mutationKey: ['updateActivity'],
     mutationFn: async ({
+      activityId,
       title,
       instruction,
       deliveryDate,
-      postingDate,
       value,
       subjectId,
     }: {
+      activityId: number
       title: string
       instruction: string
       deliveryDate: string
-      postingDate: string
       value: number
       subjectId: number
     }) => {
       const requestBody = {
         title,
         description: instruction,
-        value,
         deliveryDate,
-        postingDate,
+        value,
+        subjectId,
       }
 
-      await api.post(`${subjectId}/activity`, requestBody)
+      await api.put(`/activity/${activityId}`, requestBody)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LIST_ACTIVITIES_QUERY })
     },
     onError: (error) => {
-      console.error('Erro ao criar atividade:', error)
+      console.error('Erro ao atualizar a atividade:', error)
     },
   })
 }
