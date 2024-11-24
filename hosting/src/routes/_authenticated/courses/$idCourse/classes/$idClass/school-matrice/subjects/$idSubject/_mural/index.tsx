@@ -10,6 +10,10 @@ import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
 import { warningSchema } from '@/models/warning-schema'
 import { useState } from 'react'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
+import { useGetUserQuery } from '@/queries/use-get-user-query'
+import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
+import { useGetStudentQuery } from '@/queries/use-get-student-query'
+import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -19,24 +23,55 @@ export const Route = createFileRoute(
 
 const initialValues = {
   message: '',
-  sentBy: 'Nome do usuário',
+  sentBy: '',
 }
 
 export function WallSubjects() {
   const { idSubject } = Route.useParams()
-  const { data: initialComments = [], isLoading } = useListWarningsQuery(idSubject)
+  const { data: initialWarnings = [], isLoading } = useListWarningsQuery(idSubject)
   const createWarningMutation = useCreateWarningMutation()
-  const [comments, setComments] = useState(initialComments)
-  const { user } = useGetFullUser()
+  const [warnings, setWarnings] = useState(initialWarnings)
+  const { currentUser } = useGetFullUser()
+  const { data: typeUser } = useGetUserQuery(currentUser?.uid)
+
+  if (!typeUser) {
+    console.error('Tipo de usuário não encontrado')
+    return <div>Usuário não encontrado</div>
+  }
+
+  let userName = ''
+  let userType = ''
+
+  if (typeUser.type === 'pedagogo') {
+    const { data: pedagogue } = useGetPedagogueQuery(typeUser.idPedagogue)
+
+    userName = pedagogue?.name || 'Pedagogo não encontrado'
+    userType = 'pedagogo'
+  } else if (typeUser.type === 'aluno') {
+    const { data: student } = useGetStudentQuery(typeUser.idStudent)
+
+    userName = student?.name || 'Aluno não encontrado'
+    userType = 'aluno'
+  } else if (typeUser.type === 'professor') {
+    const { data: teacher } = useGetTeacherQuery(typeUser.idTeacher)
+
+    userName = teacher?.name || 'Professor não encontrado'
+    userType = 'professor'
+  } else {
+    console.error('Tipo de usuário inválido')
+    return <div>Tipo de usuário inválido</div>
+  }
+
+  console.log(userName)
 
   const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
-    if (user) {
+    if (userName) {
       createWarningMutation.mutate({
         message: values.message,
-        userId: user.idUser,
+        userId: typeUser.idUser,
         subjectId: parseInt(idSubject, 10),
       })
-      setComments((prevComments) => [...prevComments, { message: values.message, sentBy: values.sentBy }])
+      setWarnings((prevWarnings) => [...prevWarnings, { message: values.message, sentBy: userName }])
 
       resetForm()
     } else {
@@ -81,8 +116,8 @@ export function WallSubjects() {
           </Formik>
         </div>
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full flex flex-col gap-4">
-          {comments.map((comment, index) => (
-            <Warning key={index} name={comment.sentBy} date="Agora" avatarSrc="" comment={comment.message} />
+          {warnings.map((warning, index) => (
+            <Warning key={index} name={warning.sentBy} date="Agora" avatarSrc="" comment={warning.message} />
           ))}
         </div>
       </div>
