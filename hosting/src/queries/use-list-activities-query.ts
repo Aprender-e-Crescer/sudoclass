@@ -1,30 +1,16 @@
-import { Activity, activitySchema } from '@/models/activity-schema'
-import { firestore } from '@/services/firebase'
+import { activitySchema } from '@/models/activity-schema'
+import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs } from 'firebase/firestore'
+import { z } from 'zod'
 
-export function useListActivitiesQuery(schoolMatriceId: string, subjectId: string) {
+export function useListActivitiesQuery() {
   return useQuery({
-    queryKey: ['getActivies', schoolMatriceId, subjectId],
+    queryKey: ['getActivies'],
     queryFn: async () => {
-      const activiesRef = collection(
-        firestore,
-        'schoolMatrices',
-        schoolMatriceId,
-        'subjects',
-        subjectId,
-        'activities',
-      ).withConverter({
-        toFirestore: (activity: Activity) => activity,
-        fromFirestore: (snapshot) =>
-          activitySchema.parse({
-            id: snapshot.id,
-            ...snapshot.data(),
-          }),
-      })
+      const { data } = await api.get('/activities')
+      const activities = z.array(activitySchema).parse(data)
 
-      const snapshot = await getDocs(activiesRef)
-      return snapshot.docs.map((doc) => doc.data())
+      return activities
     },
   })
 }

@@ -2,22 +2,23 @@ import { WARNING_WALL_QUERY } from '@/queries/use-warning-wall-query'
 import { api } from '@/services/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export function useCreateWarningMutation() {
+export function useUpdateWarningMutation() {
   const queryClient = useQueryClient()
+
   return useMutation({
-    mutationKey: ['createWarning'],
-    mutationFn: async ({ message, userId, subjectId }: { message: string; userId: number; subjectId: number }) => {
+    mutationKey: ['updateWarning'],
+    mutationFn: async ({ warningId, message }: { warningId: number; message: string }) => {
       const requestBody = {
         mensagem: message,
-        id_usuario: userId,
-        id_materia: subjectId,
       }
 
-      const { data } = await api.post('/warnings', requestBody)
-      return data
+      await api.put(`/warnings/${warningId}`, requestBody)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WARNING_WALL_QUERY })
+    },
+    onError: (error) => {
+      console.error('Erro ao atualizar aviso:', error)
     },
   })
 }

@@ -3,12 +3,13 @@ import { warningService } from '../services/warning.service'
 
 const warningController = {
   createWarning: async (req: Request, res: Response): Promise<void> => {
-    const { mensagem, id_materia, id_professor } = req.body
+    const { mensagem, id_usuario, id_materia } = req.body
+
     try {
       const message = await warningService.createWarning(
         mensagem,
         id_materia,
-        id_professor
+        id_usuario
       )
       res.status(201).send(message)
     } catch (err) {
@@ -34,15 +35,15 @@ const warningController = {
     }
   },
 
-  getWarning: async (req: Request, res: Response): Promise<void> => {
-    const id_aviso = parseInt(req.params.warningId, 10)
-    if (isNaN(id_aviso)) {
-      res.status(400).send('ID do aviso inválido.')
+  getWarnings: async (req: Request, res: Response): Promise<void> => {
+    const id_materia = parseInt(req.params.subjectId, 10)
+    if (isNaN(id_materia)) {
+      res.status(400).send('ID da matéria inválido.')
       return
     }
 
     try {
-      const warning = await warningService.getWarning(id_aviso)
+      const warning = await warningService.getWarnings(id_materia)
       if (!warning) {
         res.status(404).send('Aviso não encontrado.')
       } else {

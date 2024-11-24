@@ -23,7 +23,7 @@ export const Route = createFileRoute(
 })
 
 export function ListActivity() {
-  const { data: activities } = useListActivitiesQuery('aQjvxCKlEuHc9YQEedCQ', 'zGTOAwnKJBjFSmayHxJo')
+  const { data: activities } = useListActivitiesQuery()
   const { idClass, idCourse, idSubject } = Route.useParams()
 
   return (
@@ -54,6 +54,17 @@ export function ListActivity() {
                   Criar
                 </Button>
               </Link>
+            </div>
+            <div>
+              <ActivitiesMaterials
+                id="1"
+                idClass={idClass}
+                idCourse={idCourse}
+                idSubject={idSubject}
+                instruction=""
+                title=""
+                type="teacher"
+              />
             </div>
             <div className="md:ml-5">
               <div>
