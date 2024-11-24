@@ -3,9 +3,11 @@ import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 
+export const COMMENT_QUERY = ['getComments']
+
 export function useCommentQuery(idActivity: number) {
   return useQuery({
-    queryKey: ['getComments', idActivity],
+    queryKey: [...COMMENT_QUERY, idActivity],
     queryFn: async () => {
       const { data } = await api.get(`/comments/${idActivity}`)
       const comments = z.array(commentSchema).parse(data)

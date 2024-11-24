@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/services/api'
 import { LIST_ACTIVITIES_QUERY } from '@/queries/use-list-activities-query'
 
-export function useAddGradeToActivityMutation() {
+export function useAddGradeMutation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationKey: ['addGradeToActivity'],
