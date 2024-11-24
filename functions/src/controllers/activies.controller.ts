@@ -31,10 +31,36 @@ const activitiesController = {
     }
   },
 
-  updateActivityGrades: async (req: Request, res: Response): Promise<void> => {
-    const { grade } = req.body
+  upgradeActivity: async (req: Request, res: Response): Promise<void> => {
+    const { title, description, value, deliveryDate } = req.body
     const activityId = parseInt(req.params.activityId, 10)
-    const studentId = parseInt(req.params.studentId, 10)
+
+    if (!title || !description || !value || !deliveryDate) {
+      res.status(400).send('Todos os campos são obrigatórios.')
+      return
+    }
+    try {
+      const ret = await activityService.updateActivity(
+        title,
+        description,
+        value,
+        deliveryDate,
+        activityId
+      )
+      if (!ret) {
+        res.status(404).send('Atividade não encontrada.')
+      } else {
+        res.status(200).send('Atividade atualizada com sucesso.')
+      }
+    } catch (err) {
+      console.error('Erro atualizando atividade:', err)
+      res.status(500).send('Ocorreu um erro ao atualizar a atividade.')
+    }
+  },
+
+  updateActivityGrades: async (req: Request, res: Response): Promise<void> => {
+    const { grade, studentId } = req.body
+    const activityId = parseInt(req.params.activityId, 10)
 
     if (!grade || isNaN(activityId) || isNaN(studentId)) {
       res.status(400).send('Parâmetros inválidos.')

@@ -8,9 +8,7 @@ export function useDeleteWarningMutation() {
   return useMutation({
     mutationKey: ['deleteWarning'],
     mutationFn: async (warningId: number) => {
-      const id_aviso = warningId
-
-      await api.delete(`/warnings/${id_aviso}`)
+      await api.delete(`/warnings/${warningId}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WARNING_WALL_QUERY })
