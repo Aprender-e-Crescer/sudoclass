@@ -1,92 +1,160 @@
-async function createCurso(id : string, nome: string, startDate: Date, endDate: Date, workload: string): Promise<string> {
-    try{
-     let resposta = "";
-     if(!nome || !startDate || !endDate || !workload || !id){
-         resposta = "todo os dados sao obrigatorios"
-         return resposta
-     }
-     //const query = `
-     //INSERT INTO courses (id, nome, start_date, end_date, workload)
-     //VALUES ($1, $2, $3, $4, $5)
-   //const values = [id, nome, startDate, endDate, workload]; 
- 
-     resposta = `curso ${nome} criado com sucesso`
-     return resposta
-    } 
-    catch(error){
-     console.error("erro ao criar curso")
-     return "erro ao criar curso"
- 
-    }
- 
- }
- 
- async function deleteCourse(id: string): Promise<string> {
-     try {
-         if (!id) {
-             return "ID do curso é obrigatório";
-         }
-         //const query = 'DELETE FROM courses where id = &id';
-         const response = `Curso com ID ${id} deletado com sucesso`;
-         return response;
-     } catch (error) {
-         console.error("Erro ao deletar curso:", error);
-         return "Erro ao deletar curso";
-     }
- }
- 
- async function updateCourse(id: string, nome: string, startDate: Date, endDate: Date, workload: string): Promise<string> {
-     try {
-         if (!id ||!nome ||!startDate ||!endDate ||!workload) {
-             return "Todos os dados são obrigatórios";
-         }
-         //const query = 'UPDATE courses set nome = $2, startDate = $3, endDate = $4 workload = $5 WHERE id = $1'
-         const response = `Curso com ID ${id} atualizado com sucesso`;
-         return response;
-     } catch (error) {
-         console.error("Erro ao atualizar curso:", error);
-         return "Erro ao atualizar curso";
-     }
- }
- 
- async function getCourseById(id: string): Promise<string> {
-     try {
-         if (!id) {
-             return "ID do curso é obrigatório";
-         }
-         //const query = 'SELECT * FROM courses WHERE id = &id';
-          //const result = db.query(query, id)
-         const response = `Curso com ID ${id} encontrado`;
-         return response;
-     } catch (error) {
-         console.error("Erro ao buscar curso:", error);
-         return "Erro ao buscar curso";
-     }
- }
- 
- async function addSubjectToCurso(idCurso: string, idMateria: string): Promise<void> {
-    try {
-        if (!idCurso || !idMateria) {
-            console.log("ID do curso e ID da matéria são obrigatórios");
-            return;
-        }
-        
-        // const query = 'INSERT INTO curso_materia (curso_id, materia_id) VALUES ($1, $2)';
-        // const values = [idCurso, idMateria];
-        // await db.query(query, values);
+import { db } from '../config/database'
 
-        console.log(`Matéria com ID ${idMateria} adicionada ao curso com ID ${idCurso} com sucesso.`);
-    } catch (error) {
-        console.error("Erro ao adicionar matéria ao curso:", error);
+async function criarCurso(
+  idCurso: string,
+  nomeCurso: string,
+  cargaHoraria: string,
+  dataInicio: Date,
+  dataFim: Date,
+  dataInicioInscricoes: Date,
+  dataFimInscricoes: Date,
+  numeroVagas: number,
+  ementa: string
+): Promise<string> {
+  try {
+    if (!idCurso || !nomeCurso || !cargaHoraria || !dataInicio || !dataFim || !dataInicioInscricoes || !dataFimInscricoes || numeroVagas === undefined || !ementa) {
+      return "Todos os dados são obrigatórios"
     }
+
+    const query = `
+      INSERT INTO curso (
+        id_curso, nome_curso, carga_horaria, datainicio, datafim, 
+        datainicioinscricoes, datafiminscricoes, numerovagas, ementa
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `
+    const valores = [
+      idCurso,
+      nomeCurso,
+      cargaHoraria,
+      dataInicio,
+      dataFim,
+      dataInicioInscricoes,
+      dataFimInscricoes,
+      numeroVagas,
+      ementa
+    ]
+
+    await db.query(query, valores)
+    return `Curso ${nomeCurso} criado com sucesso!`
+  } catch (error) {
+    console.error("Erro ao criar curso:", error)
+    return "Erro ao criar curso"
+  }
 }
 
- export const courseService = {
-     createCurso: (id: string, nome: string, startDate: Date, endDate: Date, workload: string) => createCurso(id, nome, startDate, endDate, workload),
-     deleteCourse: (id: string) => deleteCourse(id),
-     updateCourse: (id: string, nome: string, startDate: Date, endDate: Date, workload: string) => updateCourse(id, nome, startDate, endDate, workload),
-     getCourseById: (id: string) => getCourseById(id),
-     addMateriaToCurso: (idCurso: string, idMateria: string) => addSubjectToCurso(idCurso, idMateria)
+async function deletarCurso(idCurso: string): Promise<string> {
+  try {
+    if (!idCurso) {
+      return "ID do curso é obrigatório";
+    }
+
+    const queryDeletar = 'DELETE FROM curso WHERE id_curso = $1';
+    await db.query(queryDeletar, [idCurso]);
+
+    return `Curso com ID ${idCurso} deletado com sucesso`;
+  } catch (error) {
+    console.error("Erro ao deletar curso:", error);
+    return "Erro ao deletar curso";
+  }
+}
+
+async function atualizarCurso(
+  idCurso: string,
+  nomeCurso: string,
+  cargaHoraria: string,
+  dataInicio: Date,
+  dataFim: Date,
+  dataInicioInscricoes: Date,
+  dataFimInscricoes: Date,
+  numeroVagas: number,
+  ementa: string
+): Promise<string> {
+  try {
+    if (!idCurso || !nomeCurso || !cargaHoraria || !dataInicio || !dataFim || !dataInicioInscricoes || !dataFimInscricoes || numeroVagas === undefined || !ementa) {
+      return "Todos os dados são obrigatórios"
+    }
+
+     const cursoExiste = await verificarIdExistente(idCurso)
+     if (!cursoExiste) {
+       return "ID invalido: Curso nao encontrado"
+     }
+
+    const query = `
+      UPDATE cursos
+      SET nome_curso = $1, carga_horaria = $2, data_inicio = $3, data_fim = $4, 
+          data_inicio_inscricoes = $5, data_fim_inscricoes = $6, numero_vagas = $7, ementa = $8
+      WHERE id_curso = $9
+    `
+    const valores = [
+      nomeCurso,
+      cargaHoraria,
+      dataInicio,
+      dataFim,
+      dataInicioInscricoes,
+      dataFimInscricoes,
+      numeroVagas,
+      ementa,
+      idCurso
+    ]
+
+    await db.query(query, valores)
+    return `Curso com ID ${idCurso} atualizado com sucesso!`
+  } catch (error) {
+    console.error("Erro ao atualizar curso:", error)
+    return "Erro ao atualizar curso"
+  }
+}
+
+async function buscarCursoPorId(idCurso: string): Promise<string> {
+  try {
+    if (!idCurso) {
+      return "ID do curso é obrigatório"
+    }
+
+    const query = 'SELECT * FROM curso WHERE id_curso = $1'
+    const resultado = await db.query(query, [idCurso])
+
+    if (resultado.rows.length === 0) {
+      return "Curso não encontrado"
+    }
+
+    const curso = resultado.rows[0]
+    return `Curso encontrado: ${curso.nome_curso}`
+  } catch (error) {
+    console.error("Erro ao buscar curso:", error)
+    return "Erro ao buscar curso"
+  }
+}
+
+
+
+async function verificarIdExistente(idCurso: string): Promise<boolean> {
  
- };
- 
+
+
+  const queryVerificar = "SELECT * FROM curso WHERE id_curso = $1"
+
+  const resultado = await db.query(queryVerificar, [parseInt(idCurso)])
+
+  
+  if (resultado.rows.length === 0){
+    return false
+  }
+  else{
+    return true
+  }
+  
+}
+
+
+
+
+export const cursoService = {
+  criarCurso,
+  deletarCurso,
+  atualizarCurso,
+  buscarCursoPorId,
+  verificarIdExistente
+
+}

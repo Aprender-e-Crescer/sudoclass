@@ -1,7 +1,6 @@
 import { db } from '../config/database'
 
 async function createForm(
-  id: number,
   id_usuario: number,
   data_criacao: string,
   link: string,
@@ -9,13 +8,14 @@ async function createForm(
 ) {
   try {
     const query = `
-      INSERT INTO formulario (id, id_usuario, data_criacao, link, nome)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO formulario (id_usuario, data_criacao, link, nome)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
     `
-    const values = [id, id_usuario, data_criacao, link, nome]
-    await db.query(query, values)
+    const values = [id_usuario, data_criacao, link, nome]
+    const result = await db.query(query, values)
 
-    return values
+    return result.rows[0]
   } catch (error) {
     console.error('Erro ao criar formulário:', error)
     return false
@@ -81,13 +81,12 @@ async function updateForm(id: number, link: string, nome: string) {
 
 export const formService = {
   createForm: async (
-    id: number,
     id_usuario: number,
     data_criacao: string,
     link: string,
     nome: string
   ) => {
-    return await createForm(id, id_usuario, data_criacao, link, nome)
+    return await createForm(id_usuario, data_criacao, link, nome)
   },
 
   getFormById: (id: number) => getFormById(id),

@@ -33,8 +33,8 @@ function validateResponsable(
   return true;
 }
 
-async function createResponsable(
-  id: string,
+export async function createResponsable(
+  id_responsavel: string,
   tipo: string,
   nome: string,
   email: string,
@@ -44,7 +44,7 @@ async function createResponsable(
   rua: string,
   bairro: string,
   numero: string,
-  dataNascimento: string, 
+  data_nascimento: string, 
   cpf: string,
   rg: string,
   documentos: string
@@ -54,7 +54,7 @@ async function createResponsable(
     let resposta = "";
  
     if (
-      !id ||
+      !id_responsavel ||
       !tipo ||
       !nome ||
       !email ||
@@ -64,7 +64,7 @@ async function createResponsable(
       !rua ||
       !bairro ||
       !numero ||
-      !dataNascimento ||
+      !data_nascimento ||
       !cpf ||
       !rg ||
       !documentos
@@ -72,30 +72,36 @@ async function createResponsable(
       resposta = "Todos os campos são obrigatórios.";
       return resposta;
     }
+    console.log("1");
+    
     if (!validateResponsable) return (resposta = "O dado enviado é inválido.");
 
+  else{
+    console.log("2");
     await db.query(`
-      INSERT INTO responsavel (
-        id_responsavel, 
-        tipo, 
-        nome, 
-        email, 
-        telefone,
-        estado, 
-        municipio, 
-        rua, 
-        bairro, 
-        numero, 
-        dataNascimento, 
-        cpf, 
-        rg, 
-        documentos
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
-      [id, tipo, nome, email, telefone, estado, municipio, rua, bairro, numero, dataNascimento, cpf, rg, documentos])
-    resposta = "O cadastro do responsavel foi realizado com sucesso!";
-    return resposta;
+        INSERT INTO responsavel (
+          id_responsavel,
+          tipo, 
+          nome, 
+          email, 
+          telefone,
+          estado, 
+          municipio, 
+          rua, 
+          bairro, 
+          numerocasa, 
+          data_nascimento,
+          cpf, 
+          rg, 
+          documentos
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+        [id_responsavel, tipo, nome, email, telefone, estado, municipio, rua, bairro, numero, data_nascimento, cpf, rg, documentos])
+      const response = await getResponsavel(id_responsavel)
+      return response;
+
+    }
+    
   } catch (error) {
-    console.log(`Erro ao cadsatrar responsavel`, error);
     return `Erro ao cadastrar o responsavel`;
   }
 }
@@ -103,7 +109,7 @@ async function createResponsable(
 
 
 async function updateResponsible(
-  id: string,
+  id_responsavel: string,
   tipo: string,
   nome: string,
   email: string,
@@ -120,45 +126,28 @@ async function updateResponsible(
 ): Promise<string> {
   try {
     let resposta = "";
-    if (
-      ! id ||
-      !tipo ||
-      !nome ||
-      !email ||
-      !telefone ||
-      !estado ||
-      !municipio ||
-      !rua ||
-      !bairro ||
-      !numero ||
-      !dataNascimento ||
-      !cpf ||
-      !rg ||
-      !documentos
-    ) {
-      resposta = "Todos os campos são obrigatórios.";
-      return resposta;
-    }
+  
     await db.query(`
-      INSERT INTO responsavel (
-        id_responsavel, 
-        tipo, 
-        nome, 
-        email, 
-        telefone, 
-        estado, 
-        municipio, 
-        rua, 
-        bairro, 
-        numero, 
-        dataNascimento, 
-        cpf, 
-        rg, 
-        documentos
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
-      [id, tipo, nome, email, telefone, estado, municipio, rua, bairro, numero, dataNascimento, cpf, rg, documentos])
-    resposta = "O cadastro do responsavel foi realizado com sucesso!";
-    return resposta;
+      UPDATE responsavel SET
+        tipo = $1, 
+        nome = $2,  
+        email = $3,  
+        telefone = $4, 
+        estado = $5,  
+        municipio = $6, 
+        rua = $7, 
+        bairro = $8, 
+        numerocasa = $9, 
+        data_nascimento = $10,
+        cpf = $11, 
+        rg = $12, 
+        documentos = $13
+      WHERE id_responsavel = $14`,
+      [tipo, nome, email, telefone, estado, municipio, rua, bairro, numero, dataNascimento, cpf, rg, documentos, id_responsavel])
+      const response = await getResponsavel(id_responsavel)
+      
+      return response;
+
 
   } catch (error) {
     console.error("Erro ao atualizar responsável:", error);
@@ -166,48 +155,48 @@ async function updateResponsible(
   }
 }
 
-async function deleteResponsible(id: string): Promise<string> {
+async function deleteResponsible(id_responsavel: string): Promise<string> {
   try {
-    if (!id) {
+    if (!id_responsavel) {
       return "ID do responsavel é obrigatório";
     }
  
     const queryDeletar = 'DELETE FROM responsavel WHERE id_responsavel = $1';
-    await db.query(queryDeletar, [id]);
- 
-    return `Responsavel com ID ${id} deletado com sucesso`;
+    await db.query(queryDeletar, [parseInt(id_responsavel)])
+    return "Responsável deletado com sucesso"
   } catch (error) {
     console.error("Erro ao deletar Responsavel:", error);
     return "Erro ao deletar Responsavel";
   }
 }
 
-async function getResponsavel(id: string): Promise<string> {
+async function getResponsavel(id_responsavel: string): Promise<string> {
   try {
-    if (!id) {
-      return "ID do curso é obrigatório"
+    if (!id_responsavel) {
+      return "ID do responsavel é obrigatório"
     }
  
-    const query = 'SELECT * FROM curso WHERE id_curso = $1'
-    const resultado = await db.query(query, [id])
+    const queryGet = 'SELECT * FROM responsavel WHERE id_responsavel = $1'
+    const resultado = await db.query(queryGet, [parseInt(id_responsavel)])
  
     if (resultado.rows.length === 0) {
-      return "Curso não encontrado"
+      return "Responsavel não encontrado"
     }
  
-    const curso = resultado.rows[0]
-    return `Curso encontrado: ${curso.nome_curso}`
+    const reponsavel = resultado.rows[0]
+    return reponsavel
+    
   } catch (error) {
-    console.error("Erro ao buscar curso:", error)
-    return "Erro ao buscar curso"
+    console.error("Erro ao buscar reponsavel:", error)
+    return "Erro ao buscar reponsavel"
   }
 }
  
-async function verificarIdExistente(idCurso: string): Promise<boolean> {
+async function verificarIdExistente(id_responsavel: string): Promise<boolean> {
 
-  const queryVerificar = "SELECT * FROM curso WHERE id_responsavel = $1"
+  const queryVerificar = "SELECT * FROM responsavel WHERE id_responsavel = $1"
  
-  const resultado = await db.query(queryVerificar, [parseInt(idCurso)])
+  const resultado = await db.query(queryVerificar, [parseInt(id_responsavel)])
  
   if (resultado.rows.length === 0){
     return false

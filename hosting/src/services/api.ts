@@ -7,8 +7,8 @@ const api = axios.create({
 
 api.interceptors.request.use(async function (config) {
     await auth.authStateReady()
-
-    config.headers.Authorization = `Bearer ${auth.currentUser?.getIdToken()}`;
+    const token = await auth.currentUser?.getIdToken();
+    config.headers.Authorization = `Bearer ${token}`;
     
     return config;
 }, function (error) {

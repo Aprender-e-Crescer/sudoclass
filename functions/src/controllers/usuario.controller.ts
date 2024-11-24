@@ -3,13 +3,13 @@ import { usuarioService } from '../services/usuario.service';
 
 const usuarioController = {
     CreateUser: async (req: Request, res: Response): Promise<void> => { 
-        const { id, nome, email, senha, cpf } = req.body;
+        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo } = req.body;
         try {
-            const retorno = await usuarioService.createUser(id, nome, cpf, senha, email);
+            const retorno = await usuarioService.createUser(id_usuario, email, senha,  id_aluno, id_professor, id_pedagogo);
             if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o usuário.');
             } else {
-                res.status(200).send('Cadastro realizado com sucesso');
+                res.status(200).send(retorno);
             }
         } catch (error) {
             console.error('Erro ao cadastrar usuário:', error);
@@ -17,14 +17,15 @@ const usuarioController = {
         }
     },
     getUser: async(req: Request, res: Response): Promise<void> => {
-        const {id} = req.body;
+        const {id_usuario} = req.params;
         try{
-            const retorno = await usuarioService.getUser(id);
+            const retorno = await usuarioService.getUser(id_usuario);
             if(!retorno){
                  res.status(500).send(`Não foi possivel buscar o usuario`);
             }else{
-                  res.status(200).send(`Usuario buscado com sucesso`);
+                  res.status(200).send(retorno);
             }
+            console.log(id_usuario)
         }
         catch(error){
             console.error('Erro ao buscar usuário:', error);
@@ -32,14 +33,14 @@ const usuarioController = {
         }
     },
 
-    deleteUser: async(req: Request, res: Response): Promise<void> => {
-        const {id} = req.body;
+     deleteUser: async(req: Request, res: Response): Promise<void> => {
+        const {id_usuario} = req.params;
         try{
-            const retorno = await usuarioService.deleteUser(id);
+            const retorno = await usuarioService.deleteUser(id_usuario);
             if(!retorno){
                  res.status(500).send(`Não foi possivel deletar o usuario`);
             }else{
-                  res.status(200).send(`O usuario com id: ${id} foi deletado com sucesso`);
+                  res.status(200).send(`O usuario com id: ${id_usuario} foi deletado com sucesso`);
             }
         }
         catch(error){
@@ -47,21 +48,23 @@ const usuarioController = {
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar deletar o usuário.');
         }
     },
-
-    updateUser: async(req: Request, res: Response): Promise<void> => {
-        const {id, nome, cpf, email} = req.body;
+ 
+     updateUser: async(req: Request, res: Response): Promise<void> => {
+        const {id_usuario} = req.params;
+        const {email, senha, id_aluno, id_professor, id_pedagogo} = req.body;
         try{
-            const retorno = await usuarioService.deleteUser(id);
+            const retorno = await usuarioService.updateUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo);
+            console.log(retorno)
             if(!retorno){
                  res.status(500).send(`Não foi possivel atualizar o usuario`);
             }else{
-                  res.status(200).send(`O usuario com id: ${id} e o foi atualizado com sucesso`) 
+                  res.status(200).send(retorno) 
             }
         }
         catch(error){
             console.error('Erro ao atualizar o usuário:', error);
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar atualizar o usuário.');
         }
-    } 
+    }  
 }
 export default usuarioController

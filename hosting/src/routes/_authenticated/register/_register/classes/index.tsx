@@ -21,7 +21,7 @@ export function ClassList() {
       </Link>
 
       <div className="flex flex-col gap-7 font-bold text-blue-950 text-lg">
-        {/* <div className="flex flex-col gap-7 font-bold text-blue-950 text-lg">
+        <div className="flex flex-col gap-7 font-bold text-blue-950 text-lg">
           {classes?.map((classItem, index) => (
             <div key={index} className="flex flex-col gap-10 w-full">
               <p className="border rounded-xl p-3 flex justify-between">
@@ -39,21 +39,6 @@ export function ClassList() {
               </p>
             </div>
           ))}
-        </div> */}
-        <div className="flex flex-col gap-10 w-full">
-          <p className="border rounded-xl p-3 flex justify-between">
-            Aprender e crescer 2024
-            <div className="flex">
-              <AlertDialogComponent
-                title="Deseja excluir a turma?"
-                cancelButtonValue="Excluir"
-                variantCancelButton="blueButton"
-              />
-              <Link to="/register/classes/manage" search={{ action: 'edit' }}>
-                <Pencil className="border rounded text-zinc-500 w-8 h-8" />
-              </Link>
-            </div>
-          </p>
         </div>
       </div>
     </div>
