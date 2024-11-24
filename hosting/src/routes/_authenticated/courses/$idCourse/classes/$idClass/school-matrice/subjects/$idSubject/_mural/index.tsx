@@ -9,6 +9,7 @@ import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutatio
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
 import { warningSchema } from '@/models/warning-schema'
 import { useState } from 'react'
+import { useGetFullUser } from '@/hooks/use-get-full-user'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -22,20 +23,25 @@ const initialValues = {
 }
 
 export function WallSubjects() {
-  const schoolMatriceId = 'aQjvxCKlEuHc9YQEedCQ'
-  const { idCourse, idClass, idSubject } = Route.useParams()
+  const { idSubject } = Route.useParams()
   const { data: initialComments = [], isLoading } = useListWarningsQuery(idSubject)
   const createWarningMutation = useCreateWarningMutation()
   const [comments, setComments] = useState(initialComments)
+  const { user } = useGetFullUser()
 
   const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
-    createWarningMutation.mutate({
-      message: values.message,
-      sentBy: values.sentBy,
-    })
-    setComments((prevComments) => [...prevComments, { message: values.message, sentBy: values.sentBy }])
+    if (user) {
+      createWarningMutation.mutate({
+        message: values.message,
+        userId: user.idUser,
+        subjectId: parseInt(idSubject, 10),
+      })
+      setComments((prevComments) => [...prevComments, { message: values.message, sentBy: values.sentBy }])
 
-    resetForm()
+      resetForm()
+    } else {
+      console.error('Usuário não autenticado')
+    }
   }
 
   if (isLoading) {
