@@ -43,8 +43,8 @@ const initialValues = {
 
 function useLogic() {
   const { registerTeacher } = useRegisterTeacherController()
-  const { data: registerRequests } = useTeachersListingQuery()
   const { idTeacher, action } = Route.useSearch()
+  const { data: registerRequests } = useTeachersListingQuery(idTeacher)
 
   const handleOnTeacherSubmit = (values: typeof initialValues) => {
     registerTeacher(values)
