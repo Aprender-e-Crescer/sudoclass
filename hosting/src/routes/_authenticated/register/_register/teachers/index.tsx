@@ -3,7 +3,7 @@ import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
 import { registerSchema } from '@/models/teachers-schema'
-import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { When } from 'react-if'
@@ -43,8 +43,8 @@ const initialValues = {
 
 function useLogic() {
   const { registerTeacher } = useRegisterTeacherController()
-  const { data: registerRequests } = useTeachersSchemaQuery()
   const { idTeacher, action } = Route.useSearch()
+  const { data: registerRequests } = useTeachersListingQuery(idTeacher)
 
   const handleOnTeacherSubmit = (values: typeof initialValues) => {
     registerTeacher(values)
@@ -68,8 +68,8 @@ export function TeachersListing() {
         </div>
 
         <div className="flex sm:flex-row flex-col">
-          <div className="flex flex-1 flex-col p-3 data-[isAction=true]:w-2/6" data-isAction={!!action}>
-            {registerRequests?.map(({ fullName }, teacher, index) => (
+          <div className="flex flex-1 flex-col p-3 data-[isaction=true]:w-2/6" data-isaction={!!action}>
+            {registerRequests?.map(({ name }, index) => (
               <div key={index} className="flex justify-between items-start">
                 <Link to="/register/teachers" search={{ action: 'edit' }} className="flex flex-col flex-1">
                   <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
@@ -77,7 +77,7 @@ export function TeachersListing() {
                       <AvatarImage src={avatar} />
                       <AvatarFallback>carregando...</AvatarFallback>
                     </Avatar>
-                    <p>{fullName}</p>
+                    <p>{name}</p>
                   </div>
                 </Link>
               </div>
