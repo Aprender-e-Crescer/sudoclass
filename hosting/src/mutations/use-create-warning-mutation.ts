@@ -1,5 +1,5 @@
 import { Warning } from '@/models/warning-schema'
-import { WARNINGS_WALL_QUERY_KEY } from '@/queries/use-warning-wall-query'
+import { WARNING_WALL_QUERY } from '@/queries/use-warning-wall-query'
 import { firestore } from '@/services/firebase'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addDoc, collection } from 'firebase/firestore'
@@ -11,7 +11,7 @@ export function useCreateWarningMutation(schoolMatriceId: string, subjectId: str
     mutationFn: (values: Warning) =>
       addDoc(collection(firestore, 'schoolMatrices', schoolMatriceId, 'subjects', subjectId, 'warning'), values),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: WARNINGS_WALL_QUERY_KEY(schoolMatriceId, subjectId) })
+      queryClient.invalidateQueries({ queryKey: WARNING_WALL_QUERY })
     },
   })
 }
