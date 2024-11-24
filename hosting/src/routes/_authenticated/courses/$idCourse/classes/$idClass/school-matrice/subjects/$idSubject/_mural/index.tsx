@@ -13,7 +13,7 @@ import { useState } from 'react'
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
 )({
-  component: WallSubjectInput,
+  component: WallSubjects,
 })
 
 const initialValues = {
@@ -21,10 +21,10 @@ const initialValues = {
   sentBy: 'Nome do usuário',
 }
 
-export function WallSubjectInput() {
+export function WallSubjects() {
   const schoolMatriceId = 'aQjvxCKlEuHc9YQEedCQ'
-  const subjectId = 'zGTOAwnKJBjFSmayHxJo'
-  const { data: initialComments = [], isLoading } = useListWarningsQuery()
+  const { idCourse, idClass, idSubject } = Route.useParams()
+  const { data: initialComments = [], isLoading } = useListWarningsQuery(idSubject)
   const createWarningMutation = useCreateWarningMutation(schoolMatriceId, subjectId)
   const [comments, setComments] = useState(initialComments)
 
