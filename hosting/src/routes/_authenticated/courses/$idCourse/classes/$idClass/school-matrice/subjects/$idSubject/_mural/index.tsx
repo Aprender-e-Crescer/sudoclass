@@ -25,7 +25,7 @@ export function WallSubjects() {
   const schoolMatriceId = 'aQjvxCKlEuHc9YQEedCQ'
   const { idCourse, idClass, idSubject } = Route.useParams()
   const { data: initialComments = [], isLoading } = useListWarningsQuery(idSubject)
-  const createWarningMutation = useCreateWarningMutation(schoolMatriceId, subjectId)
+  const createWarningMutation = useCreateWarningMutation()
   const [comments, setComments] = useState(initialComments)
 
   const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {

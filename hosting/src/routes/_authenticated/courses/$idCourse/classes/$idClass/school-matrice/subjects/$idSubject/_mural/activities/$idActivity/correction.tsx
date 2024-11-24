@@ -52,8 +52,6 @@ function Correction() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   // const [inputValue, setInputValue] = useState<string>('')
 
-  const { mutate: addGrade } = useAddGradeMutation('schoolMatriceId', 'subjectId', idActivity!)
-
   const [sucessMessage, setSuccessMessage] = useState('')
 
   const handleStudentClick = (student: Student) => {
@@ -64,25 +62,18 @@ function Correction() {
     }
   }
 
+  const { mutate: addGrade } = useAddGradeMutation()
+
   const handleSubmitNote = async (values: any) => {
-    const grade = parseInt(values.value)
-    try {
-      if (!idActivity) {
-        setSuccessMessage('Erro: ID da atividade não encontrado.')
-        return
-      }
+    const { value } = values
+    const grade = parseFloat(value)
 
-      await addGrade({
-        grade,
-        studentId: selectedStudent?.id,
-        comment: values.comment,
-      })
+    if (selectedStudent?.id && idActivity) {
+      const studentId = parseInt(selectedStudent.id, 10)
+      const activityId = parseInt(idActivity, 10)
 
-      setSuccessMessage('Nota adicionada com sucesso!')
-      setTimeout(() => setSuccessMessage(''), 3000)
-    } catch (error) {
-      setSuccessMessage('Erro ao adicionar nota!')
-      setTimeout(() => setSuccessMessage(''), 3000)
+      addGrade({ activityId, studentId, grade })
+      setSuccessMessage('Nota atribuída com sucesso!')
     }
   }
 
