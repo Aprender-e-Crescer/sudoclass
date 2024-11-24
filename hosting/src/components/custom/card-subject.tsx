@@ -47,15 +47,15 @@ export function CardSubject({
 
   return (
     <Link
-      to="/courses/:idCourse/classes/:idClass/school-matrice/subjects/:idSubject"
+      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject"
       params={{
         idCourse,
         idClass,
-        idSubject: id, // Passe idSubject diretamente aqui como parâmetro de URL
+        idSubject: id,
       }}
     >
       <div className={cardSubjectStyle({ backgroundColor: cardColor })}>
-        <div className="flex justify-between m-6">
+        <div className="flex justify-between m-6 ">
           <div className="flex flex-col">
             <div className="text-white font-bold text-xl mr-5 mb-1 line-clamp-2">{name}</div>
             <div className="text-white text-sm sm:text-base">{description}</div>

@@ -55,6 +55,17 @@ export function ListActivity() {
                 </Button>
               </Link>
             </div>
+            <div>
+              <ActivitiesMaterials
+                id="1"
+                idClass={idClass}
+                idCourse={idCourse}
+                idSubject={idSubject}
+                instruction=""
+                title=""
+                type="teacher"
+              />
+            </div>
             <div className="md:ml-5">
               <div>
                 {activities?.map((activity) => {
