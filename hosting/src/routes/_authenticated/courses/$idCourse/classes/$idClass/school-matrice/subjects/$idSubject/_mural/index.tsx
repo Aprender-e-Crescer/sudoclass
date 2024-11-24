@@ -6,7 +6,7 @@ import { SendHorizontal } from 'lucide-react'
 import { Warning } from '@/components/custom/warning'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
-import { useWarningWallQuery } from '@/queries/use-warning-wall-query'
+import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
 import { warningSchema } from '@/models/warning-schema'
 import { useState } from 'react'
 
@@ -24,7 +24,7 @@ const initialValues = {
 export function WallSubjectInput() {
   const schoolMatriceId = 'aQjvxCKlEuHc9YQEedCQ'
   const subjectId = 'zGTOAwnKJBjFSmayHxJo'
-  const { data: initialComments = [], isLoading } = useWarningWallQuery(schoolMatriceId, subjectId)
+  const { data: initialComments = [], isLoading } = useListWarningsQuery()
   const createWarningMutation = useCreateWarningMutation(schoolMatriceId, subjectId)
   const [comments, setComments] = useState(initialComments)
 
