@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useListNotesQuery } from '@/queries/use-list-notes-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
@@ -7,48 +8,48 @@ export const Route = createFileRoute(
 )({
   component: StudentGrades,
 })
+
 interface Student {
-  id: string
-  name: string
-  score: number | null
-  initial: string
-  color: string
+  idAluno: number
+  nomeAluno: string
+  media: number | null
 }
 
-const students: Student[] = [
-  { id: '1', name: 'Ronald Richards', score: 100, initial: 'R', color: 'bg-orange-500' },
-  { id: '2', name: 'Marvin McKinney', score: null, initial: 'M', color: 'bg-orange-400' },
-  { id: '3', name: 'Jerome Bell', score: null, initial: 'J', color: 'bg-blue-500' },
-  { id: '4', name: 'Kathryn Murphy', score: null, initial: 'K', color: 'bg-yellow-500' },
-  { id: '5', name: 'Jacob Jones', score: null, initial: 'J', color: 'bg-red-500' },
-  { id: '6', name: 'Kristin Watson', score: null, initial: 'K', color: 'bg-orange-400' },
-  { id: '7', name: 'Kristin Watson', score: null, initial: 'K', color: 'bg-blue-500' },
-  { id: '8', name: 'Kristin Watson', score: null, initial: 'K', color: 'bg-yellow-500' },
-  { id: '9', name: 'Kristin Watson', score: null, initial: 'K', color: 'bg-red-500' },
-]
-
 export default function StudentGrades() {
+  const subjectId = 1
+  const { data, isLoading, error } = useListNotesQuery(subjectId)
+
+  if (isLoading) {
+    return <p className="p-4 text-center text-muted-foreground">Carregando...</p>
+  }
+
+  if (error) {
+    return <p className="p-4 text-center text-red-500">Erro ao carregar os dados.</p>
+  }
+
+  const students: Student[] = data || []
+
   return (
     <Card className="w-full">
-      <CardHeader className="border-b p-4 ">
+      <CardHeader className="border-b p-4">
         <CardTitle className="text-lg sm:text-xl font-medium">Média geral</CardTitle>
         <p className="text-xs sm:text-sm text-muted-foreground">Para cada aluno</p>
       </CardHeader>
       <CardContent className="p-0">
         <div>
           {students.map((student) => (
-            <div key={student.id} className="flex items-center justify-between p-4">
+            <div key={student.idAluno} className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback className={`${student.color} text-white text-xs sm:text-sm`}>
-                    {student.initial}
+                  <AvatarFallback className="bg-blue-500 text-white text-xs sm:text-sm">
+                    {student.nomeAluno.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-xs sm:text-sm font-medium">{student.name}</span>
+                <span className="text-xs sm:text-sm font-medium">{student.nomeAluno}</span>
               </div>
               <div className="flex items-center">
                 <span className="text-xs sm:text-sm font-medium">
-                  {student.score !== null ? `${student.score}/100` : '-/100'}
+                  {student.media !== null ? `${student.media}/10` : '-/10'}
                 </span>
               </div>
             </div>
