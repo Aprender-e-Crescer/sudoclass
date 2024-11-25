@@ -1,16 +1,16 @@
 import { z } from 'zod'
-import { Timestamp } from 'firebase/firestore'
 
 export const activitySchema = z.preprocess(
   (obj: any) => ({
-    title: obj?.id_professor,
-    instruction: obj?.instrucoes,
+    id: obj?.id_atividade,
+    title: obj?.titulo,
+    instruction: obj?.descricao,
     value: obj?.valor,
     deliveryDate: obj?.data_entrega,
     datePosting: obj?.data_postagem,
   }),
   z.object({
-    id: z.string(),
+    id: z.number(),
 
     title: z
       .string()
@@ -24,33 +24,10 @@ export const activitySchema = z.preprocess(
       .max(500, 'As instruções podem ter no máximo 500 caracteres')
       .nonempty('As instruções são obrigatórias'),
 
-    value: z
-      .string()
-      .regex(/^\d+$/, 'O valor precisa ser um número')
-      .nonempty('O valor (peso) é obrigatório')
-      .transform((val) => parseInt(val, 10))
-      .refine((val) => val >= 0, 'O valor não pode ser negativo')
-      .refine((val) => val <= 100, 'O valor não pode ser maior que 100'),
+    value: z.string(),
 
-    deliveryDate: z.preprocess(
-      (value) => {
-        if (value instanceof Timestamp) {
-          return value.toDate()
-        }
-        return value
-      },
-      z.date().refine((val) => !isNaN(val.getTime()), 'A data de entrega é obrigatória'),
-    ),
-
-    datePosting: z.preprocess(
-      (value) => {
-        if (value instanceof Timestamp) {
-          return value.toDate()
-        }
-        return value
-      },
-      z.date().refine((val) => !isNaN(val.getTime()), 'A data de postagem é obrigatória'),
-    ),
+    deliveryDate: z.string().transform((val) => new Date(val)),
+    datePosting: z.string().transform((val) => new Date(val)),
   }),
 )
 

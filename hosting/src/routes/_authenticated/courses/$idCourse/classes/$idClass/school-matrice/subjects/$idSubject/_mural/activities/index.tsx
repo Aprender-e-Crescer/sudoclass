@@ -23,8 +23,11 @@ export const Route = createFileRoute(
 })
 
 export function ListActivity() {
-  const { data: activities } = useListActivitiesQuery()
+  const { data: activities, error, isLoading } = useListActivitiesQuery()
   const { idClass, idCourse, idSubject } = Route.useParams()
+
+  if (isLoading) return <div>Carregando...</div>
+  if (error) return <div>Erro ao carregar atividades: {error.message}</div>
 
   return (
     <>
