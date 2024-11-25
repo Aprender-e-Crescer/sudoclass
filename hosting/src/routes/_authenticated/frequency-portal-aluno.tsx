@@ -46,64 +46,8 @@ export default function FrenquencyPortalAluno() {
       id: '1',
       initial: 'R',
       name: 'Ronald Richards',
-      attendance: ['present', null, null, null, null],
-      average: 82,
-    },
-    {
-      id: '2',
-      initial: 'M',
-      name: 'Marvin McKinney',
       attendance: ['absent', null, null, null, null],
-      average: 95,
-    },
-    {
-      id: '3',
-      initial: 'J',
-      name: 'Jerome Bell',
-      attendance: ['justified', null, null, null, null],
-      average: 30,
-    },
-    {
-      id: '4',
-      initial: 'K',
-      name: 'Kathryn Murphy',
-      attendance: [null, null, null, null, null],
-      average: 62,
-    },
-    {
-      id: '5',
-      initial: 'J',
-      name: 'Jacob Jones',
-      attendance: [null, null, null, null, null],
-      average: 75,
-    },
-    {
-      id: '6',
-      initial: 'K',
-      name: 'Kristin Watson',
-      attendance: [null, null, null, null, null],
-      average: 69,
-    },
-    {
-      id: '7',
-      initial: 'K',
-      name: 'Kristin Watson',
-      attendance: [null, null, null, null, null],
-      average: 84,
-    },
-    {
-      id: '8',
-      initial: 'K',
-      name: 'Kristin Watson',
-      attendance: [null, null, null, null, null],
-      average: 46,
-    },
-    {
-      id: '9',
-      initial: 'K',
-      name: 'Kristin Watson',
-      attendance: [null, null, null, null, null],
-      average: 91,
+      average: 82,
     },
   ])
 
@@ -130,15 +74,16 @@ export default function FrenquencyPortalAluno() {
     }
   }
 
-  const handleJustify = (studentId: string, attendanceIndex: number) => {
+  const handleJustify = () => {
     setOpenModal(true)
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen flex flex-col ">
       <main className="flex-grow">
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
+        <h1 className="font-bold text-blue-950 text-4xl">Frequencia</h1>
+        <div>
+          <div className="py-6 sm:px-0">
             <div className="rounded-lg border bg-white overflow-hidden">
               <div className="overflow-x-auto">
                 <ModalUpload open={openModal} onOpenChange={setOpenModal} hasInput={true} />
@@ -182,9 +127,7 @@ export default function FrenquencyPortalAluno() {
                           <TableCell key={i} className="text-center">
                             <div className="flex justify-center items-center">
                               {getAttendanceIcon(status)}
-                              {status === 'absent' && (
-                                <AttendanceDropdown onJustify={() => handleJustify(student.id, i)} />
-                              )}
+                              {status === 'absent' && <AttendanceDropdown onJustify={() => handleJustify()} />}
                             </div>
                           </TableCell>
                         ))}
