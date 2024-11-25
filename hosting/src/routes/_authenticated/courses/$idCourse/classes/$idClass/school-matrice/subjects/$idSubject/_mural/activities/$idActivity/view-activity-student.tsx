@@ -6,6 +6,7 @@ import { ArrowLeft, ChevronUp, MessageSquareMore } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import ModalUpload from '@/components/custom/modal-upload'
+import { CommentActivity } from '@/components/custom/comment-activity'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
@@ -55,10 +56,7 @@ export function ViewActivityStudent() {
 
             <div className="flex flex-col gap-4 max-h-44 overflow-auto">
               {comments.map((comment) => (
-                <div key={comment.id} className="p-3 border rounded-md shadow-sm">
-                  <p className="text-gray-500 text-sm font-bold">{comment.sendBy}</p>
-                  <p className="text-gray-500 text-sm">{comment.text}</p>
-                </div>
+                <CommentActivity mensagem={comment.text} sendBy={comment.sendBy} id_comentario={1} />
               ))}
             </div>
             <form
@@ -143,10 +141,7 @@ export function ViewActivityStudent() {
           </div>
           <div className="flex flex-col gap-4 max-h-44 overflow-auto">
             {comments.map((comment) => (
-              <div key={comment.id} className="p-3 border rounded-md shadow-sm">
-                <p className="text-gray-500 text-sm font-bold">{comment.sendBy}</p>
-                <p className="text-gray-500 text-sm">{comment.text}</p>
-              </div>
+              <CommentActivity mensagem={comment.text} sendBy={comment.sendBy} id_comentario={1} />
             ))}
           </div>
 
