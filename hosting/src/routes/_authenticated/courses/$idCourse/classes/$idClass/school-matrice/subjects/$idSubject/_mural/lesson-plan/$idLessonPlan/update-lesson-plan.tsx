@@ -1,25 +1,29 @@
-import { Formik, Form, Field } from 'formik';
-import { Button } from '@/components/ui/button';
-import { InputForm } from '@/components/custom/text-input';
-import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan-mutation';
-import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema';
-import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { Formik, Form, Field } from 'formik'
+import { Button } from '@/components/ui/button'
+import { InputForm } from '@/components/custom/text-input'
+import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan-mutation'
+import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { Link } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/_authenticated/update-lesson-plan')({
+
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/update-lesson-plan',
+)({
   component: UpdateLessonPlan,
-});
+})
 
 function UpdateLessonPlan() {
-  const router = useRouter();
+  const router = useRouter()
 
   const { mutate } = useUpdateLessonPlanMutation({
     onSuccess: () => {
-      console.log('Plano de aula atualizado com sucesso!');
+      console.log('Plano de aula atualizado com sucesso!')
     },
     onError: (err) => {
-      console.error('Erro ao atualizar o plano de aula:', err);
+      console.error('Erro ao atualizar o plano de aula:', err)
     },
-  });
+  })
 
   const initialValues = {
     date: '2000-10-20',
@@ -28,19 +32,19 @@ function UpdateLessonPlan() {
     trainingContent: 'ttt',
     teachingMethodology: 'teste',
     teachingResources: 'test',
-  };
+  }
 
   const validateSchema = (values: typeof initialValues) => {
     try {
-      updateLessonPlanSchema.parse({ id: 'mY1EIVyB4sZ6WWALNtne', ...values });
-      return {};
+      updateLessonPlanSchema.parse({ id: 'mY1EIVyB4sZ6WWALNtne', ...values })
+      return {}
     } catch (error) {
       return error.errors.reduce((acc: any, curr: any) => {
-        acc[curr.path[0]] = curr.message;
-        return acc;
-      }, {});
+        acc[curr.path[0]] = curr.message
+        return acc
+      }, {})
     }
-  };
+  }
 
   return (
     <div className="flex flex-row h-screen relative mx-5">
@@ -49,7 +53,7 @@ function UpdateLessonPlan() {
           initialValues={initialValues}
           validate={validateSchema}
           onSubmit={(values) => {
-            mutate({ id: 'mY1EIVyB4sZ6WWALNtne', ...values });
+            mutate({ id: 'mY1EIVyB4sZ6WWALNtne', ...values })
           }}
         >
           <Form className="flex flex-col space-y-6 w-full">
@@ -140,23 +144,24 @@ function UpdateLessonPlan() {
             </div>
 
             <div className="flex justify-center mt-5 gap-2">
+            <Link to='/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/lesson-plan-view' params={undefined}>
               <Button
                 type="button"
                 variant="lightTextBlack"
                 size="large"
-                onClick={() => router.navigate({ to: '/' })} 
               >
                 Cancelar
               </Button>
               <Button type="submit" size="large">
                 Atualizar
               </Button>
+            </Link>
             </div>
           </Form>
         </Formik>
       </div>
     </div>
-  );
+  )
 }
 
-export default UpdateLessonPlan;
+export default UpdateLessonPlan

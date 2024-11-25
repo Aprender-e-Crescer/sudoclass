@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import { GenericTableLessonPlanView } from '@/components/custom/generic-table-lesson-plan-view'
 import { createFileRoute } from '@tanstack/react-router'
+import { useListLessonPlan } from '@/queries/use-list-lesson-plan'
 
-export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/lesson-plan-view')({
+// Alteração: Remover a parte de idLessonPlan da rota
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
+)({
   component: LessonPlanView,
 })
+
 export function LessonPlanView() {
   const [expandedRows, setExpandedRows] = useState<number[]>([])
+
+  const { data: lessonPlanData, isLoading, isError } = useListLessonPlan() 
 
   const toggleRow = (index: number) => {
     setExpandedRows((prev) =>
@@ -15,59 +22,17 @@ export function LessonPlanView() {
   }
 
   const columns = [
-    { header: 'Data', accessor: 'date' },
-    { header: 'Início', accessor: 'start' },
-    { header: 'Fim', accessor: 'end' },
-    { header: 'Plano de Aula', accessor: 'lessonPlan' },
+    { header: 'Data', accessor: 'data_aula' },
+    { header: 'Início', accessor: 'datainicio' },
+    { header: 'Fim', accessor: 'datafim' },
+    { header: 'Plano de Aula', accessor: 'conteudoformativo' },
     { header: '', accessor: 'actions' },
   ]
 
-  const data = [
-    {
-      date: '01/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan:
-        '1 - Lógica em geral, introdução. Proposição, Conectivos Lógicos, Tabelas verdade. 2 - Introdução à informática, hardware e software.',
-      actions: null,
-    },
-    {
-      date: '02/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Fundamentos de design. 2 - Princípios de usabilidade.',
-      actions: null,
-    },
-    {
-      date: '03/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Introdução a bancos de dados. 2 - Modelagem de dados.',
-      actions: null,
-    },
-    {
-      date: '04/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Estruturas de controle. 2 - Algoritmos de ordenação.',
-      actions: null,
-    },
-    {
-      date: '05/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Ciclo de vida de software. 2 - Metodologias ágeis.',
-      actions: null,
-    },
-    {
-      date: '06/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan:
-        '1 - Fundamentos de segurança. 2 - Criptografia e segurança de dados.',
-      actions: null,
-    },
-  ]
+  if (isLoading) return <p>Loading...</p>
+  if (isError) return <p>Erro ao carregar lesson plans</p>
+
+  const data = lessonPlanData ? [lessonPlanData] : []
 
   return (
     <GenericTableLessonPlanView

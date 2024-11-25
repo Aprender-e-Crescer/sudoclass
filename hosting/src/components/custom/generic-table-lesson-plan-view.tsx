@@ -109,9 +109,8 @@ export const GenericTableLessonPlanView = ({
                       </div>
                     ) : col.accessor === "date" ? (
                       <div className="flex items-center max-sm:-space-x-5">
-                         <Link to='/register/students'>
+                         <Link to='/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/update-lesson-plan' params={undefined}>
                         <Button variant="ghostWhite" size="small" className="max-sm:pr-10 hover:bg-transparent focus:outline-none">
-                          <Link to="/documents"></Link>
                           <Edit className="h-4 w-4 text-black" />
                         </Button>
                         </Link>
