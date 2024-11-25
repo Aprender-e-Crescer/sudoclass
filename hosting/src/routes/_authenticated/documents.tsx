@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useListStudentDocumentsQuery } from '@/queries/use-list-student-documents'
 import { useState } from 'react'
 import { Timestamp } from 'firebase/firestore'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
@@ -8,11 +7,43 @@ import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { Download, Search } from 'lucide-react'
 import { Form, Formik } from 'formik'
 import { GenericTable } from '@/components/custom/generic-table'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 
 export const Route = createFileRoute('/_authenticated/documents')({
   component: RouteComponent,
 })
+
+const data = [
+  {
+    id: '1',
+    name: 'Declaração de Matrícula',
+    createdBy: { id: '101', name: 'João Silva' },
+    createdDate: new Date('2024-01-15'),
+  },
+  {
+    id: '2',
+    name: 'Histórico Escolar',
+    createdBy: { id: '102', name: 'Maria Oliveira' },
+    createdDate: new Date('2023-12-10'),
+  },
+  {
+    id: '3',
+    name: 'Certificado de Conclusão',
+    createdBy: { id: '103', name: 'Carlos Santos' },
+    createdDate: new Date('2024-02-05'),
+  },
+  {
+    id: '4',
+    name: 'Boletim',
+    createdBy: { id: '104', name: 'Ana Souza' },
+    createdDate: new Date('2023-11-20'),
+  },
+  {
+    id: '5',
+    name: 'Comprovante de Pagamento',
+    createdBy: { id: '105', name: 'Pedro Alves' },
+    createdDate: new Date('2023-10-25'),
+  },
+]
 
 const columns = [
   { header: 'Documento', accessor: 'name' },
@@ -32,26 +63,9 @@ const columns = [
 ]
 
 function RouteComponent() {
-  const { data: user } = useCurrentUserQuery()
-  const { data, isLoading, error } = useListStudentDocumentsQuery(user?.uid)
+  // const { data: user } = useCurrentUserQuery()
+  // const { data, isLoading, error } = useListStudentDocumentsQuery(user?.uid)
   const [searchTerm, setSearchTerm] = useState('')
-
-  if (isLoading) {
-    return (
-      <div>
-        <p>Carregando...</p>
-      </div>
-    )
-  }
-
-  if (error) {
-    console.error('Error:', error.message)
-    return (
-      <div>
-        <p>Erro ao carregar dados...</p>
-      </div>
-    )
-  }
 
   const formattedData = data?.map((item) => ({
     ...item,

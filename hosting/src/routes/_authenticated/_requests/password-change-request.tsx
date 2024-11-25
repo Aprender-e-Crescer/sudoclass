@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Copy, ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Key } from 'lucide-react'
 import { X } from 'lucide-react'
 import { Check } from 'lucide-react'
 import avatarLogo from '@/assets/avatarLogo.svg'
-import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogHeader,
@@ -11,18 +10,66 @@ import {
   AlertDialogTrigger,
   AlertDialogTitle,
   AlertDialogCancel,
+  AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
 import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { useToast } from '@/hooks/use-toast'
+import { InputAuth } from '@/components/custom/auth-input'
+import { Form, Formik, FormikProps } from 'formik'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { z } from 'zod'
+import { useRef, useState } from 'react'
 
 export const Route = createFileRoute('/_authenticated/_requests/password-change-request')({
   component: RequestChangePassword,
 })
 
-export function RequestChangePassword() {
-  const { data: students } = useStudentsListQuery()
+const changesRequestsSchema = z.object({
+  passwordDefault: z.string(),
+})
+
+const initialValues = {
+  passwordDefault: '12345678',
+}
+
+function useLogic() {
+  const formikInputCopyRef = useRef<FormikProps<Exclude<typeof initialValues, undefined>>>(null)
+  const [passwords, setPasswords] = useState<Record<string, string>>({})
   const { toast } = useToast()
 
+  const { data: students } = useStudentsListQuery()
+
+  function generatePassword(): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    const passwordLength = 8
+    let password = ''
+
+    for (let i = 0; i < passwordLength; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length)
+      password += characters[randomIndex]
+    }
+
+    return password
+  }
+
+  if (students && Object.keys(passwords).length === 0) {
+    const initialPasswords: Record<string, string> = {}
+    students.forEach(({ name }) => {
+      initialPasswords[name] = generatePassword()
+    })
+    setPasswords(initialPasswords)
+  }
+
+  return {
+    students,
+    toast,
+    formikInputCopyRef,
+    passwords,
+  }
+}
+
+export function RequestChangePassword() {
+  const { students, toast, formikInputCopyRef, passwords } = useLogic()
   return (
     <>
       {students?.map(({ name }, index) => (
@@ -35,19 +82,17 @@ export function RequestChangePassword() {
             </div>
             <div className="gap-3 flex ml-auto">
               <AlertDialog>
-                <AlertDialogTrigger>
-                  <div
-                    onClick={() =>
-                      toast({
-                        duration: 1500,
-                        variant: 'sucesss',
-                        title: 'Atualizado com sucesso ✓',
-                      })
-                    }
-                  >
-                    <div className="flex border h-8 rounded-md justify-center items-center p-1">
-                      <Check className="text-green-500" />
-                    </div>
+                <AlertDialogTrigger
+                  onClick={() =>
+                    toast({
+                      duration: 1500,
+                      variant: 'sucesss',
+                      title: 'Atualizado com sucesso ✓',
+                    })
+                  }
+                >
+                  <div className="flex border h-8 rounded-md justify-center items-center p-1">
+                    <Check className="text-green-500" />
                   </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent className="p-9  h-56 w-full">
@@ -57,14 +102,25 @@ export function RequestChangePassword() {
                     </AlertDialogCancel>
                     <AlertDialogTitle className="text-2xl">Nova senha - {name}</AlertDialogTitle>
                   </AlertDialogHeader>
-                  <Button
-                    iconPosition="right"
-                    variant="ghostBlack"
-                    icon={<Copy />}
-                    className="w-full p-6 text-xl border-2 border-black"
+                  <AlertDialogDescription>Essa será a senha padrão fornecida ao aluno</AlertDialogDescription>
+                  <Formik
+                    innerRef={formikInputCopyRef}
+                    initialValues={initialValues}
+                    validationSchema={toFormikValidationSchema(changesRequestsSchema)}
+                    onSubmit={() => {}}
                   >
-                    {name} {/* Mudar para senha mais tarde, tem que mudar na querie do estudante*/}
-                  </Button>
+                    <Form>
+                      <InputAuth
+                        id="copy"
+                        name="copy"
+                        disabled
+                        placeholder="Sua nova senha"
+                        icon={<Key />}
+                        isCopyInput
+                        value={passwords[name] || '12345678'}
+                      />
+                    </Form>
+                  </Formik>
                 </AlertDialogContent>
               </AlertDialog>
               <div className="flex border h-8 rounded-md justify-center items-center p-1 ">
