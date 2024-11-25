@@ -4,16 +4,14 @@ import { InputWithAvatar } from '@/components/custom/input-with-avatar'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { SendHorizontal } from 'lucide-react'
 import { Warning } from '@/components/custom/warning'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
-import { warningSchema } from '@/models/warning-schema'
 import { useState } from 'react'
-import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetStudentQuery } from '@/queries/use-get-student-query'
 import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -23,18 +21,17 @@ export const Route = createFileRoute(
 
 const initialValues = {
   message: '',
-  sentBy: '',
 }
 
 export function WallSubjects() {
   const { idSubject } = Route.useParams()
-  const { data: initialWarnings = [], isLoading } = useListWarningsQuery(idSubject)
+  const { data: initialWarnings = [], isLoading, error } = useListWarningsQuery(idSubject)
   const createWarningMutation = useCreateWarningMutation()
   const [warnings, setWarnings] = useState(initialWarnings)
-  const { currentUser } = useGetFullUser()
-  const { data: typeUser } = useGetUserQuery(currentUser?.uid)
+  const currentUser = useCurrentUserQuery()
+  const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
-  if (!typeUser) {
+  if (!user) {
     console.error('Tipo de usuário não encontrado')
     return <div>Usuário não encontrado</div>
   }
@@ -42,18 +39,18 @@ export function WallSubjects() {
   let userName = ''
   let userType = ''
 
-  if (typeUser.type === 'pedagogo') {
-    const { data: pedagogue } = useGetPedagogueQuery(typeUser.idPedagogue)
+  if (user.type === 'pedagogo') {
+    const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
 
     userName = pedagogue?.name || 'Pedagogo não encontrado'
     userType = 'pedagogo'
-  } else if (typeUser.type === 'aluno') {
-    const { data: student } = useGetStudentQuery(typeUser.idStudent)
+  } else if (user.type === 'aluno') {
+    const { data: student } = useGetStudentQuery(user.idStudent)
 
     userName = student?.name || 'Aluno não encontrado'
     userType = 'aluno'
-  } else if (typeUser.type === 'professor') {
-    const { data: teacher } = useGetTeacherQuery(typeUser.idTeacher)
+  } else if (user.type === 'professor') {
+    const { data: teacher } = useGetTeacherQuery(user.idTeacher)
 
     userName = teacher?.name || 'Professor não encontrado'
     userType = 'professor'
@@ -62,16 +59,17 @@ export function WallSubjects() {
     return <div>Tipo de usuário inválido</div>
   }
 
-  console.log(userName)
-
   const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
     if (userName) {
       createWarningMutation.mutate({
         message: values.message,
-        userId: typeUser.idUser,
+        userId: user.idUser,
         subjectId: parseInt(idSubject, 10),
       })
-      setWarnings((prevWarnings) => [...prevWarnings, { message: values.message, sentBy: userName }])
+      setWarnings((prevWarnings) => [
+        ...prevWarnings,
+        { message: values.message, userId: user.idUser, subjectId: parseInt(idSubject) },
+      ])
 
       resetForm()
     } else {
@@ -82,7 +80,6 @@ export function WallSubjects() {
   if (isLoading) {
     return <div>Loading...</div>
   }
-
   return (
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
@@ -91,11 +88,7 @@ export function WallSubjects() {
         </div>
 
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={toFormikValidationSchema(warningSchema)}
-            onSubmit={handleFormSubmit}
-          >
+          <Formik initialValues={initialValues} onSubmit={handleFormSubmit}>
             {({ handleSubmit, errors, touched, handleChange }) => (
               <Form onSubmit={handleSubmit}>
                 <InputWithAvatar
@@ -117,7 +110,7 @@ export function WallSubjects() {
         </div>
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full flex flex-col gap-4">
           {warnings.map((warning, index) => (
-            <Warning key={index} name={warning.sentBy} date="Agora" avatarSrc="" comment={warning.message} />
+            <Warning key={index} name={userName} date="Agora" avatarSrc="" comment={warning.message} />
           ))}
         </div>
       </div>
