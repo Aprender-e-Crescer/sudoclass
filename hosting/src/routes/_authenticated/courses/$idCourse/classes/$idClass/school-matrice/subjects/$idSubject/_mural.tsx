@@ -1,3 +1,4 @@
+import { SubHeader } from '@/components/custom/subheader'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
@@ -6,4 +7,10 @@ export const Route = createFileRoute(
   component: () => <div>Hello /_authenticated/_mural!       
     <Outlet/>
 </div>,
+  component: () => (
+    <div>
+      <SubHeader hasPrivilege="teacher" />
+      <Outlet />
+    </div>
+  ),
 })

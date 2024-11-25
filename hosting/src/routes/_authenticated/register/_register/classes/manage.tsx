@@ -87,8 +87,8 @@ export function ClassCreationForm() {
       initialValues={initialValues}
       validationSchema={toFormikValidationSchema(creationClassSchema)}
     >
-      <Form>
-        <div className="p-2 flex flex-col">
+      <Form className="flex flex-1">
+        <div className="p-2 flex flex-1 flex-col">
           <InputForm title="Turmas" id="class" name="class" label="class" placeholder="Nome Da Turma" />
 
           <InputForm title="Turno" id="shift" name="shift" label="shift" placeholder="Turno" />

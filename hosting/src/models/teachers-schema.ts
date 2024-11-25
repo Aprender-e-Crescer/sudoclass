@@ -1,3 +1,4 @@
+import { datePreprocessedSchema } from '@/utils/schema'
 import { DocumentReference } from 'firebase/firestore'
 import { z } from 'zod'
 
@@ -28,7 +29,48 @@ export const registerSchema = z.object({
   ),
 })
 
-export const listTeacherSchema = z.object({
+export const teacherSchema = z.preprocess((obj) => ({
+  idTeacher: obj?.id_professor,
+  name: obj?.nome,
+  birthDate: obj?.datanasc,
+  email: obj?.email,
+  state: obj?.estado,
+  municipality: obj?.municipio,
+  street: obj?.rua,
+  neighborhood: obj?.bairro,
+  number: obj?.numero,
+  rgNumber: obj?.rg,
+  cpf: obj?.cpf,
+  rgDispatchDate: obj?.datadeexpedicaorg,
+  rgDispatchStatus: obj?.estadodeexpedicaorg,
+  birthStatus: obj?.estadonascimento,
+  birthCity: obj?.cidadedenascimento,
+}), z.object({
+  idTeacher: z.number(),
+  name: z.string(),
+  birthDate: datePreprocessedSchema,
+  email: z.string(),
+  state: z.string(),
+  municipality: z.string(),
+  street: z.string(),
+  neighborhood: z.string(),
+  number: z.number().or(z.string()),
+  rgNumber: z.string(),
+  cpf: z.string(),
+  rgDispatchDate: z.string(),
+  rgDispatchStatus: z.string(),
+  birthStatus: z.string(),
+  birthCity: z.string(),
+}))
+
+export type Teacher = z.infer<typeof teacherSchema>
+
+export const listTeacherSchema = z.preprocess((obj) => ({
+  idTeacher: obj?.id_professor,
+  birthDate: obj?.datanasc,
+}), z.object({
+  idTeacher: z.number(),
+  birthDate: z.date(),
   birthCity: z.string(),
   birthStatus: z.string(),
   cpf: z.string(),
@@ -45,6 +87,6 @@ export const listTeacherSchema = z.object({
   state: z.string(),
   street: z.string(),
   telephone: z.number(),
-})
+}))
 
 export type RegisterRequests = z.infer<typeof registerSchema>
