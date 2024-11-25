@@ -207,6 +207,20 @@ async function updateTeacher(
   }
 }
 
+async function getAllTeachers(): Promise<any> {
+  try {
+    const resposta = await db.query("SELECT * FROM professor");
+
+    if (resposta.rows.length === 0) {
+      return "Nenhum professor encontrado.";
+    }
+    return resposta.rows;
+  } catch (error) {
+    console.error("Erro ao buscar professores:", error);
+    return "Erro ao buscar professores.";
+  }
+}
+
 async function getTeacher(idprofessor: string): Promise<string> {
   try {
     if (!idprofessor) {
@@ -319,4 +333,5 @@ export const teacherService = {
     ),
   deleteTeacher: (idprofessor: string) => deleteTeacher(idprofessor),
   getTeacher: (idprofessor: string) => getTeacher(idprofessor),
+  getAllTeachers: () => getAllTeachers(),
 };
