@@ -58,17 +58,6 @@ export function ListActivity() {
                 </Button>
               </Link>
             </div>
-            <div>
-              <ActivitiesMaterials
-                id="1"
-                idClass={idClass}
-                idCourse={idCourse}
-                idSubject={idSubject}
-                instruction=""
-                title=""
-                type="teacher"
-              />
-            </div>
             <div className="md:ml-5">
               <div>
                 {activities?.map((activity) => {
@@ -82,6 +71,21 @@ export function ListActivity() {
                         title={activity.title}
                         instruction={activity.instruction}
                         type="teacher"
+                        assigned={0}
+                        pending={26}
+                        dateActivity={
+                          activity.deliveryDate
+                            ? (() => {
+                                const date = new Date(activity.deliveryDate)
+                                date.setDate(date.getDate() + 1) // Adiciona 1 dia
+                                return date.toLocaleDateString('pt-BR', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                })
+                              })()
+                            : undefined
+                        }
                       />
                     </div>
                   )

@@ -15,17 +15,17 @@ export const activitySchema = z.preprocess(
 
     title: z
       .string()
-      .min(3, 'O título precisa ter no mínimo 3 caracteres')
+      .min(1, 'O título não pode ser nulo')
       .max(100, 'O título pode ter no máximo 100 caracteres')
       .nonempty('O título é obrigatório'),
 
     instruction: z
       .string()
-      .min(5, 'As instruções precisam ter no mínimo 5 caracteres')
+      .min(1, 'As instruções não podem serem nulas')
       .max(500, 'As instruções podem ter no máximo 500 caracteres')
       .nonempty('As instruções são obrigatórias'),
 
-    value: z.string().transform((val) => parseFloat(val)), // Converte string para número
+    value: z.string().transform((val) => parseFloat(val)),
 
     deliveryDate: z
       .union([z.string(), z.undefined()])

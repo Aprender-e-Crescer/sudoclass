@@ -43,7 +43,7 @@ export function ActivitiesMaterials({
             <AccordionTrigger>
               <div className="flex justify-between w-full items-center">
                 <div className="flex items-center">
-                  <div className={clsx('flex justify-center items-center ', iconColor, 'w-10 h-10 rounded-full')}>
+                  <div className={clsx('flex justify-center items-center bg-yellow-600 w-10 h-10 rounded-full')}>
                     <img className="h-6 w-6 " src={iconeAtividade} />
                   </div>
                   <div className="ml-2">
