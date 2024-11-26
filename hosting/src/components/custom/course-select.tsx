@@ -55,7 +55,7 @@ export default function CourseSelect() {
                 <MonitorPlay className="h-4 w-4" />
                 <span>{course.nome_curso}</span>
               </div>
-            </SelectItem>
+            </SelectItem> 
           ))}
         </SelectGroup>
       </SelectContent>
