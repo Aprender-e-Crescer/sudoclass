@@ -58,22 +58,22 @@ export function ActivitiesMaterials({
                   <DropdownMenuContent>
                     <DropdownMenuItem>Excluir</DropdownMenuItem>
 
-                    <DropdownMenuItem>
-                      <Link
-                        to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
-                        params={{
-                          idCourse,
-                          idClass,
-                          idSubject,
-                        }}
-                        search={{
-                          action: 'edit',
-                          idActivity: id,
-                        }}
-                      >
+                    <Link
+                      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
+                      params={{
+                        idCourse,
+                        idClass,
+                        idSubject,
+                      }}
+                      search={{
+                        action: 'edit',
+                        idActivity: id,
+                      }}
+                    >
+                      <DropdownMenuItem>
                         <div className="w-full h-full">Editar</div>
-                      </Link>
-                    </DropdownMenuItem>
+                      </DropdownMenuItem>
+                    </Link>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

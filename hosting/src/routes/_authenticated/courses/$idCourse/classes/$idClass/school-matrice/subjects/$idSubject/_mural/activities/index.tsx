@@ -64,7 +64,7 @@ export function ListActivity() {
                   return (
                     <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
                       <ActivitiesMaterials
-                        id={activity.id}
+                        id={activity.id.toString()}
                         idClass={idClass}
                         idCourse={idCourse}
                         idSubject={idSubject}
@@ -74,9 +74,9 @@ export function ListActivity() {
                         assigned={0}
                         pending={26}
                         dateActivity={
-                          activity.deliveryDate
+                          activity.datePosting
                             ? (() => {
-                                const date = new Date(activity.deliveryDate)
+                                const date = new Date(activity.datePosting)
                                 date.setDate(date.getDate() + 1) // Adiciona 1 dia
                                 return date.toLocaleDateString('pt-BR', {
                                   day: '2-digit',
