@@ -46,7 +46,7 @@ export default function FrenquencyPortalAluno() {
       id: '1',
       initial: 'R',
       name: 'Ronald Richards',
-      attendance: ['absent', null, null, null, null],
+      attendance: ['absent', 'justified', 'absent', 'present', 'present'],
       average: 82,
     },
   ])

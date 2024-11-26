@@ -1,11 +1,10 @@
 import { SelectInput } from '@/components/custom/select-input'
 import { InputForm } from '@/components/custom/text-input'
 import { InputTextarea } from '@/components/custom/textarea-input'
-import { DisciplineSyllabusSchema } from '@/models/discipline-syllabus-schema'
 import { InputLabel } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
-import { useState } from 'react'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
@@ -15,57 +14,54 @@ export const Route = createFileRoute(
 
 const data = [
   {
-    value: 'matematica',
-    label: 'Matemática',
-    workload: 40,
-    disciplineSyllabus: 'Introdução aos conceitos básicos de matemática, incluindo álgebra e geometria.',
+    value: 'UI/UX',
+    label: 'UI/UX',
+    workload: 60,
+    disciplineSyllabus: 'Fundamentos de design de interfaces e experiência do usuário com foco em aplicações digitais.',
+    id: 1,
   },
   {
-    value: 'portugues',
-    label: 'Português',
-    workload: 35,
-    disciplineSyllabus: 'Estudo da gramática normativa, interpretação de textos e redação.',
-  },
-  {
-    value: 'historia',
-    label: 'História',
-    workload: 45,
-    disciplineSyllabus: 'Análise dos eventos históricos do Brasil e do mundo, com foco no período moderno.',
-  },
-  {
-    value: 'biologia',
-    label: 'Biologia',
+    value: 'WEB1',
+    label: 'Desenvolvimento Web 1',
     workload: 50,
-    disciplineSyllabus: 'Fundamentos de biologia celular, genética e ecologia.',
+    disciplineSyllabus: 'Introdução ao desenvolvimento web com HTML, CSS e princípios básicos de JavaScript.',
+    id: 2,
   },
   {
-    value: 'fisica',
-    label: 'Física',
-    workload: 48,
-    disciplineSyllabus: 'Estudo das leis do movimento, termodinâmica e introdução à ótica.',
+    value: 'WEB2',
+    label: 'Desenvolvimento Web 2',
+    workload: 55,
+    disciplineSyllabus: 'Construção de aplicações web avançadas usando frameworks modernos como React.',
+    id: 3,
+  },
+  {
+    value: 'MARKETING',
+    label: 'Marketing Digital',
+    workload: 40,
+    disciplineSyllabus: 'Estratégias de marketing digital, incluindo SEO, campanhas pagas e análise de métricas.',
+    id: 4,
+  },
+  {
+    value: 'BACKEND',
+    label: 'BACKEND',
+    workload: 40,
+    disciplineSyllabus:
+      'A disciplina de Backend  abrange os conceitos fundamentais para o desenvolvimento de sistemas do lado do servidor, com ênfase na construção de APIs e integração com bancos de dados.',
+    id: 5,
   },
 ]
 
 export function SubjectDetails() {
-  const initialDiscipline = data[0].value
-  const [selectedValue, setSelectedValue] = useState(initialDiscipline)
-
-  const handleChange = (value: string) => {
-    setSelectedValue(value)
-  }
-
   return (
     <Formik
       initialValues={{
-        CargaHoraria: `${data.find((item) => item.value === initialDiscipline)?.workload || ''} Horas`,
-        Ementa: data.find((item) => item.value === initialDiscipline)?.disciplineSyllabus || '',
+        selectedDiscipline: '',
+        CargaHoraria: '',
+        Ementa: '',
       }}
-      validationSchema={DisciplineSyllabusSchema}
-      onSubmit={(values) => {
-        console.log('Form submitted', values)
-      }}
+      onSubmit={(values) => console.log('Form submitted:', values)}
     >
-      {({ setFieldValue }) => (
+      {({ setFieldValue, values }) => (
         <Form className="flex flex-col gap-4 mx-20 my-10">
           <div>
             <h1 className="font-bold text-blue-950 text-4xl">Ementa da disciplina</h1>
@@ -81,9 +77,8 @@ export function SubjectDetails() {
                   label: item.label,
                 }))}
                 onChange={(value) => {
-                  handleChange(value)
                   const selectedDiscipline = data.find((item) => item.value === value)
-                  setFieldValue('CargaHoraria', `${selectedDiscipline?.workload} Horas`)
+                  setFieldValue('CargaHoraria', `${selectedDiscipline?.workload || ''} Horas`)
                   setFieldValue('Ementa', selectedDiscipline?.disciplineSyllabus || '')
                 }}
               />
@@ -98,6 +93,7 @@ export function SubjectDetails() {
                 type="text"
                 placeholder="Carga Horária"
                 label="Carga Horária"
+                value={values.CargaHoraria}
               />
             </div>
 
