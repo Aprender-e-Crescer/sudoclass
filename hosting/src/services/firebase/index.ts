@@ -1,10 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, indexedDBLocalPersistence } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import { getFunctions } from "firebase/functions";
-import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig } from './data-connect/dataconnect-generated/js/default-connector';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -19,8 +17,6 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
 export const auth = getAuth(app);
+setPersistence(auth, indexedDBLocalPersistence);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
-export const dataConnect = getDataConnect(connectorConfig);
-
-// export * from '@/services/firebase/data-connect/dataconnect-generated/js/default-connector';

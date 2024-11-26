@@ -1,4 +1,4 @@
-import { useTeachersSchemaQuery } from '@/queries/use-teachers-listing-query'
+import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 
 import { createFileRoute } from '@tanstack/react-router'
 import avatarLogo from '@/assets/avatarLogo.svg'
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_authenticated/list-teachers')({
 })
 
 export function TeacherList() {
-  const { data: teachersList } = useTeachersSchemaQuery()
+  const { data: teachersList } = useTeachersListingQuery()
   return (
     <div className="p-2">
       <div className="w-full border ">
@@ -24,10 +24,7 @@ export function TeacherList() {
           <h1 className="ml-16 text-xl font-semibold">Jane Cooper</h1>
         </div>
         {teachersList?.map(({ fullName }, index) => (
-          <div
-            key={index}
-            className={`flex items-center p-4 ${index !== teachersList.length - 1 ? 'border' : ''}`}
-          >
+          <div key={index} className={`flex items-center p-4 ${index !== teachersList.length - 1 ? 'border' : ''}`}>
             <img src={avatarLogo} alt="Avatar" className="w-12 h-18 ml-16" />
             <h1 className="ml-16 text-xl font-semibold">{fullName}</h1>
           </div>

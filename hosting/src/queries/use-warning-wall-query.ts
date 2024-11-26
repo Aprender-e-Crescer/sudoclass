@@ -1,31 +1,17 @@
-import { collection, getDocs } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
+import { warningSchema } from '@/models/warning-schema'
+import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
-import { Warning, warningSchema } from '@/models/warning-schema'
+import { z } from 'zod'
 
-export const WARNINGS_WALL_QUERY_KEY = (schoolMatriceId: string, subjectId: string) => [
-  'getWarnings',
-  schoolMatriceId,
-  subjectId,
-]
-
-export function useWarningWallQuery(schoolMatriceId: string, subjectId: string) {
+export const WARNING_WALL_QUERY = ['getWarnings']
+export function useListWarningsQuery(idSubject: string) {
   return useQuery({
-    queryKey: WARNINGS_WALL_QUERY_KEY(schoolMatriceId, subjectId),
-    queryFn: () => {
-      const warningRef = collection(
-        firestore,
-        'schoolMatrices',
-        schoolMatriceId,
-        'subjects',
-        subjectId,
-        'warning',
-      ).withConverter({
-        toFirestore: (warning: Warning) => warning,
-        fromFirestore: (snapshot) => warningSchema.parse(snapshot.data()),
-      })
+    queryKey: [...WARNING_WALL_QUERY, idSubject],
+    queryFn: async () => {
+      const { data } = await api.get(`/warnings/${idSubject}`)
+      const warnings = z.array(warningSchema).parse(data)
 
-      return getDocs(warningRef).then(({ docs }) => docs.map((doc) => doc.data()))
+      return warnings
     },
   })
 }

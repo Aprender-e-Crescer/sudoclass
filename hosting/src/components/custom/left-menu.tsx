@@ -1,16 +1,4 @@
-import {
-  Home,
-  CalendarDays,
-  History,
-  UniversityIcon,
-  FileText,
-  FormInput,
-  MessageCircle,
-  Settings,
-  Users,
-  MessageSquareLock,
-  User,
-} from 'lucide-react'
+import { Home, History, UniversityIcon, FileText, FormInput, Settings, MessageSquareLock, User } from 'lucide-react'
 import { MenuItem } from './menu-item'
 import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'
@@ -20,7 +8,7 @@ interface LeftMenuProps {
 }
 
 const menuItemsStudentPortal = [
-  { name: 'Início', icon: Home, to: '/home-list-subjects' },
+  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
   { name: 'Frequencia', icon: History, to: '/frequency-portal-aluno' },
   { name: 'Matriz Escolar', icon: UniversityIcon, to: '/courses/$idCourse/classes/$idClass/school-matrice/' },
   { name: 'Documentos', icon: FileText, to: '/documents' },
@@ -29,7 +17,7 @@ const menuItemsStudentPortal = [
 ]
 
 const menuItemsAdminPortal = [
-  { name: 'Início', icon: Home, to: '/home-list-subjects' },
+  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
   { name: 'Formulário', icon: FormInput, to: '/admin/forms' },
   { name: 'Solicitações', icon: MessageSquareLock, to: '/_requests/password-change-request' },
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
@@ -37,7 +25,7 @@ const menuItemsAdminPortal = [
 ]
 
 const menuItemsTeacherClassroom = [
-  { name: 'Início', icon: Home, to: '/home-list-subjects' },
+  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
