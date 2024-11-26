@@ -2,17 +2,27 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import imageProfile from '@/assets/image-profile.png'
 import { Button } from '@/components/ui/button'
-import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
+
+// Dados mockados
+const mockStudents = [
+  {
+    name: 'João Silva',
+    cpf: '123.456.789-00',
+    email: 'joao.silva@gmail.com',
+    cityOfBirth: 'São Paulo',
+    telephone: '(11) 98765-4321',
+  },
+]
 
 export const Route = createFileRoute('/_authenticated/profile-changes')({
   component: ProfileChanges,
 })
 
 export function ProfileChanges() {
-  const { data: students } = useStudentsListQuery()
+  const students = mockStudents // Substitua pela consulta real quando estiver disponível
   const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -33,6 +43,7 @@ export function ProfileChanges() {
       fileInputRef.current.click()
     }
   }
+
   return (
     <div>
       <div className="flex-1 flex flex-col gap-8">
@@ -105,11 +116,6 @@ export function ProfileChanges() {
           <div className="flex gap-3 items-center">
             <input type="checkbox" id="checkbox" className="ml-4 size-4" />
             <span>Permitir Notificações</span>
-          </div>
-          <div>
-            <Button variant={'blueButton'} className="w-full p-5">
-              Salvar Alterações
-            </Button>
           </div>
         </div>
       </div>
