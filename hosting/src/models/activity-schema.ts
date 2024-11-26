@@ -7,7 +7,7 @@ export const activitySchema = z.preprocess(
     instruction: obj?.descricao,
     value: obj?.valor,
     deliveryDate: obj?.data_entrega,
-    datePosting: obj?.data_postagem,
+    datePosting: obj?.data_postagem ?? undefined,
   }),
   z.object({
     id: z.number(),
@@ -26,8 +26,16 @@ export const activitySchema = z.preprocess(
 
     value: z.string(),
 
-    deliveryDate: z.string().transform((val) => new Date(val)),
-    datePosting: z.string().transform((val) => new Date(val)),
+    // Permitir deliveryDate opcional
+    deliveryDate: z
+      .string()
+      .optional()
+      .transform((val) => (val ? new Date(val) : undefined)),
+
+    datePosting: z
+      .string()
+      .optional()
+      .transform((val) => (val ? new Date(val) : undefined)),
   }),
 )
 

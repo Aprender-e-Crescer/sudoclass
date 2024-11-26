@@ -3,7 +3,7 @@ import activiesController from '../controllers/activies.controller'
 
 const router = Router()
 
-router.post('/:subjectId/activity', activiesController.createActivity)
+router.post('/subjects/:subjectId/activity', activiesController.createActivity)
 router.put('/activity/:activityId', activiesController.upgradeActivity)
 router.patch('/activity/:activityId', activiesController.updateActivityGrades)
 router.get('/activity/:activityId', activiesController.getActivityById)
