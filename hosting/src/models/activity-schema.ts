@@ -8,6 +8,7 @@ export const activitySchema = z.preprocess(
     value: obj?.valor,
     deliveryDate: obj?.data_entrega,
     datePosting: obj?.data_postagem ?? undefined,
+    subjectId: obj?.id_materia, // Aqui já deve estar no formato esperado
   }),
   z.object({
     id: z.number(),
@@ -24,18 +25,23 @@ export const activitySchema = z.preprocess(
       .max(500, 'As instruções podem ter no máximo 500 caracteres')
       .nonempty('As instruções são obrigatórias'),
 
-    value: z.string(),
+    value: z.string().transform((val) => parseFloat(val)), // Converte string para número
 
-    // Permitir deliveryDate opcional
     deliveryDate: z
-      .string()
+      .union([z.string(), z.undefined()])
       .optional()
       .transform((val) => (val ? new Date(val) : undefined)),
 
     datePosting: z
-      .string()
+      .union([z.string(), z.undefined()])
       .optional()
       .transform((val) => (val ? new Date(val) : undefined)),
+
+    subjectId: z
+      .number()
+      .nonnegative('O ID da matéria não pode ser negativo')
+      .int('O ID da matéria deve ser um número inteiro'),
+    // Converte para número
   }),
 )
 
