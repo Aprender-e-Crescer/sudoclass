@@ -4,7 +4,6 @@ import { InputTextarea } from '@/components/custom/textarea-input'
 import { InputLabel } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
-import { useEffect } from 'react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',

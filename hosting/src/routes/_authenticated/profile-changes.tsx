@@ -6,7 +6,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
 
-// Dados mockados
 const mockStudents = [
   {
     name: 'João Silva',
@@ -22,7 +21,7 @@ export const Route = createFileRoute('/_authenticated/profile-changes')({
 })
 
 export function ProfileChanges() {
-  const students = mockStudents // Substitua pela consulta real quando estiver disponível
+  const students = mockStudents
   const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
