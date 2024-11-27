@@ -6,13 +6,11 @@ import { SendHorizontal } from 'lucide-react'
 import { Warning } from '@/components/custom/warning'
 import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
-import { useState } from 'react'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetStudentQuery } from '@/queries/use-get-student-query'
 import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { WarningType } from '@/models/warning-schema'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -26,7 +24,7 @@ const initialValues = {
 
 export function WallSubjects() {
   const { idSubject } = Route.useParams()
-  const { data: warnings, isLoading, isError } = useListWarningsQuery(idSubject)
+  const { data: warnings, isLoading } = useListWarningsQuery(idSubject)
 
   // Depuração: Verificando o que está sendo retornado pela query
   console.log('Dados de warnings:', warnings)
@@ -35,50 +33,46 @@ export function WallSubjects() {
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
-  if (!user) {
-    console.error('Tipo de usuário não encontrado')
-    return <div>Usuário não encontrado</div>
-  }
+  // if (!user) {
+  //   console.error('Tipo de usuário não encontrado')
+  //   return <div>Usuário não encontrado</div>
+  // }
 
-  let userName = ''
-  let userType = ''
+  // let userName = ''
+  // let userType = ''
 
-  if (user.type === 'pedagogo') {
-    const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
-    userName = pedagogue?.name || 'Pedagogo não encontrado'
-    userType = 'pedagogo'
-  } else if (user.type === 'aluno') {
-    const { data: student } = useGetStudentQuery(user.idStudent)
-    userName = student?.name || 'Aluno não encontrado'
-    userType = 'aluno'
-  } else if (user.type === 'professor') {
-    const { data: teacher } = useGetTeacherQuery(user.idTeacher)
-    userName = teacher?.name || 'Professor não encontrado'
-    userType = 'professor'
-  } else {
-    console.error('Tipo de usuário inválido')
-    return <div>Tipo de usuário inválido</div>
-  }
+  // if (user.type === 'pedagogo') {
+  //   const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
+  //   userName = pedagogue?.name || 'Pedagogo não encontrado'
+  //   userType = 'pedagogo'
+  // } else if (user.type === 'aluno') {
+  //   const { data: student } = useGetStudentQuery(user.idStudent)
+  //   userName = student?.name || 'Aluno não encontrado'
+  //   userType = 'aluno'
+  // } else if (user.type === 'professor') {
+  //   const { data: teacher } = useGetTeacherQuery(user.idTeacher)
+  //   userName = teacher?.name || 'Professor não encontrado'
+  //   userType = 'professor'
+  // }
 
   const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
-    if (userName) {
-      createWarningMutation.mutate({
-        message: values.message,
-        userId: user.idUser,
-        subjectId: parseInt(idSubject, 10),
-      })
-      resetForm()
-    } else {
-      console.error('Usuário não autenticado')
-    }
+    // if (userName) {
+    createWarningMutation.mutate({
+      message: values.message,
+      userId: 1,
+      subjectId: parseInt(idSubject, 10),
+    })
+    resetForm()
+    // } else {
+    //   console.error('Usuário não autenticado')
+    // }
   }
 
   if (isLoading) {
     return <div>Loading...</div>
   }
 
-  // Garantir que warnings seja um array antes de mapear
-  const validWarnings = Array.isArray(warnings) ? warnings : [warnings] // Caso seja um objeto, transforma em array
+  const validWarnings = Array.isArray(warnings) ? warnings : [warnings]
 
   console.log('Warnings depois de processado:', validWarnings)
 
@@ -115,9 +109,23 @@ export function WallSubjects() {
           {validWarnings.length === 0 ? (
             <div>Não há avisos disponíveis</div>
           ) : (
-            validWarnings.map((warning: WarningType, index: number) => (
-              <Warning key={index} name={userName} date="Agora" avatarSrc="" comment={warning.message} />
-            ))
+            validWarnings.map((warning, index: number) => {
+              const date = new Date(warning.data_postagem)
+              const formattedDate = !isNaN(date.getTime())
+                ? `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`
+                : 'Data inválida'
+
+              return (
+                <Warning
+                  id={warning.id_aviso}
+                  key={index}
+                  name="teste"
+                  date={formattedDate}
+                  avatarSrc=""
+                  comment={warning.mensagem}
+                />
+              )
+            })
           )}
         </div>
       </div>

@@ -2,8 +2,10 @@ import * as Avatar from '@radix-ui/react-avatar'
 import { EllipsisVertical } from 'lucide-react'
 import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useUpdateWarningMutation } from '@/mutations/use-update-warning-mutation'
 
 interface WarningProps {
+  id: number
   name: string
   date: string
   comment: string
@@ -11,18 +13,30 @@ interface WarningProps {
   avatarSrc: string
 }
 
-export function Warning({ name, date, comment, textAvatar, avatarSrc }: WarningProps) {
+export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(comment)
   const [isHidden, setIsHidden] = useState(false)
+
+  const updateWarningMutation = useUpdateWarningMutation()
 
   const handleEditClick = () => {
     setIsEditing(true)
   }
 
   const handleSaveClick = () => {
-    setIsEditing(false)
-    setEditedComment(editedComment)
+    console.log(editedComment)
+    updateWarningMutation.mutate(
+      { warningId: Number(id), message: editedComment },
+      {
+        onSuccess: () => {
+          setIsEditing(false)
+        },
+        onError: (error) => {
+          console.error('Erro ao atualizar o aviso:', error)
+        },
+      },
+    )
   }
 
   const handleCancelClick = () => {
