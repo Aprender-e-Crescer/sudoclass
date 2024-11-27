@@ -12,6 +12,7 @@ import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetStudentQuery } from '@/queries/use-get-student-query'
 import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
+import { WarningType } from '@/models/warning-schema'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -25,9 +26,12 @@ const initialValues = {
 
 export function WallSubjects() {
   const { idSubject } = Route.useParams()
-  const { data: initialWarnings = [], isLoading, error } = useListWarningsQuery(idSubject)
+  const { data: warnings, isLoading, isError } = useListWarningsQuery(idSubject)
+
+  // Depuração: Verificando o que está sendo retornado pela query
+  console.log('Dados de warnings:', warnings)
+
   const createWarningMutation = useCreateWarningMutation()
-  const [warnings, setWarnings] = useState(initialWarnings)
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
@@ -41,17 +45,14 @@ export function WallSubjects() {
 
   if (user.type === 'pedagogo') {
     const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
-
     userName = pedagogue?.name || 'Pedagogo não encontrado'
     userType = 'pedagogo'
   } else if (user.type === 'aluno') {
     const { data: student } = useGetStudentQuery(user.idStudent)
-
     userName = student?.name || 'Aluno não encontrado'
     userType = 'aluno'
   } else if (user.type === 'professor') {
     const { data: teacher } = useGetTeacherQuery(user.idTeacher)
-
     userName = teacher?.name || 'Professor não encontrado'
     userType = 'professor'
   } else {
@@ -66,11 +67,6 @@ export function WallSubjects() {
         userId: user.idUser,
         subjectId: parseInt(idSubject, 10),
       })
-      setWarnings((prevWarnings) => [
-        ...prevWarnings,
-        { message: values.message, userId: user.idUser, subjectId: parseInt(idSubject) },
-      ])
-
       resetForm()
     } else {
       console.error('Usuário não autenticado')
@@ -80,6 +76,12 @@ export function WallSubjects() {
   if (isLoading) {
     return <div>Loading...</div>
   }
+
+  // Garantir que warnings seja um array antes de mapear
+  const validWarnings = Array.isArray(warnings) ? warnings : [warnings] // Caso seja um objeto, transforma em array
+
+  console.log('Warnings depois de processado:', validWarnings)
+
   return (
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
@@ -108,10 +110,15 @@ export function WallSubjects() {
             )}
           </Formik>
         </div>
+
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full flex flex-col gap-4">
-          {warnings.map((warning, index) => (
-            <Warning key={index} name={userName} date="Agora" avatarSrc="" comment={warning.message} />
-          ))}
+          {validWarnings.length === 0 ? (
+            <div>Não há avisos disponíveis</div>
+          ) : (
+            validWarnings.map((warning: WarningType, index: number) => (
+              <Warning key={index} name={userName} date="Agora" avatarSrc="" comment={warning.message} />
+            ))
+          )}
         </div>
       </div>
     </div>

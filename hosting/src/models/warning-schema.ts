@@ -18,4 +18,4 @@ export const warningSchema = z.preprocess(
   }),
 )
 
-export type Warning = z.infer<typeof warningSchema>
+export type WarningType = z.infer<typeof warningSchema>
