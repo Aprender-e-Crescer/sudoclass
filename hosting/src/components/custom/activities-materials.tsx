@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { EllipsisVertical } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Link } from '@tanstack/react-router'
+import { useDeleteActivityMutation } from '@/mutations/use-delete-activity-mutation'
 
 interface ActivitiesMaterialsProps {
   id: string
@@ -26,15 +27,23 @@ export function ActivitiesMaterials({
   idCourse,
   idClass,
   idSubject,
-  toViewSends,
   title,
   dateActivity,
   instruction,
-  iconColor,
   assigned,
   pending,
   type,
 }: ActivitiesMaterialsProps) {
+  const { mutateAsync: deleteActivity } = useDeleteActivityMutation()
+
+  const handleDelete = async () => {
+    try {
+      await deleteActivity(Number(id))
+    } catch (error) {
+      console.error('Erro ao excluir atividade:', error)
+    }
+  }
+
   if (type === 'teacher') {
     return (
       <div className="w-full h-auto my-2.5">
@@ -56,8 +65,7 @@ export function ActivitiesMaterials({
                     <EllipsisVertical />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem>Excluir</DropdownMenuItem>
-
+                    <DropdownMenuItem onClick={handleDelete}>Excluir</DropdownMenuItem> {/* Exclusão aqui */}
                     <Link
                       to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
                       params={{
@@ -126,69 +134,9 @@ export function ActivitiesMaterials({
         </Accordion>
       </div>
     )
-  } else if (type === 'student') {
-    return (
-      <>
-        <div className="flex items-center w-full md:hidden border p-4 rounded-2xl my-2.5">
-          <div className={clsx('flex justify-center items-center', iconColor, 'w-10 h-10 rounded-full')}>
-            <img className="h-6 w-6" src={iconeAtividade} alt="" />
-          </div>
-          <div className="ml-2">
-            <Link to={toViewSends}>
-              <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
-            </Link>
-            <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
-          </div>
-        </div>
-
-        <div className="hidden md:flex md:w-full h-auto my-2.5">
-          <Accordion className="border rounded-2xl px-4 w-full" type="single" collapsible>
-            <AccordionItem value="item-1">
-              <AccordionTrigger>
-                <div className="flex items-center">
-                  <div className={clsx('flex justify-center items-center', iconColor, 'w-10 h-10 rounded-full')}>
-                    <img className="h-6 w-6" src={iconeAtividade} alt="" />
-                  </div>
-                  <div className="ml-2">
-                    <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
-                    <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
-                  </div>
-                </div>
-              </AccordionTrigger>
-              <div className="">
-                <AccordionContent className="transition-all duration-300">
-                  <hr className="my-2" />
-                  <div className="flex flex-col ml-1 md:flex p-4 justify-between gap-5">
-                    <div className="hidden md:flex gap-2">
-                      <p className="text-sm text-gray-700">Instruções</p>
-                      <p className="text-sm mx-7">{instruction}</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col p-2">
-                    <hr className="my-2" />
-                    <Link
-                      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/$idActivity/view-activity-student"
-                      params={{
-                        idActivity: id,
-                        idCourse,
-                        idClass,
-                        idSubject,
-                      }}
-                    >
-                      <p className="text-blue-600 text-sm">Visualizar Atividade</p>
-                    </Link>
-                  </div>
-                </AccordionContent>
-              </div>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </>
-    )
   }
-  return (
-    <div className="flex flex-col gap-y-2">
-      <p className="text-lg text-red-600">Erro de tipagem, insira student ou teacher no type</p>
-    </div>
-  )
+
+  return null
 }
+
+export default ActivitiesMaterials

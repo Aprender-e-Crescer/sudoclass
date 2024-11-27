@@ -77,7 +77,7 @@ export function ListActivity() {
                           activity.datePosting
                             ? (() => {
                                 const date = new Date(activity.datePosting)
-                                date.setDate(date.getDate() + 1) // Adiciona 1 dia
+                                date.setDate(date.getDate() + 1)
                                 return date.toLocaleDateString('pt-BR', {
                                   day: '2-digit',
                                   month: '2-digit',
