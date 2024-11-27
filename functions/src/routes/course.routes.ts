@@ -4,11 +4,11 @@ import courseController from '../controllers/course.controller';
 const router = Router();
 
 
-router.post('/courso', courseController.createCurso);
-router.delete('/courso/:id', courseController.deleteCourse);
-router.put('/courso/:id', courseController.updateCourse);
-router.get('/courso/:id?', courseController.listarCursos);
-router.get('/courso/:id/cursosAlunos', courseController.AlunosnoCurso)
+router.post('/course', courseController.createCurso);
+router.delete('/course/:id', courseController.deleteCourse);
+router.put('/course/:id', courseController.updateCourse);
+router.get('/course/:id?', courseController.listarCursos);
+router.get('/course/:id/cursosAlunos', courseController.AlunosnoCurso)
 
 
 

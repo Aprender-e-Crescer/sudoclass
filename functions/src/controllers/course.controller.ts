@@ -8,13 +8,13 @@ const courseController = {
     try {
       const retorno = await cursoService.criarCurso(id, nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa)
       if (!retorno) {
-        res.status(500).send('Não foi possível cadastrar o curso.')
+        res.status(500).send('Não foi possivel cadastrar o curso.')
       } else {
         res.status(200).send(retorno)
       }
     } catch (error) {
       console.error('Erro ao cadastrar curso:', error)
-      res.status(500).send('Ocorreu um erro no servidor ao tentar cadastrar o curso.')
+      res.status(500).send('Ocorreu um erro ')
     }
   },
 
@@ -41,7 +41,7 @@ const courseController = {
       res.status(200).send('Curso deletado com sucesso.')
     } catch (error) {
       console.error('Erro ao deletar curso:', error);
-      res.status(500).send('Ocorreu um erro no servidor ao tentar deletar o curso.');
+      res.status(500).send('Ocorreu um erro ');
     }
   },
   
@@ -57,7 +57,7 @@ const courseController = {
       }
     } catch (error) {
       console.error('Erro ao atualizar curso:', error)
-      res.status(500).send('Ocorreu um erro no servidor ao tentar atualizar o curso.')
+      res.status(500).send('Ocorreu um erro')
     }
   },
 
