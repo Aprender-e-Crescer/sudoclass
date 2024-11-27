@@ -23,21 +23,41 @@ async function createForm(
 }
 
 async function getFormById(id: number) {
+  if (!id) {
+    return console.log('Id é obrigatório')
+  }
+
   try {
-    const query = 'SELECT * FROM formulario WHERE id = $1'
+    const query = `
+      SELECT f.*, p.nome AS createdBy
+      FROM formulario f
+      INNER JOIN usuario u ON f.id_usuario = u.id_usuario
+      INNER JOIN pedagogo p ON u.id_pedagogo = p.id_pedagogo
+      WHERE u.tipo = 'pedagogo'
+      AND f.id = $1
+    `
     const result = await db.query(query, [id])
-    if (!id) {
-      return console.log('Id e obrigatorio')
+
+    if (result.rows.length === 0) {
+      console.log('Nenhum formulário encontrado com esse ID')
+      return null
     }
-    return result
+
+    return result.rows[0]
   } catch (error) {
-    console.error('Error pegar o form pelo id:', error)
+    console.error('Erro ao pegar o formulário pelo id:', error)
   }
 }
 
 async function getAllForms() {
   try {
-    const query = 'SELECT * FROM formulario'
+    const query = `
+      SELECT f.*, p.nome AS createdBy
+      FROM formulario f
+      INNER JOIN usuario u ON f.id_usuario = u.id_usuario
+      INNER JOIN pedagogo p ON u.id_pedagogo = p.id_pedagogo
+      WHERE u.tipo = 'pedagogo'
+    `
     const result = await db.query(query)
     return result.rows
   } catch (error) {

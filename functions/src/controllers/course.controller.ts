@@ -8,7 +8,7 @@ const courseController = {
     try {
       const retorno = await cursoService.criarCurso(id, nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa)
       if (!retorno) {
-        res.status(500).send('Nao foi possivel cadastrar o curso.')
+        res.status(500).send('Não foi possivel cadastrar o curso.')
       } else {
         res.status(200).send(retorno)
       }
@@ -35,13 +35,13 @@ const courseController = {
   
       if (!deletadoComSucesso) {
         res.status(500).send('Falha ao deletar o curso.')
-        return
+        return;
       }
   
       res.status(200).send('Curso deletado com sucesso.')
     } catch (error) {
       console.error('Erro ao deletar curso:', error);
-      res.status(500).send('Ocorreu um erro');
+      res.status(500).send('Ocorreu um erro ');
     }
   },
   
@@ -51,13 +51,13 @@ const courseController = {
     try {
       const retorno = await cursoService.atualizarCurso(id, nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa)
       if (!retorno) {
-        res.status(500).send('Curso nao encontrado.')
+        res.status(500).send('Curso não encontrado.')
       } else {
         res.status(200).send('Curso atualizado com sucesso.')
       }
     } catch (error) {
       console.error('Erro ao atualizar curso:', error)
-      res.status(500).send('Ocorreu um erro .')
+      res.status(500).send('Ocorreu um erro')
     }
   },
 
@@ -68,7 +68,7 @@ const courseController = {
  
       if (!retorno || retorno.length === 0) {
        
-        res.status(404).send('Nenhum curso encontrado para o ID .');
+        res.status(404).send('Nenhum curso encontrado para o ID fornecido.');
         return;
       }
  
@@ -78,16 +78,23 @@ const courseController = {
       console.error('Erro ao listar cursos:', error);
       res.status(500).send('Ocorreu um erro');
     }
-  }
- 
+  },
 
+  AlunosnoCurso: async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params
+    try {
+      const alunos = await cursoService.AlunosnoCurso(id)
+      if (!alunos) {
+        res.status(500).send('Curso nao encontrado.')
+      } else {
+        res.status(200).send(alunos)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar alunos do curso:', error)
+      res.status(500).send('Ocorreu um erro')
+    }
+  },
 }
-
-    
-      
-
-    
-
-
+ 
 
 export default courseController
