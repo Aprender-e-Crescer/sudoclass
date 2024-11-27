@@ -6,19 +6,26 @@ async function createWarning(
   id_usuario: number
 ): Promise<string> {
   console.log('createWarning chamada')
+
   if (!mensagem) {
     return 'Digite uma mensagem.'
   }
 
+  if (typeof id_materia !== 'number' || typeof id_usuario !== 'number') {
+    return 'ID da matéria e ID do usuário devem ser números válidos.'
+  }
+
+  const data_postagem = new Date().toISOString().split('T')[0]
+
   try {
     const result = await db.query(
-      'INSERT INTO aviso (mensagem, id_materia, id_usuario) VALUES ($1, $2, $3) RETURNING id_aviso',
-      [mensagem, id_materia, id_usuario]
+      'INSERT INTO aviso (mensagem, id_materia, id_usuario, data_postagem) VALUES ($1, $2, $3, $4) RETURNING id_aviso',
+      [mensagem, id_materia, id_usuario, data_postagem]
     )
     return `Aviso criado com sucesso, ID: ${result.rows[0].id_aviso}`
   } catch (error) {
     console.error('Erro ao criar aviso:', error)
-    return 'Erro ao criar aviso'
+    return `Erro ao criar aviso`
   }
 }
 
