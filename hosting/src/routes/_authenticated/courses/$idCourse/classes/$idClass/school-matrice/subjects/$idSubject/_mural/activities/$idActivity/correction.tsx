@@ -36,39 +36,41 @@ interface Student {
 function Correction() {
   const { idActivity } = Route.useParams()
 
-  // Lista de estudantes mockada
   const students: Student[] = [
     {
       id: '1',
       name: 'João Silva',
-      picture: 'https://placekitten.com/200/200',
+      picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
     },
     {
       id: '2',
       name: 'Maria Oliveira',
-      picture: 'https://placekitten.com/200/200',
+      picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
     },
     {
       id: '3',
       name: 'Pedro Souza',
-      picture: 'https://placekitten.com/200/200',
+      picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
     },
   ]
 
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-  const [sucessMessage, setSuccessMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
+  const [formKey, setFormKey] = useState(0)
 
   const handleStudentClick = (student: Student) => {
     if (selectedStudent?.id === student.id) {
       setSelectedStudent(null)
     } else {
       setSelectedStudent(student)
+      setSuccessMessage('')
+      setFormKey((prevKey) => prevKey + 1)
     }
   }
 
   const { mutate: addGrade } = useAddGradeMutation()
 
-  const handleSubmitNote = async (values: any) => {
+  const handleSubmitNote = async (values: any, { resetForm }: { resetForm: () => void }) => {
     const { value } = values
     const grade = parseFloat(value)
 
@@ -78,6 +80,7 @@ function Correction() {
 
       addGrade({ activityId, studentId, grade })
       setSuccessMessage('Nota atribuída com sucesso!')
+      resetForm()
     }
   }
 
@@ -96,6 +99,7 @@ function Correction() {
           <div className="hidden md:flex flex-col justify-center w-full items-center gap-y-10 mt-5">
             <h2 className="text-xl">Avaliar {selectedStudent.name}</h2>
             <Formik
+              key={formKey}
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={handleSubmitNote}
@@ -118,7 +122,7 @@ function Correction() {
                 </Form>
               )}
             </Formik>
-            {sucessMessage && <p className="text-green-500">{sucessMessage}</p>}
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
             <div>
               <Input type="file" className="h-96 w-80" />
             </div>
@@ -142,6 +146,7 @@ function Correction() {
               <div className="flex flex-col justify-center w-full items-center gap-y-10 mt-5">
                 <div className="flex gap-x-10">
                   <Formik
+                    key={formKey}
                     initialValues={initialValues}
                     validationSchema={toFormikValidationSchema(InputNoteSchema)}
                     onSubmit={(values) => {

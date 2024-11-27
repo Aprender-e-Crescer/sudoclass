@@ -4,18 +4,6 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useListActivitiesQuery } from '@/queries/use-list-activities-query'
 import { Plus } from 'lucide-react'
 
-interface ListActivity {
-  id: string
-  link: string
-  title: string
-  dateActivity: string
-  instructions: string
-  iconColor: string
-  assigned: number
-  pending: number
-  type: 'teacher' | 'student'
-}
-
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/',
 )({
