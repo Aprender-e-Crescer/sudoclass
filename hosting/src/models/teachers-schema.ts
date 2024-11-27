@@ -1,33 +1,39 @@
 import { datePreprocessedSchema } from '@/utils/schema'
-import { DocumentReference } from 'firebase/firestore'
 import { z } from 'zod'
 
-export const registerSchema = z.object({
+export const registerSchema = z.preprocess((obj: any) => ({
+  idTeacher: obj?.id_professor,
+  fullName: obj?.nome,
+  dateOfBirth: obj?.datanasc,
+  email: obj?.email,
+  state: obj?.estado,
+  municipality: obj?.municipio,
+  road: obj?.rua,
+  neighborhood: obj?.bairro,
+  number: obj?.numero,
+  rgNumber: obj?.rg,
+  cpf: obj?.cpf,
+  rgDispatchDate: obj?.datadeexpedicaorg,
+  rgDispatchStatus: obj?.estadodeexpedicaorg,
+  birthStatus: obj?.estadonascimento,
+  birthCity: obj?.cidadedenascimento,
+}), z.object({
+  idTeacher: z.number().min(1, "O campo 'ID do Professor' é obrigatório"),
+  fullName: z.string().min(1, "O campo 'Nome completo' é obrigatório"),
+  dateOfBirth: datePreprocessedSchema,
+  email: z.string().email("Email inválido"),
+  state: z.string().min(1, "O campo 'Estado' é obrigatório"),
   municipality: z.string().min(1, "O campo 'Município' é obrigatório"),
+  road: z.string().min(1, "O campo 'Rua' é obrigatório"),
   neighborhood: z.string().min(1, "O campo 'Bairro' é obrigatório"),
   number: z.string().min(1, "O campo 'Número' é obrigatório"),
-  road: z.string().min(1, "O campo 'Rua' é obrigatório"),
-  state: z.string().min(1, "O campo 'Estado' é obrigatório"),
-  birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
-  birthStatus: z.string().min(1, "O campo 'Estado civil' é obrigatório"),
+  rgNumber: z.string().min(7, "RG deve ter no mínimo 7 dígitos"),
   cpf: z.string().min(1, "O campo 'CPF' é obrigatório"),
-  dateOfBirth: z.preprocess((value) => value, z.date(), { message: 'Insira uma data valida' }),
-  email: z.string().email('Email inválido'),
-  fullName: z.string().min(1, "O campo 'Nome completo' é obrigatório"),
-  rgNumber: z.string().min(7, 'RG deve ter no mínimo 7 dígitos'),
+  rgDispatchDate: datePreprocessedSchema,
   rgDispatchStatus: z.string().min(1, "O campo 'Status de emissão do RG' é obrigatório"),
-  rgDispatchDate: z.preprocess((value) => value, z.date(), { message: 'Insira uma data valida' }),
-  telephone: z.string().min(1, "O campo 'Telefone' é obrigatório"),
-  password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
-  matter: z.custom(
-    (matter) => {
-      return matter instanceof DocumentReference
-    },
-    {
-      message: "O campo 'matter' deve ser uma referência válida do Firestore.",
-    },
-  ),
-})
+  birthStatus: z.string().min(1, "O campo 'Estado civil' é obrigatório"),
+  birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
+}));
 
 export const teacherSchema = z.preprocess((obj) => ({
   idTeacher: obj?.id_professor,
