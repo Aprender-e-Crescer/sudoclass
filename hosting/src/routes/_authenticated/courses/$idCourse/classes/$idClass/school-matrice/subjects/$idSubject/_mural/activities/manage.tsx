@@ -2,10 +2,10 @@ import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import * as React from 'react'
 import { Form, Formik, Field } from 'formik'
-import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
 import { z } from 'zod'
 import { useNavigate } from '@tanstack/react-router'
+import { correctionSchema } from '@/models/correction-schema'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']),
@@ -30,9 +30,22 @@ export function CreateActivity() {
   const initialValues = {
     title: '',
     instruction: '',
-    value: '',
+    value: 0,
     deliveryDate: deliveryDate,
     subjectId: idSubject,
+  }
+
+  const validate = (values: any) => {
+    const errors: any = {}
+
+    const parsedValue = correctionSchema.safeParse(values)
+    if (!parsedValue.success) {
+      parsedValue.error.errors.forEach((err) => {
+        errors[err.path[0]] = err.message
+      })
+    }
+
+    return errors
   }
 
   const handleSubmit = async (values: any) => {
@@ -40,7 +53,7 @@ export function CreateActivity() {
       const newActivity = {
         title: values.title,
         instruction: values.instruction,
-        value: Number(values.value),
+        value: values.value,
         deliveryDate: values.deliveryDate || '',
         subjectId: Number(values.subjectId),
       }
@@ -65,6 +78,7 @@ export function CreateActivity() {
             <Formik
               initialValues={initialValues}
               onSubmit={handleSubmit}
+              validate={validate}
               validateOnBlur={true}
               validateOnChange={false}
             >
@@ -87,14 +101,22 @@ export function CreateActivity() {
                         <div className="text-red-500 text-sm">{errors.instruction}</div>
                       )}
                     </div>
-                    <div className="w-32">
-                      <p>Peso</p>
-                      <InputWithoutLabel
-                        id="value"
+                    <div>
+                      <p>Peso (de 0 a 10)</p>
+                      <Field
+                        as="select"
                         name="value"
-                        placeholder="Digite o valor da atividade"
-                        onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
-                      />
+                        className="border p-2 rounded-sm w-full"
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                          setFieldValue('value', parseInt(e.target.value, 10)) // Convertendo para número
+                        }}
+                      >
+                        {[...Array(11).keys()].map((val) => (
+                          <option key={val} value={val}>
+                            {val}
+                          </option>
+                        ))}
+                      </Field>
                       {touched.value && errors.value && <div className="text-red-500 text-sm">{errors.value}</div>}
                     </div>
 
