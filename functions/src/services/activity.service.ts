@@ -37,9 +37,9 @@ async function createActivity(
 
     for (const student of matriceStudents) {
       const studentActivityResult = await db.query(
-        `INSERT INTO atividade_aluno (id_aluno, id_atividade)
-          VALUES ($1, $2) RETURNING id_atividade_aluno`,
-        [student.id_aluno, activityId]
+        `INSERT INTO atividade_aluno (id_aluno, id_atividade, id_materia)
+          VALUES ($1, $2, $3) RETURNING id_atividade_aluno`,
+        [student.id_aluno, activityId, subjectId]
       )
 
       const studentActivityId =
