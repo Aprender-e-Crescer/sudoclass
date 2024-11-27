@@ -3,6 +3,7 @@ import { EllipsisVertical } from 'lucide-react'
 import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useUpdateWarningMutation } from '@/mutations/use-update-warning-mutation'
+import { useDeleteWarningMutation } from '@/mutations/use-delete-warning-mutation'
 
 interface WarningProps {
   id: number
@@ -17,7 +18,7 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(comment)
   const [isHidden, setIsHidden] = useState(false)
-
+  const deleteWarningMutation = useDeleteWarningMutation()
   const updateWarningMutation = useUpdateWarningMutation()
 
   const handleEditClick = () => {
@@ -45,7 +46,7 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
   }
 
   const handleDeleteClick = () => {
-    setIsHidden(true)
+    deleteWarningMutation.mutate(id)
   }
 
   if (isHidden) {
