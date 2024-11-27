@@ -1,13 +1,16 @@
-import Router from 'express-promise-router';
-import subjectsController from '../controllers/subjects.controllers';
+import Router from 'express-promise-router'
+import subjectsController from '../controllers/subjects.controllers'
 
-const router = Router();
+const router = Router()
 
-router.post('/subject', subjectsController.createSubject);
-router.put('/subject/:idMateria/course/:idCurso/teacher/:idProfessor',subjectsController.updateSubject);
-router.delete('/subject/:id', subjectsController.deleteSubject);
-router.get('/subject/:id', subjectsController.getSubjectById);
-router.post('/subject/class/:idTurma', subjectsController.addSubjectToClass);
+router.post('/subject', subjectsController.createSubject)
+router.put(
+  '/subject/:idMateria/course/:idCurso/teacher/:idProfessor',
+  subjectsController.updateSubject
+)
+router.delete('/subject/:id', subjectsController.deleteSubject)
+router.get('/subject/:id', subjectsController.getSubjectById)
+router.post('/subject/class/:idTurma', subjectsController.addSubjectToClass)
+router.get('/subjects', subjectsController.getSubjects)
 
-
-export default router;
+export default router
