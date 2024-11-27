@@ -5,6 +5,7 @@ import { Form, Formik, Field } from 'formik'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
 import { z } from 'zod'
+import { useNavigate } from '@tanstack/react-router'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']),
@@ -19,9 +20,12 @@ export const Route = createFileRoute(
 })
 
 export function CreateActivity() {
-  const { idSubject } = Route.useParams()
-  const [deliveryDate, setDeliveryDate] = React.useState<string>('') // Use string para garantir a consistência de valor
-  const { mutate: createActivity } = useCreateActivityMutation()
+  const { idSubject, idCourse, idClass } = Route.useParams()
+  const navigate = useNavigate()
+
+  const { mutateAsync: createActivity } = useCreateActivityMutation()
+
+  const [deliveryDate, setDeliveryDate] = React.useState<string>('')
 
   const initialValues = {
     title: '',
@@ -44,6 +48,10 @@ export function CreateActivity() {
       console.log('Nova atividade:', newActivity)
 
       await createActivity(newActivity)
+      navigate({
+        to: `/courses/${idCourse}/classes/${idClass}/school-matrice/subjects/${idSubject}/activities`,
+        replace: true,
+      })
     } catch (e) {
       console.error('Erro ao adicionar atividade: ', e)
     }
