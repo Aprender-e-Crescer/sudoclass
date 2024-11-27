@@ -106,6 +106,16 @@ export async function getLessonPlan(id_planoaula: string): Promise<string> {
         return "Erro ao buscar plano de aula.";
     }
 }
+export async function getLessonPlans(): Promise<PlanoDeAula[]> {
+    try {
+        const result = await db.query("SELECT * FROM planoaula");
+        return result.rows;
+    } catch (error) {
+        console.error("Erro ao buscar todos os planos de aula:", error);
+        throw new Error("Erro ao buscar todos os planos de aula.");
+    }
+}
+
 
 export async function updateLessonPlan(
     id_planoaula: string,
