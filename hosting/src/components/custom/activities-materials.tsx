@@ -65,7 +65,7 @@ export function ActivitiesMaterials({
                     <EllipsisVertical />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem onClick={handleDelete}>Excluir</DropdownMenuItem> {/* Exclusão aqui */}
+                    <DropdownMenuItem onClick={handleDelete}>Excluir</DropdownMenuItem>
                     <Link
                       to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
                       params={{
@@ -133,6 +133,73 @@ export function ActivitiesMaterials({
           </AccordionItem>
         </Accordion>
       </div>
+    )
+  } else if (type === 'student') {
+    return (
+      <>
+        <div className="flex items-center w-full md:hidden border p-4 rounded-2xl my-2.5">
+          <div className={clsx('flex justify-center items-center bg-yellow-600 w-10 h-10 rounded-full')}>
+            <img className="h-6 w-6" src={iconeAtividade} alt="" />
+          </div>
+          <div className="ml-2">
+            <Link
+              to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/$idActivity/view-activity-student"
+              params={{
+                idActivity: id,
+                idCourse,
+                idClass,
+                idSubject,
+              }}
+            >
+              <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
+            </Link>
+            <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
+          </div>
+        </div>
+
+        <div className="hidden md:flex md:w-full h-auto my-2.5">
+          <Accordion className="border rounded-2xl px-4 w-full" type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>
+                <div className="flex items-center">
+                  <div className={clsx('flex justify-center items-center bg-blue-500 w-10 h-10 rounded-full')}>
+                    <img className="h-6 w-6" src={iconeAtividade} alt="" />
+                  </div>
+                  <div className="ml-2">
+                    <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
+                    <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <div className="">
+                <AccordionContent className="transition-all duration-300">
+                  <hr className="my-2" />
+                  <div className="flex flex-col ml-1 md:flex p-4 justify-between gap-5">
+                    <div className="hidden md:flex gap-2">
+                      <p className="text-sm text-gray-700">Instruções</p>
+                      <p className="text-sm mx-7">{instruction}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col p-2">
+                    <hr className="my-2" />
+                    <Link
+                      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/$idActivity/view-activity-student"
+                      params={{
+                        idActivity: id,
+                        idCourse,
+                        idClass,
+                        idSubject,
+                      }}
+                    >
+                      <p className="text-blue-600 text-sm">Visualizar Atividade</p>
+                    </Link>
+                  </div>
+                </AccordionContent>
+              </div>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </>
     )
   }
 
