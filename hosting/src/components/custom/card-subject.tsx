@@ -32,7 +32,7 @@ interface CardSubjectProps {
   idCourse: string
   idClass: string
   description: string
-  backgroundColor?: 'vermelho' | 'amarelo' | 'azul' | 'laranja' | 'rosa' | 'ciano' | 'verde' | 'roxo' | 'marrom'
+  backgroundColor?: 'vermelho' | 'amarelo' | 'azul' | 'laranja' | 'rosa' | 'ciano' | 'verde' | 'roxo' | 'marrom' | any
 }
 
 export function CardSubject({

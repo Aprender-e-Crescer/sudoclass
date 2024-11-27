@@ -8,6 +8,7 @@ export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/
 
 function HomeListSubjects() {
   const { data, isError, error, isLoading } = useListSubjectsQuery()
+  const colors = ['amarelo', 'azul', 'vermelho', 'laranja', 'rosa', 'ciano', 'verde', 'roxo', 'marrom']
 
   const { idClass, idCourse } = Route.useParams()
 
@@ -25,7 +26,7 @@ function HomeListSubjects() {
 
   return (
     <div className="flex flex-wrap gap-5 justify-center items-center min-h-screen">
-      {subjects.map((subject: any) => (
+      {subjects.map((subject: any, index: number) => (
         <CardSubject
           id={subject.id_materia}
           idClass={idClass}
@@ -33,7 +34,7 @@ function HomeListSubjects() {
           key={subject.id_materia}
           description={subject.description}
           name={subject.nome_materia}
-          backgroundColor="amarelo"
+          backgroundColor={colors[index % colors.length]}
         />
       ))}
 
