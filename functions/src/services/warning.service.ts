@@ -60,7 +60,7 @@ async function getWarnings(id_materia: number) {
     if (result.rows.length === 0) {
       return null
     }
-    return result.rows[0]
+    return result.rows
   } catch (error) {
     console.error('Erro ao buscar aviso:', error)
     throw new Error('Erro ao buscar aviso')

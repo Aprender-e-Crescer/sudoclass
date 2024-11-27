@@ -10,6 +10,7 @@ export function useListWarningsQuery(subjectId: string) {
     queryFn: async () => {
       const { data } = await api.get(`/warnings/${subjectId}`)
       // const warnings = z.array(warningSchema).parse(data)
+      console.log('api:', data)
 
       return data
     },
