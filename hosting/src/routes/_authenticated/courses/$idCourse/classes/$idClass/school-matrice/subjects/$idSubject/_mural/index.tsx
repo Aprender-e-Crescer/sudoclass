@@ -26,22 +26,47 @@ export function WallSubjects() {
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
+  // if (!user) {
+  //   console.error('Tipo de usuário não encontrado')
+  //   return <div>Usuário não encontrado</div>
+  // }
+
+  // let userName = ''
+  // let userType = ''
+
+  // if (user.type === 'pedagogo') {
+  //   const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
+  //   userName = pedagogue?.name || 'Pedagogo não encontrado'
+  //   userType = 'pedagogo'
+  // } else if (user.type === 'aluno') {
+  //   const { data: student } = useGetStudentQuery(user.idStudent)
+  //   userName = student?.name || 'Aluno não encontrado'
+  //   userType = 'aluno'
+  // } else if (user.type === 'professor') {
+  //   const { data: teacher } = useGetTeacherQuery(user.idTeacher)
+  //   userName = teacher?.name || 'Professor não encontrado'
+  //   userType = 'professor'
+  // }
+
   console.log('Dados de warnings:', warnings)
 
   const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
+    // if (userName) {
     createWarningMutation.mutate({
       message: values.message,
       userId: 1,
       subjectId: parseInt(idSubject, 10),
     })
     resetForm()
+    // } else {
+    //   console.error('Usuário não autenticado')
+    // }
   }
 
   if (isLoading) {
     return <div>Loading...</div>
   }
 
-  // Garantindo que warnings seja sempre uma lista
   const validWarnings = Array.isArray(warnings) ? warnings : warnings ? [warnings] : []
 
   return (
@@ -73,10 +98,9 @@ export function WallSubjects() {
           </Formik>
         </div>
 
-        {/* Renderizar avisos apenas se houverem */}
         {validWarnings.length > 0 && (
           <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full flex flex-col gap-4">
-            {validWarnings.map((warning, index: number) => {
+            {validWarnings.map((warning) => {
               const date = new Date(warning.data_postagem)
               const formattedDate = !isNaN(date.getTime())
                 ? `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`
