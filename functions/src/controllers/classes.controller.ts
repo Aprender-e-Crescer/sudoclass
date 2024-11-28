@@ -97,6 +97,22 @@ const classesController = {
         )
     }
   },
+
+  getAllClasses: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const ret = await classesService.getAllClasses();
+      if (!ret) {
+        res.status(500).send("Não foi possível buscar as turmas.");
+      } else {
+        res.status(200).send(ret);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar as turmas:", error);
+      res
+        .status(500)
+        .send("Ocorreu um erro no servidor ao tentar buscar as turmas.");
+    }
+  },
 }
 
 export default classesController

@@ -22,10 +22,10 @@ export function ClassList() {
 
       <div className="flex flex-col gap-7 font-bold text-blue-950 text-lg">
         <div className="flex flex-col gap-7 font-bold text-blue-950 text-lg">
-          {classes?.map((classItem, index) => (
+          {classes?.map(({ name }, index) => (
             <div key={index} className="flex flex-col gap-10 w-full">
               <p className="border rounded-xl p-3 flex justify-between">
-                {classItem.name}
+                {name}
                 <div className="flex gap-2">
                   <AlertDialogComponent
                     title="Deseja excluir a turma?"
