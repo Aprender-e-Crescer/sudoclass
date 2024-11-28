@@ -1,4 +1,6 @@
-import { db } from '../config/database'
+
+import { db } from "../config/database"
+
 
 async function createClass(
   id_turma: number,
@@ -223,6 +225,20 @@ async function listSubjectsInClass(turmaId: number): Promise<{ subjects: number[
 
 
 
+async function getAllClasses(): Promise<any> {
+  try {
+    const resposta = await db.query("SELECT * FROM turmas");
+
+    if (resposta.rows.length === 0) {
+      return "Nenhuma turma encontrado.";
+    }
+    return resposta.rows;
+  } catch (error) {
+    console.error("Erro ao buscar turmas:", error);
+    return "Erro ao buscar turmas.";
+  }
+}
+
 export const classesService = {
   createClass,
   updateClass,
@@ -231,5 +247,7 @@ export const classesService = {
   verificaridExistente,
   getClassesbyid,
   liststudentsinClass,
-  listSubjectsInClass
+  listSubjectsInClass,
+  addStudentToClass,
+  getAllClasses
 }
