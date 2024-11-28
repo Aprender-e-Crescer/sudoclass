@@ -21,7 +21,7 @@ export function ListActivity() {
     <>
       <div className="min-h-screen overflow-y-hidden w-full">
         <div className="flex flex-col md:flex-row overflow-hidden">
-          <div className="flex flex-col w-full h-auto p-2 md:p-4 overflow-hidden">
+          <div className="flex flex-col w-full mx-24 h-auto p-2 md:p-4 overflow-hidden">
             <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
             <div>
               <Link

@@ -25,28 +25,27 @@ function HomeListSubjects() {
   console.log('subjects:', subjects)
 
   return (
-    <div className="flex flex-wrap gap-5 justify-center items-center min-h-screen">
+    <div className="flex flex-wrap gap-5 justify-center items-center mt-16 mx-24">
       {subjects.map((subject: any, index: number) => (
         <CardSubject
           id={subject.id_materia}
           idClass={idClass}
           idCourse={idCourse}
           key={subject.id_materia}
-          description={subject.description}
+          description="Aprender & Crescer"
           name={subject.nome_materia}
           backgroundColor={colors[index % colors.length]}
         />
       ))}
 
       <CardSubject
-        description="Processo de Desenvolvimento de Sistemas"
+        description="Aprender & Crescer"
         name="PDS"
-        backgroundColor="amarelo"
+        backgroundColor="marrom"
         id="1"
         idClass="1"
         idCourse="1"
       />
-      <CardSubject description="Marketing" name="Marketing" backgroundColor="azul" id="2" idClass="1" idCourse="1" />
     </div>
   )
 }
