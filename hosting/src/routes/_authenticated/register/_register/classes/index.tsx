@@ -3,7 +3,7 @@ import { InputCheckbox } from '@/components/custom/checkbox-input'
 import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
-import { useRegisterClassController } from '@/controllers/use-register-class-form'
+import { useClassesController } from '@/controllers/use-class-controller'
 import { creationClassSchema } from '@/models/creation-class-schema'
 import { useListClassQuery } from '@/queries/use-class-list-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
@@ -57,8 +57,9 @@ const checkboxReleasedValues = [
 
 export function ClassList() {
   const { action } = Route.useSearch()
-  const { registerClassForm } = useRegisterClassController()
+  const { registerClassForm } = useClassesController()
   const { data: classes } = useListClassQuery()
+  const { deleteClass } = useClassesController()
 
   const handleOnClassCreationSubmit = (values: {
     class: string
@@ -92,7 +93,7 @@ export function ClassList() {
             className="flex flex-col gap-4 font-bold text-blue-950 text-lg data-[no-action=true]:flex-1"
             data-no-action={!action}
           >
-            {classes?.map(({ name }, index) => (
+            {classes?.map(({ name, id_turma }, index) => (
               <div key={index} className="flex flex-col gap-10 w-full">
                 <p className="border rounded-xl p-3 flex justify-between">
                   {name}
@@ -101,6 +102,7 @@ export function ClassList() {
                       title="Deseja excluir a turma?"
                       cancelButtonValue="Excluir"
                       variantCancelButton="blueButton"
+                      onClick={() => deleteClass(id_turma)}
                     />
                     <Link to="/register/classes" search={{ action: 'edit' }}>
                       <Pencil className="border rounded text-zinc-500 w-8 h-8" />
