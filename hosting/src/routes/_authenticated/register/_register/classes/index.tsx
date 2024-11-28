@@ -87,7 +87,7 @@ export function ClassList() {
           </Button>
         </Link>
 
-        <div className="flex gap-7">
+        <div className="flex lg:flex-row flex-col gap-7">
           <div
             className="flex flex-col gap-4 font-bold text-blue-950 text-lg data-[no-action=true]:flex-1"
             data-no-action={!action}
