@@ -17,6 +17,7 @@ interface AlertDialogProps {
   variantContinueButton?: ButtonVariant | null
   title?: string
   cancelButtonValue?: string
+  onClick?: () => void
 }
 
 export function AlertDialogComponent({
@@ -24,6 +25,7 @@ export function AlertDialogComponent({
   variantContinueButton,
   variantCancelButton,
   cancelButtonValue,
+  onClick,
 }: AlertDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -39,7 +41,14 @@ export function AlertDialogComponent({
         </AlertDialogHeader>
         <AlertDialogFooter>
           {variantCancelButton && (
-            <Button className="w-full" variant={variantCancelButton} onClick={() => setIsOpen(false)}>
+            <Button
+              className="w-full"
+              variant={variantCancelButton}
+              onClick={() => {
+                onClick?.()
+                setIsOpen(false)
+              }}
+            >
               {cancelButtonValue}
             </Button>
           )}
