@@ -10,9 +10,7 @@ export const Route = createFileRoute('/_authenticated/register/_register/classes
 })
 
 export function ClassList() {
-  const { data: classes, error } = useListClassQuery()
-
-  console.log(error?.message)
+  const { data: classes } = useListClassQuery()
 
   return (
     <div className="w-full px-4 flex justify-center flex-col gap-6 mt-5">
