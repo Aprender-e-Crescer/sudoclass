@@ -9,7 +9,7 @@ interface Results {
 export function useDeleteClassMutation({ onSuccess, onError }: Results) {
   return useMutation({
     mutationKey: ['delete-class'],
-    mutationFn: (id: number) => api.delete(`/classes/${id}`),
+    mutationFn: (id: number) => api.delete(`/turmas/${id}`),
     onSuccess,
     onError,
   })
