@@ -3,6 +3,7 @@ import { ActivitiesMaterials } from '@/components/custom/activities-materials'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useListActivitiesQuery } from '@/queries/use-list-activities-query'
 import { Plus } from 'lucide-react'
+import { CustomLoading } from '@/components/custom/custom-loading'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/',
@@ -14,7 +15,14 @@ export function ListActivity() {
   const { data: activities, error, isLoading } = useListActivitiesQuery()
   const { idClass, idCourse, idSubject } = Route.useParams()
 
-  if (isLoading) return <div>Carregando...</div>
+  if (isLoading)
+    return (
+      <>
+        <div className="w-full h-full flex items-center justify-center">
+          <CustomLoading message="Carregando atividades" size={70} />
+        </div>
+      </>
+    )
   if (error) return <div>Erro ao carregar atividades: {error.message}</div>
 
   return (

@@ -8,6 +8,7 @@ import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutatio
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
+import { CustomLoading } from '@/components/custom/custom-loading'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -64,7 +65,13 @@ export function WallSubjects() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+   return (
+      <>
+        <div className="w-full h-full flex items-center justify-center">
+          <CustomLoading message="Carregando WallSubjects" size={70} />
+        </div>
+      </>
+    )
   }
 
   const validWarnings = Array.isArray(warnings) ? warnings : warnings ? [warnings] : []
