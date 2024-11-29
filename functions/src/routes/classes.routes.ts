@@ -13,6 +13,6 @@ router.post('/turmas/:id/adicionarAlunos', turmasController.addStudentsToClass)
 
 router.get('/turmas/:id/listarAlunos', turmasController.liststudentsinClass)
 router.get('/turmas/:id_turma/listar-materias', turmasController.listSubjectsInClass);
-router.get('/turmas/:id', turmasController.getClassesbyid);
+router.get('/turmas/:id?', turmasController.getClasses);
 
 export default router
