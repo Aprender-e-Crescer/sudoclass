@@ -107,6 +107,22 @@ async function addSubjectToClass(id_turma: string, idMateria: string): Promise<v
         throw new Error('Erro ao associar matéria ao curso');
     }
 }
+async function studentListBySubject(id_materia : string): Promise< any > {
+    try {
+        const response = await db.query(
+            `SELECT p.nome, m.id
+            FROM alunos p
+            INNER JOIN matricula m ON p.id_aluno = m.id_aluno
+            INNER JOIN materiaturma mt ON m.id_materia = mt.id_materia
+            WHERE mt.id_materia = $1`,
+            [id_materia]
+        );
+    }catch (error) {
+        console.error('Erro ao buscar alunos matriculados na materia:', error)
+        throw new Error('Erro ao buscar alunos matriculados na matéria')
+   
+}}
+
 
 export const materiaService = {
     createSubject: (
@@ -146,5 +162,6 @@ export const materiaService = {
 
     deleteSubject: (idMateria: string) => deleteSubject(idMateria),
     getSubjectById: (idMateria: string) => getSubjectById(idMateria),
-    addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria)
+    addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria),
+    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia)
 };
