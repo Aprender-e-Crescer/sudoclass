@@ -8,7 +8,8 @@ export function useDeleteActivityMutation() {
   return useMutation({
     mutationKey: ['deleteActivity'],
     mutationFn: async (activityId: number) => {
-      await api.delete(`/activities/${activityId}`)
+      console.log(activityId)
+      await api.delete(`/activity`, { data: activityId })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LIST_ACTIVITIES_QUERY })

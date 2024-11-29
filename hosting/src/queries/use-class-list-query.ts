@@ -7,7 +7,7 @@ export function useListClassQuery() {
   return useQuery({
     queryKey: ['classes'],
     queryFn: async () => {
-      const { data } = await api.get('/classes')
+      const { data } = await api.get('/turmas')
       const classes = z.array(classListSchema).parse(data)
 
       return classes

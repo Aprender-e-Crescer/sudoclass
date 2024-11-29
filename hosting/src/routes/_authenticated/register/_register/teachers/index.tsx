@@ -2,7 +2,7 @@ import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
-import { registerSchema } from '@/models/teachers-schema'
+import { registerTeacherSchema } from '@/models/teachers-schema'
 import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
@@ -83,12 +83,11 @@ export function TeachersListing() {
               </div>
             ))}
           </div>
-
           <When condition={!!action}>
             <Formik
               initialValues={initialValues}
               onSubmit={handleOnTeacherSubmit}
-              validationSchema={toFormikValidationSchema(registerSchema)}
+              validationSchema={toFormikValidationSchema(registerTeacherSchema)}
             >
               <Form className="p-1">
                 <div className=" flex-flex-col flex-1 p-2 rounded-sm border-2">
@@ -137,9 +136,9 @@ export function TeachersListing() {
                   <InputForm
                     title="Rua"
                     placeholder="Rua"
-                    id="street"
-                    name="street"
-                    label="street"
+                    id="road"
+                    name="road"
+                    label="road"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
                   <div className="flex sm:gap-5 sm:flex-row flex-col">
@@ -155,9 +154,9 @@ export function TeachersListing() {
                     <InputForm
                       title="Numero"
                       placeholder="ex: 77"
-                      id="houseNumber"
-                      name="houseNumber"
-                      label="houseNumber"
+                      id="number"
+                      name="number"
+                      label="number"
                       customStyleInput="rounded-lg border-2 p-[6px]"
                     />
                   </div>
@@ -165,9 +164,9 @@ export function TeachersListing() {
                     <InputForm
                       title="Data de nascimento"
                       placeholder="00/00/0000"
-                      id="DateOfBirth"
-                      name="DateOfBirth"
-                      label="DateOfBirth"
+                      id="dateOfBirth"
+                      name="dateOfBirth"
+                      label="dateOfBirth"
                       type="date"
                       customStyleInput="rounded-lg border-2 p-[6px]"
                     />
@@ -191,17 +190,18 @@ export function TeachersListing() {
                   <InputForm
                     title="Data de expedição RG"
                     placeholder="data de expedição"
-                    id="shippingDate"
-                    name="shippingDate"
-                    label="shippingDate"
+                    id="rgDispatchDate"
+                    name="rgDispatchDate"
+                    label="rgDispatchDate"
                     customStyleInput="rounded-lg border-2 p-[6px]"
+                    type="date"
                   />
                   <InputForm
                     title="Estado de expedição RG"
                     placeholder="estado de expedição"
-                    id="shippingState"
-                    name="shippingState"
-                    label="shippingState"
+                    id="rgDispatchStatus"
+                    name="rgDispatchStatus"
+                    label="rgDispatchStatus"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
                   <InputForm

@@ -1,56 +1,47 @@
 import { z } from 'zod'
-import { Timestamp } from 'firebase/firestore'
 
 export const activitySchema = z.preprocess(
   (obj: any) => ({
-    title: obj?.id_professor,
-    instruction: obj?.instrucoes,
+    id: obj?.id_atividade,
+    title: obj?.titulo,
+    instruction: obj?.descricao,
     value: obj?.valor,
     deliveryDate: obj?.data_entrega,
-    datePosting: obj?.data_postagem,
+    datePosting: obj?.data_postagem ?? undefined,
+    subjectId: obj?.id_materia, // Aqui já deve estar no formato esperado
   }),
   z.object({
-    id: z.string(),
+    id: z.number(),
 
     title: z
       .string()
-      .min(3, 'O título precisa ter no mínimo 3 caracteres')
+      .min(1, 'O título não pode ser nulo')
       .max(100, 'O título pode ter no máximo 100 caracteres')
       .nonempty('O título é obrigatório'),
 
     instruction: z
       .string()
-      .min(5, 'As instruções precisam ter no mínimo 5 caracteres')
+      .min(1, 'As instruções não podem serem nulas')
       .max(500, 'As instruções podem ter no máximo 500 caracteres')
       .nonempty('As instruções são obrigatórias'),
 
-    value: z
-      .string()
-      .regex(/^\d+$/, 'O valor precisa ser um número')
-      .nonempty('O valor (peso) é obrigatório')
-      .transform((val) => parseInt(val, 10))
-      .refine((val) => val >= 0, 'O valor não pode ser negativo')
-      .refine((val) => val <= 100, 'O valor não pode ser maior que 100'),
+    value: z.string().transform((val) => parseFloat(val)),
 
-    deliveryDate: z.preprocess(
-      (value) => {
-        if (value instanceof Timestamp) {
-          return value.toDate()
-        }
-        return value
-      },
-      z.date().refine((val) => !isNaN(val.getTime()), 'A data de entrega é obrigatória'),
-    ),
+    deliveryDate: z
+      .union([z.string(), z.undefined()])
+      .optional()
+      .transform((val) => (val ? new Date(val) : undefined)),
 
-    datePosting: z.preprocess(
-      (value) => {
-        if (value instanceof Timestamp) {
-          return value.toDate()
-        }
-        return value
-      },
-      z.date().refine((val) => !isNaN(val.getTime()), 'A data de postagem é obrigatória'),
-    ),
+    datePosting: z
+      .union([z.string(), z.undefined()])
+      .optional()
+      .transform((val) => (val ? new Date(val) : undefined)),
+
+    subjectId: z
+      .number()
+      .nonnegative('O ID da matéria não pode ser negativo')
+      .int('O ID da matéria deve ser um número inteiro'),
+    // Converte para número
   }),
 )
 
