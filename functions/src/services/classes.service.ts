@@ -115,22 +115,38 @@ async function deleteClass(id_turma: number): Promise<string> {
     return 'Erro ao excluir turma. '
   }
 }
-async function getClassesbyid(id_turma: number): Promise<string> {
+async function getClasses(id_turma?: string): Promise<string | any[]> {
   try {
-    if (!id_turma) {
-      return 'O ID da turma e obrigatorio para buscar turmas'
+    if (id_turma) {
+      const idExistente = await verificaridExistente(parseInt(id_turma))
+
+      if (!idExistente) {
+        return `Nao foi encontrada nenhuma turma com o ID ${id_turma}`
+      }
+
+      const query = `SELECT * FROM turmas WHERE id_turma = $1`
+      const result = await db.query(query, [id_turma])
+
+      if (result.rows.length === 0) {
+        return `Nao foi encontrada nenhuma turma com esse id`
+      }
+
+      return result.rows
+    } else {
+      const query = `SELECT * FROM turmas`
+      const result = await db.query(query)
+
+      if (result.rows.length === 0) {
+        return 'Nao foram encontradas turmas'
+      }
+
+      return result.rows
     }
-    const idExistente = await verificaridExistente(id_turma)
-    if (!idExistente) {
-      return `Nao foi encontrada nenhuma turma com o ID ${id_turma}`
-    }
-    await db.query(`SELECT FROM trumas WHERE id_turma = ${id_turma}`)
-    return `Turmas com id: ${id_turma} encontradas com sucesso`
   } catch (error) {
-      console.error('Erro ao buscar turmas:', error)
-      return 'Erro ao buscar turmas'
-    
-}}
+    console.error('Erro ao buscar turmas:', error)
+    return 'Erro ao buscar turmas'
+  }
+}
 
 
 
@@ -229,7 +245,7 @@ export const classesService = {
   deleteClass,
   addStudentsToClass,
   verificaridExistente,
-  getClassesbyid,
+  getClasses,
   liststudentsinClass,
   listSubjectsInClass
 }
