@@ -106,6 +106,11 @@ async function deleteClass(id_turma: number): Promise<string> {
     if (!idExistente) {
       return `Nao foi encontrada nenhuma turma com o ID ${id_turma}`
     }
+    await db.query('DELETE FROM alunosturma WHERE id_turma = $1', [id_turma])
+
+    await db.query('DELETE FROM planoaula WHERE id_turma = $1', [id_turma])
+
+    await db.query('DELETE FROM materiaturma WHERE id_turma = $1', [id_turma])
 
     await db.query('DELETE FROM turmas WHERE id_turma = $1', [id_turma])
 
