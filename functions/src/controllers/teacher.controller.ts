@@ -133,6 +133,22 @@ const teachersController = {
         .send("Ocorreu um erro no servidor ao tentar buscar o professor.");
     }
   },
+
+  getAllTeachers: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const ret = await teacherService.getAllTeachers();
+      if (!ret) {
+        res.status(500).send("Não foi possível buscar os professores.");
+      } else {
+        res.status(200).send(ret);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar professores:", error);
+      res
+        .status(500)
+        .send("Ocorreu um erro no servidor ao tentar buscar os professores.");
+    }
+  },
 };
 
 export default teachersController;

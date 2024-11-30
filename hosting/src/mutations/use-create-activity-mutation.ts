@@ -11,14 +11,12 @@ export function useCreateActivityMutation() {
       title,
       instruction,
       deliveryDate,
-      postingDate,
       value,
       subjectId,
     }: {
       title: string
       instruction: string
       deliveryDate: string
-      postingDate: string
       value: number
       subjectId: number
     }) => {
@@ -27,16 +25,21 @@ export function useCreateActivityMutation() {
         description: instruction,
         value,
         deliveryDate,
-        postingDate,
       }
 
-      await api.post(`${subjectId}/activity`, requestBody)
+      try {
+        await api.post(`/subjects/${subjectId}/activity`, requestBody)
+
+        return 'Atividade criada com sucesso'
+      } catch (error) {
+        console.error('Erro ao criar atividade:', error)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LIST_ACTIVITIES_QUERY })
     },
-    onError: (error) => {
-      console.error('Erro ao criar atividade:', error)
+    onError: (error: any) => {
+      console.error('Erro ao criar atividade:', error.message)
     },
   })
 }

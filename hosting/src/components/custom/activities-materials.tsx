@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { EllipsisVertical } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Link } from '@tanstack/react-router'
+import { useDeleteActivityMutation } from '@/mutations/use-delete-activity-mutation'
 
 interface ActivitiesMaterialsProps {
   id: string
@@ -26,24 +27,32 @@ export function ActivitiesMaterials({
   idCourse,
   idClass,
   idSubject,
-  toViewSends,
   title,
   dateActivity,
   instruction,
-  iconColor,
   assigned,
   pending,
   type,
 }: ActivitiesMaterialsProps) {
+  const { mutateAsync: deleteActivity } = useDeleteActivityMutation()
+
+  const handleDelete = async () => {
+    try {
+      await deleteActivity(Number(id))
+    } catch (error) {
+      console.error('Erro ao excluir atividade:', error)
+    }
+  }
+
   if (type === 'teacher') {
     return (
       <div className="w-full h-auto my-2.5">
-        <Accordion className="border rounded-2xl px-4" type="single" collapsible>
+        <Accordion className="border rounded-2xl px-4 shadow-md" type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>
               <div className="flex justify-between w-full items-center">
                 <div className="flex items-center">
-                  <div className={clsx('flex justify-center items-center ', iconColor, 'w-10 h-10 rounded-full')}>
+                  <div className={clsx('flex justify-center items-center bg-yellow-600 w-10 h-10 rounded-full')}>
                     <img className="h-6 w-6 " src={iconeAtividade} />
                   </div>
                   <div className="ml-2">
@@ -56,24 +65,23 @@ export function ActivitiesMaterials({
                     <EllipsisVertical />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem>Excluir</DropdownMenuItem>
-
-                    <DropdownMenuItem>
-                      <Link
-                        to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
-                        params={{
-                          idCourse,
-                          idClass,
-                          idSubject,
-                        }}
-                        search={{
-                          action: 'edit',
-                          idActivity: id,
-                        }}
-                      >
+                    <DropdownMenuItem onClick={handleDelete}>Excluir</DropdownMenuItem>
+                    <Link
+                      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
+                      params={{
+                        idCourse,
+                        idClass,
+                        idSubject,
+                      }}
+                      search={{
+                        action: 'edit',
+                        idActivity: id,
+                      }}
+                    >
+                      <DropdownMenuItem>
                         <div className="w-full h-full">Editar</div>
-                      </Link>
-                    </DropdownMenuItem>
+                      </DropdownMenuItem>
+                    </Link>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -130,11 +138,19 @@ export function ActivitiesMaterials({
     return (
       <>
         <div className="flex items-center w-full md:hidden border p-4 rounded-2xl my-2.5">
-          <div className={clsx('flex justify-center items-center', iconColor, 'w-10 h-10 rounded-full')}>
+          <div className={clsx('flex justify-center items-center bg-yellow-600 w-10 h-10 rounded-full')}>
             <img className="h-6 w-6" src={iconeAtividade} alt="" />
           </div>
           <div className="ml-2">
-            <Link to={toViewSends}>
+            <Link
+              to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/$idActivity/view-activity-student"
+              params={{
+                idActivity: id,
+                idCourse,
+                idClass,
+                idSubject,
+              }}
+            >
               <p className="flex color:gray font-bold text-base text-gray-700">{title}</p>
             </Link>
             <p className="flex color:gray text-xs text-gray-300">{dateActivity}</p>
@@ -146,7 +162,7 @@ export function ActivitiesMaterials({
             <AccordionItem value="item-1">
               <AccordionTrigger>
                 <div className="flex items-center">
-                  <div className={clsx('flex justify-center items-center', iconColor, 'w-10 h-10 rounded-full')}>
+                  <div className={clsx('flex justify-center items-center bg-blue-500 w-10 h-10 rounded-full')}>
                     <img className="h-6 w-6" src={iconeAtividade} alt="" />
                   </div>
                   <div className="ml-2">
@@ -186,9 +202,8 @@ export function ActivitiesMaterials({
       </>
     )
   }
-  return (
-    <div className="flex flex-col gap-y-2">
-      <p className="text-lg text-red-600">Erro de tipagem, insira student ou teacher no type</p>
-    </div>
-  )
+
+  return null
 }
+
+export default ActivitiesMaterials

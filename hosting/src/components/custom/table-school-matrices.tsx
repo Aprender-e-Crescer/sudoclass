@@ -18,27 +18,27 @@ export function TableSchoolMatrices() {
 
   const data = [
     {
-      name: 'ANALISE DE DESENVOLVIMENTO...',
-      workLoad: '60 Horas',
-      to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
-    },
-    {
       name: 'UI/UX',
       workLoad: '60 Horas',
       to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
     },
     {
-      name: 'UI/UX',
+      name: 'WEB1',
       workLoad: '60 Horas',
       to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
     },
     {
-      name: 'UI/UX',
+      name: 'WEB2',
       workLoad: '60 Horas',
       to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
     },
     {
-      name: 'UI/UX',
+      name: 'MARKETING',
+      workLoad: '60 Horas',
+      to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
+    },
+    {
+      name: 'BACKEND',
       workLoad: '60 Horas',
       to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
     },
