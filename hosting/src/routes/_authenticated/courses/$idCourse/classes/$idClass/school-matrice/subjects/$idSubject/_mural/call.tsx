@@ -2,25 +2,16 @@ import React, { useState, useEffect } from 'react'
 import ListStudents from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { createFileRoute } from '@tanstack/react-router'
-import { useStudentsListQuery } from '@/queries/use-students-list-query'
-import { collection, addDoc } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@radix-ui/react-popover'
+import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover'
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
-
 export function DatePickerDemo({
   date,
   setDate,
 }: {
   date: Date | undefined
-
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
 }) {
   return (
@@ -29,10 +20,7 @@ export function DatePickerDemo({
         <Button
           size="medium"
           variant="ghostBlack"
-          className={cn(
-            'bg-slate-200 justify-start text-left',
-            !date && 'text-muted-foreground',
-          )}
+          className={cn('bg-slate-200 justify-start text-left', !date && 'text-muted-foreground')}
         >
           {date ? format(date, 'PPP') : <span>Escolha a data</span>}
         </Button>
@@ -59,90 +47,45 @@ export const Route = createFileRoute(
 })
 
 export function Call() {
-  const { data: students } = useStudentsListQuery()
-  const [studentList, setStudentList] = useState(students || [])
-  const [currentIndex, setCurrentIndex] = useState(-1)
+  const mockedStudents = [
+    { id: '1', name: 'Alice', picture: '/images/alice.jpg', variant: 'undefined' },
+    { id: '2', name: 'Bob', picture: '/images/bob.jpg', variant: 'undefined' },
+    { id: '3', name: 'Charlie', picture: '/images/charlie.jpg', variant: 'undefined' },
+  ]
   const [date, setDate] = useState<Date | undefined>(undefined)
-
-  useEffect(() => {
-    if (students && students.length > 0) {
-      setStudentList(students)
-      setCurrentIndex(students.length - 1)
-      console.log('Lista de alunos carregada:', students)
-    }
-  }, [students])
+  const [studentList, setStudentList] = useState(mockedStudents)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   const updateStudentStatus = (id: string, status: any) => {
     setStudentList((prevList) =>
-      prevList.map((student) =>
-        student.id === id ? { ...student, variant: status } : student,
-      ),
+      prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
     )
   }
 
-  const addCall = async (values: {
-    studentId: string
-    status: string
-    date: Date
-  }) => {
-    try {
-      const callRef = collection(
-        firestore,
-        'student',
-        'U2IvXW4yX8IE5QksHSox',
-        'call',
-      )
-      const newCall = {
-        studentId: values.studentId,
-        status: values.status,
-        date: values.date,
-      }
-
-      console.log('Tentando adicionar chamada:', newCall)
-      await addDoc(callRef, newCall)
-      console.log('Chamada adicionada com sucesso:', newCall)
-    } catch (error) {
-      console.error('Erro ao adicionar chamada:', error.message || error)
-    }
-  }
-
   const handleAddCall = () => {
-    console.log('Current Index:', currentIndex)
-    console.log('Student List:', studentList)
+    console.log('Finalizando chamada...')
+    console.log('Lista de Alunos:', studentList)
 
-    if (currentIndex === 0 || !studentList[currentIndex]) {
-      console.error('Nenhum aluno selecionado.')
-      return
-    }
+    const callData = studentList.map((student) => ({
+      studentId: student.id,
+      status: student.variant === 'present' ? true : false,
+    }))
 
-    if (!date) {
-      console.error('Data não está definida.')
-      return
-    }
+    setTimeout(() => {
+      console.log('Dados da chamada enviados:', callData)
+    })
 
-    const values = {
-      studentId: studentList[currentIndex].id,
-      status: 'active',
-      date: date,
-    }
-
-    console.log('Valores antes de adicionar a chamada:', values)
-    addCall(values)
+    setStudentList(mockedStudents)
+    setCurrentIndex(0)
+    setDate(undefined) 
   }
-
-  // const [copyStudentList, setCopyStudentList] = useState(students || []);
 
   return (
     <>
       <div className="flex flex-1">
         <div className="flex-1">
           {studentList.map((student) => (
-            <ListStudents
-              key={student.id}
-              name={student.name}
-              picture={student.picture}
-              variant={student.variant}
-            />
+            <ListStudents key={student.id} name={student.name} picture={student.picture} variant={student.variant} />
           ))}
         </div>
         <div className="w-full">
@@ -151,14 +94,15 @@ export function Call() {
             currentIndex={currentIndex}
             onStudentUpdate={updateStudentStatus}
             setCurrentIndex={setCurrentIndex}
+            date={date}
           />
-          <div className="flex justify-around mb-10">
+          <div className="flex justify-around mt-2">
+            <DatePickerDemo date={date} setDate={setDate} />
+          </div>
+          <div className="flex justify-around mt-2">
             <Button onClick={handleAddCall} size="medium">
               Finalizar Chamada
             </Button>
-          </div>
-          <div className="flex justify-around mb-6">
-            <DatePickerDemo date={date} setDate={setDate} />
           </div>
         </div>
       </div>

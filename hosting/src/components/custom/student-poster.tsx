@@ -1,27 +1,61 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Check, Undo2, X } from 'lucide-react'
 import TinderCard from 'react-tinder-card'
+import { useCreateSchoolCallMutation } from '@/mutations/use-create-call-mutation'
+import { format } from 'date-fns'
 
-export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex }) {
+export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex, date }) {
   const [swipedIndices, setSwipedIndices] = useState([])
+  const [callId, setCallId] = useState(1)
+  const createSchoolCall = useCreateSchoolCallMutation()
 
-  const handleSwipe = (direction) => {
-    if (students && currentIndex >= 0) {
+  const handleSwipe = async (direction, selectedDate) => {
+    if (students && currentIndex >= 0 && currentIndex < students.length) {
       const studentId = students[currentIndex].id
+      const status = direction === 'right'
 
-      if (direction === 'left') {
-        onStudentUpdate(studentId, 'lack')
-      } else if (direction === 'right') {
-        onStudentUpdate(studentId, 'present')
+      const currentDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : new Date().toISOString().split('T')[0]
+
+      const subjectId = 1
+
+      if (!subjectId) {
+        console.error('Erro: idSubject não está disponível.')
+        return
       }
 
-      setSwipedIndices((prev) => [...prev, currentIndex])
-      setCurrentIndex((prevIndex) => prevIndex - 1)
+      const currentCallId = callId
+
+      try {
+        await createSchoolCall.mutateAsync({
+          id_chamada: currentCallId,
+          id_materia: subjectId,
+          data: currentDate,
+          id_aluno: studentId,
+          status,
+        })
+
+        if (direction === 'left') {
+          onStudentUpdate(studentId, 'lack')
+        } else if (direction === 'right') {
+          onStudentUpdate(studentId, 'present')
+        }
+
+        setSwipedIndices((prev) => [...prev, currentIndex])
+
+        setCurrentIndex((prevIndex) => {
+          const nextIndex = prevIndex + 1
+          return nextIndex < students.length ? nextIndex : prevIndex
+        })
+
+        setCallId((prev) => prev + 1)
+      } catch (error) {
+        console.error('Erro ao criar a chamada:', error)
+      }
     }
   }
 
-  const handleReject = () => handleSwipe('left')
-  const handleAccept = () => handleSwipe('right')
+  const handleReject = () => handleSwipe('left', date)
+  const handleAccept = () => handleSwipe('right', date)
 
   const handleUndo = () => {
     if (swipedIndices.length > 0) {
@@ -36,13 +70,13 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center ">
       <div className="relative w-full max-w-[375px] h-[600px]">
-        {currentIndex >= 0 && (
+        {currentIndex >= 0 && currentIndex < students.length && (
           <TinderCard
             className="absolute w-full h-full"
             key={students[currentIndex].id}
-            onSwipe={(dir) => handleSwipe(dir)}
+            onSwipe={(dir) => handleSwipe(dir, date)}
             preventSwipe={['up', 'down']}
           >
             <div className="relative bg-white border-2 w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
