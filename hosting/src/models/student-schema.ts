@@ -1,38 +1,31 @@
-import { datePreprocessedSchema } from '@/utils/schema'
+import { DocumentReference } from 'firebase/firestore'
 import { z } from 'zod'
-
-export const studentSchema = z.preprocess((obj) => ({
-  idStudent: obj.id_aluno,
-  name: obj.nome,
-  birthDate: obj.data_nasc,
-  email: obj.email,
-  state: obj.estado,
-  city: obj.municipio,
-  street: obj.rua,
-  neighborhood: obj.bairro,
-  number: obj.numero,
-  rg: obj.rg,
-  rgIssueDate: obj.datadeexpedicaorg,
-  rgIssueState: obj.estadodeexpedicaorg,
-  birthState: obj.estadonascimento,
-  birthCity: obj.cidadenascimento,
-  cpf: obj.cpf,
-}), z.object({
-  idStudent: z.number(),
-  name: z.string(),
-  birthDate: datePreprocessedSchema,
-  email: z.string(),
-  state: z.string(),
-  city: z.string(),
-  street: z.string(),
-  neighborhood: z.string(),
-  number: z.string(),
-  rg: z.string(),
-  rgIssueDate: z.string(),
-  rgIssueState: z.string(),
-  birthState: z.string(),
-  birthCity: z.string(),
+ 
+export const studentSchema = z.object({
+  id: z.string(),
+  address: z.object({
+    city: z.string(),
+    neighborhood: z.string(),
+    state: z.string(),
+    street: z.string(),
+    streetNumber: z.number(),
+  }),
+  cityOfBirth: z.string(),
   cpf: z.string(),
-}))
-
+  dateOfBirth: z.string(),
+  email: z.string().email(),
+  name: z.string(),
+  responsible: z.custom((responsible) => {
+    return responsible instanceof DocumentReference;
+  }, {
+    message: "O campo 'responsible' deve ser uma referência válida do Firestore.",
+  }),
+ 
+  rg: z.string(),
+  shippingDate: z.string(),
+  shippingStatus: z.string(),
+  stateOfBirth: z.string(),
+  telephone: z.string(),
+})
+ 
 export type Student = z.infer<typeof studentSchema>

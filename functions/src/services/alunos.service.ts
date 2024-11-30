@@ -130,6 +130,16 @@ async function getStudent(id: string): Promise<string> {
     }
 }
 
+async function getAllStudents() {
+    try {
+        const response = await db.query("SELECT * FROM alunos")
+        return response.rows 
+    } catch (error) {
+        console.error('Erro ao buscar os alunos:', error)
+        return 'Erro ao buscar os alunos'
+    }
+}
+
 export const alunoService = {
     createAluno: (id : string,
         nomeCompleto: string, 
@@ -164,4 +174,5 @@ export const alunoService = {
         cidadeDeNascimeto: string) =>updateAluno(id, nomeCompleto, cpf, email, telefone, estado, municipio, rua, bairro, numeroDaCasa, dataDeNascimento, rg, dataExpedicaoRg, estadoDeNascimento, cidadeDeNascimeto),
     deleteStudent: (id: string) => deleteStudent(id),
     getStudent: (id: string) => getStudent(id),
+    getAllStudents: () => getAllStudents()
 }
