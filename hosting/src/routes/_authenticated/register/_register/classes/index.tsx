@@ -94,7 +94,7 @@ export function ClassList() {
             data-no-action={!action}
           >
             {classes?.map(({ name, id_turma }, index) => (
-              <div key={index} className="flex flex-col gap-10 w-full">
+              <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
                 <p className="border rounded-xl p-3 flex justify-between">
                   {name}
                   <div className="flex gap-2">

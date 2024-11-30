@@ -62,10 +62,10 @@ export function TeachersListing() {
               Cadastrar novo professor
             </Button>
           </Link>
-        </div>
+        </div>  
 
         <div className="flex sm:flex-row flex-col">
-          <div className="flex flex-1 flex-col p-3 data-[isaction=true]:w-2/6" data-isaction={!!action}>
+          <div className="flex flex-1 flex-col p-3 data-[isaction=true]:max-w-96" data-isaction={!!action}>
             {registerRequests?.map(({ fullName }, index) => (
               <div key={index} className="flex justify-between items-start">
                 <Link to="/register/teachers" search={{ action: 'edit' }} className="flex flex-col flex-1">
@@ -86,7 +86,7 @@ export function TeachersListing() {
               onSubmit={(values) => registerTeacher(values)}
               validationSchema={toFormikValidationSchema(registerTeacherSchema)}
             >
-              <Form className="p-1">
+              <Form className="flex flex-col flex-1 p-1">
                 <div className=" flex-flex-col flex-1 p-2 rounded-sm border-2">
                   <InputForm
                     title="Nome completo"
