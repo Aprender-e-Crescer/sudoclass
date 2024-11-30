@@ -11,7 +11,7 @@ export const InputNoteSchema = z.object({
         required_error: 'Insira um número',
       })
       .min(1, { message: 'O valor mínimo é 1' })
-      .max(100, { message: 'O valor máximo é 100' }),
+      .max(10, { message: 'O valor máximo é 10' }),
   ),
 })
 

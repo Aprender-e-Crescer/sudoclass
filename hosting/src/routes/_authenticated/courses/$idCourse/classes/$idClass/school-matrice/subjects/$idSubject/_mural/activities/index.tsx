@@ -4,18 +4,6 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useListActivitiesQuery } from '@/queries/use-list-activities-query'
 import { Plus } from 'lucide-react'
 
-interface ListActivity {
-  id: string
-  link: string
-  title: string
-  dateActivity: string
-  instructions: string
-  iconColor: string
-  assigned: number
-  pending: number
-  type: 'teacher' | 'student'
-}
-
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/',
 )({
@@ -23,14 +11,17 @@ export const Route = createFileRoute(
 })
 
 export function ListActivity() {
-  const { data: activities } = useListActivitiesQuery()
+  const { data: activities, error, isLoading } = useListActivitiesQuery()
   const { idClass, idCourse, idSubject } = Route.useParams()
+
+  if (isLoading) return <div>Carregando...</div>
+  if (error) return <div>Erro ao carregar atividades: {error.message}</div>
 
   return (
     <>
       <div className="min-h-screen overflow-y-hidden w-full">
         <div className="flex flex-col md:flex-row overflow-hidden">
-          <div className="flex flex-col w-full h-auto p-2 md:p-4 overflow-hidden">
+          <div className="flex flex-col w-full mx-24 h-auto p-2 md:p-4 overflow-hidden">
             <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
             <div>
               <Link
@@ -55,30 +46,34 @@ export function ListActivity() {
                 </Button>
               </Link>
             </div>
-            <div>
-              <ActivitiesMaterials
-                id="1"
-                idClass={idClass}
-                idCourse={idCourse}
-                idSubject={idSubject}
-                instruction=""
-                title=""
-                type="teacher"
-              />
-            </div>
             <div className="md:ml-5">
               <div>
                 {activities?.map((activity) => {
                   return (
                     <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
                       <ActivitiesMaterials
-                        id={activity.id}
+                        id={activity.id.toString()}
                         idClass={idClass}
                         idCourse={idCourse}
                         idSubject={idSubject}
                         title={activity.title}
                         instruction={activity.instruction}
                         type="teacher"
+                        assigned={0}
+                        pending={26}
+                        dateActivity={
+                          activity.datePosting
+                            ? (() => {
+                                const date = new Date(activity.datePosting)
+                                date.setDate(date.getDate() + 1)
+                                return date.toLocaleDateString('pt-BR', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                })
+                              })()
+                            : undefined
+                        }
                       />
                     </div>
                   )

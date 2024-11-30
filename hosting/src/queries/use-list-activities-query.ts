@@ -8,7 +8,7 @@ export function useListActivitiesQuery() {
   return useQuery({
     queryKey: LIST_ACTIVITIES_QUERY,
     queryFn: async () => {
-      const { data } = await api.get('/activities')
+      const { data } = await api.get('/activity')
       const activities = z.array(activitySchema).parse(data)
 
       return activities
