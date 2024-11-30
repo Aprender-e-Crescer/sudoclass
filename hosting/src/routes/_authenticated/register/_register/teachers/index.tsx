@@ -46,11 +46,33 @@ function useLogic() {
   const { idTeacher, action } = Route.useSearch()
   const { data: registerRequests } = useTeachersListingQuery()
 
-  return { registerRequests, action, registerTeacher }
+  const handleOnCreateOrEditSubmit = (values: typeof initialValues) => {
+    if (!idTeacher) throw new Error('idTeacher is required')
+
+    return registerTeacher({
+      bairro: values.neighborhood,
+      cidadedenascimento: values.birthCity,
+      cpf: values.cpf,
+      datadeexpedicaorg: new Date(values.rgDispatchDate),
+      datanasc: values.dateOfBirth,
+      email: values.email,
+      estado: values.state,
+      estadodeexpedicaorg: values.rgDispatchStatus,
+      estadonascimento: new Date(values.birthStatus),
+      id_professor: idTeacher,
+      municipio: values.municipality,
+      nome: values.fullName,
+      numero: values.number,
+      rg: values.rgNumber,
+      rua: values.road,
+    })
+  }
+
+  return { registerRequests, action, handleOnCreateOrEditSubmit }
 }
 
 export function TeachersListing() {
-  const { registerRequests, action, registerTeacher } = useLogic()
+  const { registerRequests, action, handleOnCreateOrEditSubmit } = useLogic()
 
   return (
     <>
@@ -83,7 +105,7 @@ export function TeachersListing() {
           <When condition={!!action}>
             <Formik
               initialValues={initialValues}
-              onSubmit={(values) => registerTeacher(values)}
+              onSubmit={handleOnCreateOrEditSubmit}
               validationSchema={toFormikValidationSchema(registerTeacherSchema)}
             >
               <Form className="flex flex-col flex-1 p-1">
