@@ -1,17 +1,4 @@
-import {
-  Home,
-  CalendarDays,
-  History,
-  UniversityIcon,
-  FileText,
-  FormInput,
-  MessageCircle,
-  Settings,
-  SquarePen,
-  SquarePlus,
-  Users,
-  MessageSquareLock,
-} from 'lucide-react'
+import { Home, History, UniversityIcon, FileText, FormInput, Settings, MessageSquareLock, User } from 'lucide-react'
 import { MenuItem } from './menu-item'
 import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'
@@ -21,117 +8,66 @@ interface LeftMenuProps {
 }
 
 const menuItemsStudentPortal = [
-  { name: 'Início', icon: Home },
-  { name: 'Agenda', icon: CalendarDays },
-  { name: 'Histórico', icon: History },
-  { name: 'Matriz Escolar', icon: UniversityIcon },
-  { name: 'Documentos', icon: FileText },
-  { name: 'Formulários', icon: FormInput },
-  { name: 'Chat', icon: MessageCircle },
-  { name: 'Configurações', icon: Settings },
+  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
+  { name: 'Frequencia', icon: History, to: '/frequency-portal-aluno' },
+  { name: 'Matriz Escolar', icon: UniversityIcon, to: '/courses/$idCourse/classes/$idClass/school-matrice/' },
+  { name: 'Documentos', icon: FileText, to: '/documents' },
+  { name: 'Formulários', icon: FormInput, to: '/forms' },
+  { name: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
 const menuItemsAdminPortal = [
-  { name: 'Início', icon: Home },
-  { name: 'Agenda', icon: CalendarDays },
-  { name: 'Alunos', icon: Users },
-  { name: 'Professores', icon: Users },
-  { name: 'Formulário', icon: FormInput },
-  { name: 'Solicitação de senhas', icon: MessageSquareLock },
-  { name: 'Configurações', icon: Settings },
-  { name: 'Chat', icon: MessageCircle },
+  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
+  { name: 'Formulário', icon: FormInput, to: '/admin/forms' },
+  { name: 'Solicitações', icon: MessageSquareLock, to: '/_requests/password-change-request' },
+  { name: 'Configurações', icon: Settings, to: '/profile-changes' },
+  { name: 'Cadastro', icon: User, to: '/register' },
 ]
 
 const menuItemsTeacherClassroom = [
-  { name: 'Início', icon: Home },
-  { name: 'Chat', icon: MessageCircle },
-  { name: 'Agenda', icon: CalendarDays },
-  { name: 'Configurações', icon: Settings },
+  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
+  { name: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
+
 const courses = ['Curso 1', 'Curso 2', 'Curso 3']
 
 function LeftMenu({ type }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('')
 
-  if (type === 'StudentPortal') {
-    return (
-      <div className="flex gap-8 flex-col">
-        {menuItemsStudentPortal.map((item, index) => (
-          <MenuItem key={index} nameItem={item.name} activeItem={activeItem} onClick={setActiveItem} Icon={item.icon} />
-        ))}
+  const renderMenuItems = (menuItems: typeof menuItemsStudentPortal) =>
+    menuItems.map((item, index) => (
+      <MenuItem
+        key={index}
+        nameItem={item.name}
+        activeItem={activeItem}
+        onClick={setActiveItem}
+        Icon={item.icon}
+        to={item.to}
+      />
+    ))
 
-        <div className="flex-col gap-4 w-52 border-t-2 hidden min-[420px]:flex">
-          <div className="w-44 h-10 pt-6 flex items-center rounded-lg">
-            <p className="font-bold text-[#787486] text-[12px] pl-3">CURSOS</p>
-          </div>
+  return (
+    <div className="flex gap-8 flex-col">
+      {type === 'StudentPortal' && renderMenuItems(menuItemsStudentPortal)}
+      {type === 'AdminPortal' && renderMenuItems(menuItemsAdminPortal)}
+      {type === 'TeacherClassroom' && renderMenuItems(menuItemsTeacherClassroom)}
 
-          {courses.map((course, index) => (
-            <CourseItem
-              key={index}
-              course={course}
-              activeItem={activeItem}
-              onClick={() => setActiveItem(course)}
-              index={index}
-            />
-          ))}
+      <div className="flex-col gap-4 w-52 border-t-2 hidden min-[420px]:flex">
+        <div className="w-44 h-10 pt-6 flex items-center rounded-lg">
+          <p className="font-bold text-[#787486] text-[12px] pl-3">CURSOS</p>
         </div>
-      </div>
-    )
-  }
-
-  if (type === 'AdminPortal') {
-    return (
-      <div className="flex gap-8 flex-col">
-        {menuItemsAdminPortal.map((item, index) => (
-          <MenuItem key={index} nameItem={item.name} activeItem={activeItem} onClick={setActiveItem} Icon={item.icon} />
+        {courses.map((course, index) => (
+          <CourseItem
+            key={index}
+            course={course}
+            activeItem={activeItem}
+            onClick={() => setActiveItem(course)}
+            index={index}
+          />
         ))}
-
-        <div className="flex-col gap-4 w-64 border-t-2 hidden min-[420px]:flex">
-          <div className="w-48 h-10  gap-28 pt-6 flex items-center rounded-lg">
-            <p className="font-bold text-[#787486] text-[12px] pl-3">CURSOS</p>
-            <SquarePen size={16} color="#787486" />
-          </div>
-
-          {courses.map((course, index) => (
-            <CourseItem
-              key={index}
-              course={course}
-              activeItem={activeItem}
-              onClick={() => setActiveItem(course)}
-              index={index}
-            />
-          ))}
-        </div>
       </div>
-    )
-  }
-
-  if (type === 'TeacherClassroom') {
-    return (
-      <div className="flex gap-8 flex-col">
-        {menuItemsTeacherClassroom.map((item, index) => (
-          <MenuItem key={index} nameItem={item.name} activeItem={activeItem} onClick={setActiveItem} Icon={item.icon} />
-        ))}
-
-        <div className="flex-col gap-4 w-64 border-t-2 hidden min-[420px]:flex">
-          <div className="w-48 h-10 gap-28 pt-6 flex items-center rounded-lg">
-            <p className="font-bold text-[#787486] text-[12px] pl-3">CURSOS</p>
-            <SquarePlus size={16} color="#787486" />
-          </div>
-
-          {courses.map((course, index) => (
-            <CourseItem
-              key={index}
-              course={course}
-              activeItem={activeItem}
-              onClick={() => setActiveItem(course)}
-              index={index}
-            />
-          ))}
-        </div>
-      </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default LeftMenu

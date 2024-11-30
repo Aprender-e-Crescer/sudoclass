@@ -1,17 +1,13 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
 import ListStudents from '@/components/custom/list-students'
-import { TeacherComment } from '@/components/custom/teacher-comment'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
-import { User } from 'lucide-react'
 import { useAddGradeMutation } from '@/mutations/use-add-grade-mutation'
 import { z } from 'zod'
 
@@ -33,69 +29,68 @@ const initialValues = {
 
 interface Student {
   id: string
-  address: {
-    city: string
-    neighborhood: string
-    state: string
-    street: string
-    streetNumber: number
-  }
-  cityOfBirth: string
-  cpf: string
-  dateOfBirth: string
-  email: string
   name: string
-  telephone: string
+  picture: string
 }
 
 function Correction() {
-  const { activityID } = useParams()
-  const { data: students } = useStudentsListQuery()
+  const { idActivity } = Route.useParams()
+
+  const students: Student[] = [
+    {
+      id: '1',
+      name: 'João Silva',
+      picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
+    },
+    {
+      id: '2',
+      name: 'Maria Oliveira',
+      picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
+    },
+    {
+      id: '3',
+      name: 'Pedro Souza',
+      picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
+    },
+  ]
+
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-  const [inputValue, setInputValue] = useState<string>('')
-
-  const { mutate: addGrade } = useAddGradeMutation('schoolMatriceId', 'subjectId', activityID!)
-
-  const [sucessMessage, setSuccessMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
+  const [formKey, setFormKey] = useState(0)
 
   const handleStudentClick = (student: Student) => {
     if (selectedStudent?.id === student.id) {
       setSelectedStudent(null)
     } else {
       setSelectedStudent(student)
+      setSuccessMessage('')
+      setFormKey((prevKey) => prevKey + 1)
     }
   }
 
-  const handleSubmitNote = async (values: any) => {
-    const grade = parseInt(values.value)
-    try {
-      if (!activityID) {
-        setSuccessMessage('Erro: ID da atividade não encontrado.')
-        return
-      }
+  const { mutate: addGrade } = useAddGradeMutation()
 
-      await addGrade({
-        grade,
-        studentId: selectedStudent?.id,
-        comment: values.comment,
-      })
+  const handleSubmitNote = async (values: any, { resetForm }: { resetForm: () => void }) => {
+    const { value } = values
+    const grade = parseFloat(value)
 
-      setSuccessMessage('Nota adicionada com sucesso!')
-      setTimeout(() => setSuccessMessage(''), 3000)
-    } catch (error) {
-      setSuccessMessage('Erro ao adicionar nota!')
-      setTimeout(() => setSuccessMessage(''), 3000)
+    if (selectedStudent?.id && idActivity) {
+      const studentId = parseInt(selectedStudent.id, 10)
+      const activityId = parseInt(idActivity, 10)
+
+      addGrade({ activityId, studentId, grade })
+      setSuccessMessage('Nota atribuída com sucesso!')
+      resetForm()
     }
   }
 
   return (
     <>
       <div className="hidden md:flex flex-grow">
-        ''
         <div>
-          {students?.map((student) => (
+          {students.map((student) => (
             <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
-              <ListStudents name={student.name} picture="" variant="corrected" />
+              <ListStudents name={student.name} picture={student.picture} variant="corrected" />
             </div>
           ))}
         </div>
@@ -104,6 +99,7 @@ function Correction() {
           <div className="hidden md:flex flex-col justify-center w-full items-center gap-y-10 mt-5">
             <h2 className="text-xl">Avaliar {selectedStudent.name}</h2>
             <Formik
+              key={formKey}
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(InputNoteSchema)}
               onSubmit={handleSubmitNote}
@@ -126,28 +122,9 @@ function Correction() {
                 </Form>
               )}
             </Formik>
-            {sucessMessage && <p className="text-green-500">{sucessMessage}</p>}
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
             <div>
               <Input type="file" className="h-96 w-80" />
-            </div>
-            <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
-              <div className="flex gap-x-2 text-gray-500">
-                <User />
-                <p>Comentários</p>
-              </div>
-              <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-              <form className="flex">
-                <Input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="escreva seu comentário"
-                  className="flex-grow"
-                />
-                <Button type="submit" variant="blueButton" size="small" className="ml-2">
-                  Enviar
-                </Button>
-              </form>
             </div>
           </div>
         )}
@@ -159,8 +136,8 @@ function Correction() {
             <AccordionTrigger>
               <div className="flex justify-center items-center w-full">
                 <div>
-                  {students?.map((student) => (
-                    <ListStudents key={student.id} name={student.name} picture="" variant="corrected" />
+                  {students.map((student) => (
+                    <ListStudents key={student.id} name={student.name} picture={student.picture} variant="corrected" />
                   ))}
                 </div>
               </div>
@@ -169,6 +146,7 @@ function Correction() {
               <div className="flex flex-col justify-center w-full items-center gap-y-10 mt-5">
                 <div className="flex gap-x-10">
                   <Formik
+                    key={formKey}
                     initialValues={initialValues}
                     validationSchema={toFormikValidationSchema(InputNoteSchema)}
                     onSubmit={(values) => {
@@ -194,21 +172,7 @@ function Correction() {
                   <Input type="file" className="h-96 w-80" />
                 </div>
 
-                <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md">
-                  <TeacherComment avatarSrc="" comment="teste" date="17/10/2024" name="Enzo Guis" textAvatar="EG" />
-                  <form className="flex">
-                    <Input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="escreva seu comentário"
-                      className="flex-grow"
-                    />
-                    <Button type="submit" variant="blueButton" size="small" className="ml-2">
-                      Enviar
-                    </Button>
-                  </form>
-                </div>
+                <div className="flex flex-col w-full max-w-[400px] gap-y-3 border border-gray-300 p-3 rounded-md"></div>
               </div>
             </AccordionContent>
           </AccordionItem>

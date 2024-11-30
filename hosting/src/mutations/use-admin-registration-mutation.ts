@@ -1,21 +1,29 @@
-import { addDoc, collection, Firestore } from "firebase/firestore";
-import { useMutation } from '@tanstack/react-query';
- 
+import { firestore } from '@/services/firebase'
+import { useMutation } from '@tanstack/react-query'
+import { doc, setDoc, collection } from 'firebase/firestore'
+
+interface MutationResults {
+  onSuccess: () => void,
+  onError: () => void
+}
+
 interface AdminData {
   nome: string;
   cpf: string;
 }
- 
-export function useAdminRegistrationMutation(db: Firestore) {
+
+export function useRegisterAdminMutation({ onSuccess, onError }: MutationResults) {
+  const docRef = doc(collection(firestore, 'admins')) 
+
   return useMutation({
-    mutationKey: ['adminRegistration'],
-    mutationFn: async (adminData: AdminData) => {
-      try {
-        const newAdminRef = await addDoc(collection(db, 'admins'), adminData);
-        console.log("Admin cadastrado com sucesso", newAdminRef.id);
-      } catch (error) {
-        console.log("Erro ao cadastrar admin:", (error as Error).message);
-      }
+    mutationKey: ['register-admin'],
+    mutationFn: (adminData: AdminData) => {
+      return setDoc(docRef, {
+        nome: adminData.nome,
+        cpf: adminData.cpf,
+      })
     },
-  });
+    onSuccess,
+    onError,
+  })
 }

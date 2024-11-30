@@ -1,6 +1,6 @@
 import { DocumentReference } from 'firebase/firestore'
 import { z } from 'zod'
-
+ 
 export const studentSchema = z.object({
   id: z.string(),
   address: z.object({
@@ -20,12 +20,12 @@ export const studentSchema = z.object({
   }, {
     message: "O campo 'responsible' deve ser uma referência válida do Firestore.",
   }),
-
+ 
   rg: z.string(),
   shippingDate: z.string(),
   shippingStatus: z.string(),
   stateOfBirth: z.string(),
   telephone: z.string(),
 })
-
+ 
 export type Student = z.infer<typeof studentSchema>
