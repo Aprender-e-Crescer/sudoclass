@@ -20,6 +20,7 @@ const buttonVariants = cva(
         small: "w-[96px] h-[36px]",
         medium: "w-[160px] h-[36px]",
         large: "w-[222px] h-[36px]",
+        manage: "w-full h-[36px]"
       },
     },
     defaultVariants: {
