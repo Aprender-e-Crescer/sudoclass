@@ -1,16 +1,16 @@
-import { Student } from '@/models/student-schema' 
+import { Student } from '@/models/student-schema'
 import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
 import { doc, setDoc, collection } from 'firebase/firestore'
-
+ 
 interface MutationResults {
   onSuccess: () => void,
   onError: () => void
 }
-
+ 
 export function useRegisterStudentMutation({ onSuccess, onError }: MutationResults) {
   const docRef = doc(collection(firestore, 'students'))
-
+ 
   return useMutation({
     mutationKey: ['register-student'],
     mutationFn: (values: Student) => {
@@ -37,6 +37,7 @@ export function useRegisterStudentMutation({ onSuccess, onError }: MutationResul
       })
     },
     onSuccess,
+   
     onError,
   })
 }
