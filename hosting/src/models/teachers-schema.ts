@@ -1,7 +1,7 @@
 import { datePreprocessedSchema } from '@/utils/schema'
 import { z } from 'zod'
 
-export const registerSchema = z.preprocess((obj: any) => ({
+export const teacherListSchema = z.preprocess((obj: any) => ({
   idTeacher: obj?.id_professor,
   fullName: obj?.nome,
   dateOfBirth: obj?.datanasc,
@@ -30,7 +30,7 @@ export const registerSchema = z.preprocess((obj: any) => ({
   rgNumber: z.string().min(7, "RG deve ter no mínimo 7 dígitos"),
   cpf: z.string().min(1, "O campo 'CPF' é obrigatório"),
   rgDispatchDate: datePreprocessedSchema,
-  rgDispatchStatus: z.string().min(1, "O campo 'Status de emissão do RG' é obrigatório"),
+  rgDispatchStatus: z.date(),
   birthStatus: z.string().min(1, "O campo 'Estado civil' é obrigatório"),
   birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
 }));
@@ -71,28 +71,22 @@ export const teacherSchema = z.preprocess((obj) => ({
 
 export type Teacher = z.infer<typeof teacherSchema>
 
-export const listTeacherSchema = z.preprocess((obj) => ({
-  idTeacher: obj?.id_professor,
-  birthDate: obj?.datanasc,
-}), z.object({
-  idTeacher: z.number(),
-  birthDate: z.date(),
-  birthCity: z.string(),
-  birthStatus: z.string(),
-  cpf: z.string(),
-  email: z.string(),
-  fullName: z.string(),
-  municipality: z.string(),
-  neighborhood: z.string(),
-  number: z.number().or(z.string()),
-  password: z.string(),
-  profilePhoto: z.string(),
-  rgDispatchDate: z.string(),
-  rgDispatchStatus: z.string(),
-  rgNumber: z.number(),
-  state: z.string(),
-  street: z.string(),
-  telephone: z.number(),
-}))
+export const registerTeacherSchema = z.object({
+  idTeacher: z.number().min(1, "O campo 'ID do Professor' é obrigatório"),
+  fullName: z.string().min(1, "O campo 'Nome completo' é obrigatório"),
+  dateOfBirth: datePreprocessedSchema,
+  email: z.string().email('Email inválido'),
+  state: z.string().min(1, "O campo 'Estado' é obrigatório"),
+  municipality: z.string().min(1, "O campo 'Município' é obrigatório"),
+  road: z.string().min(1, "O campo 'Rua' é obrigatório"),
+  neighborhood: z.string().min(1, "O campo 'Bairro' é obrigatório"),
+  number: z.string().min(1, "O campo 'Número' é obrigatório"),
+  rgNumber: z.string().min(7, 'RG deve ter no mínimo 7 dígitos'),
+  cpf: z.string().min(1, "O campo 'CPF' é obrigatório"),
+  rgDispatchDate: datePreprocessedSchema,
+  rgDispatchStatus: z.date(),
+  birthStatus: z.string().min(1, "O campo 'Estado civil' é obrigatório"),
+  birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
+})
 
-export type RegisterRequests = z.infer<typeof registerSchema>
+export type RegisterRequests = z.infer<typeof teacherListSchema>

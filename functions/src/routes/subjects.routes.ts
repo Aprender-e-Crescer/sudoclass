@@ -8,6 +8,7 @@ router.put('/subject/:idMateria/course/:idCurso/teacher/:idProfessor',subjectsCo
 router.delete('/subject/:id', subjectsController.deleteSubject);
 router.get('/subject/:id', subjectsController.getSubjectById);
 router.post('/subject/class/:idTurma', subjectsController.addSubjectToClass);
+router.get('/subject/studentListBySubject/:id', subjectsController.studentListBySubject)
 
 
 export default router;
