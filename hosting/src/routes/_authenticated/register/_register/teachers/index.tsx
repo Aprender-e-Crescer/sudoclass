@@ -46,14 +46,11 @@ function useLogic() {
   const { idTeacher, action } = Route.useSearch()
   const { data: registerRequests } = useTeachersListingQuery()
 
-  const handleOnTeacherSubmit = (values: typeof initialValues) => {
-    registerTeacher(values)
-  }
-  return { handleOnTeacherSubmit, registerRequests, action }
+  return { registerRequests, action, registerTeacher }
 }
 
 export function TeachersListing() {
-  const { handleOnTeacherSubmit, registerRequests, action } = useLogic()
+  const { registerRequests, action, registerTeacher } = useLogic()
 
   return (
     <>
@@ -86,7 +83,7 @@ export function TeachersListing() {
           <When condition={!!action}>
             <Formik
               initialValues={initialValues}
-              onSubmit={handleOnTeacherSubmit}
+              onSubmit={(values) => registerTeacher(values)}
               validationSchema={toFormikValidationSchema(registerTeacherSchema)}
             >
               <Form className="p-1">

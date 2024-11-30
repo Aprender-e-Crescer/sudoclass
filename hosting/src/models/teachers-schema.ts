@@ -30,7 +30,7 @@ export const teacherListSchema = z.preprocess((obj: any) => ({
   rgNumber: z.string().min(7, "RG deve ter no mínimo 7 dígitos"),
   cpf: z.string().min(1, "O campo 'CPF' é obrigatório"),
   rgDispatchDate: datePreprocessedSchema,
-  rgDispatchStatus: z.date(),
+  rgDispatchStatus: z.string(),
   birthStatus: z.string().min(1, "O campo 'Estado civil' é obrigatório"),
   birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
 }));
@@ -84,9 +84,9 @@ export const registerTeacherSchema = z.object({
   rgNumber: z.string().min(7, 'RG deve ter no mínimo 7 dígitos'),
   cpf: z.string().min(1, "O campo 'CPF' é obrigatório"),
   rgDispatchDate: datePreprocessedSchema,
-  rgDispatchStatus: z.date(),
+  rgDispatchStatus: z.string(),
   birthStatus: z.string().min(1, "O campo 'Estado civil' é obrigatório"),
   birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
 })
 
-export type RegisterRequests = z.infer<typeof teacherListSchema>
+export type RegisterRequests = z.infer<typeof registerTeacherSchema>
