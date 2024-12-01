@@ -15,5 +15,9 @@ router.get(
   '/schoolCall/getByClass/:id',
   schoolCallController.getSchoolCallByClass
 )
+router.get(
+  '/schoolCall/getByStudent/:id',
+  schoolCallController.getSchoolCallByStudent
+)
 
 export default router
