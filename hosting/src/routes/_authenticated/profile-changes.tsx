@@ -17,7 +17,7 @@ export const Route = createFileRoute('/_authenticated/profile-changes')({
 
 export function ProfileChanges() {
   const currentUser = useCurrentUserQuery()
-  const { data: userData, isLoading: userLoading, isError: userError } = useGetUserQuery(currentUser?.data?.uid)
+  const { data: userData } = useGetUserQuery(currentUser?.data?.uid)
   const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null)
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -35,29 +35,36 @@ export function ProfileChanges() {
     }
   }
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const teacherQuery = useGetTeacherQuery(userData?.idTeacher)
-  const studentQuery = useGetStudentQuery(userData?.idStudent)
-  const pedagogueQuery = useGetPedagogueQuery(userData?.idPedagogue)
 
-  let user
-  let isLoading = userLoading
-  let isError = userError
+  const {
+    data: teacherData,
+    isLoading: isLoadingTeacher,
+    error: isErrorTeacher,
+  } = useGetTeacherQuery(userData?.idTeacher)
+  const {
+    data: studentData,
+    isLoading: isLoadingStudent,
+    error: isErrorStudent,
+  } = useGetStudentQuery(userData?.idStudent)
+  const {
+    data: pedagogueData,
+    isLoading: isLoadingPedagogue,
+    error: isErrorPedagogue,
+  } = useGetPedagogueQuery(userData?.idPedagogue)
+
+  let user = null
 
   if (userData?.type === 'professor') {
-    user = teacherQuery.data
-    isLoading = isLoading || teacherQuery.isLoading
-    isError = isError || teacherQuery.isError
-  } else if (userData?.type === 'aluno') {
-    user = studentQuery.data
-    isLoading = isLoading || studentQuery.isLoading
-    isError = isError || studentQuery.isError
-  } else if (userData?.type === 'pedagogo') {
-    user = pedagogueQuery.data
-    isLoading = isLoading || pedagogueQuery.isLoading
-    isError = isError || pedagogueQuery.isError
+    user = { data: teacherData, isLoading: isLoadingTeacher, error: isErrorTeacher }
+  }
+  if (userData?.type === 'aluno') {
+    user = { data: studentData, isLoading: isLoadingStudent, error: isErrorStudent }
+  }
+  if (userData?.type === 'pedagogo') {
+    user = { data: pedagogueData, isLoading: isLoadingPedagogue, error: isErrorPedagogue }
   }
 
-  if (isLoading) {
+  if (user?.isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
@@ -65,7 +72,7 @@ export function ProfileChanges() {
     )
   }
 
-  if (isError) {
+  if (user?.error) {
     return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
   }
 
@@ -80,7 +87,7 @@ export function ProfileChanges() {
           </div>
           <div className="flex gap-6 max-[420px]:flex-col">
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <Button variant={'blueButton'}>Escolher Foto</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -104,35 +111,28 @@ export function ProfileChanges() {
             <div className="flex flex-col gap-2">
               <label>Nome</label>
               <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                <p className="text-[#B3B3B3] pl-4">{user?.name || 'Sem dados disponíveis'}</p>
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.name || 'Sem dados disponíveis'}</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-2 ">
               <label>CPF</label>
               <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                <p className="text-[#B3B3B3] pl-4">{user?.cpf || 'Sem dados disponíveis'}</p>
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.cpf || 'Sem dados disponíveis'}</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-2 ">
               <label>E-mail</label>
               <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                <p className="text-[#B3B3B3] pl-4">{user?.email || 'Sem dados disponíveis'}</p>
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.email || 'Sem dados disponíveis'}</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-2 ">
               <label>Cidade</label>
               <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                <p className="text-[#B3B3B3] pl-4">{user?.birthCity || 'Sem dados disponíveis'}</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2 ">
-              <label>Telefone</label>
-              <div className="h-10 flex items-center rounded-lg border border-gray-200">
-                <p className="text-[#B3B3B3] pl-4">{user?.number || 'Sem dados disponíveis'}</p>
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.address?.city || 'Sem dados disponíveis'}</p>
               </div>
             </div>
           </div>
