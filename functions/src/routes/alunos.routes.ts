@@ -8,5 +8,6 @@ router.put('/alunos/:id', alunosController.updateAlunos);
 router.get('/alunos/:id', alunosController.getStudent);
 router.delete('/alunos/:id', alunosController.deleteStudent);
 router.get('/alunos', alunosController.getAllStudent)
+router.get("/alunos/:id", alunosController.getDocStudent)
 
 export default router; 

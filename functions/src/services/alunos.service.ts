@@ -130,6 +130,29 @@ async function getStudent(id: string): Promise<string> {
     }
 }
 
+
+async function getDocStudent(id_aluno: string): Promise<string> {
+    try {
+      if (!id_aluno) {
+        return "ID é obrigatório.";
+      }
+  
+      const resposta = await db.query(
+        `SELECT nome FROM docalunos WHERE id_aluno = ${id_aluno}`,
+      );
+  
+      if (resposta.rows.length === 0) {
+        return `Documento do aluno não encontrado.`;
+      }
+  
+      const document = resposta.rows[0];
+      return document;
+    } catch (erro) {
+      console.error("Erro ao buscar o documento:", erro);
+      return "Erro ao buscar o documento:";
+    }
+  }
+
 async function getAllStudents() {
     try {
         const response = await db.query("SELECT * FROM alunos")
@@ -174,5 +197,6 @@ export const alunoService = {
         cidadeDeNascimeto: string) =>updateAluno(id, nomeCompleto, cpf, email, telefone, estado, municipio, rua, bairro, numeroDaCasa, dataDeNascimento, rg, dataExpedicaoRg, estadoDeNascimento, cidadeDeNascimeto),
     deleteStudent: (id: string) => deleteStudent(id),
     getStudent: (id: string) => getStudent(id),
-    getAllStudents: () => getAllStudents()
+    getAllStudents: () => getAllStudents(),
+    getDocStudent
 }
