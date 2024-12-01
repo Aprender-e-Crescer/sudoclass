@@ -133,9 +133,23 @@ const alunosController = {
             console.error('Erro ao listar alunos:', error);
             res.status(500).send('Ocorreu um erro no servidor ao tentar listar os alunos.');
         }
-    }
-    
-
+    },
+    getDocStudent: async (req: Request, res: Response): Promise<void> => {
+        const id = req.params.id;
+        try {
+          const ret = await alunoService.getDocStudent(id);
+          if (!ret) {
+            res.status(500).send("Não foi possível buscar os documentos.");
+          } else {
+            res.status(200).send(ret);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar documentos:", error);
+          res
+            .status(500)
+            .send("Ocorreu um erro no servidor ao tentar buscar os alunos.");
+        }
+      },
 };
 
 export default alunosController; 
