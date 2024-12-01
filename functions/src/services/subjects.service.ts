@@ -1,26 +1,26 @@
-import { db } from '../config/database';async function createSubject(
-    nomeMatéria: string,
-    cargaHorária: string,
-    dataInício: Date,
-    dataFim: Date,
-    idProfessor: string,
+import { db } from '../config/database';
+
+
+async function createSubject(
     idMateria: string,
-    ementa: string,
-    idCurso: string 
+    nomeMateria: string,
+    cargaHorariaMateria: string,
+    datainicio: Date,
+    datafim: Date,
+    idProfessor: string,
+    ementa: string
 ): Promise<string> {
     try {
-        if (!idMateria || !nomeMatéria || !cargaHorária || !dataInício || !dataFim || !idProfessor || !ementa || !idCurso) {
-            return 'ID, Nome da matéria, carga horária, data de início, data de fim, ID do professor, e curso são obrigatórios.';
-        }
+
 
         const response = await db.query(
-            `INSERT INTO materia (id_materia, id_curso, id_professor, nome_materia, carga_horaria_materia, datainicio, datafim, ementa)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            `INSERT INTO materia (id_materia, nome_materia, carga_horaria_materia, datainicio, datafim, id_professor, ementa)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *`,
-            [idMateria, idCurso, idProfessor, nomeMatéria, cargaHorária, dataInício, dataFim, ementa]
+            [idMateria, nomeMateria, cargaHorariaMateria, datainicio, datafim, idProfessor, ementa]
         );
 
-        const resposta = `Matéria ${nomeMatéria} do curso ${idCurso}, com carga horária de ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor} foi cadastrada com sucesso.`;
+        const resposta = `Matéria ${nomeMateria} foi cadastrada com sucesso.`;
         console.log(resposta);
         return resposta;
     } catch (error) {
@@ -28,6 +28,7 @@ import { db } from '../config/database';async function createSubject(
         return 'Erro ao cadastrar matéria';
     }
 }
+
 
 async function updateSubject(
     idMateria: string,
@@ -121,27 +122,41 @@ async function studentListBySubject(id_materia : string): Promise< any > {
         console.error('Erro ao buscar alunos matriculados na materia:', error)
         throw new Error('Erro ao buscar alunos matriculados na matéria')
    
-}}
+
+    }}
+
+    async function getallsubject() {
+        try {
+            const response = await db.query("SELECT * FROM materia")
+            return response.rows 
+        } catch (error) {
+            console.error('Erro ao buscar', error)
+            return 'Erro ao buscar'
+        }
+    }
+
+
 
 
 export const materiaService = {
     createSubject: (
-        idMateria: string,
-        nomeMatéria: string,
-        cargaHorária: string,
-        dataInício: Date,
-        dataFim: Date,
-        idProfessor: string,
-        ementa: string,
-        idCurso: string
-    ) => createSubject(nomeMatéria,
-        cargaHorária,
-        dataInício,
-        dataFim,
-        idProfessor,
+      idMateria: string,
+      nomeMateria: string,
+      cargaHoraria: string,
+      datainicio: Date,
+      dataFim: Date,
+      idProfessor: string,
+      ementa: string,
+
+    ) => {
+      return createSubject(
         idMateria,
-        ementa,
-        idCurso),
+        nomeMateria,
+        cargaHoraria,
+        datainicio,  
+        dataFim,   
+        idProfessor,
+        ementa)},
     updateSubject: (
         idMateria: string,
         idCurso: string,
@@ -163,5 +178,6 @@ export const materiaService = {
     deleteSubject: (idMateria: string) => deleteSubject(idMateria),
     getSubjectById: (idMateria: string) => getSubjectById(idMateria),
     addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria),
-    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia)
+    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia),
+    getallsubject: () => getallsubject()
 };

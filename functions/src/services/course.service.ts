@@ -1,7 +1,6 @@
 import { db } from '../config/database'
 
 async function criarCurso(
-  idCurso: string,
   nomeCurso: string,
   cargaHoraria: string,
   dataInicio: Date,
@@ -12,19 +11,15 @@ async function criarCurso(
   ementa: string
 ): Promise<string> {
   try {
-    if (!idCurso || !nomeCurso || !cargaHoraria || !dataInicio || !dataFim || !dataInicioInscricoes || !dataFimInscricoes || numeroVagas === undefined || !ementa) {
-      return "Todos os dados são obrigatórios"
-    }
 
     const query = `
       INSERT INTO curso (
-        id_curso, nome_curso, carga_horaria, datainicio, datafim, 
+         nome_curso, carga_horaria, datainicio, datafim, 
         datainicioinscricoes, datafiminscricoes, numerovagas, ementa
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `
     const valores = [
-      idCurso,
       nomeCurso,
       cargaHoraria,
       dataInicio,
@@ -82,8 +77,8 @@ async function atualizarCurso(
 
     const query = `
       UPDATE curso
-      SET nome_curso = $1, carga_horaria = $2, data_inicio = $3, data_fim = $4, 
-          data_inicio_inscricoes = $5, data_fim_inscricoes = $6, numero_vagas = $7, ementa = $8
+      SET  nome_curso = $1, carga_horaria = $2, datainicio = $3, datafim = $4, 
+          datainicioinscricoes = $5, datafiminscricoes = $6, numerovagas = $7, ementa = $8
       WHERE id_curso = $9
     `
     const valores = [

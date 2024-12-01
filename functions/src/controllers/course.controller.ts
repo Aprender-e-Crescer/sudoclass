@@ -4,9 +4,9 @@ import { db } from '../config/database'
 
 const courseController = {
   createCurso: async (req: Request, res: Response): Promise<void> => {
-    const { id, nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa } = req.body
+    const {  nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa } = req.body
     try {
-      const retorno = await cursoService.criarCurso(id, nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa)
+      const retorno = await cursoService.criarCurso( nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa)
       if (!retorno) {
         res.status(500).send('Não foi possivel cadastrar o curso.')
       } else {
@@ -47,7 +47,8 @@ const courseController = {
   
 
   updateCourse: async (req: Request, res: Response): Promise<void> => {
-    const { id, nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa } = req.body
+    const { id } = req.params;
+    const {nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa } = req.body
     try {
       const retorno = await cursoService.atualizarCurso(id, nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa)
       if (!retorno) {

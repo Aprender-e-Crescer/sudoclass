@@ -2,13 +2,13 @@ import { DocumentReference } from 'firebase/firestore'
 import { z } from 'zod'
  
 export const studentSchema = z.object({
-  id: z.string(),
+
   address: z.object({
     city: z.string(),
     neighborhood: z.string(),
     state: z.string(),
     street: z.string(),
-    streetNumber: z.number(),
+    streetNumber: z.string(),
   }),
   cityOfBirth: z.string(),
   cpf: z.string(),

@@ -56,10 +56,21 @@ async function getPedagogue(id: string): Promise<string> {
         return 'Erro ao buscar o aluno';
     }
 }
+async function getAllPedagogue() {
+    try {
+        const response = await db.query("SELECT * FROM pedagogo")
+        return response.rows 
+    } catch (error) {
+        console.error('Erro ao buscar', error)
+        return 'Erro ao buscar'
+    }
+}
+
 
 export const pedagogoService = {
     createPedagogue: (nome: string, cpf: string, senha: string) => createPedagogue(nome, cpf, senha),
     updatePedagogue: (id: string, nome: string, cpf: string, senha: string) => updatePedagogue(id, nome, cpf, senha),
     deletePedagogue: (id: string) => deletePedagogue(id),
-    getPedagogue: (id: string) => getPedagogue(id)
+    getPedagogue: (id: string) => getPedagogue(id),
+    getAllPedagogue: () => getAllPedagogue()
 };

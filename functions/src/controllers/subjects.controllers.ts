@@ -3,12 +3,8 @@ import { materiaService } from '../services/subjects.service';
 
 const subjectsController = {
     createSubject: async (req: Request, res: Response): Promise<void> => {
-        const { idCurso, nomeMatéria, cargaHorária, dataInício, dataFim, idProfessor, id: idMateria, ementa } = req.body;
+        const {  nomeMatéria, cargaHorária, dataInício, dataFim, idProfessor, id: idMateria, ementa } = req.body;
 
-        if (!idCurso || !nomeMatéria || !cargaHorária || !dataInício || !dataFim || !idProfessor || !idMateria || !ementa) {
-            res.status(400).send('Todos os campos são obrigatórios.');
-            return;
-        }
 
         try {
             const retorno = await materiaService.createSubject(
@@ -19,7 +15,7 @@ const subjectsController = {
                 dataFim,
                 idProfessor,
                 ementa,
-                idCurso
+                
             );
             res.status(200).send(retorno);
         } catch (error) {
@@ -33,10 +29,6 @@ const subjectsController = {
     
         const { nomeMatéria, cargaHorária, dataInício, dataFim, ementa } = req.body;
     
-        if (!idMateria || !idCurso || !idProfessor || !nomeMatéria || !cargaHorária || !dataInício || !dataFim || !ementa) {
-            res.status(400).send('Todos os campos são obrigatórios.');
-            return;
-        }
     
         try {
             const ret = await materiaService.updateSubject(
@@ -131,7 +123,16 @@ const subjectsController = {
             console.error('Erro ao buscar alunos por materia:', error);
             res.status(500).send('Ocorreu um erro');
         }
-    }
+    },
+    getallsubject: async (req: Request, res: Response): Promise<void> => {
+        try {
+            const resposta = await materiaService.getallsubject();
+            res.status(200).send(resposta);
+        } catch (error) {
+            console.error('Erro ao buscar todas as matérias:', error);
+            res.status(500).send('Ocorreu um erro');
+        }
+    },
 };
 
 export default subjectsController;

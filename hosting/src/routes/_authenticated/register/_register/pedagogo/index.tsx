@@ -3,7 +3,7 @@ import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterAdminController } from '@/controllers/admin-register-controller'
 import { RegistrationAdminSchema } from '@/models/admin-registration-schema'
-import { useAdminSchemaQuery } from '@/queries/use-list-admin-query'
+import { usePedagogueListQuery } from '@/queries/use-list-admin-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { When } from 'react-if'
@@ -33,7 +33,7 @@ const initialValues = {
  
 function useLogic() {
   const { registerAdmin } = useRegisterAdminController()
-  const { data: adminRequests } = useAdminSchemaQuery()
+  const { data: adminRequests } = usePedagogueListQuery()
   const { idAdmin, action } = Route.useSearch()
  
   const handleOnAdminSubmit = (values: typeof initialValues) => {
@@ -63,7 +63,7 @@ export function AdminListing() {
             className="flex flex-1 flex-col p-3 data-[isAction=true]:w-2/6"
             data-isAction={!!action}
           >
-            {adminRequests?.map(({ nome, cpf }, index) => (
+            {adminRequests?.map(({ nome, cpf }: { nome: string; cpf: string }, index: number) => (
   <div key={cpf} className="flex justify-between items-start">
     <Link
       to="/register/pedagogo"

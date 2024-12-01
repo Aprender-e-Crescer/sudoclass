@@ -5,7 +5,7 @@ export function useListSubjectsQuery() {
   return useQuery({
     queryKey: ['getSubjects'],
     queryFn: async () => {
-      const { data } = await api.get('/subjects')
+      const { data } = await api.get('/subject')
       return data
     },
   })

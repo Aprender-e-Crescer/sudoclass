@@ -61,7 +61,17 @@ const pedagogosController = {
             console.error('Erro ao buscar pedagogo:', error);
             res.status(500).send('Ocorreu um erro no servidor ao tentar buscar o pedagogo.');
         }
+    },
+    getAllPedagogue: async (req: Request, res: Response): Promise<void> => {
+        try {
+            const result = await pedagogoService.getAllPedagogue();
+            res.status(200).send(result);
+        } catch (error) {
+            console.error('Erro ao buscar todos os pedagogues:', error);
+            res.status(500).send('Ocorreu um erro no servidor ao tentar buscar os pedagogues.');
+        }
     }
+
 };
 
 export default pedagogosController;

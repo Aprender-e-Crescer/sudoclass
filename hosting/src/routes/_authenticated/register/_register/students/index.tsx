@@ -11,19 +11,17 @@ import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import avatar from '@/assets/avatar.png'
- 
+
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
   idStudent: z.string().optional(),
 })
- 
-export const Route = createFileRoute(
-  '/_authenticated/register/_register/students/',
-)( {
+
+export const Route = createFileRoute('/_authenticated/register/_register/students/')({
   component: StudentsListing,
   validateSearch,
 })
- 
+
 const initialValues = {
   name: '',
   email: '',
@@ -44,22 +42,22 @@ const initialValues = {
   shippingStatus: '',
   attachDocuments: '',
 }
- 
+
 function useLogic() {
   const { registerStudent } = useRegisterStudentController()
-  const { data: studentRequests } = useStudentsListQuery()
   const { idStudent, action } = Route.useSearch()
- 
+  const { data: studentRequests } = useStudentsListQuery()
+
   const handleOnStudentSubmit = (values: typeof initialValues) => {
     registerStudent(values)
   }
- 
+
   return { handleOnStudentSubmit, studentRequests, action }
 }
- 
+
 export function StudentsListing() {
   const { handleOnStudentSubmit, studentRequests, action } = useLogic()
- 
+
   return (
     <>
       <div className="flex flex-col flex-1">
@@ -70,13 +68,13 @@ export function StudentsListing() {
               Cadastrar novo estudante
             </Button>
           </Link>
-        </div>
- 
+        </div>  
+
         <div className="flex sm:flex-row flex-col">
-          <div className="flex flex-1 flex-col p-3 data-[isAction=true]:w-2/6" data-isAction={!!action}>
-            {studentRequests?.map(({ name, email, cpf }, index) => (
-              <div key={cpf} className="flex justify-between items-start">
-                <Link to="/register/students" search={{ action: 'edit', idStudent: cpf }} className="flex flex-col flex-1">
+          <div className="flex flex-1 flex-col p-3 data-[isAction=true]:max-w-96" data-isaction={!!action}>
+            {studentRequests?.map(({ name }, index) => (
+              <div key={index} className="flex justify-between items-start">
+                <Link to="/register/students" search={{ action: 'edit' }} className="flex flex-col flex-1">
                   <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
                     <Avatar>
                       <AvatarImage src={avatar} />
@@ -88,16 +86,15 @@ export function StudentsListing() {
               </div>
             ))}
           </div>
- 
+
           <When condition={!!action}>
             <Formik
               initialValues={initialValues}
               onSubmit={handleOnStudentSubmit}
               validationSchema={toFormikValidationSchema(studentSchema)}
             >
-              <Form className="p-1">
+              <Form className="flex flex-col flex-1 p-1">
                 <div className="flex flex-col flex-1 p-2 rounded-sm border-2">
-                  {/* Name Field */}
                   <InputForm
                     title="Nome completo"
                     placeholder="Nome completo"
@@ -106,8 +103,6 @@ export function StudentsListing() {
                     label="name"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
-                 
-                  {/* Email Field */}
                   <InputForm
                     title="Email"
                     placeholder="estudante@gmail.com"
@@ -116,8 +111,6 @@ export function StudentsListing() {
                     label="email"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
-                 
-                  {/* Telephone Field */}
                   <InputForm
                     title="Telefone"
                     placeholder="(99) 99999-9999"
@@ -126,8 +119,6 @@ export function StudentsListing() {
                     label="telephone"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
- 
-                  {/* Address Fields */}
                   <div className="flex gap-5 flex-wrap">
                     <InputForm
                       title="Estado"
@@ -146,7 +137,6 @@ export function StudentsListing() {
                       customStyleInput="rounded-lg border-2 p-[6px]"
                     />
                   </div>
- 
                   <InputForm
                     title="Rua"
                     placeholder="Rua"
@@ -155,8 +145,6 @@ export function StudentsListing() {
                     label="street"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
-                 
-                  {/* Neighborhood & House Number */}
                   <div className="flex sm:gap-5 sm:flex-row flex-col">
                     <InputForm
                       title="Bairro"
@@ -166,9 +154,15 @@ export function StudentsListing() {
                       label="neighborhood"
                       customStyleInput="rounded-lg border-2 p-[6px]"
                     />
+                    <InputForm
+                      title="Número"
+                      placeholder="ex: 77"
+                      id="streetNumber"
+                      name="address.streetNumber"
+                      label="streetNumber"
+                      customStyleInput="rounded-lg border-2 p-[6px]"
+                    />
                   </div>
- 
-                  {/* Date of Birth, CPF & RG */}
                   <div className="flex gap-5 max-sm:gap-1 flex-wrap">
                     <InputForm
                       title="Data de nascimento"
@@ -196,8 +190,6 @@ export function StudentsListing() {
                       customStyleInput="rounded-lg border-2 p-[6px]"
                     />
                   </div>
- 
-                  {/* RG Issue Date and Status */}
                   <InputForm
                     title="Data de expedição RG"
                     placeholder="data de expedição"
@@ -205,6 +197,7 @@ export function StudentsListing() {
                     name="shippingDate"
                     label="shippingDate"
                     customStyleInput="rounded-lg border-2 p-[6px]"
+                    type="date"
                   />
                   <InputForm
                     title="Estado de expedição RG"
@@ -214,8 +207,6 @@ export function StudentsListing() {
                     label="shippingStatus"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
- 
-                  {/* State & City of Birth */}
                   <InputForm
                     title="Estado de nascimento"
                     placeholder="Estado"
@@ -232,8 +223,6 @@ export function StudentsListing() {
                     label="cityOfBirth"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
- 
-                  {/* File Upload */}
                   <InputFile
                     title="Anexar arquivos"
                     placeholder="ImagemDocumentoAnexado.png 90kb"
@@ -241,15 +230,13 @@ export function StudentsListing() {
                     name="attachDocuments"
                     label="attachDocuments"
                   />
- 
-                  {/* Buttons */}
                   <div className="flex justify-center gap-5">
                     <Link to="/register/pedagogo">
-                      <Button variant="ghostBlack" size="large" className="w-64" type="button">
+                      <Button variant="ghostBlack" size="large" className="w-64">
                         Cancelar
                       </Button>
                     </Link>
-                    <Button variant="blueButton" size="large" className="w-64" type="submit">
+                    <Button variant="blueButton" size="large" className="w-64">
                       Cadastrar
                     </Button>
                   </div>
