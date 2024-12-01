@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import ListStudents from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { createFileRoute } from '@tanstack/react-router'
@@ -48,9 +48,27 @@ export const Route = createFileRoute(
 
 export function Call() {
   const mockedStudents = [
-    { id: '1', name: 'Alice', picture: '/images/alice.jpg', variant: 'undefined' },
-    { id: '2', name: 'Bob', picture: '/images/bob.jpg', variant: 'undefined' },
-    { id: '3', name: 'Charlie', picture: '/images/charlie.jpg', variant: 'undefined' },
+    {
+      id: '1',
+      name: 'Alice',
+      picture:
+        'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+      variant: 'undefined',
+    },
+    {
+      id: '2',
+      name: 'Bob',
+      picture:
+        'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+      variant: 'undefined',
+    },
+    {
+      id: '3',
+      name: 'Charlie',
+      picture:
+        'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+      variant: 'undefined',
+    },
   ]
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [studentList, setStudentList] = useState(mockedStudents)
@@ -77,7 +95,7 @@ export function Call() {
 
     setStudentList(mockedStudents)
     setCurrentIndex(0)
-    setDate(undefined) 
+    setDate(undefined)
   }
 
   return (

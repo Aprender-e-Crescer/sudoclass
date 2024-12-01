@@ -6,8 +6,12 @@ import { format } from 'date-fns'
 
 export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex, date }) {
   const [swipedIndices, setSwipedIndices] = useState([])
-  const [callId, setCallId] = useState(1)
+  const [callId, setCallId] = useState(generateRandomCallId())
   const createSchoolCall = useCreateSchoolCallMutation()
+
+  function generateRandomCallId() {
+    return Math.floor(1000 + Math.random() * 9000)
+  }
 
   const handleSwipe = async (direction, selectedDate) => {
     if (students && currentIndex >= 0 && currentIndex < students.length) {
@@ -47,7 +51,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
           return nextIndex < students.length ? nextIndex : prevIndex
         })
 
-        setCallId((prev) => prev + 1)
+        setCallId(generateRandomCallId())
       } catch (error) {
         console.error('Erro ao criar a chamada:', error)
       }
@@ -70,7 +74,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
   }
 
   return (
-    <div className="flex items-center justify-center ">
+    <div className="flex items-center justify-center">
       <div className="relative w-full max-w-[375px] h-[600px]">
         {currentIndex >= 0 && currentIndex < students.length && (
           <TinderCard
@@ -80,7 +84,17 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
             preventSwipe={['up', 'down']}
           >
             <div className="relative bg-white border-2 w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
+              <div className="w-full h-[500px] bg-gray-200 rounded-md mb-4 flex items-center justify-center">
+                <img
+                  src={
+                    'https://media.istockphoto.com/id/1408041355/pt/foto/happy-black-businesswoman-using-a-smartphone-in-a-creative-office.jpg?s=612x612&w=0&k=20&c=pee_hk8ZXj4HVeitj8ASOQ1qCPhIZI18WcoDIkMe2BU='
+                  }
+                  className="w-full h-full object-cover rounded-md"
+                />
+              </div>
+
               <h2 className="text-xl font-bold text-[#333333]">{students[currentIndex].name}</h2>
+
               <div className="flex w-full justify-evenly flex-wrap mt-4">
                 <button
                   onClick={handleReject}
