@@ -3,8 +3,20 @@ import { Check, Undo2, X } from 'lucide-react'
 import TinderCard from 'react-tinder-card'
 import { useCreateSchoolCallMutation } from '@/mutations/use-create-call-mutation'
 import { format } from 'date-fns'
+import { createFileRoute } from '@tanstack/react-router'
+
+const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/call',
+)({})
+
+// Custom Hook para obter o idSubject
+function useSubjectId() {
+  const { idSubject } = Route.useParams()
+  return Number(idSubject)
+}
 
 export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex, date }) {
+  const subjectId = useSubjectId()
   const [swipedIndices, setSwipedIndices] = useState([])
   const [callId, setCallId] = useState(generateRandomCallId())
   const createSchoolCall = useCreateSchoolCallMutation()
@@ -19,8 +31,6 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
       const status = direction === 'right'
 
       const currentDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : new Date().toISOString().split('T')[0]
-
-      const subjectId = 1
 
       if (!subjectId) {
         console.error('Erro: idSubject não está disponível.')

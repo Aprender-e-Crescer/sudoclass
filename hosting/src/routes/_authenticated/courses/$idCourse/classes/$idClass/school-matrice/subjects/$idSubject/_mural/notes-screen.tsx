@@ -16,7 +16,8 @@ interface Student {
 }
 
 export default function StudentGrades() {
-  const subjectId = 1
+  const { idSubject } = Route.useParams()
+  const subjectId = Number(idSubject)
   const { data, isLoading, error } = useListNotesQuery(subjectId)
 
   if (isLoading) {
