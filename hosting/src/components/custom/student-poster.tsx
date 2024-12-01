@@ -4,12 +4,12 @@ import TinderCard from 'react-tinder-card'
 import { useCreateSchoolCallMutation } from '@/mutations/use-create-call-mutation'
 import { format } from 'date-fns'
 import { createFileRoute } from '@tanstack/react-router'
+import { api } from '@/services/api'
 
 const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/call',
 )({})
 
-// Custom Hook para obter o idSubject
 function useSubjectId() {
   const { idSubject } = Route.useParams()
   return Number(idSubject)
@@ -18,7 +18,7 @@ function useSubjectId() {
 export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex, date }) {
   const subjectId = useSubjectId()
   const [swipedIndices, setSwipedIndices] = useState([])
-  const [callId, setCallId] = useState(generateRandomCallId())
+  const [callHistory, setCallHistory] = useState([])
   const createSchoolCall = useCreateSchoolCallMutation()
 
   function generateRandomCallId() {
@@ -37,7 +37,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
         return
       }
 
-      const currentCallId = callId
+      const currentCallId = generateRandomCallId()
 
       try {
         await createSchoolCall.mutateAsync({
@@ -54,14 +54,14 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
           onStudentUpdate(studentId, 'present')
         }
 
+        setCallHistory((prev) => [...prev, { studentId, callId: currentCallId, direction, date: currentDate }])
+
         setSwipedIndices((prev) => [...prev, currentIndex])
 
         setCurrentIndex((prevIndex) => {
           const nextIndex = prevIndex + 1
           return nextIndex < students.length ? nextIndex : prevIndex
         })
-
-        setCallId(generateRandomCallId())
       } catch (error) {
         console.error('Erro ao criar a chamada:', error)
       }
@@ -71,11 +71,20 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
   const handleReject = () => handleSwipe('left', date)
   const handleAccept = () => handleSwipe('right', date)
 
-  const handleUndo = () => {
-    if (swipedIndices.length > 0) {
-      const lastSwipedIndex = swipedIndices[swipedIndices.length - 1]
+  const handleUndo = async () => {
+    if (callHistory.length > 0) {
+      const lastCall = callHistory[callHistory.length - 1]
+      setCallHistory((prev) => prev.slice(0, -1))
       setSwipedIndices((prev) => prev.slice(0, -1))
-      setCurrentIndex(lastSwipedIndex)
+
+      try {
+        await api.delete(`/schoolCall/delete/${lastCall.callId}`)
+        console.log(`Chamada ${lastCall.callId} excluída com sucesso!`)
+      } catch (error) {
+        console.error('Erro ao excluir a chamada:', error)
+      }
+
+      setCurrentIndex(students.findIndex((student) => student.id === lastCall.studentId))
     }
   }
 
@@ -114,7 +123,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
                 </button>
                 <button
                   onClick={handleUndo}
-                  disabled={swipedIndices.length === 0}
+                  disabled={callHistory.length === 0}
                   className="rounded-full bg-[#0C408FCC] w-14 h-14 flex items-center justify-center md:w-16 md:h-16 disabled:bg-gray-400"
                 >
                   <Undo2 color="white" size={30} />
