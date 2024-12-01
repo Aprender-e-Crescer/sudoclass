@@ -7,7 +7,7 @@ export function usePedagogueListQuery() {
     queryKey: ['pedagogues'],
     queryFn: async () => {
       const { data } = await api.get('/pedagogos')
-      return pedagogueSchema.parse(data)
+      return data
     },
   })
 }

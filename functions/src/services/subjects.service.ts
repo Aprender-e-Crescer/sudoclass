@@ -1,8 +1,6 @@
 import { db } from '../config/database';
 
-
 async function createSubject(
-    idMateria: string,
     nomeMateria: string,
     cargaHorariaMateria: string,
     datainicio: Date,
@@ -11,13 +9,11 @@ async function createSubject(
     ementa: string
 ): Promise<string> {
     try {
-
-
         const response = await db.query(
-            `INSERT INTO materia (id_materia, nome_materia, carga_horaria_materia, datainicio, datafim, id_professor, ementa)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            `INSERT INTO materia (nome_materia, carga_horaria_materia, datainicio, datafim, id_professor, ementa)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *`,
-            [idMateria, nomeMateria, cargaHorariaMateria, datainicio, datafim, idProfessor, ementa]
+            [nomeMateria, cargaHorariaMateria, datainicio, datafim, idProfessor, ementa]
         );
 
         const resposta = `Matéria ${nomeMateria} foi cadastrada com sucesso.`;
@@ -28,6 +24,7 @@ async function createSubject(
         return 'Erro ao cadastrar matéria';
     }
 }
+
 
 
 async function updateSubject(
@@ -140,7 +137,6 @@ async function studentListBySubject(id_materia : string): Promise< any > {
 
 export const materiaService = {
     createSubject: (
-      idMateria: string,
       nomeMateria: string,
       cargaHoraria: string,
       datainicio: Date,
@@ -150,7 +146,6 @@ export const materiaService = {
 
     ) => {
       return createSubject(
-        idMateria,
         nomeMateria,
         cargaHoraria,
         datainicio,  

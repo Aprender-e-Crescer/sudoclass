@@ -7,7 +7,7 @@ export function useStudentsListQuery() {
     queryKey: ['students'],
     queryFn: async () => {
       const { data } = await api.get('/alunos')
-      return studentSchema.parse(data)
+      return data
     },
   })
 }
