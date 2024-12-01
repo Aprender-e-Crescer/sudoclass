@@ -1,8 +1,7 @@
-
 import { api } from '@/services/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export function useCreatePedagogues() {
+export function useCreateSubject() {
   const queryClient = useQueryClient()
 
   return useMutation({

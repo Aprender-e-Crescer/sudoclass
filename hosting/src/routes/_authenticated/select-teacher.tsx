@@ -24,10 +24,7 @@ export function SelectTeacher() {
       }}
     >
       {({ handleSubmit }) => (
-        <Form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-5 w-full p-5"
-        >
+        <Form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full p-5">
           <Professores />
         </Form>
       )}
@@ -65,11 +62,7 @@ const Professores: React.FC = () => {
       <ul className="space-y-4">
         {professores.length > 0 ? (
           professores.map((professor, index) => (
-            <ProfessorItem
-              key={professor.id}
-              professor={professor}
-              index={index}
-            />
+            <ProfessorItem key={professor.id} professor={professor} index={index} />
           ))
         ) : (
           <li className="text-gray-500">Nenhum professor encontrado.</li>
@@ -79,18 +72,9 @@ const Professores: React.FC = () => {
   )
 }
 
-const colors = [
-  'bg-blue-500',
-  'bg-yellow-500',
-  'bg-red-500',
-  'bg-orange-500',
-  'bg-green-500',
-]
+const colors = ['bg-blue-500', 'bg-yellow-500', 'bg-red-500', 'bg-orange-500', 'bg-green-500']
 
-const ProfessorItem: React.FC<{ professor: Professor; index: number }> = ({
-  professor,
-  index,
-}) => {
+const ProfessorItem: React.FC<{ professor: Professor; index: number }> = ({ professor, index }) => {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -104,7 +88,7 @@ const ProfessorItem: React.FC<{ professor: Professor; index: number }> = ({
       >
         {professor.initials}
       </div>
-      <span className="text-gray-800">{professor.name}</span>
+      <span className="text-gray-800">{professor.fullName}</span>
     </li>
   )
 }

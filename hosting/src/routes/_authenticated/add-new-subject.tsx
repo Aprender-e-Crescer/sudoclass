@@ -4,40 +4,51 @@ import { subjectsSchema } from '@/models/subjects-schema'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { useCreatePedagogues } from '@/mutations/use-add-subjects-plan-mutation'
+import { useCreateSubject } from '@/mutations/use-add-subjects-plan-mutation'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import { EllipsisVertical, MonitorPlay } from 'lucide-react'
+import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@radix-ui/react-select'
+import { Select } from '@mui/material'
+import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
+import { SelectInput } from '@/components/custom/select-input'
 
 export const Route = createFileRoute('/_authenticated/add-new-subject')({
   component: AddNewSubjectForm,
 })
 
 const initialValues = {
-  id: '',
   name: '',
   description: '',
   startDate: '',
   endDate: '',
   workload: '',
-  teacher: '', 
+  idProfessor: '',
 }
 
 function AddNewSubjectForm() {
-  const { mutate, isLoading } = useCreatePedagogues()
+  const { mutate, isPending } = useCreateSubject()
+  const { data: teachers } = useTeachersListingQuery()
 
   const handleSubmit = (values: typeof initialValues) => {
-    mutate(values, {
-      onSuccess: () => {
-        alert('Matéria criada com sucesso!')
+    mutate(
+      {
+        nomeMateria: values.name,
+        cargahoraria: Number(values.workload),
+        dataInicio: new Date(values.startDate),
+        dataFim: new Date(values.endDate),
+        idProfessor: Number(values.idProfessor),
+        ementa: values.description,
       },
-      onError: (error) => {
-        console.error('Erro ao criar matéria:', error)
-        alert('Erro ao criar matéria. Por favor, tente novamente.')
+      {
+        onSuccess: () => {
+          alert('Matéria criada com sucesso!')
+        },
+        onError: (error) => {
+          console.error('Erro ao criar matéria:', error)
+          alert('Erro ao criar matéria. Por favor, tente novamente.')
+        },
       },
-    })
-  }
-
-  const handleSelectTeacher = () => {
-    // Lógica para abrir um modal ou selecionar um professor
-    alert('Abrir seleção de professores')
+    )
   }
 
   return (
@@ -46,25 +57,12 @@ function AddNewSubjectForm() {
       validationSchema={toFormikValidationSchema(subjectsSchema)}
       onSubmit={handleSubmit}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, setFieldValue }) => (
         <form onSubmit={handleSubmit}>
           <h1 className="font-semibold p-5 ml-10">Adicionar Matéria</h1>
           <hr />
           <div className="p-6">
-            <InputForm
-              title="ID"
-              label="ID"
-              name="id"
-              placeholder="ID único"
-              id="id"
-            />
-            <InputForm
-              title="Nome"
-              label="Nome"
-              name="name"
-              placeholder="Nome da matéria"
-              id="name"
-            />
+            <InputForm title="Nome" label="Nome" name="name" placeholder="Nome da matéria" id="name" />
             <InputForm
               title="Descrição"
               label="Descrição"
@@ -78,6 +76,7 @@ function AddNewSubjectForm() {
               name="startDate"
               placeholder="00/00/0000"
               id="startDate"
+              type="date"
             />
             <InputForm
               title="Data de término"
@@ -85,45 +84,24 @@ function AddNewSubjectForm() {
               name="endDate"
               placeholder="00/00/0000"
               id="endDate"
+              type="date"
             />
-            <InputForm
-              title="Carga horária"
-              label="Carga horária"
-              name="workload"
-              placeholder="500hrs"
-              id="workload"
+            <InputForm title="Carga horária" label="Carga horária" name="workload" placeholder="500hrs" id="workload" />
+            <SelectInput
+              label="Professor"
+              optionsSelectItem={teachers?.map((item) => ({
+                selectOption: `${item.fullName} - ${item.idTeacher}`,
+                label: item.fullName + item.idTeacher,
+              }))}
+              onChange={(value) => setFieldValue('idProfessor', value.split('-')[1].trimStart())}
             />
-            {/* Botão Selecionar Professor */}
-            <div className="flex items-center gap-4">
-              <Button
-                type="button"
-                onClick={handleSelectTeacher}
-                variant="lightTextBlack"
-              >
-                Selecionar Professor
-              </Button>
-              <Button
-                type="button"
-                variant="blueButton"
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                +
-              </Button>
-            </div>
           </div>
           <div className="flex items-center justify-center mt-5">
-            <Button variant="lightTextBlack" disabled={isLoading}>
+            <Button variant="lightTextBlack" disabled={isPending}>
               Cancelar
             </Button>
-            <Button variant="blueButton" type="submit" disabled={isLoading}>
-              {isLoading ? 'Criando...' : 'Criar'}
+            <Button variant="blueButton" type="submit" disabled={isPending}>
+              {isPending ? 'Criando...' : 'Criar'}
             </Button>
           </div>
         </form>
