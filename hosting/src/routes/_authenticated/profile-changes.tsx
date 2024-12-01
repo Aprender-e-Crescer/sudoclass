@@ -17,7 +17,7 @@ export const Route = createFileRoute('/_authenticated/profile-changes')({
 
 export function ProfileChanges() {
   const currentUser = useCurrentUserQuery()
-  const { data: userData, isLoading: userLoading, isError: userError } = useGetUserQuery(currentUser?.data?.uid)
+  const { data: userData } = useGetUserQuery(currentUser?.data?.uid)
   const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null)
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -40,21 +40,21 @@ export function ProfileChanges() {
   const pedagogueQuery = useGetPedagogueQuery(userData?.idPedagogue)
 
   let user
-  let isLoading = userLoading
-  let isError = userError
+  let isLoading
+  let error
 
   if (userData?.type === 'professor') {
     user = teacherQuery.data
-    isLoading = isLoading || teacherQuery.isLoading
-    isError = isError || teacherQuery.isError
+    isLoading = teacherQuery.isLoading
+    error = teacherQuery.error
   } else if (userData?.type === 'aluno') {
     user = studentQuery.data
-    isLoading = isLoading || studentQuery.isLoading
-    isError = isError || studentQuery.isError
+    isLoading = studentQuery.isLoading
+    error = studentQuery.error
   } else if (userData?.type === 'pedagogo') {
     user = pedagogueQuery.data
-    isLoading = isLoading || pedagogueQuery.isLoading
-    isError = isError || pedagogueQuery.isError
+    isLoading = pedagogueQuery.isLoading
+    error = pedagogueQuery.error
   }
 
   if (isLoading) {
@@ -65,7 +65,7 @@ export function ProfileChanges() {
     )
   }
 
-  if (isError) {
+  if (error) {
     return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
   }
 

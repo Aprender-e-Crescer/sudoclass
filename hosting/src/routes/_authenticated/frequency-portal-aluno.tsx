@@ -54,8 +54,6 @@ export default function FrenquencyPortalAluno() {
     },
   ]
 
-  console.log(studentAttendance)
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
