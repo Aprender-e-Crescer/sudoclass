@@ -16,6 +16,7 @@ import { z } from 'zod'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
+  idTurma: z.number().optional(),
 })
 
 export const Route = createFileRoute('/_authenticated/register/_register/classes/')({
@@ -57,19 +58,21 @@ const checkboxReleasedValues = [
 
 export function ClassList() {
   const { action } = Route.useSearch()
-  const { registerClassForm } = useClassesController()
+  const { registerClassForm, updateClass, deleteClass } = useClassesController()
   const { data: classes } = useListClassQuery()
-  const { deleteClass } = useClassesController()
 
-  const handleOnClassCreationSubmit = (values: {
-    class: string
-    shift: string
-    startForecast: string
-    endPrediction: string
-    registrationFinalDate: string
-    quantityHours: string
-    totalVacancies: string
-  }) => {
+  const handleOnClassCreationSubmit = (
+    values: {
+      class: string
+      shift: string
+      startForecast: string
+      endPrediction: string
+      registrationFinalDate: string
+      quantityHours: string
+      totalVacancies: string
+    },
+    id?: number,
+  ) => {
     const formattedValues = {
       ...values,
       startForecast: parse(values.startForecast, 'dd/MM/yyyy', new Date()),
@@ -77,8 +80,13 @@ export function ClassList() {
       registrationFinalDate: parse(values.registrationFinalDate, 'dd/MM/yyyy', new Date()),
     }
 
+
+    if (id) {
+      return updateClass(id, formattedValues)
+    }
     registerClassForm(formattedValues)
   }
+
   return (
     <div className="w-full px-4 flex justify-center flex-col gap-6 mt-5">
       <div className="flex flex-col flex-1 gap-5">
@@ -104,8 +112,8 @@ export function ClassList() {
                       variantCancelButton="blueButton"
                       onClick={() => deleteClass(id_turma)}
                     />
-                    <Link to="/register/classes" search={{ action: 'edit' }}>
-                      <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                    <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }}>
+                      <Pencil className="border rounded text-zinc-500 w-8 h-8 cursor-pointer" />
                     </Link>
                   </div>
                 </p>
@@ -114,7 +122,7 @@ export function ClassList() {
           </div>
           <When condition={!!action}>
             <Formik
-              onSubmit={handleOnClassCreationSubmit}
+              onSubmit={(values) => handleOnClassCreationSubmit(values)}
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(creationClassSchema)}
             >
@@ -129,6 +137,7 @@ export function ClassList() {
                     id="startForecast"
                     name="startForecast"
                     label="startForecast"
+                    type="date"
                     placeholder="Previsão de início"
                   />
 
@@ -137,6 +146,7 @@ export function ClassList() {
                     id="endPrediction"
                     name="endPrediction"
                     label="endPrediction"
+                    type="date"
                     placeholder="Previsão de Fim"
                   />
 
@@ -145,6 +155,7 @@ export function ClassList() {
                     id="registrationFinalDate"
                     name="registrationFinalDate"
                     label="registrationFinalDate"
+                    type="date"
                     placeholder="Data Final de Inscrição"
                   />
 
