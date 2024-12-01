@@ -1,7 +1,7 @@
 import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
-import { useRegisterTeacherController } from '@/controllers/teacher-register-controller'
+import { useRegisterTeacherController } from '@/controllers/teacher-controller'
 import { registerTeacherSchema } from '@/models/teachers-schema'
 import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
@@ -42,12 +42,28 @@ const initialValues = {
 }
 
 function useLogic() {
-  const { registerTeacher } = useRegisterTeacherController()
-  const { idTeacher, action } = Route.useSearch()
+  const { registerTeacher, updateTeacher } = useRegisterTeacherController()
+  const { action } = Route.useSearch()
   const { data: registerRequests } = useTeachersListingQuery()
 
-  const handleOnCreateOrEditSubmit = (values: typeof initialValues) => {
-    if (!idTeacher) throw new Error('idTeacher is required')
+  const handleOnCreateOrEditSubmit = (idTeacher: number, values: typeof initialValues) => {
+    if (idTeacher && action === 'edit')
+      return updateTeacher({
+        bairro: values.neighborhood,
+        cidadedenascimento: values.birthCity,
+        cpf: values.cpf,
+        datadeexpedicaorg: new Date(values.rgDispatchDate),
+        datanasc: values.dateOfBirth,
+        email: values.email,
+        estado: values.state,
+        estadodeexpedicaorg: values.rgDispatchStatus,
+        estadonascimento: new Date(values.birthStatus),
+        municipio: values.municipality,
+        nome: values.fullName,
+        numero: values.number,
+        rg: values.rgNumber,
+        rua: values.road,
+      })
 
     return registerTeacher({
       bairro: values.neighborhood,
@@ -59,7 +75,6 @@ function useLogic() {
       estado: values.state,
       estadodeexpedicaorg: values.rgDispatchStatus,
       estadonascimento: new Date(values.birthStatus),
-      id_professor: idTeacher,
       municipio: values.municipality,
       nome: values.fullName,
       numero: values.number,
@@ -84,13 +99,18 @@ export function TeachersListing() {
               Cadastrar novo professor
             </Button>
           </Link>
-        </div>  
+        </div>
 
         <div className="flex sm:flex-row flex-col">
           <div className="flex flex-1 flex-col p-3 data-[isaction=true]:max-w-96" data-isaction={!!action}>
-            {registerRequests?.map(({ fullName }, index) => (
+            {registerRequests?.map(({ fullName, idTeacher }, index) => (
               <div key={index} className="flex justify-between items-start">
-                <Link to="/register/teachers" search={{ action: 'edit' }} className="flex flex-col flex-1">
+                <Link
+                  to="/register/teachers"
+                  search={{ action: 'edit' }}
+                  params={{ idTeacher: idTeacher }}
+                  className="flex flex-col flex-1"
+                >
                   <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
                     <Avatar>
                       <AvatarImage src={avatar} />
