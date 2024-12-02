@@ -33,7 +33,6 @@ function validateTeacher(
 }
 
 async function createTeacher(
-  id_professor: string,
   nome: string,
   datanasc: string,
   email: string,
@@ -48,11 +47,10 @@ async function createTeacher(
   estadodeexpedicaorg: string,
   estadonascimento: Date,
   cidadedenascimento: string
-): Promise<string> {
+) {
   try {
     let resposta = "";
     if (
-      !id_professor ||
       !nome ||
       !cpf ||
       !rg ||
@@ -76,7 +74,6 @@ async function createTeacher(
     else {
       await db.query(
         `INSERT INTO professor(
-              id_professor,
               nome, 
               datanasc,
               email,
@@ -91,9 +88,9 @@ async function createTeacher(
               estadodeexpedicaorg,
               estadonascimento,
               cidadedenascimento) 
-              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+              RETURNING id_professor`,
         [
-          parseInt(id_professor),
           nome,
           datanasc,
           email,
@@ -111,9 +108,6 @@ async function createTeacher(
         ]
       );
     }
-
-    resposta = await getTeacher(id_professor);
-    return resposta;
   } catch (error) {
     console.error(error);
     return `Não foi possível cadastrar o professor`;
@@ -207,6 +201,20 @@ async function updateTeacher(
   }
 }
 
+async function getAllTeachers(): Promise<any> {
+  try {
+    const resposta = await db.query("SELECT * FROM professor");
+
+    if (resposta.rows.length === 0) {
+      return "Nenhum professor encontrado.";
+    }
+    return resposta.rows;
+  } catch (error) {
+    console.error("Erro ao buscar professores:", error);
+    return "Erro ao buscar professores.";
+  }
+}
+
 async function getTeacher(idprofessor: string): Promise<string> {
   try {
     if (!idprofessor) {
@@ -250,7 +258,6 @@ async function deleteTeacher(idprofessor: string) {
 
 export const teacherService = {
   createTeacher: (
-    id_professor: string,
     nome: string,
     datanasc: string,
     email: string,
@@ -267,7 +274,6 @@ export const teacherService = {
     cidadedenascimento: string
   ) =>
     createTeacher(
-      id_professor,
       nome,
       datanasc,
       email,
@@ -319,4 +325,5 @@ export const teacherService = {
     ),
   deleteTeacher: (idprofessor: string) => deleteTeacher(idprofessor),
   getTeacher: (idprofessor: string) => getTeacher(idprofessor),
+  getAllTeachers: () => getAllTeachers(),
 };

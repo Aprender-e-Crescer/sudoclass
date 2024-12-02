@@ -75,16 +75,16 @@ const formController = {
     try {
       const ret = await formService.getFormById(id)
 
-      if (ret === undefined || !ret.rows) {
-        res.status(500).send('Não foi possível buscar o formulario.')
+      if (!ret) {
+        res.status(404).send('Formulário não encontrado.')
       } else {
-        res.status(200).json(ret.rows[0])
+        res.status(200).json(ret)
       }
     } catch (error) {
-      console.error('Erro ao buscar formulario:', error)
+      console.error('Erro ao buscar formulário:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar buscar o formulario.')
+        .send('Ocorreu um erro no servidor ao tentar buscar o formulário.')
     }
   },
 

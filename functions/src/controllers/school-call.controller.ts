@@ -26,8 +26,13 @@ const schoolCallController = {
   updateSchoolCall: async (req: Request, res: Response): Promise<void> => {
     const { status } = req.body
     const id_aluno = Number(req.params.id)
+    const data = req.body.data
     try {
-      const ret = await schoolCallService.updateSchoolCall(id_aluno, status)
+      const ret = await schoolCallService.updateSchoolCall(
+        id_aluno,
+        status,
+        data
+      )
       if (!ret) {
         res.status(404).send('Chamada não encontrada para atualização.')
       } else {
@@ -76,6 +81,24 @@ const schoolCallController = {
     const id_materia = Number(req.params.id)
     try {
       const ret = await schoolCallService.getSchoolCallBySubject(id_materia)
+      if (!ret) {
+        res.status(404).send('Chamada não encontrada.')
+      } else {
+        res.status(200).json(ret)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao buscar a chamada.')
+    }
+  },
+
+  getSchoolCallByStudent: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const id_aluno = Number(req.params.id)
+    try {
+      const ret = await schoolCallService.getSchoolCallByStudent(id_aluno)
       if (!ret) {
         res.status(404).send('Chamada não encontrada.')
       } else {

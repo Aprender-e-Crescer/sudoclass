@@ -4,10 +4,17 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export function useCreateWarningMutation() {
   const queryClient = useQueryClient()
+
   return useMutation({
     mutationKey: ['createWarning'],
     mutationFn: async ({ message, userId, subjectId }: { message: string; userId: number; subjectId: number }) => {
-      const { data } = await api.post('/warnings', { message, userId, subjectId })
+      const requestBody = {
+        mensagem: message,
+        id_usuario: userId,
+        id_materia: subjectId,
+      }
+
+      const { data } = await api.post('/warnings', requestBody)
       return data
     },
     onSuccess: () => {

@@ -108,7 +108,7 @@ const activitiesController = {
   },
 
   deleteActivity: async (req: Request, res: Response): Promise<void> => {
-    const activityId = parseInt(req.params.activityId, 10)
+    const activityId = req.body
 
     if (isNaN(activityId)) {
       res.status(400).send('ID inválido.')

@@ -1,11 +1,10 @@
-import { SelectInput } from '@/components/custom/select-input'
 import { InputForm } from '@/components/custom/text-input'
 import { InputTextarea } from '@/components/custom/textarea-input'
-import { DisciplineSyllabusSchema } from '@/models/discipline-syllabus-schema'
+import { useGetSubjectQuery } from '@/queries/use-get-subject-query'
 import { InputLabel } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
-import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
@@ -13,59 +12,33 @@ export const Route = createFileRoute(
   component: SubjectDetails,
 })
 
-const data = [
-  {
-    value: 'matematica',
-    label: 'Matemática',
-    workload: 40,
-    disciplineSyllabus: 'Introdução aos conceitos básicos de matemática, incluindo álgebra e geometria.',
-  },
-  {
-    value: 'portugues',
-    label: 'Português',
-    workload: 35,
-    disciplineSyllabus: 'Estudo da gramática normativa, interpretação de textos e redação.',
-  },
-  {
-    value: 'historia',
-    label: 'História',
-    workload: 45,
-    disciplineSyllabus: 'Análise dos eventos históricos do Brasil e do mundo, com foco no período moderno.',
-  },
-  {
-    value: 'biologia',
-    label: 'Biologia',
-    workload: 50,
-    disciplineSyllabus: 'Fundamentos de biologia celular, genética e ecologia.',
-  },
-  {
-    value: 'fisica',
-    label: 'Física',
-    workload: 48,
-    disciplineSyllabus: 'Estudo das leis do movimento, termodinâmica e introdução à ótica.',
-  },
-]
-
 export function SubjectDetails() {
-  const initialDiscipline = data[0].value
-  const [selectedValue, setSelectedValue] = useState(initialDiscipline)
+  const { idSubject } = Route.useParams()
+  const subjectId = Number(idSubject)
+  const { data, isLoading, error } = useGetSubjectQuery(subjectId)
+  console.log(data)
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
+      </div>
+    )
+  }
 
-  const handleChange = (value: string) => {
-    setSelectedValue(value)
+  if (error) {
+    return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
   }
 
   return (
     <Formik
       initialValues={{
-        CargaHoraria: `${data.find((item) => item.value === initialDiscipline)?.workload || ''} Horas`,
-        Ementa: data.find((item) => item.value === initialDiscipline)?.disciplineSyllabus || '',
+        name: data?.name || '',
+        workload: data?.workload || '',
+        menu: data?.menu || '',
       }}
-      validationSchema={DisciplineSyllabusSchema}
-      onSubmit={(values) => {
-        console.log('Form submitted', values)
-      }}
+      onSubmit={(values) => console.log('Form submitted:', values)}
     >
-      {({ setFieldValue }) => (
+      {({ values }) => (
         <Form className="flex flex-col gap-4 mx-20 my-10">
           <div>
             <h1 className="font-bold text-blue-950 text-4xl">Ementa da disciplina</h1>
@@ -73,19 +46,15 @@ export function SubjectDetails() {
 
           <div className="flex flex-col gap-3">
             <div>
-              <InputLabel id="disciplinas-select">Disciplinas</InputLabel>
-              <SelectInput
-                label="Disciplina"
-                optionsSelectItem={data.map((item) => ({
-                  selectOption: item.value,
-                  label: item.label,
-                }))}
-                onChange={(value) => {
-                  handleChange(value)
-                  const selectedDiscipline = data.find((item) => item.value === value)
-                  setFieldValue('CargaHoraria', `${selectedDiscipline?.workload} Horas`)
-                  setFieldValue('Ementa', selectedDiscipline?.disciplineSyllabus || '')
-                }}
+              <InputLabel id="CargaHoraria">Disciplina</InputLabel>
+              <InputForm
+                isDisabled={true}
+                id="CargaHoraria"
+                name="CargaHoraria"
+                type="text"
+                placeholder="Carga Horária"
+                label="Carga Horária"
+                value={values.name}
               />
             </div>
 
@@ -98,12 +67,20 @@ export function SubjectDetails() {
                 type="text"
                 placeholder="Carga Horária"
                 label="Carga Horária"
+                value={values.workload}
               />
             </div>
 
             <div>
               <InputLabel id="Ementa">Ementa</InputLabel>
-              <InputTextarea isDisabled={true} id="Ementa" name="Ementa" placeholder="Ementa" label="Ementa" />
+              <InputTextarea
+                isDisabled={true}
+                id="Ementa"
+                name="Ementa"
+                placeholder="Ementa"
+                label="Ementa"
+                value={values.menu}
+              />
             </div>
           </div>
         </Form>

@@ -4,7 +4,6 @@ import { teacherService } from "../services/teacher.service";
 const teachersController = {
   createTeacher: async (req: Request, res: Response): Promise<void> => {
     const {
-      id_professor,
       nome,
       datanasc,
       email,
@@ -22,7 +21,6 @@ const teachersController = {
     } = req.body;
     try {
       const retorno = await teacherService.createTeacher(
-        id_professor,
         nome,
         datanasc,
         email,
@@ -131,6 +129,22 @@ const teachersController = {
       res
         .status(500)
         .send("Ocorreu um erro no servidor ao tentar buscar o professor.");
+    }
+  },
+
+  getAllTeachers: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const ret = await teacherService.getAllTeachers();
+      if (!ret) {
+        res.status(500).send("Não foi possível buscar os professores.");
+      } else {
+        res.status(200).send(ret);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar professores:", error);
+      res
+        .status(500)
+        .send("Ocorreu um erro no servidor ao tentar buscar os professores.");
     }
   },
 };

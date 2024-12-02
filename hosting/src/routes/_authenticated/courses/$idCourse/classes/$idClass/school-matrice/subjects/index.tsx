@@ -7,30 +7,41 @@ export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/
 })
 
 function HomeListSubjects() {
-  const { data: subjects, isError, error } = useListSubjectsQuery('aQjvxCKlEuHc9YQEedCQ')
+  const { data, isError, error, isLoading } = useListSubjectsQuery()
+  const colors = ['amarelo', 'azul', 'vermelho', 'laranja', 'rosa', 'ciano', 'verde', 'roxo', 'marrom']
+
+  const { idClass, idCourse } = Route.useParams()
+
+  if (isLoading) {
+    return <p>Carregando matérias...</p>
+  }
 
   if (isError) {
     console.error('Erro na consulta:', error)
+    return <p>Erro ao carregar matérias. Tente novamente mais tarde.</p>
   }
-  const { idClass, idCourse } = Route.useParams()
+  console.log(data)
+  const subjects = Array.isArray(data) ? data : []
+  console.log('subjects:', subjects)
 
   return (
-    <div className="flex flex-wrap gap-5 justify-center">
-      {subjects?.map((subject) => (
+    <div className="flex flex-wrap gap-5 justify-center items-center mt-16 mx-24">
+      {subjects.map((subject: any, index: number) => (
         <CardSubject
-          id={subject.id}
+          id={subject.id_materia}
           idClass={idClass}
           idCourse={idCourse}
-          key={subject.id}
-          description={subject.description}
-          name={subject.name}
-          backgroundColor="amarelo"
+          key={subject.id_materia}
+          description="Aprender & Crescer"
+          name={subject.nome_materia}
+          backgroundColor={colors[index % colors.length]}
         />
       ))}
+
       <CardSubject
-        description="Processo de Desenvolvimento de Sistemas"
+        description="Aprender & Crescer"
         name="PDS"
-        backgroundColor="amarelo"
+        backgroundColor="marrom"
         id="1"
         idClass="1"
         idCourse="1"

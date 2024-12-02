@@ -72,7 +72,7 @@ async function atualizarCurso(
 ): Promise<string> {
   try {
     if (!idCurso || !nomeCurso || !cargaHoraria || !dataInicio || !dataFim || !dataInicioInscricoes || !dataFimInscricoes || numeroVagas === undefined || !ementa) {
-      return "Todos os dados são obrigatórios"
+      return "Todos os dados são obrigatorios"
     }
 
      const cursoExiste = await verificarIdExistente(idCurso)
@@ -81,7 +81,7 @@ async function atualizarCurso(
      }
 
     const query = `
-      UPDATE cursos
+      UPDATE curso
       SET nome_curso = $1, carga_horaria = $2, data_inicio = $3, data_fim = $4, 
           data_inicio_inscricoes = $5, data_fim_inscricoes = $6, numero_vagas = $7, ementa = $8
       WHERE id_curso = $9
@@ -106,26 +106,60 @@ async function atualizarCurso(
   }
 }
 
-async function buscarCursoPorId(idCurso: string): Promise<string> {
+async function listarCursos(idCurso?: string): Promise<string | any[]> {
   try {
-    if (!idCurso) {
-      return "ID do curso é obrigatório"
+    if (idCurso) {
+      const cursoExiste = await verificarIdExistente(idCurso)
+      if (!cursoExiste) {
+        return 'ID invalido: Curso nao encontrado'
+      }
+
+      const query = 'SELECT * FROM curso WHERE id_curso = $1'
+      const resultado = await db.query(query, [idCurso])
+
+      if (resultado.rows.length === 0) {
+        return 'Nenhum curso encontrado para esse id'
+      }
+
+      return resultado.rows
+    } else {
+      const query = 'SELECT * FROM curso'
+      const resultado = await db.query(query)
+
+      if (resultado.rows.length === 0) {
+        return 'Nenhum curso cadastrado'
+      }
+
+      return resultado.rows
     }
-
-    const query = 'SELECT * FROM curso WHERE id_curso = $1'
-    const resultado = await db.query(query, [idCurso])
-
-    if (resultado.rows.length === 0) {
-      return "Curso não encontrado"
-    }
-
-    const curso = resultado.rows[0]
-    return `Curso encontrado: ${curso.nome_curso}`
   } catch (error) {
-    console.error("Erro ao buscar curso:", error)
-    return "Erro ao buscar curso"
-  }
-}
+    console.error('Erro ao listar cursos:', error)
+    return 'Erro ao buscar cursos'
+  }}
+
+  async function AlunosnoCurso(id_aluno: string): Promise<any> {
+    try{
+      if(!id_aluno){
+        return "ID do aluno e obrigatorio"
+      }
+      let cursos = []
+      const query = "SELECT * FROM alunosturma WHERE id_aluno = $1"
+      const alunosturma = await db.query(query, [id_aluno])
+      for (let i = 0; i < alunosturma.rows.length; i++)
+      {
+        const queryTurma = "SELECT * from turmas WHERE id_turma = $1"
+        const turma = await db.query(queryTurma, [alunosturma.rows[i].id_turma])
+        cursos.push(turma.rows[0].id_curso)
+      }
+      return cursos;
+   
+   }catch(error){
+     console.error("Erro ao buscar alunos no curso:", error)
+     return "Erro ao buscar alunos no curso"
+   }
+     
+    }
+
 
 
 
@@ -148,13 +182,12 @@ async function verificarIdExistente(idCurso: string): Promise<boolean> {
 }
 
 
-
-
 export const cursoService = {
   criarCurso,
   deletarCurso,
   atualizarCurso,
-  buscarCursoPorId,
-  verificarIdExistente
+  listarCursos,
+  verificarIdExistente,
+  AlunosnoCurso
 
 }

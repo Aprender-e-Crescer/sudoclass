@@ -112,7 +112,46 @@ const subjectsController = {
             console.error('Erro ao adicionar matéria a turma:', error);
             res.status(500).send('Ocorreu um erro no servidor ao tentar adicionar a matéria a turma.');
         }
-    }
-};
+    },
+    studentListBySubject: async (req: Request, res: Response): Promise< void > =>{
+        const {id}  = req.params
+        if ( !id ){
+            res.status(400).send('ID da matéria e obrigaorio.');
+            return; 
+        }
+
+        try {
+            const resposta = await materiaService.studentListBySubject(id);           
+             if ( !resposta ) {
+                res.status(404).send('Nenhum aluno encontrado para esta matéria.');
+            } else {
+                res.status(200).send(resposta);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar alunos por materia:', error);
+            res.status(500).send('Ocorreu um erro');
+        }
+    },
+    subjectsByStudent: async (req: Request, res: Response): Promise<void> => {
+        const { id } = req.params;
+        if (!id) {
+            res.status(400).send('ID do aluno é obrigatório.');
+            return;
+        }
+        try {
+            const resposta = await materiaService.subjectsByStudent(id);
+            if (!resposta) {
+                res.status(404).send('Nenhuma matéria encontrada para este aluno.');
+            } else {
+                res.status(200).send(resposta);
+            }
+        }
+        catch (error) {
+            console.error('Erro ao buscar materias por aluno:', error);
+            res.status(500).send('Ocorreu um erro');
+        }
+
+},
+}
 
 export default subjectsController;

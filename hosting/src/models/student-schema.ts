@@ -1,38 +1,45 @@
 import { datePreprocessedSchema } from '@/utils/schema'
 import { z } from 'zod'
 
-export const studentSchema = z.preprocess((obj) => ({
-  idStudent: obj.id_aluno,
-  name: obj.nome,
-  birthDate: obj.data_nasc,
-  email: obj.email,
-  state: obj.estado,
-  city: obj.municipio,
-  street: obj.rua,
-  neighborhood: obj.bairro,
-  number: obj.numero,
-  rg: obj.rg,
-  rgIssueDate: obj.datadeexpedicaorg,
-  rgIssueState: obj.estadodeexpedicaorg,
-  birthState: obj.estadonascimento,
-  birthCity: obj.cidadenascimento,
-  cpf: obj.cpf,
-}), z.object({
-  idStudent: z.number(),
-  name: z.string(),
-  birthDate: datePreprocessedSchema,
-  email: z.string(),
-  state: z.string(),
-  city: z.string(),
-  street: z.string(),
-  neighborhood: z.string(),
-  number: z.string(),
-  rg: z.string(),
-  rgIssueDate: z.string(),
-  rgIssueState: z.string(),
-  birthState: z.string(),
-  birthCity: z.string(),
-  cpf: z.string(),
-}))
+export const studentSchema = z.preprocess(
+  (obj) => ({
+    id: obj?.id_aluno,
+    address: {
+      city: obj?.municipio,
+      neighborhood: obj?.bairro,
+      state: obj?.estado,
+      street: obj?.rua,
+      streetNumber: obj?.numero,
+    },
+    cityOfBirth: obj?.cidadenascimento,
+    cpf: obj?.cpf,
+    dateOfBirth: obj?.data_nasc,
+    email: obj?.email,
+    name: obj?.nome,
+    rg: obj?.rg,
+    shippingDate: obj?.datadeexpedicaorg,
+    shippingStatus: obj?.estadodeexpedicaorg,
+    stateOfBirth: obj?.estadonascimento,
+  }),
+  z.object({
+    id: z.number(),
+    address: z.object({
+      city: z.string(),
+      neighborhood: z.string(),
+      state: z.string(),
+      street: z.string(),
+      streetNumber: z.string(),
+    }),
+    cityOfBirth: z.string(),
+    cpf: z.string(),
+    dateOfBirth: datePreprocessedSchema,
+    email: z.string(),
+    name: z.string(),
+    rg: z.string(),
+    shippingDate: z.string(),
+    shippingStatus: z.string(),
+    stateOfBirth: z.string(),
+  }),
+)
 
 export type Student = z.infer<typeof studentSchema>
