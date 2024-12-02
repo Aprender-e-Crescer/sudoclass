@@ -6,12 +6,7 @@ import { SendHorizontal } from 'lucide-react'
 import { Warning } from '@/components/custom/warning'
 import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { CustomLoading } from '@/components/custom/custom-loading'
-import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
-import { useGetStudentQuery } from '@/queries/use-get-student-query'
-import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 
 export const Route = createFileRoute(

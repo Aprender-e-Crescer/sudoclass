@@ -60,36 +60,38 @@ export function ListActivity() {
             </div>
             <div className="md:ml-5">
               <div>
-                {activities?.map((activity) => {
-                  return (
-                    <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
-                      <ActivitiesMaterials
-                        id={activity.id.toString()}
-                        idClass={idClass}
-                        idCourse={idCourse}
-                        idSubject={idSubject}
-                        title={activity.title}
-                        instruction={activity.instruction}
-                        type={user?.type ?? 'aluno'}
-                        assigned={0}
-                        pending={26}
-                        dateActivity={
-                          activity.datePosting
-                            ? (() => {
-                                const date = new Date(activity.datePosting)
-                                date.setDate(date.getDate() + 1)
-                                return date.toLocaleDateString('pt-BR', {
-                                  day: '2-digit',
-                                  month: '2-digit',
-                                  year: 'numeric',
-                                })
-                              })()
-                            : undefined
-                        }
-                      />
-                    </div>
-                  )
-                })}
+                {activities
+                  ?.sort((a, b) => new Date(b.datePosting ?? 0).getTime() - new Date(a.datePosting ?? 0).getTime())
+                  .map((activity) => {
+                    return (
+                      <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
+                        <ActivitiesMaterials
+                          id={activity.id.toString()}
+                          idClass={idClass}
+                          idCourse={idCourse}
+                          idSubject={idSubject}
+                          title={activity.title}
+                          instruction={activity.instruction}
+                          type={user?.type ?? 'aluno'}
+                          assigned={0}
+                          pending={26}
+                          dateActivity={
+                            activity.datePosting
+                              ? (() => {
+                                  const date = new Date(activity.datePosting)
+                                  date.setDate(date.getDate() + 1)
+                                  return date.toLocaleDateString('pt-BR', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                  })
+                                })()
+                              : undefined
+                          }
+                        />
+                      </div>
+                    )
+                  })}
               </div>
             </div>
           </div>
