@@ -20,7 +20,6 @@ export const studentSchema = z.preprocess(
     shippingDate: obj?.datadeexpedicaorg,
     shippingStatus: obj?.estadodeexpedicaorg,
     stateOfBirth: obj?.estadonascimento,
-    course: obj?.id_curso,
   }),
   z.object({
     id: z.number(),
@@ -40,7 +39,6 @@ export const studentSchema = z.preprocess(
     shippingDate: z.string(),
     shippingStatus: z.string(),
     stateOfBirth: z.string(),
-    course: z.number(),
   }),
 )
 
