@@ -1,7 +1,6 @@
 import { db } from '../config/database'
 
 async function createClass(
-  id_turma: number,
   nome_turma: string,
   turno: string,
   cargahoraria: number,
@@ -13,7 +12,6 @@ async function createClass(
 ): Promise<string> {
   try {
     if (
-      !id_turma ||
       !nome_turma ||
       !turno ||
       !cargahoraria ||
@@ -25,11 +23,7 @@ async function createClass(
     ) {
       return 'Todos os campos sao obrigatorios para adicionar uma turma'
     }
-
-    const idExistente = await verificaridExistente(id_turma)
-    if (idExistente) {
-      return `Ja existe uma turma com o ID ${id_turma}`
-    }
+    let id_turma = await db.query('SELECT MAX(id_turma) + 1 AS next_id_turma FROM turmas;');
 
     const response = await db.query(
       `INSERT INTO turmas 
@@ -37,7 +31,7 @@ async function createClass(
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
        RETURNING id_turma`,
       [
-        id_turma,
+        id_turma.rows[0].next_id_turma,
         nome_turma,
         turno,
         cargahoraria,
@@ -52,7 +46,7 @@ async function createClass(
     return `A turma ${nome_turma} foi adicionada com sucesso! ID: ${response.rows[0].id_turma}, turno: ${turno}, inicio: ${datainicio.toISOString()}, termino: ${datafim.toISOString()}, carga horaria: ${cargahoraria}, ementa: "${ementa}", inscricoes ate: ${dataFinalIncricao.toISOString()}, vagas: ${vagasincricoes}.`
   } catch (error) {
     console.error('Erro ao adicionar turma:', error)
-    return 'Erro ao adicionar turma. Tente novamente mais tarde.'
+    return 'Erro ao adicionar turma. Tente novamente mais tarde'
   }
 }
 
