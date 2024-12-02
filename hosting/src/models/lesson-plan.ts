@@ -11,6 +11,7 @@ export const lessonPlanSchema = z.object({
     datafim: z.string(),
     conteudoformativo: z.string(),
     mododeensino: z.string(),
+    recursosdidaticos: z.string(),
   });
 
 export type LessonPlan = z.infer<typeof lessonPlanSchema>;
