@@ -3,9 +3,9 @@ import { usuarioService } from '../services/usuario.service';
 
 const usuarioController = {
     CreateUser: async (req: Request, res: Response): Promise<void> => { 
-        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo } = req.body;
+        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo} = req.body;
         try {
-            const retorno = await usuarioService.createUser(id_usuario, email, senha,  id_aluno, id_professor, id_pedagogo);
+            const retorno = await usuarioService.createUser(id_usuario, email, senha,  id_aluno, id_professor, id_pedagogo, tipo);
             if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o usuário.');
             } else {
@@ -25,11 +25,26 @@ const usuarioController = {
             }else{
                   res.status(200).send(retorno);
             }
-            console.log(id_usuario)
+            console.log(retorno)
         }
         catch(error){
             console.error('Erro ao buscar usuário:', error);
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar buscar o usuário.');
+        }
+    },
+
+    requestPasswordList: async(req: Request, res: Response): Promise<void> => {
+        const {trocardesenha} = req.params;
+        const trocaSenhaBool = trocardesenha === 'true';
+            try{
+            const retorno = await usuarioService.requestPasswordList(trocaSenhaBool);
+
+                    res.status(200).send(retorno);
+                    console.log(retorno)
+        }
+        catch(error){
+            console.error('Erro ao solicitar a troca de senha:', error);
+            res.status(500).send( 'Ocorreu um erro no servidor ao tentar solicitar a troca de senha.');
         }
     },
 
@@ -51,9 +66,15 @@ const usuarioController = {
  
      updateUser: async(req: Request, res: Response): Promise<void> => {
         const {id_usuario} = req.params;
-        const {email, senha, id_aluno, id_professor, id_pedagogo} = req.body;
+        const {email, senha, trocardesenha} = req.body;
+
         try{
-            const retorno = await usuarioService.updateUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo);
+            const retorno = await usuarioService.updateUser(
+                id_usuario,
+                email,
+                senha,
+                trocardesenha
+            );
             console.log(retorno)
             if(!retorno){
                  res.status(500).send(`Não foi possivel atualizar o usuario`);

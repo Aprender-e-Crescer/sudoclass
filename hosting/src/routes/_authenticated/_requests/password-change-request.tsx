@@ -12,7 +12,7 @@ import {
   AlertDialogCancel,
   AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
-import { useStudentsListQuery } from '@/queries/use-students-list-query'
+import { usePasswordChangeListingQuery } from '@/queries/use-change-password-request-query'
 import { useToast } from '@/hooks/use-toast'
 import { InputAuth } from '@/components/custom/auth-input'
 import { Form, Formik, FormikProps } from 'formik'
@@ -37,7 +37,7 @@ function useLogic() {
   const [passwords, setPasswords] = useState<Record<string, string>>({})
   const { toast } = useToast()
 
-  const { data: students } = useStudentsListQuery()
+  const { data: user } = usePasswordChangeListingQuery()
 
   function generatePassword(): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -52,16 +52,16 @@ function useLogic() {
     return password
   }
 
-  if (students && Object.keys(passwords).length === 0) {
+  if (user && Object.keys(passwords).length === 0) {
     const initialPasswords: Record<string, string> = {}
-    students.forEach(({ name }) => {
-      initialPasswords[name] = generatePassword()
+    user.forEach(({ studentName }) => {
+      initialPasswords[studentName] = generatePassword()
     })
     setPasswords(initialPasswords)
   }
 
   return {
-    students,
+    user,
     toast,
     formikInputCopyRef,
     passwords,
@@ -69,16 +69,16 @@ function useLogic() {
 }
 
 export function RequestChangePassword() {
-  const { students, toast, formikInputCopyRef, passwords } = useLogic()
+  const { user, toast, formikInputCopyRef, passwords } = useLogic()
   return (
     <>
-      {students?.map(({ name }, index) => (
-        <div key={index} className="flex flex-col flex-1 p-2">
+      {user?.map(({ idUser, studentName, subjectName}) => (
+        <div key={idUser} className="flex flex-col flex-1 p-2">
           <div className="rounded-md border-2 flex p-3 items-center my-5 gap-5">
             <img className="size-12" src={avatarLogo} />
             <div>
-              <h1 className="font-bold font-[inter]">{name}</h1>
-              <p className="text-gray-300 font-[inter]">Curso: Aprender e crescer</p>
+              <h1 className="font-bold font-[inter]">{studentName}</h1>
+              <p className="text-gray-300 font-[inter]">Curso: {subjectName}</p>
             </div>
             <div className="gap-3 flex ml-auto">
               <AlertDialog>
@@ -100,7 +100,7 @@ export function RequestChangePassword() {
                     <AlertDialogCancel className="w-10">
                       <ChevronLeft className="size-8 mt-[13px]" />
                     </AlertDialogCancel>
-                    <AlertDialogTitle className="text-2xl">Nova senha - {name}</AlertDialogTitle>
+                    <AlertDialogTitle className="text-2xl">Nova senha - {studentName}</AlertDialogTitle>
                   </AlertDialogHeader>
                   <AlertDialogDescription>Essa será a senha padrão fornecida ao aluno</AlertDialogDescription>
                   <Formik
@@ -117,7 +117,7 @@ export function RequestChangePassword() {
                         placeholder="Sua nova senha"
                         icon={<Key />}
                         isCopyInput
-                        value={passwords[name] || '12345678'}
+                        value={passwords[studentName] || '12345678'}
                       />
                     </Form>
                   </Formik>

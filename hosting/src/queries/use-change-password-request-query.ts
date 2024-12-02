@@ -1,4 +1,4 @@
-import { firestore } from '@/services/firebase'
+/* import { firestore } from '@/services/firebase'
 import { changePasswordRequestSchema, ChangeRequests } from '@/models/change-password-request-schema'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
@@ -17,6 +17,24 @@ export function useChangePasswordRequestQuery() {
 
       const docSnap = await getDocs(passwordRequestsRef)
       return docSnap.docs.map((doc) => doc.data())
+    },
+  })
+}
+*/
+import { userRequestChangePasswordSchema, userSchema } from '@/models/user-schema'
+import { api } from '@/services/api'
+import { useQuery } from '@tanstack/react-query'
+import { z } from 'zod'
+
+export function usePasswordChangeListingQuery() {
+  return useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const { data } = await api.get("/usuario/trocasenha/:trocardesenha")
+
+      const teachers = z.array(userRequestChangePasswordSchema).parse(data)
+
+      return teachers
     },
   })
 }
