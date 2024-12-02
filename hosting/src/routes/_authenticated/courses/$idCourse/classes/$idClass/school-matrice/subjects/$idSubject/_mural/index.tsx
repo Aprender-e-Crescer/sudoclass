@@ -8,6 +8,7 @@ import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutatio
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
 import { CustomLoading } from '@/components/custom/custom-loading'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
+import { useGetFullUser } from '@/hooks/use-get-full-user'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -23,8 +24,7 @@ export function WallSubjects() {
   const { idSubject } = Route.useParams()
   const { data: warnings, isLoading } = useListWarningsQuery(idSubject)
   const createWarningMutation = useCreateWarningMutation()
-  const currentUser = useCurrentUserQuery()
-  const { data: user } = useGetUserQuery(currentUser?.data?.uid)
+  const { name, user } = useGetFullUser()
   const { data: subject } = useGetSubjectByIdQuery(parseInt(idSubject))
 
   if (!user) {
@@ -32,22 +32,7 @@ export function WallSubjects() {
     return <div>Usuário não encontrado</div>
   }
 
-  let userName = ''
-  let userType = ''
-
-  if (user.type === 'pedagogo') {
-    const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
-    userName = pedagogue?.name || 'Pedagogo não encontrado'
-    userType = 'pedagogo'
-  } else if (user.type === 'aluno') {
-    const { data: student } = useGetStudentQuery(user.idStudent)
-    userName = student?.name || 'Aluno não encontrado'
-    userType = 'aluno'
-  } else if (user.type === 'professor') {
-    const { data: teacher } = useGetTeacherQuery(user.idTeacher)
-    userName = teacher?.name || 'Professor não encontrado'
-    userType = 'professor'
-  }
+  const userName = name
 
   console.log('Dados de warnings:', warnings)
 
