@@ -12,7 +12,6 @@ import { CustomLoading } from '@/components/custom/custom-loading'
 import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
 import { useGetStudentQuery } from '@/queries/use-get-student-query'
 import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
-import { useListSubjectsQuery } from '@/queries/use-list-subjects-query'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 
 export const Route = createFileRoute(
