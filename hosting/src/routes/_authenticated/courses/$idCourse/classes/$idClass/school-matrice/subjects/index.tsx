@@ -32,7 +32,7 @@ function HomeListSubjects() {
   console.log('subjects:', subjects)
 
   return (
-    <div className="flex flex-wrap gap-5 justify-center items-center mt-16 mx-24">
+    <div className="flex flex-wrap gap-5 justify-center items-center mt-6">
       {subjects.map((subject: any, index: number) => (
         <CardSubject
           id={subject.id_materia}
