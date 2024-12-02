@@ -9,6 +9,9 @@ import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { CustomLoading } from '@/components/custom/custom-loading'
+import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
+import { useGetStudentQuery } from '@/queries/use-get-student-query'
+import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -27,45 +30,45 @@ export function WallSubjects() {
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
-  // if (!user) {
-  //   console.error('Tipo de usuário não encontrado')
-  //   return <div>Usuário não encontrado</div>
-  // }
+  if (!user) {
+    console.error('Tipo de usuário não encontrado')
+    return <div>Usuário não encontrado</div>
+  }
 
-  // let userName = ''
-  // let userType = ''
+  let userName = ''
+  let userType = ''
 
-  // if (user.type === 'pedagogo') {
-  //   const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
-  //   userName = pedagogue?.name || 'Pedagogo não encontrado'
-  //   userType = 'pedagogo'
-  // } else if (user.type === 'aluno') {
-  //   const { data: student } = useGetStudentQuery(user.idStudent)
-  //   userName = student?.name || 'Aluno não encontrado'
-  //   userType = 'aluno'
-  // } else if (user.type === 'professor') {
-  //   const { data: teacher } = useGetTeacherQuery(user.idTeacher)
-  //   userName = teacher?.name || 'Professor não encontrado'
-  //   userType = 'professor'
-  // }
+  if (user.type === 'pedagogo') {
+    const { data: pedagogue } = useGetPedagogueQuery(user.idPedagogue)
+    userName = pedagogue?.name || 'Pedagogo não encontrado'
+    userType = 'pedagogo'
+  } else if (user.type === 'aluno') {
+    const { data: student } = useGetStudentQuery(user.idStudent)
+    userName = student?.name || 'Aluno não encontrado'
+    userType = 'aluno'
+  } else if (user.type === 'professor') {
+    const { data: teacher } = useGetTeacherQuery(user.idTeacher)
+    userName = teacher?.name || 'Professor não encontrado'
+    userType = 'professor'
+  }
 
   console.log('Dados de warnings:', warnings)
 
   const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
-    // if (userName) {
-    createWarningMutation.mutate({
-      message: values.message,
-      userId: 1,
-      subjectId: parseInt(idSubject, 10),
-    })
-    resetForm()
-    // } else {
-    //   console.error('Usuário não autenticado')
-    // }
+    if (userName) {
+      createWarningMutation.mutate({
+        message: values.message,
+        userId: user.idUser,
+        subjectId: parseInt(idSubject, 10),
+      })
+      resetForm()
+    } else {
+      console.error('Usuário não autenticado')
+    }
   }
 
   if (isLoading) {
-   return (
+    return (
       <>
         <div className="w-full h-full flex items-center justify-center">
           <CustomLoading message="Carregando WallSubjects" size={70} />
@@ -119,7 +122,7 @@ export function WallSubjects() {
                 <Warning
                   id={warning.id_aviso}
                   key={warning.id_aviso}
-                  name={`Usuário`}
+                  name={userName}
                   date={formattedDate}
                   avatarSrc={warning.avatar || ''}
                   comment={warning.mensagem}
