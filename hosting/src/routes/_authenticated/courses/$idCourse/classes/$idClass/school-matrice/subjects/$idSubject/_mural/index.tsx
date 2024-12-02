@@ -12,6 +12,8 @@ import { CustomLoading } from '@/components/custom/custom-loading'
 import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
 import { useGetStudentQuery } from '@/queries/use-get-student-query'
 import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
+import { useListSubjectsQuery } from '@/queries/use-list-subjects-query'
+import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -29,6 +31,7 @@ export function WallSubjects() {
   const createWarningMutation = useCreateWarningMutation()
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
+  const { data: subject } = useGetSubjectByIdQuery(parseInt(idSubject))
 
   if (!user) {
     console.error('Tipo de usuário não encontrado')
@@ -83,7 +86,7 @@ export function WallSubjects() {
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
         <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <CardComponent name="Banco de Dados" description="Aprender & Crescer" />
+          <CardComponent name={subject.nome_materia} description="Aprender & Crescer" />
         </div>
 
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full">
