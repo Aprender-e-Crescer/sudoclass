@@ -1,6 +1,4 @@
 import { AlertDialogComponent } from '@/components/custom/alert-dialog'
-import { InputCheckbox } from '@/components/custom/checkbox-input'
-import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useClassesController } from '@/controllers/use-class-controller'
@@ -11,7 +9,6 @@ import { Form, Formik } from 'formik'
 import { Pencil } from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { parse } from 'date-fns'
 import { z } from 'zod'
 
 const validateSearch = z.object({
@@ -34,57 +31,42 @@ const initialValues = {
   totalVacancies: '',
 }
 
-const checkboxFinishedValues = [
-  {
-    value: 'Sim',
-    label: 'yesFinished',
-  },
-  {
-    value: 'Não',
-    label: 'noFinished',
-  },
-]
-
-const checkboxReleasedValues = [
-  {
-    value: 'Sim',
-    label: 'yes',
-  },
-  {
-    value: 'Não',
-    label: 'no',
-  },
-]
-
 export function ClassList() {
-  const { action } = Route.useSearch()
+  const { action, idTurma } = Route.useSearch()
   const { registerClassForm, updateClass, deleteClass } = useClassesController()
   const { data: classes } = useListClassQuery()
 
-  const handleOnClassCreationSubmit = (
-    values: {
-      class: string
-      shift: string
-      startForecast: string
-      endPrediction: string
-      registrationFinalDate: string
-      quantityHours: string
-      totalVacancies: string
-    },
-    id?: number,
-  ) => {
-    const formattedValues = {
-      ...values,
-      startForecast: parse(values.startForecast, 'dd/MM/yyyy', new Date()),
-      endPrediction: parse(values.endPrediction, 'dd/MM/yyyy', new Date()),
-      registrationFinalDate: parse(values.registrationFinalDate, 'dd/MM/yyyy', new Date()),
+  const handleOnClassCreationSubmit = (values: {
+    class: string
+    shift: string
+    startForecast: Date
+    endPrediction: Date
+    registrationFinalDate: Date
+    quantityHours: number
+    totalVacancies: number
+  }) => {
+    if (idTurma) {
+      return updateClass(idTurma, {
+        nome_turma: values.class,
+        turno: values.shift,
+        cargahoraria: values.quantityHours,
+        datainicio: values.startForecast,
+        datafim: values.endPrediction,
+        ementa: 'ementa',
+        dataFinalIncricao: values.registrationFinalDate,
+        vagasincricoes: values.totalVacancies,
+      })
     }
-
-
-    if (id) {
-      return updateClass(id, formattedValues)
-    }
-    registerClassForm(formattedValues)
+    registerClassForm({
+      nome_turma: values.class,
+      turno: values.shift,
+      cargahoraria: values.quantityHours,
+      datainicio: values.startForecast,
+      datafim: values.endPrediction,
+      ementa: 'ementa',
+      dataFinalIncricao: values.registrationFinalDate,
+      vagasincricoes: values.totalVacancies,
+    })
   }
 
   return (
@@ -175,29 +157,7 @@ export function ClassList() {
                     placeholder="Total de Vagas"
                   />
 
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col">
-                      <p>Concluido</p>
-                      <div className="flex gap-8">
-                        <InputCheckbox checkboxValues={checkboxFinishedValues} />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col">
-                      <p>Liberado</p>
-                      <div className="flex gap-8">
-                        <InputCheckbox checkboxValues={checkboxReleasedValues} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <InputFile
-                    title="Anexar Arquivo"
-                    label="attachment"
-                    id="Anexar Arquivo"
-                    name="Anexar Arquivo"
-                    placeholder="Anexar Arquivo"
-                  />
+                  <InputForm title="Ementa" label="attachment" id="menu" name="menu" placeholder="menu" />
 
                   <div className="flex items-center justify-center gap-3">
                     <Link to="/register/classes">
