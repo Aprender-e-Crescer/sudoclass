@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CardSubject } from '@/components/custom/card-subject'
 import { useListSubjectsQuery } from '@/queries/use-list-subjects-query'
+import { CustomLoading } from '@/components/custom/custom-loading'
 
 export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/')({
   component: HomeListSubjects,
@@ -13,7 +14,13 @@ function HomeListSubjects() {
   const { idClass, idCourse } = Route.useParams()
 
   if (isLoading) {
-    return <p>Carregando matérias...</p>
+    return (
+      <>
+        <div className="w-full h-full flex items-center justify-center">
+          <CustomLoading message="Carregando matérias" size={70} />
+        </div>
+      </>
+    )
   }
 
   if (isError) {

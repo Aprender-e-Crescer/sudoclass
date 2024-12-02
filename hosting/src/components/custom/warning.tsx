@@ -68,10 +68,11 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
             {isEditing ? (
               <div>
                 <textarea
-                  className="mt-2 text-sm text-gray-700 w-full border border-gray-300 p-2 rounded-md"
+                  className="mt-2 text-sm text-gray-700 w-full p-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={editedComment}
                   onChange={(e) => setEditedComment(e.target.value)}
                 />
+
                 <div className="flex gap-2 mt-2">
                   <button className="px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleSaveClick}>
                     Salvar
