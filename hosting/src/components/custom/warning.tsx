@@ -7,7 +7,7 @@ import { useDeleteWarningMutation } from '@/mutations/use-delete-warning-mutatio
 
 interface WarningProps {
   id: number
-  name: string
+  name: string | undefined | null
   date: string
   comment: string
   textAvatar?: string
@@ -17,7 +17,6 @@ interface WarningProps {
 export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(comment)
-  const [isHidden, setIsHidden] = useState(false)
   const deleteWarningMutation = useDeleteWarningMutation()
   const updateWarningMutation = useUpdateWarningMutation()
 
@@ -49,16 +48,12 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
     deleteWarningMutation.mutate(id)
   }
 
-  if (isHidden) {
-    return null
-  }
-
   return (
     <div>
       <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex justify-between">
         <div className="flex items-center gap-x-3">
           <Avatar.Root className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
-            <Avatar.Image className="w-full h-full rounded-full object-cover" src={avatarSrc} alt={name} />
+            <Avatar.Image className="w-full h-full rounded-full object-cover" src={avatarSrc} />
             <Avatar.Fallback className="text-xl text-gray-500">{textAvatar}</Avatar.Fallback>
           </Avatar.Root>
 
