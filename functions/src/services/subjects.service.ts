@@ -122,6 +122,26 @@ async function studentListBySubject(id_materia : string): Promise< any > {
         throw new Error('Erro ao buscar alunos matriculados na matéria')
    
 }}
+async function subjectsByStudent(id_estudante: string): Promise<any> {
+    try {
+        const response = await db.query(
+            `SELECT mt.nome_materia, mt.id_materia
+            FROM materia mt
+            INNER JOIN materiaturma mtur ON mt.id_materia = mtur.id_materia
+            INNER JOIN matricula m ON mtur.id_turma = m.id_turma
+            INNER JOIN alunos a ON m.id_aluno = a.id_aluno
+            WHERE a.id_aluno = $1`,
+            [id_estudante]
+        );
+
+        return response.rows;
+    } catch (error) {
+        console.error('Erro ao buscar materias do estudante:', error);
+        throw new Error('Erro ao buscar materias do estudante');
+    }
+}
+
+
 
 
 export const materiaService = {
@@ -163,5 +183,6 @@ export const materiaService = {
     deleteSubject: (idMateria: string) => deleteSubject(idMateria),
     getSubjectById: (idMateria: string) => getSubjectById(idMateria),
     addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria),
-    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia)
+    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia),
+    subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante)
 };
