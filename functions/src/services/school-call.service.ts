@@ -57,24 +57,25 @@ async function removeSchoolCall(id_chamada: number): Promise<string> {
 
 async function updateSchoolCall(
   id_aluno: number,
+  data: string,
   status: boolean
 ): Promise<string> {
   try {
-    if (!id_aluno || status === undefined) {
-      return 'ID e presença são obrigatórios.'
+    if (!id_aluno || status === undefined || !data) {
+      return 'ID, data e presença são obrigatórios.'
     }
 
     const query = `
       UPDATE chamada
       SET status = $1
-      WHERE id_aluno = $2
+      WHERE id_aluno = $2 AND data = $3
     `
-    const values = [status, id_aluno]
+    const values = [status, id_aluno, data]
 
     const result = await db.query(query, values)
 
     if (result.rowCount === 0) {
-      return 'Nenhuma chamada encontrada para o ID fornecido.'
+      return 'Nenhuma chamada encontrada para o ID e data fornecidos.'
     }
 
     return 'Chamada atualizada com sucesso'

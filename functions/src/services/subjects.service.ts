@@ -220,11 +220,11 @@ export const materiaService = {
       ementa
     ),
 
-  deleteSubject: (idMateria: string) => deleteSubject(idMateria),
-  getSubjectById: (idMateria: string) => getSubjectById(idMateria),
-  addSubjectToClass: (idCurso: string, idMateria: string) =>
-    addSubjectToClass(idCurso, idMateria),
-  studentListBySubject: (id_materia: string) =>
-    studentListBySubject(id_materia),
-  subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante),
-}
+
+    deleteSubject: (idMateria: string) => deleteSubject(idMateria),
+    getSubjectById: (idMateria: string) => getSubjectById(idMateria),
+    addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria),
+    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia),
+    subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante)
+};
+

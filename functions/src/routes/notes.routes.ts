@@ -10,7 +10,7 @@ router.get(
   noteController.getAverageBySubject
 )
 router.get(
-  '/note/student/:studentId/subject/:subjectId/average',
+  '/note/students/:subjectId/average',
   noteController.getAverageByStudentAndSubject
 )
 
