@@ -1,34 +1,16 @@
-import { firestore } from '@/services/firebase'
+import { documentSchema } from '@/models/student-document-schema'
+import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs, getDoc } from 'firebase/firestore'
-import { documentSchema, Document } from '@/models/student-document-schema'
+import { z } from 'zod'
 
-export const LIST_STUDENT_DOCUMENTS_QUERY_KEY = ['getDocuments']
+export const LIST_STUDENT_DOCUMENTS_QUERY_KEY = ['getStudentDocuments']
 
-export function useListStudentDocumentsQuery(studentId: string | undefined) {
+export function useListStudentDocumentsQuery(id: number | null | undefined) {
   return useQuery({
-    enabled: !!studentId,
-    queryKey: [...LIST_STUDENT_DOCUMENTS_QUERY_KEY, studentId],
+    queryKey: LIST_STUDENT_DOCUMENTS_QUERY_KEY,
     queryFn: async () => {
-      const documentsRef = collection(firestore, `students/${studentId}/documents`).withConverter({
-        toFirestore: (document: Document) => document,
-        fromFirestore: (snapshot) => documentSchema.parse(snapshot.data()),
-      })
-
-      const snapshot = await getDocs(documentsRef)
-      const documents = await Promise.all(
-        snapshot.docs.map(async (doc) => {
-          const documentData = doc.data()
-          const createdByDoc = await getDoc(documentData.createdBy)
-          const createdBy = createdByDoc.data()
-
-          return {
-            ...documentData,
-            createdBy,
-          }
-        }),
-      )
-
+      const { data } = await api.get(`/alunos/documents/${id}`)
+      const documents = z.array(documentSchema).parse(data)
       return documents
     },
   })

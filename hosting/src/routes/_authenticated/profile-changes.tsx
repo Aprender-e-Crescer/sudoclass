@@ -3,29 +3,22 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import imageProfile from '@/assets/image-profile.png'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Upload } from 'lucide-react'
+import { Loader2, Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
-
-const mockStudents = [
-  {
-    name: 'João Silva',
-    cpf: '123.456.789-00',
-    email: 'joao.silva@gmail.com',
-    cityOfBirth: 'São Paulo',
-    telephone: '(11) 98765-4321',
-  },
-]
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
+import { useGetUserQuery } from '@/queries/use-get-user-query'
+import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
+import { useGetStudentQuery } from '@/queries/use-get-student-query'
+import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 
 export const Route = createFileRoute('/_authenticated/profile-changes')({
   component: ProfileChanges,
 })
 
 export function ProfileChanges() {
-  const students = mockStudents
+  const currentUser = useCurrentUserQuery()
+  const { data: userData } = useGetUserQuery(currentUser?.data?.uid)
   const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null)
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
@@ -36,11 +29,51 @@ export function ProfileChanges() {
       reader.readAsDataURL(file)
     }
   }
-
   const handleChoosePhotoClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click()
     }
+  }
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  const {
+    data: teacherData,
+    isLoading: isLoadingTeacher,
+    error: isErrorTeacher,
+  } = useGetTeacherQuery(userData?.idTeacher)
+  const {
+    data: studentData,
+    isLoading: isLoadingStudent,
+    error: isErrorStudent,
+  } = useGetStudentQuery(userData?.idStudent)
+  const {
+    data: pedagogueData,
+    isLoading: isLoadingPedagogue,
+    error: isErrorPedagogue,
+  } = useGetPedagogueQuery(userData?.idPedagogue)
+
+  let user = null
+
+  if (userData?.type === 'professor') {
+    user = { data: teacherData, isLoading: isLoadingTeacher, error: isErrorTeacher }
+  }
+  if (userData?.type === 'aluno') {
+    user = { data: studentData, isLoading: isLoadingStudent, error: isErrorStudent }
+  }
+  if (userData?.type === 'pedagogo') {
+    user = { data: pedagogueData, isLoading: isLoadingPedagogue, error: isErrorPedagogue }
+  }
+
+  if (user?.isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
+      </div>
+    )
+  }
+
+  if (user?.error) {
+    return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
   }
 
   return (
@@ -54,7 +87,7 @@ export function ProfileChanges() {
           </div>
           <div className="flex gap-6 max-[420px]:flex-col">
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <Button variant={'blueButton'}>Escolher Foto</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -73,43 +106,36 @@ export function ProfileChanges() {
             </Button>
           </div>
         </div>
-
         <div>
-          {students?.map((user, index) => (
-            <div key={index} className="flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                <label>Nome</label>
-                <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                  <p className="text-[#B3B3B3] pl-4">{user.name}</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 ">
-                <label>CPF</label>
-                <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                  <p className="text-[#B3B3B3] pl-4">{user.cpf}</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 ">
-                <label>E-mail</label>
-                <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                  <p className="text-[#B3B3B3] pl-4">{user.email}</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 ">
-                <label>Cidade</label>
-                <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
-                  <p className="text-[#B3B3B3] pl-4">{user.cityOfBirth}</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 ">
-                <label>Telefone</label>
-                <div className="h-10 flex items-center rounded-lg border border-gray-200">
-                  <p className="text-[#B3B3B3] pl-4">{user.telephone}</p>
-                </div>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <label>Nome</label>
+              <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.name || 'Sem dados disponíveis'}</p>
               </div>
             </div>
-          ))}
+
+            <div className="flex flex-col gap-2 ">
+              <label>CPF</label>
+              <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.cpf || 'Sem dados disponíveis'}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 ">
+              <label>E-mail</label>
+              <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.email || 'Sem dados disponíveis'}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 ">
+              <label>Cidade</label>
+              <div className="h-10 flex items-center rounded-lg border border-gray-200 mr-14">
+                <p className="text-[#B3B3B3] pl-4">{user?.data?.address?.city || 'Sem dados disponíveis'}</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="flex gap-[350px] max-[420px]:flex-col max-[420px]:gap-12 max-[420px]:items-center">
           <div className="flex gap-3 items-center">
