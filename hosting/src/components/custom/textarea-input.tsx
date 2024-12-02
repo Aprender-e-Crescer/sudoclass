@@ -6,6 +6,7 @@ interface InputProps {
   placeholder?: string
   id: string
   name: string
+  value?: string
   titleTextArea?: string
   isDisabled?: boolean
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -21,6 +22,7 @@ export function InputTextarea({
   onChange,
   customStyle,
   isDisabled,
+  value,
 }: InputProps) {
   return (
     <div>
@@ -28,6 +30,7 @@ export function InputTextarea({
       <Field
         placeholder={placeholder}
         id={id}
+        value={value}
         name={name}
         as={Textarea}
         className={`${customStyle || ''} resize-none`}

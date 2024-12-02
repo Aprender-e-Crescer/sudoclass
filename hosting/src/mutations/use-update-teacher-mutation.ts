@@ -1,7 +1,7 @@
 import { api } from '@/services/api'
 import { useMutation } from '@tanstack/react-query'
 
-interface RegisterTeacherPayload {
+interface UpdateTeacherPayload {
   nome: string,
   datanasc: string,
   email: string,
@@ -23,10 +23,15 @@ interface MutationResults {
   onError: () => void
 }
 
-export function useRegisterTeacherMutation({ onSuccess, onError }: MutationResults) {
+interface MutationParams {
+  id: number
+  values: UpdateTeacherPayload
+}
+
+export function useUpdateTeacherMutation({ onSuccess, onError }: MutationResults) {
   return useMutation({
     mutationKey: ['register-teacher'],
-    mutationFn: (values: RegisterTeacherPayload) => api.post("/teacher", values),
+    mutationFn: ({id, values}: MutationParams) => api.put(`/teacher/${id}`, values),
     onSuccess,
     onError,
   })

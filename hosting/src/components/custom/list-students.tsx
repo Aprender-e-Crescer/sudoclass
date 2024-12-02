@@ -6,7 +6,7 @@ import correctedIcon from '@/assets/correctedIcon.png'
 import { cn } from '@/lib/utils'
 import { PropsWithChildren } from 'react'
 
-const studentCardVariants = cva('border border-[#878787] flex flex-row w-96 p-3 items-center', {
+const studentCardVariants = cva('border border-gray-300 flex flex-row w-96 p-3 items-center', {
   variants: {
     variant: {
       undefined: 'bg-white',

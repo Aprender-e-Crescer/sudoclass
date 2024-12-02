@@ -7,7 +7,7 @@ import { useDeleteWarningMutation } from '@/mutations/use-delete-warning-mutatio
 
 interface WarningProps {
   id: number
-  name: string
+  name: string | undefined | null
   date: string
   comment: string
   textAvatar?: string
@@ -17,7 +17,6 @@ interface WarningProps {
 export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(comment)
-  const [isHidden, setIsHidden] = useState(false)
   const deleteWarningMutation = useDeleteWarningMutation()
   const updateWarningMutation = useUpdateWarningMutation()
 
@@ -49,16 +48,12 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
     deleteWarningMutation.mutate(id)
   }
 
-  if (isHidden) {
-    return null
-  }
-
   return (
     <div>
       <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex justify-between">
         <div className="flex items-center gap-x-3">
           <Avatar.Root className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
-            <Avatar.Image className="w-full h-full rounded-full object-cover" src={avatarSrc} alt={name} />
+            <Avatar.Image className="w-full h-full rounded-full object-cover" src={avatarSrc} />
             <Avatar.Fallback className="text-xl text-gray-500">{textAvatar}</Avatar.Fallback>
           </Avatar.Root>
 
@@ -68,10 +63,11 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
             {isEditing ? (
               <div>
                 <textarea
-                  className="mt-2 text-sm text-gray-700 w-full border border-gray-300 p-2 rounded-md"
+                  className="mt-2 text-sm text-gray-700 w-full p-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={editedComment}
                   onChange={(e) => setEditedComment(e.target.value)}
                 />
+
                 <div className="flex gap-2 mt-2">
                   <button className="px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleSaveClick}>
                     Salvar

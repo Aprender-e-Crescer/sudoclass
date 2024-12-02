@@ -1,4 +1,4 @@
-import { DocumentReference } from 'firebase/firestore'
+import { datePreprocessedSchema } from '@/utils/schema'
 import { z } from 'zod'
  
 export const studentSchema = z.object({

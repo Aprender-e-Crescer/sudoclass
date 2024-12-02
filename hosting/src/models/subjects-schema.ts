@@ -1,4 +1,3 @@
-import { DocumentReference, Timestamp } from 'firebase/firestore'
 import { z } from 'zod'
 
 export const subjectsSchema = z.object({

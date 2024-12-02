@@ -130,5 +130,27 @@ const subjectsController = {
         }
     },
 }
+    },
+    subjectsByStudent: async (req: Request, res: Response): Promise<void> => {
+        const { id } = req.params;
+        if (!id) {
+            res.status(400).send('ID do aluno é obrigatório.');
+            return;
+        }
+        try {
+            const resposta = await materiaService.subjectsByStudent(id);
+            if (!resposta) {
+                res.status(404).send('Nenhuma matéria encontrada para este aluno.');
+            } else {
+                res.status(200).send(resposta);
+            }
+        }
+        catch (error) {
+            console.error('Erro ao buscar materias por aluno:', error);
+            res.status(500).send('Ocorreu um erro');
+        }
+
+},
+}
 
 export default subjectsController

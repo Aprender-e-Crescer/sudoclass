@@ -17,7 +17,7 @@ async function getNotesByStudentId(
 
     const groupedNotes: Record<number, string[]> = {}
 
-    result.rows.forEach((row) => {
+    result.rows.forEach((row: any) => {
       if (row.nota != null) {
         if (!groupedNotes[row.id_aluno]) {
           groupedNotes[row.id_aluno] = []
@@ -55,7 +55,7 @@ async function getNotesBySubject(
 
     const groupedNotes: Record<number, string[]> = {}
 
-    result.rows.forEach((row) => {
+    result.rows.forEach((row: any) => {
       if (row.nota != null) {
         if (!groupedNotes[row.id_aluno]) {
           groupedNotes[row.id_aluno] = []
@@ -90,34 +90,37 @@ async function getNotesBySubject(
     return []
   }
 }
-
 async function getAverageByStudentAndSubject(
-  studentId: number,
   subjectId: number
-): Promise<number> {
+): Promise<{ idAluno: number; nomeAluno: string; media: number }[]> {
   try {
-    if (!studentId || !subjectId) {
-      console.error(
-        'id_aluno e id_materia são obrigatórios para calcular a média.'
-      )
-      return NaN
-    }
-
     const result = await db.query(
-      'SELECT AVG(nota) AS media FROM atividade_aluno WHERE id_aluno = $1 AND id_materia = $2',
-      [studentId, subjectId]
+      `
+      SELECT a.id_aluno, a.nome, AVG(aa.nota) AS media
+      FROM atividade_aluno aa
+      JOIN alunos a ON aa.id_aluno = a.id_aluno
+      WHERE aa.id_materia = $1
+      GROUP BY a.id_aluno, a.nome
+      `,
+      [subjectId]
     )
 
-    if (result.rows.length === 0 || result.rows[0].media === null) {
+    if (result.rows.length === 0) {
       console.error('Nenhuma nota encontrada ou média não calculada.')
-      return NaN
+      return []
     }
 
-    const average = parseFloat(result.rows[0].media)
-    return parseFloat(average.toFixed(2))
+    const notes = result.rows.map((row: any) => ({
+      idAluno: row.id_aluno,
+      nomeAluno: row.nome,
+      media:
+        row.media !== null ? parseFloat(parseFloat(row.media).toFixed(2)) : NaN,
+    }))
+
+    return notes
   } catch (error) {
-    console.error('Erro ao calcular a média:', error)
-    return NaN
+    console.error('Erro ao calcular a média para os alunos da matéria:', error)
+    return []
   }
 }
 
@@ -142,8 +145,8 @@ async function getAverageBySubject(subjectId: number): Promise<number> {
 
 export const notaService = {
   getNotesByStudentId: (studentId: number) => getNotesByStudentId(studentId),
-  getAverageByStudentAndSubject: (studentId: number, subjectId: number) =>
-    getAverageByStudentAndSubject(studentId, subjectId),
+  getAverageByStudentAndSubject: (subjectId: number) =>
+    getAverageByStudentAndSubject(subjectId),
   getNotesBySubject: (subjectId: number) => getNotesBySubject(subjectId),
   getAverageBySubject: (subjectId: number) => getAverageBySubject(subjectId),
 }

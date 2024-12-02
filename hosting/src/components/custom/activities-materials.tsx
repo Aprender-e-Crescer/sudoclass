@@ -19,7 +19,7 @@ interface ActivitiesMaterialsProps {
   iconColor?: string
   assigned?: number
   pending?: number
-  type: 'teacher' | 'student'
+  type: string
 }
 
 export function ActivitiesMaterials({
@@ -44,7 +44,7 @@ export function ActivitiesMaterials({
     }
   }
 
-  if (type === 'teacher') {
+  if (type === 'professor') {
     return (
       <div className="w-full h-auto my-2.5">
         <Accordion className="border rounded-2xl px-4 shadow-md" type="single" collapsible>
@@ -134,7 +134,7 @@ export function ActivitiesMaterials({
         </Accordion>
       </div>
     )
-  } else if (type === 'student') {
+  } else if (type === 'aluno' || type === 'pedagogo') {
     return (
       <>
         <div className="flex items-center w-full md:hidden border p-4 rounded-2xl my-2.5">
