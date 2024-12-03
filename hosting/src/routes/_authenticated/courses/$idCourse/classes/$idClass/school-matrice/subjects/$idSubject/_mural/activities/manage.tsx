@@ -1,11 +1,12 @@
-import { Button } from '@/components/ui/button'
-import { createFileRoute } from '@tanstack/react-router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Formik, Form, Field } from 'formik'
+import { Button } from '@/components/ui/button'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
-import { z } from 'zod'
-import { useNavigate } from '@tanstack/react-router'
+import { useUpdateActivityMutation } from '@/mutations/use-update-activity-mutation'
+import { useGetActivityQuery } from '@/queries/use-get-activity-query'
 import { correctionSchema } from '@/models/correction-schema'
+import { z } from 'zod'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Link } from 'lucide-react'
 
@@ -23,21 +24,40 @@ export const Route = createFileRoute(
 
 export function CreateActivity() {
   const { idSubject, idCourse, idClass } = Route.useParams()
+  const searchParams = new URLSearchParams(window.location.search)
+  const action = searchParams.get('action')
+  const idActivity = Number(searchParams.get('idActivity'))
+
+
   const navigate = useNavigate()
   const { mutateAsync: createActivity } = useCreateActivityMutation()
+  const { mutateAsync: updateActivity } = useUpdateActivityMutation()
+  const { data: activityData, isLoading: isActivityLoading } = useGetActivityQuery(Number(idActivity))
+
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
   const [link, setLink] = React.useState<string>('')
   const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const initialValues = {
-    title: '',
-    instruction: '',
-    value: 10,
-    deliveryDate: deliveryDate,
-    subjectId: idSubject,
-    link: '',
-  }
+  // Set initial values based on action
+  const initialValues =
+    action === 'edit' && activityData
+      ? {
+          title: activityData.title,
+          instruction: activityData.instruction,
+          value: activityData.value,
+          deliveryDate: activityData.deliveryDate,
+          subjectId: idSubject,
+          // link: activityData.link, nao descomenta essa linha
+        }
+      : {
+          title: '',
+          instruction: '',
+          value: 10,
+          deliveryDate: deliveryDate,
+          subjectId: idSubject,
+          link: '',
+        }
 
   const validate = (values: any) => {
     const errors: any = {}
@@ -53,7 +73,7 @@ export function CreateActivity() {
   const handleSubmit = async (values: any) => {
     setIsLoading(true)
     try {
-      const newActivity = {
+      const activityData = {
         title: values.title,
         instruction: values.instruction,
         value: values.value,
@@ -61,19 +81,31 @@ export function CreateActivity() {
         subjectId: Number(values.subjectId),
         link: linkToDisplay || '',
       }
-
-      console.log('Nova atividade:', newActivity)
-      await createActivity(newActivity)
+  
+      if (action === 'create') {
+        await createActivity(activityData)  // Chama a mutação para criar a atividade
+      } else if (action === 'edit' && idActivity) {
+        await updateActivity({  // Chama a mutação para editar a atividade
+          activityId: Number(idActivity),
+          title: values.title,
+          instruction: values.instruction,
+          deliveryDate: values.deliveryDate,
+          value: values.value,
+          subjectId: Number(values.subjectId),
+        })
+      }
+  
       navigate({
         to: `/courses/${idCourse}/classes/${idClass}/school-matrice/subjects/${idSubject}/activities`,
-        replace: true,
+        replace: true,  // Isso irá substituir a página atual para evitar voltar com o botão de navegação
       })
     } catch (e) {
-      console.error('Erro ao adicionar atividade: ', e)
+      console.error('Erro ao adicionar/editar atividade: ', e)
     } finally {
       setIsLoading(false)
     }
   }
+  
 
   return (
     <div className="flex w-full border h-screen">
@@ -116,8 +148,8 @@ export function CreateActivity() {
                 )}
               </div>
               <div className="flex mt-6">
-                <Button type="submit" size="manage" disabled={isLoading}>
-                  {isLoading ? 'Carregando...' : 'Criar atividade'}
+                <Button type="submit" size="manage" disabled={isLoading || isActivityLoading}>
+                  {isLoading ? 'Carregando...' : action === 'edit' ? 'Atualizar atividade' : 'Criar atividade'}
                 </Button>
               </div>
             </div>
@@ -127,7 +159,6 @@ export function CreateActivity() {
     </div>
   )
 }
-
 export function PopoverDemo({ setLink, setLinkToDisplay }: any) {
   const [tempLink, setTempLink] = React.useState('')
 

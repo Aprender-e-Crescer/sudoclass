@@ -66,7 +66,7 @@ export function ActivitiesMaterials({
                   <DropdownMenuContent>
                     <DropdownMenuItem onClick={handleDelete}>Excluir</DropdownMenuItem>
                     <Link
-                      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
+                      to={`/courses/${idCourse}/classes/${idClass}/school-matrice/subjects/${idSubject}/activities/manage`} // URL formatada corretamente
                       params={{
                         idCourse,
                         idClass,
@@ -90,7 +90,7 @@ export function ActivitiesMaterials({
               <div className="flex justify-between gap-5">
                 <div className="hidden md:flex items-center">
                   <p className="text-lg text-gray-700">Instruções:</p>
-                  <p className="text-md mx-7 text-gray-500" >{instruction}</p>
+                  <p className="text-md mx-7 text-gray-500">{instruction}</p>
                 </div>
                 <div className="flex flex-col gap-y-2">
                   <div className="flex gap-2 justify-end">
@@ -146,7 +146,7 @@ export function ActivitiesMaterials({
                 idSubject,
               }}
             >
-             <p className="flex color:gray font-bold text-lg  text-gray-700">{title}</p>
+              <p className="flex color:gray font-bold text-lg  text-gray-700">{title}</p>
             </Link>
             <p className="flex color:gray text-sm text-gray-500">{dateActivity}</p>
           </div>
@@ -161,8 +161,8 @@ export function ActivitiesMaterials({
                     <img className="h-6 w-6" src={iconeAtividade} alt="" />
                   </div>
                   <div className="ml-2">
-                  <p className="flex color:gray font-bold text-lg  text-gray-700">{title}</p>
-                  <p className="flex color:gray text-sm text-gray-500">{dateActivity}</p>
+                    <p className="flex color:gray font-bold text-lg  text-gray-700">{title}</p>
+                    <p className="flex color:gray text-sm text-gray-500">{dateActivity}</p>
                   </div>
                 </div>
               </AccordionTrigger>
