@@ -14,8 +14,8 @@ export const Route = createFileRoute(
 })
 
 export function ListActivity() {
-  const { data: activities, error, isLoading } = useListActivitiesQuery()
   const { idClass, idCourse, idSubject } = Route.useParams()
+  const { data: activities, error, isLoading } = useListActivitiesQuery(parseInt(idSubject))
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
