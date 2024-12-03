@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
-import * as React from 'react'
+import React, { useState } from 'react'
 import { Formik, Form, Field } from 'formik'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
 import { z } from 'zod'
@@ -28,6 +28,7 @@ export function CreateActivity() {
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
   const [link, setLink] = React.useState<string>('')
   const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const initialValues = {
     title: '',
@@ -50,6 +51,7 @@ export function CreateActivity() {
   }
 
   const handleSubmit = async (values: any) => {
+    setIsLoading(true)
     try {
       const newActivity = {
         title: values.title,
@@ -68,6 +70,8 @@ export function CreateActivity() {
       })
     } catch (e) {
       console.error('Erro ao adicionar atividade: ', e)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -112,8 +116,8 @@ export function CreateActivity() {
                 )}
               </div>
               <div className="flex mt-6">
-                <Button type="submit" size="manage">
-                  Criar atividade
+                <Button type="submit" size="manage" disabled={isLoading}>
+                  {isLoading ? 'Carregando...' : 'Criar atividade'}
                 </Button>
               </div>
             </div>
