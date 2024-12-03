@@ -1,11 +1,13 @@
-import { api } from '@/services/api'; // Supondo que você tenha o axios configurado no api.ts
-import { useQuery } from '@tanstack/react-query';
-import { cursoSchema } from '@/models/course-schema'; 
+import { api } from '@/services/api'
+import { useQuery } from '@tanstack/react-query'
 
-export function useCursosListingQuery() {
+export function useCourseListingQuery() {
   return useQuery({
-    queryKey: ['cursos'], 
+    queryKey: ['course'],
     queryFn: async () => {
-      const { data } = await api.get('/curso'); 
-      const cursos = cursoSchema.parse(data); 
-      return cursos; }}}
+      const { data } = await api.get('/course')
+
+      return data
+    },
+  })
+}
