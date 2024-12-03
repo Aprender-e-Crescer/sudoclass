@@ -178,7 +178,7 @@ async function getDocStudent(id_aluno: string): Promise<string[]> {
     }
 
     const resposta = await db.query(
-      `SELECT nome FROM docalunos WHERE id_aluno = $1`,
+      `SELECT * FROM docalunos WHERE id_aluno = $1`,
       [id_aluno]
     )
 

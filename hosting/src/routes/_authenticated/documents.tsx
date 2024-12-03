@@ -14,29 +14,53 @@ export const Route = createFileRoute('/_authenticated/documents')({
   component: RouteComponent,
 })
 
-const columns = [
-  { header: 'Documento', accessor: 'nome' },
-  {
-    header: 'Ações',
-    Cell: () => (
-      <span className="cursor-pointer">
-        <Download />
-      </span>
-    ),
-  },
-]
+function downloadDocument(url: string) {
+  const link = document.createElement('a')
+  link.href = url
+  link.download = url.split('/').pop() || 'document'
+  link.target = '_blank'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 
 function RouteComponent() {
   const currentUser = useCurrentUserQuery()
   const { data: userData } = useGetUserQuery(currentUser?.data?.uid)
-  const { data: documentsData, isLoading, error } = useListStudentDocumentsQuery(userData?.idStudent)
+  const { data, isLoading, error } = useListStudentDocumentsQuery(userData?.idStudent)
+
+  const columns = [
+    { header: 'Documento', accessor: 'nome' },
+    {
+      header: 'Ações',
+      accessor: 'url',
+      Cell: (row: any) => {
+        const documentUrl = row.url
+
+        console.log(documentUrl)
+        return (
+          <span
+            className="cursor-pointer"
+            onClick={() => {
+              if (documentUrl) {
+                downloadDocument(documentUrl)
+              } else {
+                alert('Documento não disponível')
+              }
+            }}
+          >
+            <Download />
+          </span>
+        )
+      },
+    },
+  ]
+
   const [searchTerm, setSearchTerm] = useState('')
 
-  const formattedData = documentsData?.map((item) => ({
-    ...item,
-  }))
+  const formattedData = data ? data.map((item) => ({ ...item })) : []
 
-  const filteredData = formattedData?.filter((item) => item.nome.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredData = formattedData.filter((item) => item.nome.toLowerCase().includes(searchTerm.toLowerCase()))
 
   if (isLoading) {
     return (
@@ -62,7 +86,8 @@ function RouteComponent() {
                 placeholder="Digite aqui..."
                 id="value"
                 onChange={(e) => {
-                  setFieldValue('value', e.target.value), setSearchTerm(e.target.value)
+                  setFieldValue('value', e.target.value)
+                  setSearchTerm(e.target.value)
                 }}
               />
             </Form>
