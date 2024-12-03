@@ -72,7 +72,6 @@ export const teacherSchema = z.preprocess((obj) => ({
 export type Teacher = z.infer<typeof teacherSchema>
 
 export const registerTeacherSchema = z.object({
-  idTeacher: z.number().min(1, "O campo 'ID do Professor' é obrigatório"),
   fullName: z.string().min(1, "O campo 'Nome completo' é obrigatório"),
   dateOfBirth: datePreprocessedSchema,
   email: z.string().email('Email inválido'),
