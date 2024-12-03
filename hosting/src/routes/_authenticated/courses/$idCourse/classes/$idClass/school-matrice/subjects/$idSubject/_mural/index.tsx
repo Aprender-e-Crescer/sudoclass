@@ -115,7 +115,7 @@ export function WallSubjects() {
                   date={formattedDate}
                   avatarSrc=""
                   comment={warning.mensagem}
-                  textAvatar={warning.criado_por.charAt(0).toUpperCase()}
+                  textAvatar={warning?.criado_por?.charAt(0).toUpperCase()}
                 />
               )
             })}

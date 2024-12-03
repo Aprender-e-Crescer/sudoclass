@@ -4,7 +4,7 @@ import { activityService } from '../services/activity.service'
 const activitiesController = {
   createActivity: async (req: Request, res: Response): Promise<void> => {
     const subjectId = parseInt(req.params.subjectId, 10)
-    const { title, description, value, deliveryDate } = req.body
+    const { title, description, value, deliveryDate, attachment } = req.body
 
     if (!title || !description || !value || !deliveryDate) {
       res.status(400).send('Todos os campos são obrigatórios.')
@@ -17,7 +17,8 @@ const activitiesController = {
         description,
         value,
         deliveryDate,
-        subjectId
+        subjectId,
+        attachment
       )
 
       if (!ret) {
