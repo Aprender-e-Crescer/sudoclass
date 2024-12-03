@@ -26,7 +26,7 @@ export function CreateActivity() {
   const navigate = useNavigate()
   const { mutateAsync: createActivity } = useCreateActivityMutation()
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
-  const [link, setLink] = React.useState<string>('') 
+  const [link, setLink] = React.useState<string>('')
   const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
 
   const initialValues = {
@@ -185,7 +185,7 @@ function InstructionField({ errors, touched }: any) {
         as="textarea"
         name="instruction"
         placeholder="Digite as instruções"
-        className="border p-2 rounded-sm w-full h-32 resize-none"
+        className="border p-2 rounded-sm w-full h-44 resize-none"
       />
       {touched.instruction && errors.instruction && <div className="text-red-500 text-sm">{errors.instruction}</div>}
     </div>

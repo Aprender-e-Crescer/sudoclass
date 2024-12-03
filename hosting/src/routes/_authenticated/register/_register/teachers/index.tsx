@@ -43,10 +43,10 @@ const initialValues = {
 
 function useLogic() {
   const { registerTeacher, updateTeacher } = useRegisterTeacherController()
-  const { action } = Route.useSearch()
+  const { action, idTeacher } = Route.useSearch()
   const { data: registerRequests } = useTeachersListingQuery()
 
-  const handleOnCreateOrEditSubmit = (idTeacher: number, values: typeof initialValues) => {
+  const handleOnCreateOrEditSubmit = (values: typeof initialValues) => {
     if (idTeacher && action === 'edit')
       return updateTeacher({
         bairro: values.neighborhood,

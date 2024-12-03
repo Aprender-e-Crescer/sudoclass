@@ -9,7 +9,6 @@ export function useListActivitiesQuery(subjectId: number) {
     queryKey: [...LIST_ACTIVITIES_QUERY, subjectId],
     queryFn: async () => {
       const { data } = await api.get(`/activities/${subjectId}`)
-      console.log('atividades_data:', data)
       const activities = z.array(activitySchema).parse(data)
       console.log('atividades:', activities)
 
