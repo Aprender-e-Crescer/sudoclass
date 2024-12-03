@@ -19,7 +19,7 @@ export function Header({ avatarImage, avatarFallBack }: headerProps) {
         <div className="flex">
           {avatarImage ? (
             <Avatar className="flex h-12 w-12">
-              <img src={selectedImage} alt="Avatar" className="flex rounded-full" />
+              <img src={selectedImage ?? avatarImage} alt="Avatar" className="flex rounded-full" />
               <AvatarFallback>{avatarFallBack}</AvatarFallback>
             </Avatar>
           ) : null}
