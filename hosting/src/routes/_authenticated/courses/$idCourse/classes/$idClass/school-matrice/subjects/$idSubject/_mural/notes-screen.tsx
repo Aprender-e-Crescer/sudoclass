@@ -31,11 +31,12 @@ export default function StudentGrades() {
   const students: Student[] = data || []
 
   const getGradeColor = (grade: number | null) => {
-    if (grade === null) return 'bg'
-    if (grade >= 7) return 'bg-green-100' 
-    if (grade === 7) return 'bg-orange-100' 
-    return 'bg-red-100'
+    if (grade === null) return 'bg' 
+    if (grade > 7) return 'bg-green-50' 
+    if (grade === 7) return 'bg-orange-50' 
+    return 'bg-red-50'
   }
+  
 
   return (
     <Card className="w-full">

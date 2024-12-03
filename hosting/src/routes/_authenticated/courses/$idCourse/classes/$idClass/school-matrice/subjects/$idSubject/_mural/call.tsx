@@ -100,7 +100,7 @@ export function Call() {
       <div className="flex flex-1">
         <div className="flex-1">
           {studentList.map((student) => (
-            <ListStudents key={student.student_id} name={student.name} picture={`https://cdn-icons-png.flaticon.com/512/219/219969.png`} variant={student.variant} />
+            <ListStudents key={student.student_id} name={student.name} picture={`https://media.istockphoto.com/id/1408041355/pt/foto/happy-black-businesswoman-using-a-smartphone-in-a-creative-office.jpg?s=612x612&w=0&k=20&c=pee_hk8ZXj4HVeitj8ASOQ1qCPhIZI18WcoDIkMe2BU=`} variant={student.variant} />
           ))}
         </div>
         <div className="w-full">
