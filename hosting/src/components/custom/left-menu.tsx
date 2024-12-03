@@ -93,7 +93,6 @@ function LeftMenu({ type }: LeftMenuProps) {
             onClick={() => setActiveItem(nome_curso)}
             index={index}
             onDelete={type === 'AdminPortal' ? () => handleDeleteCourse(id_curso) : undefined}
-            to="/courses"
           />
         ))}
       </div>
