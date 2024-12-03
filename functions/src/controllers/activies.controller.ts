@@ -130,8 +130,9 @@ const activitiesController = {
   },
 
   getActivities: async (req: Request, res: Response): Promise<void> => {
+    const subjectId = parseInt(req.params.subjectId, 10)
     try {
-      const activities = await activityService.getActivities()
+      const activities = await activityService.getActivities(subjectId)
 
       if (!activities || activities.length === 0) {
         res.status(404).send('Nenhuma atividade encontrada.')

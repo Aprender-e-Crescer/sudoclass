@@ -1,5 +1,4 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Switch } from '@/components/ui/switch'
 import iconeAtividade from '@/assets/iconeAtividade.png'
 import clsx from 'clsx'
 import { EllipsisVertical } from 'lucide-react'
@@ -108,10 +107,6 @@ export function ActivitiesMaterials({
                     </div>
                   </div>
                   <div className="flex gap-2 md:hidden"></div>
-                  <div className="flex items-center">
-                    <Switch />
-                    <p className="text-sm md:text-base ml-3 text-gray-700 ">Aceita envios</p>
-                  </div>
                 </div>
               </div>
 

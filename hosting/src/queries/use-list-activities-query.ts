@@ -4,12 +4,13 @@ import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 
 export const LIST_ACTIVITIES_QUERY = ['getActivies']
-export function useListActivitiesQuery() {
+export function useListActivitiesQuery(subjectId: number) {
   return useQuery({
-    queryKey: LIST_ACTIVITIES_QUERY,
+    queryKey: [...LIST_ACTIVITIES_QUERY, subjectId],
     queryFn: async () => {
-      const { data } = await api.get('/activity')
+      const { data } = await api.get(`/activities/${subjectId}`)
       const activities = z.array(activitySchema).parse(data)
+      console.log('atividades:', activities)
 
       return activities
     },
