@@ -70,7 +70,7 @@ function LeftMenu({ type }: LeftMenuProps) {
     ))
 
   return (
-    <div className="flex gap-8 flex-col">
+    <div className="flex gap-4 flex-col border-r-2">
       {type === 'StudentPortal' && renderMenuItems(menuItemsStudentPortal)}
       {type === 'AdminPortal' && renderMenuItems(menuItemsAdminPortal)}
       {type === 'TeacherClassroom' && renderMenuItems(menuItemsTeacherClassroom)}
