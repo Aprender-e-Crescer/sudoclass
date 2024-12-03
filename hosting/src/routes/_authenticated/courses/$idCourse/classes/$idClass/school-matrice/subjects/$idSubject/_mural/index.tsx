@@ -65,7 +65,7 @@ export function WallSubjects() {
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
         <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <CardComponent name={subject.nome_materia} description="Aprender & Crescer" />
+          <CardComponent name={subject?.nome_materia} description="Aprender & Crescer" />
         </div>
 
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full">

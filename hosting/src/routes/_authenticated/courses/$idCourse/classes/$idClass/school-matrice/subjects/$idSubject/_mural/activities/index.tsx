@@ -35,29 +35,31 @@ export function ListActivity() {
         <div className="flex flex-col md:flex-row overflow-hidden">
           <div className="flex flex-col w-full mx-24 h-auto p-2 md:p-4 overflow-hidden">
             <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
-            <div>
-              <Link
-                to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
-                params={{
-                  idCourse,
-                  idClass,
-                  idSubject,
-                }}
-                search={{
-                  action: 'create',
-                }}
-              >
-                <Button
-                  className="md:ml-5 bg-blue-600 mt-5  mb-3 text-sm rounded-s-full rounded-e-full"
-                  iconPosition="left"
-                  icon={<Plus />}
-                  variant="blueButton"
-                  size="small"
+            {user?.type === 'professor' && (
+              <div>
+                <Link
+                  to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities/manage"
+                  params={{
+                    idCourse,
+                    idClass,
+                    idSubject,
+                  }}
+                  search={{
+                    action: 'create',
+                  }}
                 >
-                  Criar
-                </Button>
-              </Link>
-            </div>
+                  <Button
+                    className="md:ml-5 bg-blue-600 mt-5  mb-3 text-sm rounded-s-full rounded-e-full"
+                    iconPosition="left"
+                    icon={<Plus />}
+                    variant="blueButton"
+                    size="small"
+                  >
+                    Criar
+                  </Button>
+                </Link>
+              </div>
+            )}
             <div className="md:ml-5">
               <div>
                 {activities
