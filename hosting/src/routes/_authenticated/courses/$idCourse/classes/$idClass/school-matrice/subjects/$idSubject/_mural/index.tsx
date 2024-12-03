@@ -6,12 +6,7 @@ import { SendHorizontal } from 'lucide-react'
 import { Warning } from '@/components/custom/warning'
 import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { CustomLoading } from '@/components/custom/custom-loading'
-import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
-import { useGetStudentQuery } from '@/queries/use-get-student-query'
-import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 
@@ -70,7 +65,7 @@ export function WallSubjects() {
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
         <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <CardComponent name={subject.nome_materia} description="Aprender & Crescer" />
+          <CardComponent name={subject?.nome_materia} description="Aprender & Crescer" />
         </div>
 
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full">

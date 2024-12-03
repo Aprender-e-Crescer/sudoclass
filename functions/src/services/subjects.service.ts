@@ -128,6 +128,15 @@ async function getSubjectById(idMateria: string): Promise<any> {
     throw new Error('Falha ao buscar matéria')
   }
 }
+async function getSubjects(): Promise<any> {
+  try {
+    const response = await db.query('SELECT * FROM materia')
+
+    return response.rows
+  } catch (error) {
+    throw new Error('Falha ao buscar matérias')
+  }
+}
 
 async function addSubjectToClass(
   id_turma: string,
@@ -220,11 +229,12 @@ export const materiaService = {
       ementa
     ),
 
-
-    deleteSubject: (idMateria: string) => deleteSubject(idMateria),
-    getSubjectById: (idMateria: string) => getSubjectById(idMateria),
-    addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria),
-    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia),
-    subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante)
-};
-
+  deleteSubject: (idMateria: string) => deleteSubject(idMateria),
+  getSubjectById: (idMateria: string) => getSubjectById(idMateria),
+  getSubjects: () => getSubjects(),
+  addSubjectToClass: (idCurso: string, idMateria: string) =>
+    addSubjectToClass(idCurso, idMateria),
+  studentListBySubject: (id_materia: string) =>
+    studentListBySubject(id_materia),
+  subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante),
+}
