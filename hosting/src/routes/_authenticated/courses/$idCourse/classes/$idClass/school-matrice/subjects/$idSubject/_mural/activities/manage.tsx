@@ -6,6 +6,8 @@ import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutat
 import { z } from 'zod'
 import { useNavigate } from '@tanstack/react-router'
 import { correctionSchema } from '@/models/correction-schema'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Link } from 'lucide-react'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']),
@@ -24,13 +26,16 @@ export function CreateActivity() {
   const navigate = useNavigate()
   const { mutateAsync: createActivity } = useCreateActivityMutation()
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
+  const [link, setLink] = React.useState<string>('') 
+  const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
 
   const initialValues = {
     title: '',
     instruction: '',
-    value: 10, // Default value for "Pontos"
+    value: 10,
     deliveryDate: deliveryDate,
     subjectId: idSubject,
+    link: '',
   }
 
   const validate = (values: any) => {
@@ -52,6 +57,7 @@ export function CreateActivity() {
         value: values.value,
         deliveryDate: values.deliveryDate || '',
         subjectId: Number(values.subjectId),
+        link: linkToDisplay || '',
       }
 
       console.log('Nova atividade:', newActivity)
@@ -75,16 +81,21 @@ export function CreateActivity() {
         validateOnChange={false}
       >
         {({ setFieldValue, errors, touched }) => (
-          <Form className="flex w-full gap-8 ">
-            <div className="w-3/4 h-min border p-4 mt-5 ml-5"> {/* Div com 3/4 da largura da tela */}
-              <TitleField errors={errors} touched={touched} />
-  
-              <InstructionField errors={errors} touched={touched} />
+          <Form className="flex w-full gap-8">
+            <div className="flex-col w-3/4 h-min ml-5">
+              <div className="borderjustify-center items-center">
+                <TitleField errors={errors} touched={touched} />
+                <InstructionField errors={errors} touched={touched} />
+
+                <h1 className="text-lg">Adicione um link</h1>
+                <div className="flex gap-10 flex-col border justify-center items-center p-10">
+                  <PopoverDemo setLink={setLink} setLinkToDisplay={setLinkToDisplay} />
+                </div>
+              </div>
             </div>
-  
-            <div className="w-1/4 h-min border p-4 mt-5 mr-5"> {/* Div com 1/4 da largura da tela */}
+
+            <div className="w-1/4 h-min border p-4 mt-5 mr-5">
               <ValueField errors={errors} touched={touched} setFieldValue={setFieldValue} />
-  
               <DeliveryDateField
                 deliveryDate={deliveryDate}
                 setDeliveryDate={setDeliveryDate}
@@ -92,7 +103,14 @@ export function CreateActivity() {
                 errors={errors}
                 touched={touched}
               />
-  
+              <p>Link</p>
+              <div className="w-full">
+                {linkToDisplay && (
+                  <a href={linkToDisplay} target="_blank" rel="noopener noreferrer" className="text-blue-600">
+                    {linkToDisplay}
+                  </a>
+                )}
+              </div>
               <div className="flex mt-6">
                 <Button type="submit" size="manage">
                   Criar atividade
@@ -105,9 +123,50 @@ export function CreateActivity() {
     </div>
   )
 }
-  
 
-/** Campo Título */
+export function PopoverDemo({ setLink, setLinkToDisplay }: any) {
+  const [tempLink, setTempLink] = React.useState('')
+
+  return (
+    <Popover>
+      <PopoverTrigger
+        asChild
+        className="border-2 rounded-full w-16 h-16 p-2 hover:scale-110 hover:bg-gray-200 
+        hover:shadow-lg active:scale-90 active:bg-gray-300 transition-all"
+      >
+        <Link />
+      </PopoverTrigger>
+      <PopoverContent className="w-96 h">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h1 className="font-medium leading-none">Insira um link abaixo</h1>
+          </div>
+          <div className="grid gap-2">
+            <Field
+              name="link"
+              placeholder="Digite um link"
+              className="border rounded-sm w-full p-2"
+              value={tempLink}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setTempLink(e.target.value)
+              }}
+            />
+            <Button
+              size="medium"
+              onClick={() => {
+                setLinkToDisplay(tempLink)
+                setLink('')
+              }}
+            >
+              Salvar
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 function TitleField({ errors, touched }: any) {
   return (
     <div>
@@ -118,26 +177,21 @@ function TitleField({ errors, touched }: any) {
   )
 }
 
-/** Campo Instruções */
 function InstructionField({ errors, touched }: any) {
   return (
     <div>
       <p>Instruções</p>
       <Field
-        as="textarea" // Transformando o campo em um textarea
+        as="textarea"
         name="instruction"
         placeholder="Digite as instruções"
-        className="border p-2 rounded-sm w-full h-32 resize-none" // Classe para impedir redimensionamento horizontal/vertical
+        className="border p-2 rounded-sm w-full h-32 resize-none"
       />
-      {touched.instruction && errors.instruction && (
-        <div className="text-red-500 text-sm">{errors.instruction}</div>
-      )}
+      {touched.instruction && errors.instruction && <div className="text-red-500 text-sm">{errors.instruction}</div>}
     </div>
   )
 }
 
-
-/** Campo Peso */
 function ValueField({ errors, touched, setFieldValue }: any) {
   return (
     <div>
@@ -147,7 +201,7 @@ function ValueField({ errors, touched, setFieldValue }: any) {
         name="value"
         className="border p-2 rounded-sm w-full bg-slate-200"
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-          setFieldValue('value', parseInt(e.target.value, 10)) // Convertendo para número
+          setFieldValue('value', parseInt(e.target.value, 10))
         }}
       >
         {[...Array(11).keys()].map((val) => (
@@ -161,7 +215,6 @@ function ValueField({ errors, touched, setFieldValue }: any) {
   )
 }
 
-/** Campo Data de Entrega */
 function DeliveryDateField({ deliveryDate, setDeliveryDate, setFieldValue, errors, touched }: any) {
   return (
     <div>
