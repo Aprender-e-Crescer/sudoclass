@@ -44,7 +44,6 @@ export default function FrenquencyPortalAluno() {
     setOpenModal(true)
   }
 
-  // Adiciona a opção "Todas" ao início da lista de opções
   const options = [
     { selectOption: 'Todas', label: 'Todas' },
     ...(subjectsData?.map((item) => ({
@@ -69,7 +68,6 @@ export default function FrenquencyPortalAluno() {
     },
   ]
 
-  // Filtra as presenças baseadas na matéria selecionada
   const filteredAttendance =
     selectedSubject && selectedSubject !== 'Todas'
       ? studentAttendance?.filter((attendance: any) => attendance.subject === selectedSubject)
@@ -97,7 +95,7 @@ export default function FrenquencyPortalAluno() {
           label="Matérias"
           optionsSelectItem={options}
           onChange={(value) => {
-            setSelectedSubject(value) // Atualiza o filtro com a matéria selecionada
+            setSelectedSubject(value)
           }}
         />
 
