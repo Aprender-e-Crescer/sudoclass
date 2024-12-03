@@ -2,11 +2,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import NoteValue from '@/components/custom/note-value'
 import AttachmentView from '@/components/custom/attachment-view'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { ArrowLeft, ChevronUp, MessageSquareMore } from 'lucide-react'
+import { ArrowLeft, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import ModalUpload from '@/components/custom/modal-upload'
-import { CommentActivity } from '@/components/custom/comment-activity'
+import { useGetActivityQuery } from '@/queries/use-get-activity-query'
+import { format } from 'date-fns'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
@@ -15,24 +16,9 @@ export const Route = createFileRoute(
 })
 
 export function ViewActivityStudent() {
-  const [inputValue, setInputValue] = useState<string>('')
-  const [comments, setComments] = useState<{ id: number; sendBy: string; text: string }[]>([])
   const [openModal, setOpoenModal] = useState<boolean>(false)
-
-  const handleSubmitComment = () => {
-    if (inputValue.trim() === '') {
-      return
-    }
-
-    const newComment = {
-      id: Date.now(),
-      sendBy: 'Samuel Molinari',
-      text: inputValue,
-    }
-
-    setComments((prev) => [...prev, newComment])
-    setInputValue('')
-  }
+  const { idActivity } = Route.useParams()
+  const { data: activity } = useGetActivityQuery(Number(idActivity))
 
   return (
     <>
@@ -41,46 +27,14 @@ export function ViewActivityStudent() {
       <div className=" flex flex-col md:hidden">
         <div className="flex flex-col mx-5 gap-3">
           <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-gray-500 text-xs">Prazo: Prazo da atv</p>
-          <p className="text-blue-600 text-2xl font-semibold">Titulo da atv</p>
+          <p className="text-gray-500 text-xs">
+            Prazo: {activity?.deliveryDate ? format(activity.deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
+          </p>
+          <p className="text-blue-600 text-2xl font-semibold">{activity?.title}</p>
           <div className="flex text-gray-500">
-            <NoteValue note={20} maxGrade={100} />
+            <NoteValue note={0} maxGrade={Number(activity?.value)} />
           </div>
-
-          <div className="flex flex-col gap-4 ">
-            <div className="flex gap-5">
-              <MessageSquareMore className="text-gray-400" />
-              <p className="font-semibold text-gray-400">Comentários da turma</p>
-            </div>
-            <h1 className="text-gray-400">Comentários</h1>
-
-            <div className="flex flex-col gap-4 max-h-44 overflow-auto">
-              {comments.map((comment) => (
-                <CommentActivity mensagem={comment.text} sendBy={comment.sendBy} id_comentario={1} />
-              ))}
-            </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                handleSubmitComment()
-              }}
-              className="flex justify-center items-center gap-x-3"
-            >
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Escreva seu comentário"
-                className="flex-grow border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500"
-              />
-              <Button type="submit" variant="blueButton" size="medium">
-                Enviar
-              </Button>
-            </form>
-          </div>
-
           <div className=" w-full h-0.5 bg-gray-400"></div>
-          <p className="text-gray-400 text-sm ">Clique no link abaixo para iniciar o jogo</p>
           <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
           <AttachmentView url="" imageUrl="" title="" linkText="" />
 
@@ -102,7 +56,6 @@ export function ViewActivityStudent() {
                   <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus anexos</h1>
                   <div className="flex flex-col w-full gap-3">
                     <AttachmentView url="" imageUrl="" title="" linkText="" />
-                    <AttachmentView url="" imageUrl="" title="" linkText="" />
                   </div>
 
                   <div className="flex flex-col gap-5 mt-5">
@@ -123,46 +76,19 @@ export function ViewActivityStudent() {
       <div className="hidden md:flex w-full">
         <div className="flex flex-col mx-5 gap-3 w-full">
           <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-blue-600 text-4xl font-semibold">Titulo da atv</p>
-          <p className="text-gray-500 text-base">Prazo: Prazo da atv</p>
+          <p className="text-blue-600 text-4xl font-semibold">{activity?.title}</p>
+          <p className="text-gray-500 text-base">
+            Prazo: {activity?.deliveryDate ? format(activity.deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
+          </p>
 
           <div className="flex text-gray-500">
-            <NoteValue note={20} maxGrade={100} />
+            <NoteValue note={0} maxGrade={Number(activity?.value)} />
           </div>
           <div className=" w-full h-0.5 bg-gray-300"></div>
           <div className="flex flex-col gap-10">
             <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
-            <AttachmentView url="" imageUrl="" title="" linkText="" />
             <div className=" w-full h-0.5 bg-gray-300"></div>
-            <div className="flex gap-5">
-              <MessageSquareMore className="text-gray-400" />
-              <p className="font-semibold text-gray-400">Comentários da turma</p>
-            </div>
           </div>
-          <div className="flex flex-col gap-4 max-h-44 overflow-auto">
-            {comments.map((comment) => (
-              <CommentActivity mensagem={comment.text} sendBy={comment.sendBy} id_comentario={1} />
-            ))}
-          </div>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              handleSubmitComment()
-            }}
-            className="flex justify-center items-center gap-x-3"
-          >
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Escreva seu comentário"
-              className="flex-grow border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500"
-            />
-            <Button type="submit" variant="blueButton" size="medium">
-              Enviar
-            </Button>
-          </form>
         </div>
         <div className="flex flex-col w-1/3 border mx-10 p-5 rounded-lg">
           <h1 className="flex text-lg font-bold text-gray-600">Seus trabalhos</h1>

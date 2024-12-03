@@ -9,6 +9,7 @@ import { z } from 'zod'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Link } from 'lucide-react'
+import { CustomLoading } from '@/components/custom/custom-loading'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']),
@@ -29,7 +30,8 @@ export function CreateActivity() {
   const navigate = useNavigate()
   const { mutateAsync: createActivity } = useCreateActivityMutation()
   const { mutateAsync: updateActivity } = useUpdateActivityMutation()
-  const { data: activityData, isLoading: isActivityLoading } = useGetActivityQuery(Number(idActivity))
+  const { data: activityData, isLoading: activityDataLoading } = useGetActivityQuery(Number(idActivity))
+  console.log(activityData)
 
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
   const [link, setLink] = React.useState<string>('')
@@ -43,7 +45,6 @@ export function CreateActivity() {
           instruction: activityData.instruction,
           value: activityData.value,
           deliveryDate: activityData.deliveryDate,
-          subjectId: idSubject,
           // link: activityData.link, nao descomenta essa linha
         }
       : {
@@ -101,6 +102,10 @@ export function CreateActivity() {
     }
   }
 
+  if (action === 'edit' && activityDataLoading) {
+    return <CustomLoading message="Carregando informações da atividade" size={70} />
+  }
+
   return (
     <div className="flex w-full border h-screen">
       <Formik
@@ -142,7 +147,7 @@ export function CreateActivity() {
                 )}
               </div>
               <div className="flex mt-6">
-                <Button type="submit" size="manage" disabled={isLoading || isActivityLoading}>
+                <Button type="submit" size="manage" disabled={isLoading || activityDataLoading}>
                   {isLoading ? 'Carregando...' : action === 'edit' ? 'Atualizar atividade' : 'Criar atividade'}
                 </Button>
               </div>
@@ -153,19 +158,18 @@ export function CreateActivity() {
     </div>
   )
 }
-export function PopoverDemo({ setLink, setLinkToDisplay }: any) {
-  const [tempLink, setTempLink] = React.useState('')
+function PopoverDemo({ setLink, setLinkToDisplay, action, initialValues }: any) {
+  const [tempLink, setTempLink] = React.useState(action === 'edit' ? initialValues.link : '')
 
   return (
     <Popover>
       <PopoverTrigger
         asChild
-        className="border-2 rounded-full w-16 h-16 p-2 hover:scale-110 hover:bg-gray-200 
-        hover:shadow-lg active:scale-90 active:bg-gray-300 transition-all"
+        className="border-2 rounded-full w-16 h-16 p-2 hover:scale-110 hover:bg-gray-200 hover:shadow-lg active:scale-90 active:bg-gray-300 transition-all"
       >
         <Link />
       </PopoverTrigger>
-      <PopoverContent className="w-96 h">
+      <PopoverContent className="w-96">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h1 className="font-medium leading-none">Insira um link abaixo</h1>
@@ -196,24 +200,28 @@ export function PopoverDemo({ setLink, setLinkToDisplay }: any) {
   )
 }
 
-function TitleField({ errors, touched }: any) {
+function TitleField({ errors, touched, initialValues, action }: any) {
   return (
     <div>
       <p>Título</p>
-      <Field name="title" placeholder="Digite o título" className="border rounded-sm w-full p-2" />
+      <Field
+        name="title"
+        placeholder={action === 'edit' ? initialValues.title : 'Digite o título'}
+        className="border rounded-sm w-full p-2"
+      />
       {touched.title && errors.title && <div className="text-red-500 text-sm">{errors.title}</div>}
     </div>
   )
 }
 
-function InstructionField({ errors, touched }: any) {
+function InstructionField({ errors, touched, initialValues, action }: any) {
   return (
     <div>
       <p>Instruções</p>
       <Field
         as="textarea"
         name="instruction"
-        placeholder="Digite as instruções"
+        placeholder={action === 'edit' ? initialValues.instruction : 'Digite as instruções'}
         className="border p-2 rounded-sm w-full h-44 resize-none"
       />
       {touched.instruction && errors.instruction && <div className="text-red-500 text-sm">{errors.instruction}</div>}
