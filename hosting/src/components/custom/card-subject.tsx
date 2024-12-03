@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { cva } from 'class-variance-authority'
 import { EllipsisVertical } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { useSubjectController } from '@/controllers/subject-controller'
 
 const cardSubjectStyle = cva(
   'w-full max-w-[384px] sm:w-[443px] h-44 sm:h-80 rounded-lg shadow-lg flex flex-col justify-between',
@@ -44,39 +44,34 @@ export function CardSubject({
   idCourse,
 }: CardSubjectProps) {
   const [cardColor, setCardColor] = useState(backgroundColor)
+  const { deleteSubject } = useSubjectController() // Usando o controller para deletar a matéria
+
+  // Função para excluir a matéria
+  const handleDelete = () => {
+    if (window.confirm(`Deseja realmente excluir a matéria "${name}"?`)) {
+      deleteSubject(Number(id)) // Exclui a matéria diretamente
+    }
+  }
 
   return (
-    <Link
-      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject"
-      params={{
-        idCourse,
-        idClass,
-        idSubject: id,
-      }}
-    >
-      <div className={cardSubjectStyle({ backgroundColor: cardColor })}>
-        <div className="flex justify-between m-6 ">
-          <div className="flex flex-col">
-            <div className="text-white font-bold text-xl mr-5 mb-1 line-clamp-2">{name}</div>
-            <div className="text-white text-sm sm:text-base">{description}</div>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <EllipsisVertical />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setCardColor('vermelho')}>Vermelho</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCardColor('amarelo')}>Amarelo</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCardColor('azul')}>Azul</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCardColor('ciano')}>Ciano</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCardColor('verde')}>Verde</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCardColor('roxo')}>Roxo</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCardColor('marrom')}>Marrom</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <div className={cardSubjectStyle({ backgroundColor: cardColor })}>
+      <div className="flex justify-between m-6">
+        <div className="flex flex-col">
+          <div className="text-white font-bold text-xl mr-5 mb-1 line-clamp-2">{name}</div>
+          <div className="text-white text-sm sm:text-base">{description}</div>
         </div>
-        <div className="bg-white w-full rounded-b-lg py-6"></div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={handleDelete}>
+              Excluir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-    </Link>
+      <div className="bg-white w-full rounded-b-lg py-6"></div>
+    </div>
   )
 }

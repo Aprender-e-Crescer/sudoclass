@@ -49,16 +49,34 @@ function useLogic() {
   const { data: studentRequests } = useStudentsListQuery()
 
   const handleOnStudentSubmit = (values: typeof initialValues) => {
-    registerStudent(values)
+    console.log(values)
+
+    registerStudent({
+      nomeCompleto: values.name,
+      attachDocuments: 'aaaaaaaaaaaaaaaaaa',
+      estadodeexpedicaorg: values.stateOfBirth,
+      estado: values.address.state,
+      municipio: values.address.city,
+      rua: values.address.street,
+      bairro: values.address.neighborhood,
+      numero: values.address.streetNumber,
+      dataDeNascimento: values.dateOfBirth,
+      dataExpedicaoRg: values.shippingDate,
+      estadoDeNascimento: values.stateOfBirth,
+      cidadeDeNascimeto: values.cityOfBirth,
+      cpf: values.cpf,
+      rg: values.rg,
+      id: '31267',
+      responsible: values.responsible || '',
+      ...values,
+    })
   }
 
   return { handleOnStudentSubmit, studentRequests, action }
 }
 
-
 export function StudentsListing() {
   const { handleOnStudentSubmit, studentRequests, action } = useLogic()
-  console.log(studentRequests)
   return (
     <div className="flex flex-col flex-1">
       <div className="flex sm:flex-row flex-col justify-between items-center">
@@ -88,11 +106,7 @@ export function StudentsListing() {
         </div>
 
         <When condition={!!action}>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleOnStudentSubmit}
-            validationSchema={toFormikValidationSchema(studentSchema)}
-          >
+          <Formik initialValues={initialValues} onSubmit={handleOnStudentSubmit}>
             <Form className="p-1">
               <div className="flex flex-col flex-1 p-2 rounded-sm border-2">
                 <InputForm

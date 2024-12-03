@@ -33,7 +33,7 @@ function AddNewSubjectForm() {
     mutate(
       {
         nomeMateria: values.name,
-        cargahoraria: Number(values.workload),
+        cargaHoraria: Number(values.workload),
         dataInicio: new Date(values.startDate),
         dataFim: new Date(values.endDate),
         idProfessor: Number(values.idProfessor),
