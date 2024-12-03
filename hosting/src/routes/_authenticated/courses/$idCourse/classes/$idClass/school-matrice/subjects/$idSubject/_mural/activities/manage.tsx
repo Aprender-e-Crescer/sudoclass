@@ -45,7 +45,7 @@ export function CreateActivity() {
           instruction: activityData.instruction,
           value: activityData.value,
           deliveryDate: activityData.deliveryDate,
-          // link: activityData.link, nao descomenta essa linha
+          attachement: activityData.attachment,
         }
       : {
           title: '',
@@ -53,7 +53,7 @@ export function CreateActivity() {
           value: 10,
           deliveryDate: deliveryDate,
           subjectId: idSubject,
-          link: '',
+          attachment: linkToDisplay || '',
         }
 
   const validate = (values: any) => {
@@ -76,7 +76,7 @@ export function CreateActivity() {
         value: values.value,
         deliveryDate: values.deliveryDate || '',
         subjectId: Number(values.subjectId),
-        link: linkToDisplay || '',
+        attachment: linkToDisplay || '',
       }
 
       if (action === 'create') {
@@ -124,7 +124,7 @@ export function CreateActivity() {
 
                 <h1 className="text-lg">Adicione um link</h1>
                 <div className="flex gap-10 flex-col border justify-center items-center p-10">
-                  <PopoverDemo setLink={setLink} setLinkToDisplay={setLinkToDisplay} />
+                  <PopoverDemo setLinkToDisplay={setLinkToDisplay} setFieldValue={setFieldValue} />
                 </div>
               </div>
             </div>
@@ -158,15 +158,12 @@ export function CreateActivity() {
     </div>
   )
 }
-function PopoverDemo({ setLink, setLinkToDisplay, action, initialValues }: any) {
-  const [tempLink, setTempLink] = React.useState(action === 'edit' ? initialValues.link : '')
+function PopoverDemo({ setLinkToDisplay, setFieldValue }: any) {
+  const [tempLink, setTempLink] = React.useState('')
 
   return (
     <Popover>
-      <PopoverTrigger
-        asChild
-        className="border-2 rounded-full w-16 h-16 p-2 hover:scale-110 hover:bg-gray-200 hover:shadow-lg active:scale-90 active:bg-gray-300 transition-all"
-      >
+      <PopoverTrigger asChild className="border-2 rounded-full w-16 h-16 p-2 hover:scale-110 hover:bg-gray-200">
         <Link />
       </PopoverTrigger>
       <PopoverContent className="w-96">
@@ -175,20 +172,18 @@ function PopoverDemo({ setLink, setLinkToDisplay, action, initialValues }: any) 
             <h1 className="font-medium leading-none">Insira um link abaixo</h1>
           </div>
           <div className="grid gap-2">
-            <Field
-              name="link"
+            <input
+              type="text"
               placeholder="Digite um link"
               className="border rounded-sm w-full p-2"
               value={tempLink}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setTempLink(e.target.value)
-              }}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTempLink(e.target.value)}
             />
             <Button
               size="medium"
               onClick={() => {
                 setLinkToDisplay(tempLink)
-                setLink('')
+                setFieldValue('attachment', tempLink)
               }}
             >
               Salvar
