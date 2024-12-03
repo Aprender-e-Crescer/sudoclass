@@ -33,6 +33,7 @@ function AttendanceDropdown({ onJustify }: { onJustify: () => void }) {
 export default function FrenquencyPortalAluno() {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null)
+  const [selectedAttendanceId, setSelectedAttendanceId] = useState<number | null>(null)
 
   const currentUser = useCurrentUserQuery()
   const { data: userData } = useGetUserQuery(currentUser?.data?.uid)
@@ -40,7 +41,8 @@ export default function FrenquencyPortalAluno() {
   const { data: studentAttendance, isLoading, isError } = useGetStudentAttendance(userData?.idStudent)
   const { data: subjectsData } = useGetSubjectsByStudentQuery(userData?.idStudent)
 
-  const handleJustify = () => {
+  const handleJustify = (id_chamada: number) => {
+    setSelectedAttendanceId(id_chamada)
     setOpenModal(true)
   }
 
@@ -64,7 +66,12 @@ export default function FrenquencyPortalAluno() {
     {
       header: 'Status',
       accessor: 'status',
-      Cell: (row: any) => (row.status ? <CheckIcon color="green" /> : <AttendanceDropdown onJustify={handleJustify} />),
+      Cell: (row: any) =>
+        row.status ? (
+          <CheckIcon color="green" />
+        ) : (
+          <AttendanceDropdown onJustify={() => handleJustify(row.id_chamada)} />
+        ),
     },
   ]
 
@@ -103,7 +110,13 @@ export default function FrenquencyPortalAluno() {
           <div className="py-6 sm:px-0">
             <div className="rounded-lg border bg-white overflow-hidden">
               <div className="overflow-x-auto">
-                <ModalUpload open={openModal} onOpenChange={setOpenModal} hasInput={true} />
+                <ModalUpload
+                  open={openModal}
+                  onOpenChange={setOpenModal}
+                  hasInput={true}
+                  id_chamada={selectedAttendanceId}
+                  userId={currentUser?.data?.uid}
+                />
                 <GenericTable data={filteredAttendance ?? []} columns={columns} />
               </div>
             </div>
