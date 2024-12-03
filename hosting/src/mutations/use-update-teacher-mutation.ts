@@ -23,15 +23,10 @@ interface MutationResults {
   onError: () => void
 }
 
-interface MutationParams {
-  id: number
-  values: UpdateTeacherPayload
-}
-
 export function useUpdateTeacherMutation({ onSuccess, onError }: MutationResults) {
   return useMutation({
     mutationKey: ['register-teacher'],
-    mutationFn: ({id, values}: MutationParams) => api.put(`/teacher/${id}`, values),
+    mutationFn: (values: UpdateTeacherPayload) => api.put(`/teacher/${values.idTeacher}`, values),
     onSuccess,
     onError,
   })
