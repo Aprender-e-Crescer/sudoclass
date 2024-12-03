@@ -1,4 +1,5 @@
 import { db } from "../config/database";
+import { usuarioService } from "./usuario.service";
 
 function validateEmail(email: string) {
   const re = /\S+@\S+\.\S+/;
@@ -33,6 +34,7 @@ function validateTeacher(
 }
 
 async function createTeacher(
+  id_professor: string,
   nome: string,
   datanasc: string,
   email: string,
@@ -46,11 +48,18 @@ async function createTeacher(
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
   estadonascimento: Date,
-  cidadedenascimento: string
-) {
+  cidadedenascimento: string,
+
+  id_usuario: string,
+  senha: string,
+  id_aluno: string,
+  id_pedagogo: string,
+  tipo: string
+): Promise<string> {
   try {
     let resposta = "";
     if (
+      !id_professor ||
       !nome ||
       !cpf ||
       !rg ||
@@ -74,6 +83,7 @@ async function createTeacher(
     else {
       await db.query(
         `INSERT INTO professor(
+              id_professor,
               nome, 
               datanasc,
               email,
@@ -88,9 +98,9 @@ async function createTeacher(
               estadodeexpedicaorg,
               estadonascimento,
               cidadedenascimento) 
-              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-              RETURNING id_professor`,
+              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
         [
+          parseInt(id_professor),
           nome,
           datanasc,
           email,
@@ -108,6 +118,18 @@ async function createTeacher(
         ]
       );
     }
+    usuarioService.createUser(
+      id_usuario,
+      email,
+      senha,
+      id_professor,
+      id_aluno,
+      id_pedagogo,
+      tipo
+    );
+
+    resposta = await getTeacher(id_professor);
+    return resposta;
   } catch (error) {
     console.error(error);
     return `Não foi possível cadastrar o professor`;
@@ -169,7 +191,7 @@ async function updateTeacher(
               cpf = $11, 
               rg = $10, 
               datadeexpedicaorg = $12, 
-              estadodeexpedicaorg = $13, 
+              estadodeexpedicaorg = $13,
               estadonascimento = $14, 
               cidadedenascimento = $15
             WHERE id_professor = $1`,
@@ -192,6 +214,7 @@ async function updateTeacher(
           ]
         );
       }
+
       resposta = await getTeacher(id_professor);
       return resposta;
     }
@@ -258,6 +281,7 @@ async function deleteTeacher(idprofessor: string) {
 
 export const teacherService = {
   createTeacher: (
+    id_professor: string,
     nome: string,
     datanasc: string,
     email: string,
@@ -271,9 +295,16 @@ export const teacherService = {
     datadeexpedicaorg: Date,
     estadodeexpedicaorg: string,
     estadonascimento: Date,
-    cidadedenascimento: string
+    cidadedenascimento: string,
+
+    id_usuario: string,
+    senha: string,
+    id_aluno: string,
+    id_pedagogo: string,
+    tipo: string
   ) =>
     createTeacher(
+      id_professor,
       nome,
       datanasc,
       email,
@@ -287,7 +318,13 @@ export const teacherService = {
       datadeexpedicaorg,
       estadodeexpedicaorg,
       estadonascimento,
-      cidadedenascimento
+      cidadedenascimento,
+
+      id_usuario,
+      senha,
+      id_aluno,
+      id_pedagogo,
+      tipo
     ),
   updateTeacher: (
     id_professor: string,
