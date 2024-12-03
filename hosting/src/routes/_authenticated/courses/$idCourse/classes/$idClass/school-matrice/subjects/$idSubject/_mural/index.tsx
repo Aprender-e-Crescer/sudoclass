@@ -31,7 +31,11 @@ export function WallSubjects() {
 
   if (!user) {
     console.error('Tipo de usuário não encontrado')
-    return <div>Usuário não encontrado</div>
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <CustomLoading message="Carregando usuário" size={70} />
+      </div>
+    )
   }
 
   const userName = name
