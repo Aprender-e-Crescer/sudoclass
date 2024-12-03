@@ -27,7 +27,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
 
   const handleSwipe = async (direction, selectedDate) => {
     if (students && currentIndex >= 0 && currentIndex < students.length) {
-      const studentId = students[currentIndex].id
+      const studentId = students[currentIndex].student_id
       const status = direction === 'right'
 
       const currentDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : new Date().toISOString().split('T')[0]
@@ -84,7 +84,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
         console.error('Erro ao excluir a chamada:', error)
       }
 
-      setCurrentIndex(students.findIndex((student) => student.id === lastCall.studentId))
+      setCurrentIndex(students.findIndex((student) => student.student_id === lastCall.studentId))
     }
   }
 
@@ -98,7 +98,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
         {currentIndex >= 0 && currentIndex < students.length && (
           <TinderCard
             className="absolute w-full h-full"
-            key={students[currentIndex].id}
+            key={students[currentIndex].student_id}
             onSwipe={(dir) => handleSwipe(dir, date)}
             preventSwipe={['up', 'down']}
           >

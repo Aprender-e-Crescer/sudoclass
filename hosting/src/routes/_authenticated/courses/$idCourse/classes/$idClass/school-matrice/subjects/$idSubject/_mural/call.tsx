@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ListStudents from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { createFileRoute } from '@tanstack/react-router'
@@ -7,6 +7,8 @@ import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
+import { useStudentListBySubjectQuery } from '@/queries/use-list-students-subject'
+
 export function DatePickerDemo({
   date,
   setDate,
@@ -42,68 +44,63 @@ export function DatePickerDemo({
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/call',
-)({
+)( {
   component: Call,
 })
 
 export function Call() {
-  const mockedStudents = [
-    {
-      id: '1',
-      name: 'Alice',
-      picture:
-        'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
-      variant: 'undefined',
-    },
-    {
-      id: '2',
-      name: 'Bob',
-      picture:
-        'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
-      variant: 'undefined',
-    },
-    {
-      id: '3',
-      name: 'Charlie',
-      picture:
-        'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
-      variant: 'undefined',
-    },
-  ]
   const [date, setDate] = useState<Date | undefined>(undefined)
-  const [studentList, setStudentList] = useState(mockedStudents)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [studentList, setStudentList] = useState<any[]>([])  
+
+  const { data: students, isLoading, isError } = useStudentListBySubjectQuery(1) 
+
+  useEffect(() => {
+    if (students) {
+      const updatedStudents = students.map((student: any) => ({
+        ...student,
+        variant: 'undefined', 
+      }))
+      setStudentList(updatedStudents)
+    }
+  }, [students])
 
   const updateStudentStatus = (id: string, status: any) => {
     setStudentList((prevList) =>
-      prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
+      prevList.map((student) => (student.student_id === id ? { ...student, variant: status } : student)),
     )
   }
 
   const handleAddCall = () => {
     console.log('Finalizando chamada...')
     console.log('Lista de Alunos:', studentList)
-
-    const callData = studentList.map((student) => ({
-      studentId: student.id,
-      status: student.variant === 'present' ? true : false,
-    }))
-
-    setTimeout(() => {
-      console.log('Dados da chamada enviados:', callData)
-    })
-
-    setStudentList(mockedStudents)
+  
+    setStudentList((prevList) =>
+      prevList.map((student) => ({ ...student, variant: 'undefined' }))
+    )
+  
     setCurrentIndex(0)
     setDate(undefined)
+  
+    console.log('Chamada finalizada!')
+  }
+  
+
+  if (isLoading) {
+    return <div>Loading...</div>  
   }
 
+  if (isError) {
+    return <div>Error loading students</div>  
+  }
+
+  console.log
   return (
     <>
       <div className="flex flex-1">
         <div className="flex-1">
           {studentList.map((student) => (
-            <ListStudents key={student.id} name={student.name} picture={student.picture} variant={student.variant} />
+            <ListStudents key={student.student_id} name={student.name} picture={`https://media.istockphoto.com/id/1408041355/pt/foto/happy-black-businesswoman-using-a-smartphone-in-a-creative-office.jpg?s=612x612&w=0&k=20&c=pee_hk8ZXj4HVeitj8ASOQ1qCPhIZI18WcoDIkMe2BU=`} variant={student.variant} />
           ))}
         </div>
         <div className="w-full">
