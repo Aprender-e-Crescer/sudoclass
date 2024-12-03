@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Formik, Form, Field } from 'formik'
 import { Button } from '@/components/ui/button'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
@@ -24,10 +24,7 @@ export const Route = createFileRoute(
 
 export function CreateActivity() {
   const { idSubject, idCourse, idClass } = Route.useParams()
-  const searchParams = new URLSearchParams(window.location.search)
-  const action = searchParams.get('action')
-  const idActivity = Number(searchParams.get('idActivity'))
-
+  const { idActivity, action } = Route.useSearch()
 
   const navigate = useNavigate()
   const { mutateAsync: createActivity } = useCreateActivityMutation()
@@ -39,7 +36,6 @@ export function CreateActivity() {
   const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  // Set initial values based on action
   const initialValues =
     action === 'edit' && activityData
       ? {
@@ -81,23 +77,22 @@ export function CreateActivity() {
         subjectId: Number(values.subjectId),
         link: linkToDisplay || '',
       }
-  
+
       if (action === 'create') {
-        await createActivity(activityData)  // Chama a mutação para criar a atividade
-      } else if (action === 'edit' && idActivity) {
-        await updateActivity({  // Chama a mutação para editar a atividade
+        await createActivity(activityData)
+      } else if (action === 'edit') {
+        await updateActivity({
           activityId: Number(idActivity),
           title: values.title,
           instruction: values.instruction,
           deliveryDate: values.deliveryDate,
           value: values.value,
-          subjectId: Number(values.subjectId),
         })
       }
-  
+
       navigate({
         to: `/courses/${idCourse}/classes/${idClass}/school-matrice/subjects/${idSubject}/activities`,
-        replace: true,  // Isso irá substituir a página atual para evitar voltar com o botão de navegação
+        replace: true,
       })
     } catch (e) {
       console.error('Erro ao adicionar/editar atividade: ', e)
@@ -105,7 +100,6 @@ export function CreateActivity() {
       setIsLoading(false)
     }
   }
-  
 
   return (
     <div className="flex w-full border h-screen">
