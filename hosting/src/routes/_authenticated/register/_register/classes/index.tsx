@@ -46,7 +46,8 @@ export function ClassList() {
     totalVacancies: number
   }) => {
     if (idTurma) {
-      return updateClass(idTurma, {
+      return updateClass({
+        idTurma,
         nome_turma: values.class,
         turno: values.shift,
         cargahoraria: values.quantityHours,
