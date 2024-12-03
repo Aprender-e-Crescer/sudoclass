@@ -192,9 +192,14 @@ async function getActivityById(activityId: number): Promise<any> {
   }
 }
 
-async function getActivities(): Promise<any> {
+async function getActivities(subjectId: number): Promise<any> {
   try {
-    const activitiesResult = await db.query(`SELECT * FROM atividade`)
+    const activitiesResult = await await db.query(
+      `SELECT *
+       FROM atividade 
+       WHERE id_materia = $1`,
+      [subjectId]
+    )
     console.log('Atividades retornadas do banco:', activitiesResult.rows)
     return activitiesResult.rows
   } catch (error) {
@@ -237,7 +242,7 @@ export const activityService = {
   ) => updateActivityGrades(activityId, studentId, grade),
   deleteActivity: (activityId: number) => deleteActivity(activityId),
   getActivityById: (activityId: number) => getActivityById(activityId),
-  getActivities: () => getActivities(),
+  getActivities: (subjectId: number) => getActivities(subjectId),
   updateActivity: (
     title: string,
     description: string,
