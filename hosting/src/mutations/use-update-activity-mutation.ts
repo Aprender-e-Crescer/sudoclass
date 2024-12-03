@@ -13,24 +13,22 @@ export function useUpdateActivityMutation() {
       instruction,
       deliveryDate,
       value,
-      subjectId,
     }: {
       activityId: number
       title: string
       instruction: string
       deliveryDate: string
       value: number
-      subjectId: number
     }) => {
       const requestBody = {
         title,
         description: instruction,
         deliveryDate,
         value,
-        subjectId,
       }
 
-      await api.put(`/activity/${activityId}`, requestBody)
+      const response = await api.put(`/activity/${activityId}`, requestBody)
+      return response.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LIST_ACTIVITIES_QUERY })

@@ -3,13 +3,14 @@ import { warningService } from '../services/warning.service'
 
 const warningController = {
   createWarning: async (req: Request, res: Response): Promise<void> => {
-    const { mensagem, id_usuario, id_materia } = req.body
+    const { mensagem, id_usuario, id_materia, criado_por } = req.body
 
     try {
       const message = await warningService.createWarning(
         mensagem,
         id_materia,
-        id_usuario
+        id_usuario,
+        criado_por
       )
       res.status(201).send(message)
     } catch (err) {
