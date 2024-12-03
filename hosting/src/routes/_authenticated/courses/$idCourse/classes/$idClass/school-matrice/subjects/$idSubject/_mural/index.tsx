@@ -6,14 +6,10 @@ import { SendHorizontal } from 'lucide-react'
 import { Warning } from '@/components/custom/warning'
 import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
 import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { CustomLoading } from '@/components/custom/custom-loading'
-import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
-import { useGetStudentQuery } from '@/queries/use-get-student-query'
-import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
+import { useProfileImage } from '@/hooks/use-profile-image'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
@@ -31,10 +27,15 @@ export function WallSubjects() {
   const createWarningMutation = useCreateWarningMutation()
   const { name, user } = useGetFullUser()
   const { data: subject } = useGetSubjectByIdQuery(parseInt(idSubject))
+  const currentUserImage = useProfileImage()
 
   if (!user) {
     console.error('Tipo de usuário não encontrado')
-    return <div>Usuário não encontrado</div>
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <CustomLoading message="Carregando usuário" size={70} />
+      </div>
+    )
   }
 
   const userName = name
@@ -70,7 +71,7 @@ export function WallSubjects() {
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
         <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <CardComponent name={subject.nome_materia} description="Aprender & Crescer" />
+          <CardComponent name={subject?.nome_materia} description="Aprender & Crescer" />
         </div>
 
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full">
@@ -82,7 +83,7 @@ export function WallSubjects() {
                   id="message"
                   name="message"
                   onChange={handleChange}
-                  avatar=""
+                  avatar={currentUserImage.selectedImage || ''}
                   icon={
                     <button type="submit" aria-label="Enviar mensagem">
                       <SendHorizontal />
@@ -111,7 +112,7 @@ export function WallSubjects() {
                   key={warning.id_aviso}
                   name={userName}
                   date={formattedDate}
-                  avatarSrc={warning.avatar || ''}
+                  avatarSrc={currentUserImage.selectedImage || ''}
                   comment={warning.mensagem}
                   textAvatar="U"
                 />

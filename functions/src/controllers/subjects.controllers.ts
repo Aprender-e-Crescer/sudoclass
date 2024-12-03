@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
 import { materiaService } from '../services/subjects.service'
 
+
 const subjectsController = {
     createSubject: async (req: Request, res: Response): Promise<void> => {
         const { nomeMateria, cargaHoraria, dataInicio, dataFim, idProfessor, ementa } = req.body
+
 
         try {
             const retorno = await materiaService.createSubject(
@@ -21,10 +23,13 @@ const subjectsController = {
         }
     },
 
+
     updateSubject: async (req: Request, res: Response): Promise<void> => {
         const { idMateria, idCurso, idProfessor } = req.params
 
+
         const { nomeMateria, cargaHoraria, dataInicio, dataFim, ementa } = req.body
+
 
         try {
             const ret = await materiaService.updateSubject(
@@ -38,6 +43,7 @@ const subjectsController = {
                 ementa
             )
 
+
             if (!ret) {
                 res.status(500).send('Nao foi possivel atualizar a materia.')
             } else {
@@ -49,13 +55,16 @@ const subjectsController = {
         }
     },
 
+
     deleteSubject: async (req: Request, res: Response): Promise<void> => {
         const idMateria = req.params.id
+
 
         if (!idMateria) {
             res.status(400).send('ID da materia e obrigatorio.')
             return
         }
+
 
         try {
             const ret = await materiaService.deleteSubject(idMateria)
@@ -70,13 +79,16 @@ const subjectsController = {
         }
     },
 
+
     getSubjectById: async (req: Request, res: Response): Promise<void> => {
         const idMateria = req.params.id
+
 
         if (!idMateria) {
             res.status(400).send('ID da materia e obrigatorio.')
             return
         }
+
 
         try {
             const ret = await materiaService.getSubjectById(idMateria)
@@ -108,6 +120,7 @@ const subjectsController = {
             return
         }
 
+
         try {
             const resposta = await materiaService.studentListBySubject(id)
             if (!resposta) {
@@ -130,27 +143,8 @@ const subjectsController = {
         }
     },
 }
-    },
-    subjectsByStudent: async (req: Request, res: Response): Promise<void> => {
-        const { id } = req.params;
-        if (!id) {
-            res.status(400).send('ID do aluno é obrigatório.');
-            return;
-        }
-        try {
-            const resposta = await materiaService.subjectsByStudent(id);
-            if (!resposta) {
-                res.status(404).send('Nenhuma matéria encontrada para este aluno.');
-            } else {
-                res.status(200).send(resposta);
-            }
-        }
-        catch (error) {
-            console.error('Erro ao buscar materias por aluno:', error);
-            res.status(500).send('Ocorreu um erro');
-        }
 
-},
-}
 
 export default subjectsController
+
+
