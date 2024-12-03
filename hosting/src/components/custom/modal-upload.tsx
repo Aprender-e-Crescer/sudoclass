@@ -1,52 +1,48 @@
-'use client'
-
 import * as React from 'react'
-import { Upload, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
+import { useCreateJustificationMutation } from '@/mutations/use-create-justifications-mutation'
+import { Upload } from 'lucide-react'
 
 interface ModalUploadProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   hasInput: boolean
+  id_chamada: number | null
+  userId: string | undefined
 }
 
-export default function ModalUpload({ open, onOpenChange, hasInput }: ModalUploadProps) {
-  const [files, setFiles] = React.useState<File[]>([])
-  const [isDragging, setIsDragging] = React.useState(false)
+export default function ModalUpload({ open, onOpenChange, hasInput, id_chamada, userId }: ModalUploadProps) {
+  const [justificativa, setJustificativa] = React.useState('')
+  const [imageFiles, setImageFiles] = React.useState<File[]>([])
 
-  const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'application/pdf']
+  const { mutate, isSuccess } = useCreateJustificationMutation(userId)
 
-  const handleFiles = (incomingFiles: FileList | File[]) => {
-    const validFiles = Array.from(incomingFiles).filter((file) => allowedFormats.includes(file.type))
-    setFiles((prev) => [...prev, ...validFiles])
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    handleFiles(e.dataTransfer.files)
-  }
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
-
-  const handleDragLeave = () => {
-    setIsDragging(false)
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnAddJustificationImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      handleFiles(e.target.files)
+      const filesArray = Array.from(e.target.files)
+      setImageFiles((prevFiles) => [...prevFiles, ...filesArray])
     }
   }
 
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index))
+  const handleSubmit = () => {
+    if (imageFiles.length > 0) {
+      imageFiles.forEach((image) => {
+        mutate({ id_chamada, justificativa, image })
+      })
+    } else {
+      console.log('Nenhum arquivo selecionado')
+    }
   }
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      setJustificativa('')
+      setImageFiles([])
+      onOpenChange(false)
+    }
+  }, [isSuccess, onOpenChange])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -55,45 +51,54 @@ export default function ModalUpload({ open, onOpenChange, hasInput }: ModalUploa
           <DialogTitle className="flex justify-between items-center">Upload</DialogTitle>
         </DialogHeader>
 
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          className={`border-2 rounded-lg p-6 flex flex-col items-center gap-2 ${
-            isDragging ? 'border-blue-500 bg-blue-50' : 'border-dashed'
-          }`}
-        >
+        <div className={`border-2 rounded-lg p-6 flex flex-col items-center gap-2`}>
           <Upload className="h-10 w-10 text-blue-500" />
           <div className="text-center">
             <p>
-              <label htmlFor="file-upload" className="text-blue-500 cursor-pointer underline pr-2">
-                clique aqui para selecionar arquivos
+              <label htmlFor="fileInput" className="text-blue-500 cursor-pointer underline pr-2">
+                Clique aqui para selecionar arquivos
               </label>
             </p>
-            <input id="file-upload" type="file" onChange={handleFileChange} multiple className="hidden" />
+            <input
+              type="file"
+              id="fileInput"
+              accept="image/*"
+              onChange={handleOnAddJustificationImageChange}
+              style={{ display: 'none' }}
+              multiple
+            />
             <p className="text-sm text-muted-foreground mt-1">Formatos suportados: JPEG, PNG, GIF, MP4, PDF</p>
           </div>
         </div>
 
+        {imageFiles.length > 0 && (
+          <div className="mt-4">
+            <h3 className="font-medium">Arquivos selecionados:</h3>
+            <ul className="list-disc pl-5 mt-2">
+              {imageFiles.map((file, index) => (
+                <li key={index} className="text-sm">
+                  {file.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {hasInput ? (
           <div className="mt-4">
             <label className="text-sm font-medium">Justificativa</label>
-            <Textarea placeholder="Insira sua justificativa..." className="mt-1.5" />
+            <Textarea
+              placeholder="Insira sua justificativa..."
+              value={justificativa}
+              onChange={(e) => setJustificativa(e.target.value)}
+              className="mt-1.5"
+            />
           </div>
         ) : null}
 
-        <div className="mt-4 space-y-2">
-          {files.map((file, index) => (
-            <div key={index} className="flex items-center justify-between bg-muted p-2 rounded-md">
-              <span className="text-sm truncate">{file.name}</span>
-              <Button variant="ghostWhite" size="small" className="h-6 w-6" onClick={() => removeFile(index)}>
-                <XCircle className="h-4 w-4 text-destructive" />
-              </Button>
-            </div>
-          ))}
-        </div>
-
-        <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600">ENVIAR</Button>
+        <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600" onClick={handleSubmit}>
+          ENVIAR
+        </Button>
       </DialogContent>
     </Dialog>
   )
