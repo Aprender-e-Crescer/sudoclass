@@ -3,22 +3,12 @@ import subjectsController from '../controllers/subjects.controllers'
 
 const router = Router()
 
-router.post('/subject', subjectsController.createSubject)
-router.put(
-  '/subject/:idMateria/course/:idCurso/teacher/:idProfessor',
-  subjectsController.updateSubject
-)
-router.delete('/subject/:id', subjectsController.deleteSubject)
-router.get('/subject/:id', subjectsController.getSubjectById)
-router.post('/subject/class/:idTurma', subjectsController.addSubjectToClass)
-router.get(
-  '/subject/studentListBySubject/:id',
-  subjectsController.studentListBySubject
-)
-router.get(
-  '/subject/subjectsByStudent/:id',
-  subjectsController.subjectsByStudent
-)
-router.get('/subjects', subjectsController.getSubjects)
+router.post('/subject', subjectsController.createSubject);
+router.put('/subject/:idMateria/course/:idCurso/teacher/:idProfessor',subjectsController.updateSubject);
+router.delete('/subject/:id', subjectsController.deleteSubject);
+router.get('/subject/:id', subjectsController.getSubjectById);
+router.post('/subject/class/:idTurma', subjectsController.addSubjectToClass);
+router.get('/subject/studentlistbysubject/:id', subjectsController.studentListBySubject);
+router.get('/subject/subjectsByStudent/:id', subjectsController.subjectsByStudent)
 
 export default router
