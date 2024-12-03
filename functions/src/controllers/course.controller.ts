@@ -5,6 +5,7 @@ import { db } from '../config/database'
 const courseController = {
   createCurso: async (req: Request, res: Response): Promise<void> => {
     const {  nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa } = req.body
+
     try {
       const retorno = await cursoService.criarCurso( nome, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa)
       if (!retorno) {

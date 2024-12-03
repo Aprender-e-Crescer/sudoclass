@@ -7,7 +7,16 @@ export function useCreateCourse() {
   return useMutation({
     mutationKey: ['createCourse'],
     mutationFn: async (values: any) => {
-      await api.post('course', values)
+      await api.post('course', {
+        nome: values.name,
+        cargaHoraria: values.workload,
+        dataInicio: values.startDate,
+        dataFim: values.endDate,
+        dataInicioInscricoes: values.startOfRegistration,
+        dataFimInscricoes: values.endOfRegistration,
+        numeroVagas: values.numberOfVacancies,
+        ementa: values.ementa,
+      })
 
       await queryClient.invalidateQueries({ queryKey: ['cursos'] })
     },
