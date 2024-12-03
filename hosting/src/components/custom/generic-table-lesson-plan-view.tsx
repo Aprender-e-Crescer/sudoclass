@@ -44,7 +44,7 @@ export const GenericTableLessonPlanView = ({
               <TableHead
                 key={index}
                 className={`font-semibold text-black ${
-                  col.accessor === "date" ? "max-sm:pl-24 sm:pl-32" : "hidden sm:table-cell"
+                  col.accessor === "data_aula" ? "max-sm:pl-20 sm:pl-28" : "hidden sm:table-cell"
                 }`}
               >
                 {col.header}
@@ -52,90 +52,103 @@ export const GenericTableLessonPlanView = ({
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {data.map((row: any, rowIndex: number) => (
-            <React.Fragment key={rowIndex}>
-              <TableRow>
-                {columns.map((col: any, colIndex: number) => (
-                  <TableCell key={colIndex} className="px-1 sm:py-2 sm:px-4">
-                    {col.accessor === "actions" ? (
-                      <div className="flex items-center space-x-0 sm:space-x-1 max-sm:-space-x-10">
-                        <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="ghostWhite"
-                              size="small"
-                              className=""
-                              onClick={() => {
-                                setSelectedRowIndex(rowIndex); 
-                                setDialogOpen(true);
-                              }}
-                            >
-                              <X className="h-6 w-6 text-gray-400" />
+          <TableBody>
+            {data.map((row: any, rowIndex: number) => (
+              <React.Fragment key={rowIndex}>
+                <TableRow>
+                  {columns.map((col: any, colIndex: number) => (
+                    <TableCell key={colIndex} className="px-1 sm:py-2 sm:px-4">
+                      {col.accessor === "actions" ? (
+                        <div className="flex items-center space-x-0 sm:space-x-1 max-sm:-space-x-10">
+                          {/* Botão de Excluir */}
+                          <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="ghostWhite"
+                                size="small"
+                                onClick={() => {
+                                  setSelectedRowIndex(rowIndex);
+                                  setDialogOpen(true);
+                                }}
+                              >
+                                <X className="h-6 w-6 text-gray-400" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="max-sm:max-w-[300px]">
+                              <AlertDialogHeader className="pb-4">
+                                <AlertDialogTitle className="flex justify-center max-sm:text-sm font-medium ">Você Deseja Excluir Esse Plano de Aula?</AlertDialogTitle>
+                              </AlertDialogHeader>
+                              <div className="flex justify-end max-sm:justify-center space-x-2">
+                                <AlertDialogCancel>
+                                  <Button
+                                    variant="lightTextBlack"
+                                    className="font-medium size = small"
+                                  >
+                                    Cancelar
+                                  </Button>
+                                </AlertDialogCancel>
+                                <AlertDialogAction>
+                                  <Button
+                                    variant="blueButton"
+                                    className="font-medium"
+                                    onClick={handleDelete}
+                                  >
+                                    Continue
+                                  </Button>
+                                </AlertDialogAction>
+                              </div>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                          <Button
+                            variant="ghostWhite"
+                            className="sm:hidden"
+                            size="small"
+                            onClick={(e) => { e.stopPropagation(); toggleRow(rowIndex); }}
+                          >
+                            {expandedRows.includes(rowIndex) ? (
+                              <ChevronUp className="h-4 w-4 text-black" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4 text-black" />
+                            )}
+                          </Button>
+                        </div>
+                      ) : col.accessor === "data_aula" ? (
+                        <div className="flex items-center max-sm:-space-x-5">
+                          <Link
+                            to='/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/update-lesson-plan'
+                            params={{
+                              idCourse: row.idCourse,
+                              idClass: row.idClass,
+                              idSubject: row.idSubject,
+                              idLessonPlan: row.idLessonPlan,
+                            }}
+                          >
+                            <Button variant="ghostWhite" size="small" className="max-sm:pr-10 hover:bg-transparent focus:outline-none">
+                              <Edit className="h-4 w-4 text-black" />
                             </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className="max-sm:max-w-[300px]">
-                            <AlertDialogHeader className="pb-4">
-                              <AlertDialogTitle className="flex justify-center max-sm:text-sm font-medium ">Você Deseja Excluir Esse Plano de Aula?</AlertDialogTitle>
-                            </AlertDialogHeader>
-                            <div className="flex justify-end max-sm:justify-center space-x-2">
-                              <AlertDialogCancel>
-                                <Button
-                                  variant="lightTextBlack"
-                                  className="font-medium size = small"
-                                >
-                                  Cancelar
-                                </Button>
-                              </AlertDialogCancel>
-                              <AlertDialogAction>
-                                <Button
-                                  variant="blueButton"
-                                  className="font-medium"
-                                  onClick={handleDelete} 
-                                >
-                                  Continue
-                                </Button>
-                              </AlertDialogAction>
-                            </div>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                        <Button variant="ghostWhite" className="sm:hidden" size="small" onClick={(e) => { e.stopPropagation(); toggleRow(rowIndex); }}>
-                          {expandedRows.includes(rowIndex) ? (
-                            <ChevronUp className="h-4 w-4 text-black" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4 text-black" />
-                          )}
-                        </Button>
-                      </div>
-                    ) : col.accessor === "date" ? (
-                      <div className="flex items-center max-sm:-space-x-5">
-                         <Link to='/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/update-lesson-plan' params={undefined}>
-                        <Button variant="ghostWhite" size="small" className="max-sm:pr-10 hover:bg-transparent focus:outline-none">
-                          <Edit className="h-4 w-4 text-black" />
-                        </Button>
-                        </Link>
-                        <span>{row[col.accessor]}</span>
-                      </div>
-                    ) : (
-                      <span className="hidden sm:block">{row[col.accessor]}</span>
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-              {expandedRows.includes(rowIndex) && (
-                <TableRow className="sm:hidden">
-                  <TableCell colSpan={columns.length} className="p-4">
-                    <div className="py-1">
-                      <p><strong>Início:</strong> {row.start}</p>
-                      <p><strong>Fim:</strong> {row.end}</p>
-                      <p><strong>Plano de Aula:</strong> {row.lessonPlan}</p>
-                    </div>
-                  </TableCell>
+                          </Link>
+                          <span>{row[col.accessor]}</span>
+                        </div>
+                      ) : (
+                        <span className="hidden sm:block">{row[col.accessor]}</span>
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </React.Fragment>
-          ))}
-        </TableBody>
+                {expandedRows.includes(rowIndex) && (
+                  <TableRow className="sm:hidden">
+                    <TableCell colSpan={columns.length} className="p-4">
+                      <div className="py-1">
+                        <p><strong>Início:</strong> {row.datainicio}</p>
+                        <p><strong>Fim:</strong> {row.datafim}</p>
+                        <p><strong>Plano de Aula:</strong> {row.detalhes}</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
+            ))}
+          </TableBody>
       </Table>
     </>
   );

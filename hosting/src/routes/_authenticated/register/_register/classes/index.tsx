@@ -112,7 +112,7 @@ export function ClassList() {
                       variantCancelButton="blueButton"
                       onClick={() => deleteClass(id_turma)}
                     />
-                    <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }}>
+                    <Link to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/update-lesson-plan" search={{ action: 'edit', idTurma: id_turma }} params={undefined}>
                       <Pencil className="border rounded text-zinc-500 w-8 h-8 cursor-pointer" />
                     </Link>
                   </div>

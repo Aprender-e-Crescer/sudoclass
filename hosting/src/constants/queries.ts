@@ -1,0 +1,1 @@
+export const LESSON_PLAN_QUERY_KEY = ['planoaula']
