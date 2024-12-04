@@ -128,6 +128,20 @@ async function requestPasswordList(): Promise<any> {
         return 'Erro ao buscar o usuario troca de senha'; 
     }
 }
+async function requestDenied(id_usuario: string): Promise<any> {
+    try {
+       const response = await db.query(
+        'UPDATE usuario SET trocardesenha = false WHERE id_usuario = $1',
+        [
+            parseInt(id_usuario)
+        ]
+       )
+       return 'Alterado com sucesso';
+    } catch (error) {
+        console.error('Erro ao buscar o usuario troca de senha:', error);
+        return 'Erro ao buscar o usuario troca de senha'; 
+    }
+}
 
 
 export const usuarioService = {
@@ -135,5 +149,6 @@ export const usuarioService = {
     updateUser: (id_usuario: string, email: string, senha: string, trocardesenha: boolean) => updateUser(id_usuario, email, senha, trocardesenha), 
     deleteUser: (id_usuario: string) => deleteUser(id_usuario),
     getUser: (id_usuario: string) => getUser(id_usuario),
-    requestPasswordList: () => requestPasswordList()
+    requestPasswordList: () => requestPasswordList(),
+    requestDenied: (id_usuario: string) => requestDenied(id_usuario)
 }

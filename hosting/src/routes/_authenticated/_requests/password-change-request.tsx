@@ -19,6 +19,8 @@ import { Form, Formik, FormikProps } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { z } from 'zod'
 import { useRef, useState } from 'react'
+import { useUpdatePasswordChangeMutation } from '@/mutations/use-update-user-password-request-mutation'
+import { useQueryClient } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/_authenticated/_requests/password-change-request')({
   component: RequestChangePassword,
@@ -70,9 +72,29 @@ function useLogic() {
 
 export function RequestChangePassword() {
   const {toast, formikInputCopyRef, passwords } = useLogic()
+  const queryClient = useQueryClient()
   const { data: user } = usePasswordChangeListingQuery()
-  console.log(user)
+  const { mutateAsync: updatePasswordChange} = useUpdatePasswordChangeMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] }),
+      toast({
+        title: "sucesso!",
+        duration: 2000,
+        description: "estado foi alterado",
+        variant: "default",
+      }); 
 
+    },
+    onError: () => {
+      toast({
+        title: "Erro!",
+        duration: 2000,
+        description: "Houve um erro ao atualizar as senhas.",
+        variant: "destructive",
+      });
+    },
+  })
+  
   return (
     <>
       {user?.map(({ idUser, studentName, subjectName}) => (
@@ -94,7 +116,7 @@ export function RequestChangePassword() {
                     })
                   }
                 >
-                  <div className="flex border h-8 rounded-md justify-center items-center p-1" >
+                  <div className="flex border h-8 rounded-md justify-center items-center p-1" onClick={() => updatePasswordChange(idUser)} >
                     <Check className="text-green-500" />
                   </div>
                 </AlertDialogTrigger>
@@ -126,7 +148,7 @@ export function RequestChangePassword() {
                   </Formik>
                 </AlertDialogContent>
               </AlertDialog>
-              <div className="flex border h-8 rounded-md justify-center items-center p-1 ">
+              <div className="flex border h-8 rounded-md justify-center items-center p-1"  onClick={() => updatePasswordChange(idUser)}>
                 <X className="text-red-700" />
               </div>
             </div>

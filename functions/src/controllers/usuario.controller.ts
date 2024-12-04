@@ -86,6 +86,23 @@ const usuarioController = {
             console.error('Erro ao atualizar o usuário:', error);
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar atualizar o usuário.');
         }
-    }  
+    },
+    
+    requestDenied: async(req: Request, res: Response): Promise<void> => {
+        const {id_usuario} = req.params;
+        try{
+            const retorno = await usuarioService.requestDenied(id_usuario)
+            console.log(retorno)
+            if(!retorno){
+                 res.status(500).send(`Não foi possivel atualizar o usuario`);
+            }else{
+                  res.status(200).send(retorno) 
+            }
+        }
+        catch(error){
+            console.error('Erro ao atualizar o usuário:', error);
+            res.status(500).send( 'Ocorreu um erro no servidor ao tentar atualizar o usuário.');
+        }
+    }    
 }
 export default usuarioController
