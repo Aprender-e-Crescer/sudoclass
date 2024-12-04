@@ -70,7 +70,7 @@ function LeftMenu({ type }: LeftMenuProps) {
     ))
 
   return (
-    <div className="flex gap-4 flex-col border-r-2">
+    <div className="flex gap-8 flex-col">
       {type === 'StudentPortal' && renderMenuItems(menuItemsStudentPortal)}
       {type === 'AdminPortal' && renderMenuItems(menuItemsAdminPortal)}
       {type === 'TeacherClassroom' && renderMenuItems(menuItemsTeacherClassroom)}
@@ -85,13 +85,13 @@ function LeftMenu({ type }: LeftMenuProps) {
           )}
           {type === 'TeacherClassroom' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
         </div>
-        {course?.map(({ nome_curso, id_curso }, index) => (
+        {course?.map(({ nome_curso, id_curso }) => (
           <CourseItem
-            key={index}
+            key={id_curso}
             course={nome_curso}
             activeItem={activeItem}
             onClick={() => setActiveItem(nome_curso)}
-            index={index}
+            index={id_curso}
             onDelete={type === 'AdminPortal' ? () => handleDeleteCourse(id_curso) : undefined}
           />
         ))}
