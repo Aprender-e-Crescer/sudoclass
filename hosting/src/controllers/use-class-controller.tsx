@@ -6,7 +6,22 @@ import { useQueryClient } from '@tanstack/react-query'
 
 export function useClassesController() {
   const queryClient = useQueryClient()
-  const { mutateAsync: registerClassForm } = useRegisterClassMutation()
+  const { mutateAsync: registerClassForm } = useRegisterClassMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classes'] }),
+        toast({
+          title: 'Sucesso!',
+          description: 'A turma foi cadastrada.',
+          variant: 'success',
+        })
+    },
+    onError: () =>
+      toast({
+        title: 'Erro!',
+        description: 'Erro ao cadastrar a turma.',
+        variant: 'destructive',
+      }),
+  })
   const { mutateAsync: deleteClass } = useDeleteClassMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] }),

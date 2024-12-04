@@ -1,4 +1,3 @@
-import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterTeacherController } from '@/controllers/teacher-controller'
@@ -14,7 +13,7 @@ import avatar from '@/assets/avatar.png'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
-  idTeacher: z.string().optional(),
+  idTeacher: z.number().optional(),
 })
 
 export const Route = createFileRoute('/_authenticated/register/_register/teachers/')({
@@ -38,7 +37,7 @@ const initialValues = {
   rgDispatchStatus: '',
   rgDispatchDate: '',
   telephone: '',
-  password: '',
+  // password: '',
 }
 
 function useLogic() {
@@ -49,6 +48,7 @@ function useLogic() {
   const handleOnCreateOrEditSubmit = (values: typeof initialValues) => {
     if (idTeacher && action === 'edit')
       return updateTeacher({
+        idTeacher,
         bairro: values.neighborhood,
         cidadedenascimento: values.birthCity,
         cpf: values.cpf,
@@ -57,7 +57,7 @@ function useLogic() {
         email: values.email,
         estado: values.state,
         estadodeexpedicaorg: values.rgDispatchStatus,
-        estadonascimento: new Date(values.birthStatus),
+        estadonascimento: values.birthStatus,
         municipio: values.municipality,
         nome: values.fullName,
         numero: values.number,
@@ -74,7 +74,7 @@ function useLogic() {
       email: values.email,
       estado: values.state,
       estadodeexpedicaorg: values.rgDispatchStatus,
-      estadonascimento: new Date(values.birthStatus),
+      estadonascimento: values.birthStatus,
       municipio: values.municipality,
       nome: values.fullName,
       numero: values.number,
@@ -107,7 +107,7 @@ export function TeachersListing() {
               <div key={index} className="flex justify-between items-start">
                 <Link
                   to="/register/teachers"
-                  search={{ action: 'edit' }}
+                  search={{ action: 'edit', idTeacher: idTeacher }}
                   params={{ idTeacher: idTeacher }}
                   className="flex flex-col flex-1"
                 >
@@ -259,7 +259,7 @@ export function TeachersListing() {
                     label="birthCity"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
-                  <InputForm
+                  {/* <InputForm
                     title="Senha"
                     placeholder="Senha padrão para o professor"
                     id="password"
@@ -268,13 +268,13 @@ export function TeachersListing() {
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
 
-                  <InputFile
-                    title="Anexar arquivos"
-                    placeholder="ImagemDocumentoAnexado.png 90kb"
+                  <InputForm
+                    title="Ementa"
+                    placeholder="Conteudo da ementa"
                     id="attachDocuments"
                     name="attachDocuments"
                     label="attachDocuments"
-                  />
+                  /> */}
                   <div className="flex justify-center gap-5">
                     <Link to="/register/teachers">
                       <Button variant="ghostBlack" size="large" className="w-64">
