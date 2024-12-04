@@ -64,12 +64,15 @@ function useLogic() {
     user,
     toast,
     formikInputCopyRef,
-    passwords,
+    passwords
   }
 }
 
 export function RequestChangePassword() {
-  const { user, toast, formikInputCopyRef, passwords } = useLogic()
+  const {toast, formikInputCopyRef, passwords } = useLogic()
+  const { data: user } = usePasswordChangeListingQuery()
+  console.log(user)
+
   return (
     <>
       {user?.map(({ idUser, studentName, subjectName}) => (
@@ -91,7 +94,7 @@ export function RequestChangePassword() {
                     })
                   }
                 >
-                  <div className="flex border h-8 rounded-md justify-center items-center p-1">
+                  <div className="flex border h-8 rounded-md justify-center items-center p-1" >
                     <Check className="text-green-500" />
                   </div>
                 </AlertDialogTrigger>
@@ -117,7 +120,7 @@ export function RequestChangePassword() {
                         placeholder="Sua nova senha"
                         icon={<Key />}
                         isCopyInput
-                        value={passwords[studentName] || '12345678'}
+                        value={passwords[studentName] || 12345678}
                       />
                     </Form>
                   </Formik>

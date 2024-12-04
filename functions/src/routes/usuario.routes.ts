@@ -7,6 +7,6 @@ router.post('/usuario', usuarioController.CreateUser);
 router.put('/usuario/:id_usuario', usuarioController.updateUser);
 router.get('/usuario/:id_usuario', usuarioController.getUser);
 router.delete('/usuario/:id_usuario', usuarioController.deleteUser);
-router.get('/usuario/trocasenha/:trocardesenha', usuarioController.requestPasswordList);
+router.get('/trocasenha/usuario', usuarioController.requestPasswordList);
 
 export default router;

@@ -1,7 +1,5 @@
-import { db } from '../config/database';
+import { db } from "../config/database";
 
-
- 
     async function createUser(
         id_usuario: string,
         email: string,
@@ -105,41 +103,37 @@ async function getUser(id_usuario: string): Promise<any> {
         return 'Erro ao buscar o usuario'; 
     }
 }
-async function requestPasswordList(trocardesenha: boolean): Promise<any> {
-    let resposta;
+async function requestPasswordList(): Promise<any> {
     try {
        const response = await db.query(
-        `SELECT
-        u.id_usuario,
-        a.nome AS nome_aluno, 
-        c.nome_curso
-     FROM 
-        usuario u
-     JOIN 
-        alunos a ON u.id_aluno = a.id_aluno
-     JOIN
-        alunosturma at ON a.id_aluno = at.id_aluno
-     JOIN
-        turmas t ON at.id_turma = t.id_turma
-     JOIN
-        curso c ON t.id_curso = c.id_curso
-     WHERE
-        u.trocardesenha = $1`,
-        [
-         trocardesenha
-        ]
+        `SELECT u.id_usuario,
+            a.nome AS nome_aluno, 
+            c.nome_curso
+        FROM 
+            usuario u
+        JOIN 
+            alunos a ON u.id_aluno = a.id_aluno
+        JOIN
+            alunosturma at ON a.id_aluno = at.id_aluno
+        JOIN
+            turmas t ON at.id_turma = t.id_turma
+        JOIN
+            curso c ON t.id_curso = c.id_curso
+        WHERE
+            u.trocardesenha = true`
        )
        return response.rows;
     } catch (error) {
-        console.error('Erro ao buscar o usuario:', error);
-        return 'Erro ao buscar o usuario'; 
+        console.error('Erro ao buscar o usuario troca de senha:', error);
+        return 'Erro ao buscar o usuario troca de senha'; 
     }
 }
+
 
 export const usuarioService = {
     createUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string, tipo: string) => createUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo),
     updateUser: (id_usuario: string, email: string, senha: string, trocardesenha: boolean) => updateUser(id_usuario, email, senha, trocardesenha), 
     deleteUser: (id_usuario: string) => deleteUser(id_usuario),
     getUser: (id_usuario: string) => getUser(id_usuario),
-    requestPasswordList: (trocardesenha: boolean) => requestPasswordList(trocardesenha)
+    requestPasswordList: () => requestPasswordList()
 }

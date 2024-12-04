@@ -8,7 +8,7 @@ export const userSchema = z.preprocess((obj) => ({
   email: obj?.email,
   password: obj?.senha,
   type: obj?.tipo,
-  changedPassword: obj?.trocardesenha
+  changedPassword: obj?.trocardesenha,
 }), z.object({
   idUser: z.number(),
   idStudent: z.number().nullable(),

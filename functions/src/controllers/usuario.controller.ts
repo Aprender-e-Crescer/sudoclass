@@ -34,19 +34,19 @@ const usuarioController = {
     },
 
     requestPasswordList: async(req: Request, res: Response): Promise<void> => {
-        const {trocardesenha} = req.params;
-        const trocaSenhaBool = trocardesenha === 'true';
             try{
-            const retorno = await usuarioService.requestPasswordList(trocaSenhaBool);
+             const retorno = await usuarioService.requestPasswordList();
 
-                    res.status(200).send(retorno);
-                    console.log(retorno)
-        }
-        catch(error){
-            console.error('Erro ao solicitar a troca de senha:', error);
-            res.status(500).send( 'Ocorreu um erro no servidor ao tentar solicitar a troca de senha.');
-        }
+                res.status(200).send(retorno);
+                console.log(retorno)
+            }
+         catch(error){
+             console.error('Erro ao solicitar a troca de senha:', error);
+             res.status(500).send( 'Ocorreu um erro no servidor ao tentar solicitar a troca de senha.');
+         }
     },
+
+
 
      deleteUser: async(req: Request, res: Response): Promise<void> => {
         const {id_usuario} = req.params;

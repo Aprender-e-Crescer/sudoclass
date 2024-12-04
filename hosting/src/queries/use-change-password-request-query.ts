@@ -30,11 +30,10 @@ export function usePasswordChangeListingQuery() {
   return useQuery({
     queryKey: ['user'],
     queryFn: async () => {
-      const { data } = await api.get("/usuario/trocasenha/:trocardesenha")
+      const { data } = await api.get("/trocasenha/usuario")
 
-      const teachers = z.array(userRequestChangePasswordSchema).parse(data)
-
-      return teachers
+      const user = z.array(userRequestChangePasswordSchema).parse(data)
+      return user
     },
   })
 }
