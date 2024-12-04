@@ -24,7 +24,7 @@ export function ViewActivityStudent() {
   const { data: activity } = useGetActivityQuery(Number(idActivity))
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
-  const { data: notes, isError, isSuccess } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent))
+  const { data: notes } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent))
 
   return (
     <>

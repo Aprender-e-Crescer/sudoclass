@@ -31,10 +31,7 @@ export function CreateActivity() {
   const { mutateAsync: createActivity } = useCreateActivityMutation()
   const { mutateAsync: updateActivity } = useUpdateActivityMutation()
   const { data: activityData, isLoading: activityDataLoading } = useGetActivityQuery(Number(idActivity))
-  console.log(activityData)
-
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
-  const [link, setLink] = React.useState<string>('')
   const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -88,6 +85,7 @@ export function CreateActivity() {
           instruction: values.instruction,
           deliveryDate: values.deliveryDate,
           value: values.value,
+          attachment: linkToDisplay || '',
         })
       }
 
