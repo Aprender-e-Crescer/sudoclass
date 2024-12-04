@@ -1,11 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Formik } from 'formik'
-import { z } from 'zod'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { ChartConfig } from '@/components/ui/chart'
 import { SectorChart } from '@/components/custom/sector-chart'
-import { useChartsQuery } from '@/queries/use-charts-query'
-import { useChartsMutation } from '@/mutations/use-charts-mutation'
+import { useChartsQuery, useMediumNotesQuery } from '@/queries/use-charts-query'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { z } from 'zod'
 
 const chartConfig = {
   visitors: {
@@ -18,32 +23,22 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export const Route = createFileRoute('/_authenticated/charts')({
-  component: Charts,
+  validateSearch: z.object({
+    idClass: z.number()
+  }),
+  component: ChartsScreen,
 })
 
-export const chartsSchema = z.object({
-  data: z.array(
-    z.object({
-      browser: z.string(),
-      visitors: z.number().min(0).max(100),
-      fill: z.string(),
-    }),
-  ),
-  descriptionChart: z.string(),
-  endAngle: z.number(),
-  innerRadius: z.number(),
-  outerRadius: z.number(),
-  polarRadius: z.array(z.number()),
-  valueSize: z.string(),
-})
-
-export type Charts = z.infer<typeof chartsSchema>
-
-function Charts() {
+function ChartsScreen() {
+  const { idClass } = Route.useSearch()
   const { data: chartDocs, isLoading, error } = useChartsQuery()
-  const { mutate: addDataSet } = useChartsMutation()
+  const {
+    data: mediumNotes,
+    isLoading: isLoadingMediumNotes,
+    error: errorMediumNotes,
+  } = useMediumNotesQuery(idClass)
 
-  if (isLoading) {
+  if (isLoading || isLoadingMediumNotes) {
     return (
       <div>
         <h1>Carregando...</h1>
@@ -51,30 +46,28 @@ function Charts() {
     )
   }
 
-  if (error) return <h1>Erro ao carregar os dados: {error.message}</h1>
-
-  const searchSubmitForm = async (values: Charts, resetForm: () => void) => {
-    addDataSet(values)
-    resetForm()
-  }
+  if (error || errorMediumNotes)
+    return (
+      <h1>
+        Erro ao carregar os dados: {error.message ?? errorMediumNotes?.message}
+      </h1>
+    )
 
   return (
     <div>
-      <div className="flex flex-wrap justify-center gap-5">
+      <div className="flex flex-wrap justify-center">
         {chartDocs?.map(
-          (
-            {
-              data,
-              descriptionChart,
-              endAngle,
-              innerRadius,
-              outerRadius,
-              polarRadius,
-              valueSize,
-            },
-            index,
-          ) => (
-            <div key={index} className="flex-1 min-w-56">
+          ({
+            id,
+            data,
+            descriptionChart,
+            endAngle,
+            innerRadius,
+            outerRadius,
+            polarRadius,
+            valueSize,
+          }) => (
+            <div key={id} className="flex-1 min-w-75 p-2">
               <SectorChart
                 chartData={data}
                 chartConfig={chartConfig}
@@ -89,24 +82,30 @@ function Charts() {
           ),
         )}
       </div>
-
-      <div>
-        <Formik
-          initialValues={{
-            data: [{ browser: '', visitors: 0, fill: '' }],
-            descriptionChart: '',
-            endAngle: 0,
-            innerRadius: 0,
-            outerRadius: 0,
-            polarRadius: [0, 0],
-            valueSize: '',
-          }}
-          validationSchema={toFormikValidationSchema(chartsSchema)}
-          onSubmit={(values, { resetForm }) =>
-            searchSubmitForm(values, resetForm)
-          }
-        ></Formik>
-      </div>
+      <Table className="min-w-full mt-16">
+        <TableHeader>
+          <TableRow className="bg-gray-200 text-gray-600  text-md">
+            <TableHead className="py-3 px-6 text-center border-r">
+              Nome
+            </TableHead>
+            <TableHead className="py-3 px-6 text-center border-r">
+              Nota média
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody className="text-md border-b">
+          {mediumNotes?.map(({ id_aluno, media_nota, nome }) => (
+            <TableRow key={id_aluno} className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r border-l">
+                {nome}
+              </TableCell>
+              <TableCell className="py-3 px-6 text-center border-r border-l">
+                {media_nota ?? 'Não foi possível calcular a média'}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   )
 }
