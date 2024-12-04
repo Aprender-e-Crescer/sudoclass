@@ -3,13 +3,14 @@ import { pedagogoService } from '../services/pedagogue.service';
 
 const pedagogosController = {
     createPedagogue: async (req: Request, res: Response): Promise<void> => {
-        const { nome, cpf, senha } = req.body;
+        const {id_pedagogo, nome, cpf, senha, contato} = req.body;~
+        console.log(req.body)   
         try {
-            const result = await pedagogoService.createPedagogue(nome, cpf, senha);
+            const result = await pedagogoService.createPedagogue(id_pedagogo, nome, cpf, senha, contato);
             if (!result) {
                 res.status(500).send('Não foi possível cadastrar o pedagogo');
             } else {
-                res.status(200).send('Pedagogo cadastrado com sucesso');
+                res.status(200).send(result);
             }
         } catch (error) {
             console.error('Erro ao cadastrar pedagogo:', error);
@@ -19,9 +20,9 @@ const pedagogosController = {
 
     updatePedagogue: async (req: Request, res: Response): Promise<void> => {
         const { id } = req.params;
-        const { nome, cpf, senha } = req.body;
+        const { nome, cpf, senha, contato} = req.body;
         try {
-            const result = await pedagogoService.updatePedagogue(id, nome, cpf, senha);
+            const result = await pedagogoService.updatePedagogue(id, nome, cpf, senha, contato);
             if (!result) {
                 res.status(500).send('Não foi possível atualizar o pedagogo');
             } else {

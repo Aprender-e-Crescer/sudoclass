@@ -25,9 +25,11 @@ export const Route = createFileRoute(
 })
 
 const initialValues = {
+  id_pedagogo: '2',
   nome: '',
   cpf: '',
   senha: '',
+  contato: '', // Campo de contato adicionado
 }
 
 function useLogic() {
@@ -112,7 +114,14 @@ export function AdminListing() {
                   label="cpf"
                   customStyleInput="rounded-lg border-2 p-[6px]"
                 />
-
+                <InputForm
+                  title="Contato"
+                  placeholder="(XX) XXXXX-XXXX"
+                  id="contato"
+                  name="contato"
+                  label="contato"
+                  customStyleInput="rounded-lg border-2 p-[6px]"
+                />
                 <InputFile
                   title="Anexar arquivos"
                   placeholder="ImagemDocumentoAnexado.png 90kb"
@@ -126,7 +135,7 @@ export function AdminListing() {
                       Cancelar
                     </Button>
                   </Link>
-                  <Button variant="blueButton" size="large" className="w-64">
+                  <Button variant="blueButton" size="large" className="w-64" type="submit">
                     Cadastrar
                   </Button>
                 </div>
