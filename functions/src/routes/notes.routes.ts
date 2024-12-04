@@ -13,5 +13,9 @@ router.get(
   '/note/students/:subjectId/average',
   noteController.getAverageByStudentAndSubject
 )
+router.get(
+  '/note/activity/:activityId/student/:studentId',
+  noteController.getNotesByActivity
+)
 
 export default router

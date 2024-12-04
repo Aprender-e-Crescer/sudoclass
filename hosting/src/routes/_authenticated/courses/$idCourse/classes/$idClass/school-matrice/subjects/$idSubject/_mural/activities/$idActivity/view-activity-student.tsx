@@ -8,6 +8,9 @@ import { useState } from 'react'
 import ModalUpload from '@/components/custom/modal-upload'
 import { useGetActivityQuery } from '@/queries/use-get-activity-query'
 import { format } from 'date-fns'
+import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
+import { useGetUserQuery } from '@/queries/use-get-user-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
@@ -19,6 +22,9 @@ export function ViewActivityStudent() {
   const [openModal, setOpoenModal] = useState<boolean>(false)
   const { idActivity } = Route.useParams()
   const { data: activity } = useGetActivityQuery(Number(idActivity))
+  const currentUser = useCurrentUserQuery()
+  const { data: user } = useGetUserQuery(currentUser?.data?.uid)
+  const { data: notes, isError, isSuccess } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent))
 
   return (
     <>
@@ -35,7 +41,7 @@ export function ViewActivityStudent() {
             <NoteValue note={0} maxGrade={Number(activity?.value)} />
           </div>
           <div className=" w-full h-0.5 bg-gray-400"></div>
-          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
+          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos{activity?.attachment}</h1>
           <AttachmentView url="" imageUrl="" title="" linkText="" />
 
           <div className=" w-full h-0.5 bg-gray-400"></div>
@@ -82,7 +88,7 @@ export function ViewActivityStudent() {
           </p>
 
           <div className="flex text-gray-500">
-            <NoteValue note={0} maxGrade={Number(activity?.value)} />
+            <NoteValue note={notes?.nota} maxGrade={Number(activity?.value)} />
           </div>
           <div className=" w-full h-0.5 bg-gray-300"></div>
           <div className="flex flex-col gap-10">
