@@ -32,6 +32,34 @@ const activitiesController = {
     }
   },
 
+  updateLinkActivity: async (req: Request, res: Response): Promise<void> => {
+    const { attachment } = req.body
+    const activityId = parseInt(req.params.activityId, 10)
+    const studentId = parseInt(req.params.studentId, 10)
+
+    if (!attachment) {
+      res.status(400).send('Parâmetros inválidos.')
+      return
+    }
+
+    try {
+      const ret = await activityService.updateLinkActivity(
+        activityId,
+        studentId,
+        attachment
+      )
+
+      if (!ret) {
+        res.status(404).send('Atividade ou estudante não encontrado.')
+      } else {
+        res.status(200).send('Link atualizado com sucesso.')
+      }
+    } catch (err) {
+      console.error('Erro atualizando link da atividade:', err)
+      res.status(500).send('Erro ao atualizar o link da atividade.')
+    }
+  },
+
   getLinkFromActivity: async (req: Request, res: Response): Promise<void> => {
     const activityId = parseInt(req.params.activityId, 10)
     const studentId = parseInt(req.params.studentId, 10)
