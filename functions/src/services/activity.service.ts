@@ -19,7 +19,11 @@ async function createActivity(
     const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
     console.log('Estudantes encontrados:', matriceStudents)
 
-    const createdAt = new Date().toISOString().split('T')[0]
+    const createdAt = new Date()
+    const offset = createdAt.getTimezoneOffset()
+    createdAt.setMinutes(createdAt.getMinutes() - offset)
+
+    const createdAtString = createdAt.toISOString().split('T')[0]
 
     const result = await db.query(
       `INSERT INTO atividade (titulo, descricao, valor, data_entrega, data_postagem, id_materia, anexo) 
@@ -29,7 +33,7 @@ async function createActivity(
         description,
         value,
         deliveryDate,
-        createdAt,
+        createdAtString,
         subjectId,
         attachment,
       ]
@@ -87,12 +91,32 @@ async function createActivity(
   }
 }
 
+async function getLinkFromActivity(
+  activityId: number,
+  studentId: number
+): Promise<any> {
+  try {
+    const result = await db.query(
+      `SELECT anexos FROM atividade_aluno WHERE id_atividade = $1 AND id_aluno = $2`,
+      [activityId, studentId]
+    )
+    if (result.rows.length === 0) {
+      console.warn('Nenhum link encontrado para a atividade do aluno.')
+      return null
+    }
+
+    return result.rows[0].anexos
+  } catch (err) {
+    console.error('Erro ao buscar link da atividade do aluno:', err)
+  }
+}
 async function updateActivity(
   title: string,
   description: string,
   value: string,
   deliveryDate: Date,
-  activityId: number
+  activityId: number,
+  attachment: string
 ): Promise<string> {
   try {
     if (!activityId || !value || !deliveryDate || !title || !description) {
@@ -100,15 +124,39 @@ async function updateActivity(
     }
     const result = await db.query(
       `UPDATE atividade
-       SET titulo = $1, descricao = $2, valor = $3, data_entrega = $4
-       WHERE id_atividade = $5`,
-      [title, description, value, deliveryDate, activityId]
+       SET titulo = $1, descricao = $2, valor = $3, data_entrega = $4, anexo = $5
+       WHERE id_atividade = $6`,
+      [title, description, value, deliveryDate, attachment, activityId]
     )
 
     return `atividade atualizada com sucesso`
   } catch (err) {
     console.error('Erro ao atualizar atividade:', err)
     return 'Erro ao atualizar atividade'
+  }
+}
+
+async function updateLinkActivity(
+  activityId: number,
+  studentId: number,
+  attachment: string
+): Promise<string> {
+  try {
+    if (!activityId || !studentId || !attachment) {
+      return 'Parâmetros obrigatórios não fornecidos.'
+    }
+
+    await db.query(
+      `UPDATE atividade_aluno 
+       SET anexos = $1 
+       WHERE id_atividade = $2 AND id_aluno = $3`,
+      [attachment, activityId, studentId]
+    )
+
+    return 'Link atualizado com sucesso.'
+  } catch (err) {
+    console.error('Erro ao atualizar link da atividade do aluno:', err)
+    return 'Erro ao atualizar link da atividade.'
   }
 }
 
@@ -173,27 +221,6 @@ async function getActivityById(activityId: number): Promise<any> {
     }
     const activity = activityResult.rows[0]
 
-    /*  const gradesResult = await db.query(
-      `SELECT s.id AS id_aluno, s.name AS nome, ag.nota
-       FROM nota_atividade ag
-       INNER JOIN alunos s ON ag.id_aluno = s.id
-       WHERE ag.id_nota_atividade = $1`,
-      [activityId]
-    )
-
-    const activityDetails = {
-      id: activity.id,
-      title: activity.title,
-      description: activity.description,
-      value: activity.value,
-      deliveryDate: activity.delivery_date,
-      studentsGrades: gradesResult.rows.map((row: any) => ({
-        studentId: row.student_id,
-        studentName: row.student_name,
-        grade: row.grade,
-      })),
-    } */
-
     return activity
   } catch (error) {
     console.error('Erro ao buscar atividade:', error)
@@ -253,6 +280,13 @@ export const activityService = {
       subjectId,
       attachment
     ),
+  getLinkFromActivity: (activityId: number, studentId: number) =>
+    getLinkFromActivity(activityId, studentId),
+  updateLinkActivity: (
+    activityId: number,
+    studentId: number,
+    attachment: string
+  ) => updateLinkActivity(activityId, studentId, attachment),
   updateActivityGrades: (
     activityId: number,
     studentId: number,
@@ -266,6 +300,15 @@ export const activityService = {
     description: string,
     value: string,
     deliveryDate: Date,
-    activityId: number
-  ) => updateActivity(title, description, value, deliveryDate, activityId),
+    activityId: number,
+    attachment: string
+  ) =>
+    updateActivity(
+      title,
+      description,
+      value,
+      deliveryDate,
+      activityId,
+      attachment
+    ),
 }

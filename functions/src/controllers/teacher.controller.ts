@@ -24,8 +24,9 @@ const teachersController = {
       senha,
       id_aluno,
       id_pedagogo,
-      tipo,
-    } = req.body;
+      tipo
+    } = req.body;    
+
     try {
       const retorno = await teacherService.createTeacher(
         id_professor,

@@ -6,10 +6,10 @@ import { creationClassSchema } from '@/models/creation-class-schema'
 import { useListClassQuery } from '@/queries/use-class-list-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
-import { Pencil } from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { z } from 'zod'
+import { Loader2 } from 'lucide-react'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -34,7 +34,7 @@ const initialValues = {
 export function ClassList() {
   const { action, idTurma } = Route.useSearch()
   const { registerClassForm, updateClass, deleteClass } = useClassesController()
-  const { data: classes } = useListClassQuery()
+  const { data: classes, isFetching: isFetchingClasses, isSuccess: isSuccessLoadClasses } = useListClassQuery()
 
   const handleOnClassCreationSubmit = (values: {
     class: string
@@ -46,7 +46,8 @@ export function ClassList() {
     totalVacancies: number
   }) => {
     if (idTurma) {
-      return updateClass(idTurma, {
+      return updateClass({
+        idTurma,
         nome_turma: values.class,
         turno: values.shift,
         cargahoraria: values.quantityHours,
@@ -78,15 +79,25 @@ export function ClassList() {
           </Button>
         </Link>
 
-        <div className="flex lg:flex-row flex-col gap-7">
-          <div
-            className="flex flex-col gap-4 font-bold text-blue-950 text-lg data-[no-action=true]:flex-1"
-            data-no-action={!action}
-          >
-            {classes?.map(({ name, id_turma }, index) => (
-              <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
-                <p className="border rounded-xl p-3 flex justify-between">
-                  {name}
+        <div className="flex lg:flex-row flex-col gap-5">
+          {isFetchingClasses && (
+            <div className="flex flex-1 gap-2">
+              <p>Carregando as turmas...</p>
+              <Loader2 className="animate-spin" />
+            </div>
+          )}
+          {isSuccessLoadClasses && !isFetchingClasses && (
+            <div
+              className="flex flex-col gap-4 font-bold text-blue-950 text-lg data-[no-action=true]:flex-1"
+              data-no-action={!action}
+            >
+              {classes?.map(({ name, id_turma }, index) => (
+                <div className="flex items-center gap-2">
+                  <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }} className="flex flex-1">
+                    <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
+                      <p className="border rounded-xl p-3 flex justify-between">{name}</p>
+                    </div>
+                  </Link>
                   <div className="flex gap-2">
                     <AlertDialogComponent
                       title="Deseja excluir a turma?"
@@ -94,14 +105,14 @@ export function ClassList() {
                       variantCancelButton="blueButton"
                       onClick={() => deleteClass(id_turma)}
                     />
-                    <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }}>
+                    <Link to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/update-lesson-plan" search={{ action: 'edit', idTurma: id_turma }} params={undefined}>
                       <Pencil className="border rounded text-zinc-500 w-8 h-8 cursor-pointer" />
                     </Link>
                   </div>
-                </p>
-              </div>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
           <When condition={!!action}>
             <Formik
               onSubmit={(values) => handleOnClassCreationSubmit(values)}
@@ -110,6 +121,13 @@ export function ClassList() {
             >
               <Form className="flex flex-1">
                 <div className="flex flex-1 flex-col border p-2 rounded-lg">
+                  <div className="flex flex-col flex-1 justify-end items-end">
+                    <Link to="/charts" search={{ idClass: idTurma }}>
+                      <Button variant="blueButton" size="large" className="w-64">
+                        Estatisticas da turma
+                      </Button>
+                    </Link>
+                  </div>
                   <InputForm title="Turmas" id="class" name="class" label="class" placeholder="Nome Da Turma" />
 
                   <InputForm title="Turno" id="shift" name="shift" label="shift" placeholder="Turno" />

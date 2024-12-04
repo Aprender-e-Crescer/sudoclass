@@ -1,80 +1,64 @@
-import { useState } from 'react'
-import { GenericTableLessonPlanView } from '@/components/custom/generic-table-lesson-plan-view'
-import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react';
+import { GenericTableLessonPlanView } from '@/components/custom/generic-table-lesson-plan-view';
+import { createFileRoute } from '@tanstack/react-router';
+import { useListLessonPlan } from '@/queries/use-list-lesson-plan';
+import { LessonPlan } from '@/models/lesson-plan';
 
-export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/lesson-plan-view')({
+// Definindo a rota com apenas o idLessonPlan
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
+)({
   component: LessonPlanView,
-})
-export function LessonPlanView() {
-  const [expandedRows, setExpandedRows] = useState<number[]>([])
+  parseParams: (params: { idLessonPlan: string }) => {
+    return { idLessonPlan: String(params.idLessonPlan) };
+  },
+});
 
+
+
+export function LessonPlanView() {
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
+
+  const { data: lessonPlans = [], isLoading, isError, error } = useListLessonPlan();
+  console.log(error);
+  if (isLoading) return <p>Carregando...</p>;
+  if (isError) return <p>Erro ao carregar planos de aula</p>;
+
+  const formattedData = lessonPlans.map((lessonPlan: LessonPlan) => ({
+    ...lessonPlan,
+    idProfessor: lessonPlan.id_professor,
+    idLessonPlan: lessonPlan.id_planoaula,
+    data_aula: new Date(lessonPlan.data_aula).toLocaleDateString('pt-BR'),
+    datainicio: [...lessonPlan.inicio_aula].join('').slice(0, -3),
+    datafim: [...lessonPlan.fim_aula].join('').slice(0, -3),
+    detalhes: (
+      <>
+        <p>1. Conteúdo Formativo: {lessonPlan.conteudoformativo || 'Não disponível'}</p>
+        <p>2. Modo de Ensino: {lessonPlan.mododeensino || 'Não disponível'}</p>
+        <p>3. Recursos Didáticos: {lessonPlan.recursosdidaticos || 'Não disponível'}</p>
+      </>
+    ),
+  }));
   const toggleRow = (index: number) => {
     setExpandedRows((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
-    )
-  }
+    );
+  };
 
   const columns = [
-    { header: 'Data', accessor: 'date' },
-    { header: 'Início', accessor: 'start' },
-    { header: 'Fim', accessor: 'end' },
-    { header: 'Plano de Aula', accessor: 'lessonPlan' },
-    { header: '', accessor: 'actions' },
-  ]
-
-  const data = [
-    {
-      date: '01/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan:
-        '1 - Lógica em geral, introdução. Proposição, Conectivos Lógicos, Tabelas verdade. 2 - Introdução à informática, hardware e software.',
-      actions: null,
-    },
-    {
-      date: '02/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Fundamentos de design. 2 - Princípios de usabilidade.',
-      actions: null,
-    },
-    {
-      date: '03/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Introdução a bancos de dados. 2 - Modelagem de dados.',
-      actions: null,
-    },
-    {
-      date: '04/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Estruturas de controle. 2 - Algoritmos de ordenação.',
-      actions: null,
-    },
-    {
-      date: '05/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan: '1 - Ciclo de vida de software. 2 - Metodologias ágeis.',
-      actions: null,
-    },
-    {
-      date: '06/10/2024',
-      start: '18:30',
-      end: '22:30',
-      lessonPlan:
-        '1 - Fundamentos de segurança. 2 - Criptografia e segurança de dados.',
-      actions: null,
-    },
-  ]
+    { header: 'Data da Aula', accessor: 'data_aula' },
+    { header: 'Início', accessor: 'datainicio' },
+    { header: 'Fim', accessor: 'datafim' },
+    { header: 'Detalhes do Plano', accessor: 'detalhes' },
+    { accessor: 'actions' },
+  ];
 
   return (
     <GenericTableLessonPlanView
-      data={data}
+      data={formattedData}
       columns={columns}
       expandedRows={expandedRows}
       toggleRow={toggleRow}
     />
-  )
+  );
 }

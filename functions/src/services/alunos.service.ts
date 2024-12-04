@@ -332,6 +332,35 @@ async function deleteStudent(id_aluno: string) {
   }
 }
 
+async function noteStudent(id_turma:string): Promise<any> {
+  try{
+    const students = await db.query(
+      `SELECT 
+            a.id_aluno,
+            a.nome, 
+            AVG(aa.nota) AS media_nota
+        FROM 
+            alunosturma ta 
+        JOIN 
+            alunos a 
+            ON a.id_aluno = ta.id_aluno
+        JOIN 
+            atividade_aluno aa 
+            ON aa.id_aluno = ta.id_aluno
+        WHERE 
+            ta.id_turma = $1
+        GROUP BY 
+            a.id_aluno, a.nome`, [
+      parseInt(id_turma)
+    ])
+    return students.rows;
+    }
+    catch (error) {
+      console.log(`Erro ao buscar o nome do aluno`, error);
+      return `Erro ao buscar o nome do aluno`;
+    }
+  }
+
 export const alunoService = {
   createStudent,
   updateStudent,
@@ -340,3 +369,77 @@ export const alunoService = {
   getAllStudent,
   getDocStudent,
 };
+  createAluno: (
+    id: string,
+    nomeCompleto: string,
+    email: string,
+    estadodeexpedicaorg: string,
+    estado: string,
+    municipio: string,
+    rua: string,
+    bairro: number,
+    numero: number,
+    dataDeNascimento: Date,
+    cpf: string,
+    rg: string,
+    dataExpedicaoRg: Date,
+    estadoDeNascimento: string,
+    cidadeDeNascimeto: string
+  ) =>
+    createAluno(
+      id,
+      nomeCompleto,
+      email,
+      estadodeexpedicaorg,
+      estado,
+      municipio,
+      rua,
+      bairro,
+      numero,
+      dataDeNascimento,
+      cpf,
+      rg,
+      dataExpedicaoRg,
+      estadoDeNascimento,
+      cidadeDeNascimeto
+    ),
+  updateAluno: (
+    id: string,
+    nomeCompleto: string,
+    cpf: string,
+    email: string,
+    telefone: string,
+    estado: string,
+    municipio: string,
+    rua: string,
+    bairro: string,
+    numeroDaCasa: number,
+    dataDeNascimento: string,
+    rg: string,
+    dataExpedicaoRg: string,
+    estadoDeNascimento: string,
+    cidadeDeNascimeto: string
+  ) =>
+    updateAluno(
+      id,
+      nomeCompleto,
+      cpf,
+      email,
+      telefone,
+      estado,
+      municipio,
+      rua,
+      bairro,
+      numeroDaCasa,
+      dataDeNascimento,
+      rg,
+      dataExpedicaoRg,
+      estadoDeNascimento,
+      cidadeDeNascimeto
+    ),
+  deleteStudent: (id: string) => deleteStudent(id),
+  getStudent: (id: string) => getStudent(id),
+  getAllStudents: () => getAllStudents(),
+  getDocStudent: (id: string) => getDocStudent(id),
+  noteStudent,
+}
