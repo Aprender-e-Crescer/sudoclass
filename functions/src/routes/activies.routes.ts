@@ -13,5 +13,9 @@ router.get(
   '/activities/:activityId/student/:studentId',
   activiesController.getLinkFromActivity
 )
+router.patch(
+  '/activities/:activityId/student/:studentId',
+  activiesController.updateLinkActivity
+)
 
 export default router

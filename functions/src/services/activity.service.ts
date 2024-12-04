@@ -136,6 +136,30 @@ async function updateActivity(
   }
 }
 
+async function updateLinkActivity(
+  activityId: number,
+  studentId: number,
+  attachment: string
+): Promise<string> {
+  try {
+    if (!activityId || !studentId || !attachment) {
+      return 'Parâmetros obrigatórios não fornecidos.'
+    }
+
+    await db.query(
+      `UPDATE atividade_aluno 
+       SET anexos = $1 
+       WHERE id_atividade = $2 AND id_aluno = $3`,
+      [attachment, activityId, studentId]
+    )
+
+    return 'Link atualizado com sucesso.'
+  } catch (err) {
+    console.error('Erro ao atualizar link da atividade do aluno:', err)
+    return 'Erro ao atualizar link da atividade.'
+  }
+}
+
 async function updateActivityGrades(
   activityId: number,
   studentId: number,
@@ -258,6 +282,11 @@ export const activityService = {
     ),
   getLinkFromActivity: (activityId: number, studentId: number) =>
     getLinkFromActivity(activityId, studentId),
+  updateLinkActivity: (
+    activityId: number,
+    studentId: number,
+    attachment: string
+  ) => updateLinkActivity(activityId, studentId, attachment),
   updateActivityGrades: (
     activityId: number,
     studentId: number,

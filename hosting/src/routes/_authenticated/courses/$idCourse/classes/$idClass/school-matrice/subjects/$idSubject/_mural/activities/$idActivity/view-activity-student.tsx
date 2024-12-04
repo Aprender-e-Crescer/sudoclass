@@ -1,29 +1,30 @@
-import { createFileRoute } from '@tanstack/react-router';
-import NoteValue from '@/components/custom/note-value';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowLeft, ChevronUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useState } from 'react';
-import { useGetActivityQuery } from '@/queries/use-get-activity-query';
-import { format } from 'date-fns';
-import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query';
-import { useCurrentUserQuery } from '@/queries/use-current-user-query';
-import { useGetUserQuery } from '@/queries/use-get-user-query';
+import { createFileRoute } from '@tanstack/react-router'
+import NoteValue from '@/components/custom/note-value'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { ArrowLeft, ChevronUp } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useState } from 'react'
+import { useGetActivityQuery } from '@/queries/use-get-activity-query'
+import { format } from 'date-fns'
+import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
+import { useGetUserQuery } from '@/queries/use-get-user-query'
+import { useUpdateLinkActivityMutation } from '@/mutations/use-update-link-activity-mutation'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
 )({
   component: ViewActivityStudent,
-});
+})
 
 export function ViewActivityStudent() {
-  const { idActivity } = Route.useParams();
-  const { data: activity } = useGetActivityQuery(Number(idActivity));
-  const currentUser = useCurrentUserQuery();
-  const { data: user } = useGetUserQuery(currentUser?.data?.uid);
-  const { data: notes } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent));
-  const [savedLink, setSavedLink] = useState<string | null>(null);
+  const { idActivity } = Route.useParams()
+  const { data: activity } = useGetActivityQuery(Number(idActivity))
+  const currentUser = useCurrentUserQuery()
+  const { data: user } = useGetUserQuery(currentUser?.data?.uid)
+  const { data: notes } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent))
+  const [savedLink, setSavedLink] = useState<string | null>(null)
 
   return (
     <>
@@ -73,7 +74,11 @@ export function ViewActivityStudent() {
 
                   <div className="flex flex-col gap-5 mt-5">
                     <Button variant="lightTextBlack" className="w-full">
-                      <AddWorkPopover setSavedLink={setSavedLink} />
+                      <AddWorkPopover
+                        setSavedLink={setSavedLink}
+                        activityId={Number(idActivity)}
+                        studentId={Number(user?.idStudent)}
+                      />
                     </Button>
                     <Button variant="blueButton" className="w-full">
                       Enviar
@@ -121,7 +126,11 @@ export function ViewActivityStudent() {
           </div>
           <div className="flex flex-col mt-6">
             <div className="flex flex-col gap-5">
-              <AddWorkPopover setSavedLink={setSavedLink} />
+              <AddWorkPopover
+                setSavedLink={setSavedLink}
+                activityId={Number(idActivity)}
+                studentId={Number(user?.idStudent)}
+              />
 
               <Button variant="blueButton" className="w-full">
                 Enviar
@@ -131,16 +140,35 @@ export function ViewActivityStudent() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-function AddWorkPopover({ setSavedLink }: { setSavedLink: React.Dispatch<React.SetStateAction<string | null>> }) {
-  const [tempLink, setTempLink] = useState('');
+function AddWorkPopover({
+  setSavedLink,
+  activityId,
+  studentId,
+}: {
+  setSavedLink: React.Dispatch<React.SetStateAction<string | null>>
+  activityId: number
+  studentId: number
+}) {
+  const [tempLink, setTempLink] = useState('')
+  const { mutateAsync } = useUpdateLinkActivityMutation()
 
-  const handleSaveLink = () => {
-    setSavedLink(tempLink);
-    setTempLink(''); // Limpa o campo após salvar
-  };
+  const handleSaveLink = async () => {
+    try {
+      await mutateAsync({
+        activityId,
+        studentId,
+        attachment: tempLink,
+      })
+      setSavedLink(tempLink)
+      setTempLink('')
+    } catch (error) {
+      console.error('Erro ao salvar link:', error)
+      alert('Erro ao salvar o link.')
+    }
+  }
 
   return (
     <Popover>
@@ -169,5 +197,5 @@ function AddWorkPopover({ setSavedLink }: { setSavedLink: React.Dispatch<React.S
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }
