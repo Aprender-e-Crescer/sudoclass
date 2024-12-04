@@ -19,6 +19,10 @@ export function ListActivity() {
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
+  function capitalizeFirstLetter(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+  }
+
   if (isLoading)
     return (
       <>
@@ -71,7 +75,7 @@ export function ListActivity() {
                           idClass={idClass}
                           idCourse={idCourse}
                           idSubject={idSubject}
-                          title={activity.title}
+                          title={capitalizeFirstLetter(activity.title)}
                           instruction={activity.instruction}
                           type={user?.type ?? 'aluno'}
                           assigned={3}

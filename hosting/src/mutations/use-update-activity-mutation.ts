@@ -13,18 +13,21 @@ export function useUpdateActivityMutation() {
       instruction,
       deliveryDate,
       value,
+      attachment,
     }: {
       activityId: number
       title: string
       instruction: string
       deliveryDate: string
       value: number
+      attachment: string | null
     }) => {
       const requestBody = {
         title,
         description: instruction,
         deliveryDate,
         value,
+        attachment,
       }
 
       const response = await api.put(`/activity/${activityId}`, requestBody)

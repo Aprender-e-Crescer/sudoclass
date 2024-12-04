@@ -33,7 +33,7 @@ const activitiesController = {
   },
 
   upgradeActivity: async (req: Request, res: Response): Promise<void> => {
-    const { title, description, value, deliveryDate } = req.body
+    const { title, description, value, deliveryDate, attachment } = req.body
     const activityId = parseInt(req.params.activityId, 10)
 
     if (!title || !description || !value || !deliveryDate) {
@@ -46,7 +46,8 @@ const activitiesController = {
         description,
         value,
         deliveryDate,
-        activityId
+        activityId,
+        attachment
       )
       if (!ret) {
         res.status(404).send('Atividade não encontrada.')

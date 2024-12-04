@@ -31,10 +31,7 @@ export function CreateActivity() {
   const { mutateAsync: createActivity } = useCreateActivityMutation()
   const { mutateAsync: updateActivity } = useUpdateActivityMutation()
   const { data: activityData, isLoading: activityDataLoading } = useGetActivityQuery(Number(idActivity))
-  console.log(activityData)
-
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
-  const [link, setLink] = React.useState<string>('')
   const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -45,7 +42,7 @@ export function CreateActivity() {
           instruction: activityData.instruction,
           value: activityData.value,
           deliveryDate: activityData.deliveryDate,
-          attachement: activityData.attachment,
+          attachment: activityData.attachment,
         }
       : {
           title: '',
@@ -88,6 +85,7 @@ export function CreateActivity() {
           instruction: values.instruction,
           deliveryDate: values.deliveryDate,
           value: values.value,
+          attachment: linkToDisplay || '',
         })
       }
 
@@ -141,7 +139,12 @@ export function CreateActivity() {
               <p>Link</p>
               <div className="w-full">
                 {linkToDisplay && (
-                  <a href={linkToDisplay} target="_blank" rel="noopener noreferrer" className="text-blue-600">
+                  <a
+                    href={linkToDisplay}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 block w-4/5 overflow-hidden text-ellipsis"
+                  >
                     {linkToDisplay}
                   </a>
                 )}

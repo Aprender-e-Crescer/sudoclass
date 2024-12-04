@@ -19,7 +19,11 @@ async function createActivity(
     const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
     console.log('Estudantes encontrados:', matriceStudents)
 
-    const createdAt = new Date().toISOString().split('T')[0]
+    const createdAt = new Date()
+    const offset = createdAt.getTimezoneOffset()
+    createdAt.setMinutes(createdAt.getMinutes() - offset)
+
+    const createdAtString = createdAt.toISOString().split('T')[0]
 
     const result = await db.query(
       `INSERT INTO atividade (titulo, descricao, valor, data_entrega, data_postagem, id_materia, anexo) 
@@ -29,7 +33,7 @@ async function createActivity(
         description,
         value,
         deliveryDate,
-        createdAt,
+        createdAtString,
         subjectId,
         attachment,
       ]
@@ -92,7 +96,8 @@ async function updateActivity(
   description: string,
   value: string,
   deliveryDate: Date,
-  activityId: number
+  activityId: number,
+  attachment: string
 ): Promise<string> {
   try {
     if (!activityId || !value || !deliveryDate || !title || !description) {
@@ -100,9 +105,9 @@ async function updateActivity(
     }
     const result = await db.query(
       `UPDATE atividade
-       SET titulo = $1, descricao = $2, valor = $3, data_entrega = $4
-       WHERE id_atividade = $5`,
-      [title, description, value, deliveryDate, activityId]
+       SET titulo = $1, descricao = $2, valor = $3, data_entrega = $4, anexo = $5
+       WHERE id_atividade = $6`,
+      [title, description, value, deliveryDate, attachment, activityId]
     )
 
     return `atividade atualizada com sucesso`
@@ -172,27 +177,6 @@ async function getActivityById(activityId: number): Promise<any> {
       return 'Atividade não encontrada.'
     }
     const activity = activityResult.rows[0]
-
-    /*  const gradesResult = await db.query(
-      `SELECT s.id AS id_aluno, s.name AS nome, ag.nota
-       FROM nota_atividade ag
-       INNER JOIN alunos s ON ag.id_aluno = s.id
-       WHERE ag.id_nota_atividade = $1`,
-      [activityId]
-    )
-
-    const activityDetails = {
-      id: activity.id,
-      title: activity.title,
-      description: activity.description,
-      value: activity.value,
-      deliveryDate: activity.delivery_date,
-      studentsGrades: gradesResult.rows.map((row: any) => ({
-        studentId: row.student_id,
-        studentName: row.student_name,
-        grade: row.grade,
-      })),
-    } */
 
     return activity
   } catch (error) {
@@ -266,6 +250,15 @@ export const activityService = {
     description: string,
     value: string,
     deliveryDate: Date,
-    activityId: number
-  ) => updateActivity(title, description, value, deliveryDate, activityId),
+    activityId: number,
+    attachment: string
+  ) =>
+    updateActivity(
+      title,
+      description,
+      value,
+      deliveryDate,
+      activityId,
+      attachment
+    ),
 }
