@@ -12,7 +12,7 @@ export function Header({ avatarImage, avatarFallBack }: headerProps) {
   const { selectedImage } = useProfileImage()
   return (
     <>
-      <div className="hidden sm:flex justify-between items-center border px-16 py-4 w-full">
+      <div className="hidden sm:flex justify-between items-center border px-10 py-4 w-full">
         <div className="flex h-20 w-36">
           <img src={sudotecLogo} alt="sudotecLogo" />
         </div>
