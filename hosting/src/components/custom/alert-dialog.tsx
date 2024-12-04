@@ -1,5 +1,6 @@
 import {
   AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -43,10 +44,14 @@ export function AlertDialogComponent({
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex flex-1 justify-between">
+          <AlertDialogCancel asChild className="flex flex-1">
+            <Button onClick={() => setIsOpen(false)} variant={variantCancelButton}>
+              Cancelar
+            </Button>
+          </AlertDialogCancel>
           {variantCancelButton && (
             <Button
-              className="w-full"
               variant={variantCancelButton}
               onClick={() => {
                 onClick?.()
@@ -56,11 +61,7 @@ export function AlertDialogComponent({
               {cancelButtonValue}
             </Button>
           )}
-          {variantContinueButton && (
-            <Button className="w-full" variant={variantContinueButton}>
-              {cancelButtonValue}
-            </Button>
-          )}
+          {variantContinueButton && <Button variant={variantContinueButton}>{cancelButtonValue}</Button>}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

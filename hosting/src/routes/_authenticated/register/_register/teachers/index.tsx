@@ -10,7 +10,7 @@ import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import avatar from '@/assets/avatar.png'
-import { X } from 'lucide-react'
+import { AlertDialogComponent } from '@/components/custom/alert-dialog'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -105,7 +105,7 @@ export function TeachersListing() {
         <div className="flex sm:flex-row flex-col">
           <div className="flex flex-1 flex-col p-3 data-[isaction=true]:max-w-96" data-isaction={!!action}>
             {registerRequests?.map(({ fullName, idTeacher }, index) => (
-              <div key={index} className="flex justify-between items-start">
+              <div key={index} className="flex gap-2 justify-between items-center">
                 <Link
                   to="/register/teachers"
                   search={{ action: 'edit', idTeacher: idTeacher }}
@@ -120,7 +120,14 @@ export function TeachersListing() {
                     <p>{fullName}</p>
                   </div>
                 </Link>
-                <X onClick={() => deleteTeacher(idTeacher)} className="cursor-pointer" />
+                <div className="flex gap-2">
+                  <AlertDialogComponent
+                    title="Deseja excluir a turma?"
+                    cancelButtonValue="Excluir"
+                    variantCancelButton="blueButton"
+                    onClick={() => deleteTeacher(idTeacher)}
+                  />
+                </div>
               </div>
             ))}
           </div>

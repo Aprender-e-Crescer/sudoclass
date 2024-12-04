@@ -84,21 +84,21 @@ export function ClassList() {
             data-no-action={!action}
           >
             {classes?.map(({ name, id_turma }, index) => (
-              <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }}>
-                <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
-                  <p className="border rounded-xl p-3 flex justify-between">
-                    {name}
-                    <div className="flex gap-2">
-                      <AlertDialogComponent
-                        title="Deseja excluir a turma?"
-                        cancelButtonValue="Excluir"
-                        variantCancelButton="blueButton"
-                        onClick={() => deleteClass(id_turma)}
-                      />
-                    </div>
-                  </p>
+              <div className="flex items-center gap-2 flex-1">
+                <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }} className="flex flex-1">
+                  <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
+                    <p className="border rounded-xl p-3 flex justify-between">{name}</p>
+                  </div>
+                </Link>
+                <div className="flex gap-2">
+                  <AlertDialogComponent
+                    title="Deseja excluir a turma?"
+                    cancelButtonValue="Excluir"
+                    variantCancelButton="blueButton"
+                    onClick={() => deleteClass(id_turma)}
+                  />
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
           <When condition={!!action}>
