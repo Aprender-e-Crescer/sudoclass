@@ -45,8 +45,8 @@ export function AlertDialogComponent({
           <AlertDialogTitle>{title}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex flex-1 justify-between">
-          <AlertDialogCancel asChild className="flex flex-1">
-            <Button onClick={() => setIsOpen(false)} variant={variantCancelButton}>
+          <AlertDialogCancel asChild className="flex flex-1 ml-64">
+            <Button onClick={() => setIsOpen(false)} variant={'lightTextBlack'}>
               Cancelar
             </Button>
           </AlertDialogCancel>
