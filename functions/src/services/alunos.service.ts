@@ -204,6 +204,35 @@ async function getAllStudents() {
   }
 }
 
+async function noteStudent(id_turma:string): Promise<any> {
+  try{
+    const students = await db.query(
+      `SELECT 
+            a.id_aluno,
+            a.nome, 
+            AVG(aa.nota) AS media_nota
+        FROM 
+            alunosturma ta 
+        JOIN 
+            alunos a 
+            ON a.id_aluno = ta.id_aluno
+        JOIN 
+            atividade_aluno aa 
+            ON aa.id_aluno = ta.id_aluno
+        WHERE 
+            ta.id_turma = $1
+        GROUP BY 
+            a.id_aluno, a.nome`, [
+      parseInt(id_turma)
+    ])
+    return students.rows;
+    }
+    catch (error) {
+      console.log(`Erro ao buscar o nome do aluno`, error);
+      return `Erro ao buscar o nome do aluno`;
+    }
+  }
+
 export const alunoService = {
   createAluno: (
     id: string,
@@ -277,4 +306,5 @@ export const alunoService = {
   getStudent: (id: string) => getStudent(id),
   getAllStudents: () => getAllStudents(),
   getDocStudent: (id: string) => getDocStudent(id),
+  noteStudent,
 }

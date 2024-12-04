@@ -18,3 +18,9 @@ export const chartsSchema = z.object({
   })
 
 export type Charts = z.infer<typeof chartsSchema>
+
+export const mediumNotesSchema = z.object({
+  id_aluno: z.number(),
+  nome: z.string(),
+  media_nota: z.preprocess((value) => value ? Number(value) : null, z.number().nullable())
+})

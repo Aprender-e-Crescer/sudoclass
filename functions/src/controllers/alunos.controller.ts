@@ -150,6 +150,25 @@ const alunosController = {
             .send("Ocorreu um erro no servidor ao tentar buscar os alunos.");
         }
       },
+
+      getnoteStudent: async (req: Request, res: Response): Promise<void> => {
+        const {id_turma} = req.params;
+        try {
+          const ret = await alunoService.noteStudent(id_turma);
+          if (!ret) {
+            res.status(500).send("Não foi possível buscar os alunos.");
+          } else {
+            res.status(200).send(ret);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar alunos:", error);
+          res
+            .status(500)
+            .send("Ocorreu um erro no servidor ao tentar buscar os alunos.");
+        }
+      },
 };
 
 export default alunosController; 
+
+// npx firebase login

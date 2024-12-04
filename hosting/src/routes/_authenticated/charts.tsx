@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ChartConfig } from '@/components/ui/chart'
 import { SectorChart } from '@/components/custom/sector-chart'
-import { useChartsQuery } from '@/queries/use-charts-query'
+import { useChartsQuery, useMediumNotesQuery } from '@/queries/use-charts-query'
 import {
   Table,
   TableBody,
@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { z } from 'zod'
 
 const chartConfig = {
   visitors: {
@@ -21,16 +22,23 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/charts',
-)({
+export const Route = createFileRoute('/_authenticated/charts')({
+  validateSearch: z.object({
+    idClass: z.number()
+  }),
   component: ChartsScreen,
 })
 
 function ChartsScreen() {
+  const { idClass } = Route.useSearch()
   const { data: chartDocs, isLoading, error } = useChartsQuery()
+  const {
+    data: mediumNotes,
+    isLoading: isLoadingMediumNotes,
+    error: errorMediumNotes,
+  } = useMediumNotesQuery(idClass)
 
-  if (isLoading) {
+  if (isLoading || isLoadingMediumNotes) {
     return (
       <div>
         <h1>Carregando...</h1>
@@ -38,7 +46,12 @@ function ChartsScreen() {
     )
   }
 
-  if (error) return <h1>Erro ao carregar os dados: {error.message}</h1>
+  if (error || errorMediumNotes)
+    return (
+      <h1>
+        Erro ao carregar os dados: {error.message ?? errorMediumNotes?.message}
+      </h1>
+    )
 
   return (
     <div>
@@ -81,14 +94,16 @@ function ChartsScreen() {
           </TableRow>
         </TableHeader>
         <TableBody className="text-md border-b">
-          <TableRow className="border-b">
-            <TableCell className="py-3 px-6 text-center border-r border-l">
-              NomeDoAluno1
-            </TableCell>
-            <TableCell className="py-3 px-6 text-center border-r border-l">
-              95.0
-            </TableCell>
-          </TableRow>
+          {mediumNotes?.map(({ id_aluno, media_nota, nome }) => (
+            <TableRow key={id_aluno} className="border-b">
+              <TableCell className="py-3 px-6 text-center border-r border-l">
+                {nome}
+              </TableCell>
+              <TableCell className="py-3 px-6 text-center border-r border-l">
+                {media_nota ?? 'Não foi possível calcular a média'}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
