@@ -46,7 +46,7 @@ export function ActivitiesMaterials({
   if (type === 'professor') {
     return (
       <div className="w-full h-auto my-2.5">
-        <Accordion className="border rounded-2xl px-4 shadow-md" type="single" collapsible>
+        <Accordion className="border rounded-2xl px-4 shadow-sm" type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>
               <div className="flex justify-between w-full items-center">

@@ -91,12 +91,32 @@ async function createActivity(
   }
 }
 
+async function getLinkFromActivity(
+  activityId: number,
+  studentId: number
+): Promise<any> {
+  try {
+    const result = await db.query(
+      `SELECT anexos FROM atividade_aluno WHERE id_atividade = $1 AND id_aluno = $2`,
+      [activityId, studentId]
+    )
+    if (result.rows.length === 0) {
+      console.warn('Nenhum link encontrado para a atividade do aluno.')
+      return null
+    }
+
+    return result.rows[0].anexos
+  } catch (err) {
+    console.error('Erro ao buscar link da atividade do aluno:', err)
+  }
+}
 async function updateActivity(
   title: string,
   description: string,
   value: string,
   deliveryDate: Date,
-  activityId: number
+  activityId: number,
+  attachment: string
 ): Promise<string> {
   try {
     if (!activityId || !value || !deliveryDate || !title || !description) {
@@ -104,9 +124,9 @@ async function updateActivity(
     }
     const result = await db.query(
       `UPDATE atividade
-       SET titulo = $1, descricao = $2, valor = $3, data_entrega = $4
-       WHERE id_atividade = $5`,
-      [title, description, value, deliveryDate, activityId]
+       SET titulo = $1, descricao = $2, valor = $3, data_entrega = $4, anexo = $5
+       WHERE id_atividade = $6`,
+      [title, description, value, deliveryDate, attachment, activityId]
     )
 
     return `atividade atualizada com sucesso`
@@ -177,27 +197,6 @@ async function getActivityById(activityId: number): Promise<any> {
     }
     const activity = activityResult.rows[0]
 
-    /*  const gradesResult = await db.query(
-      `SELECT s.id AS id_aluno, s.name AS nome, ag.nota
-       FROM nota_atividade ag
-       INNER JOIN alunos s ON ag.id_aluno = s.id
-       WHERE ag.id_nota_atividade = $1`,
-      [activityId]
-    )
-
-    const activityDetails = {
-      id: activity.id,
-      title: activity.title,
-      description: activity.description,
-      value: activity.value,
-      deliveryDate: activity.delivery_date,
-      studentsGrades: gradesResult.rows.map((row: any) => ({
-        studentId: row.student_id,
-        studentName: row.student_name,
-        grade: row.grade,
-      })),
-    } */
-
     return activity
   } catch (error) {
     console.error('Erro ao buscar atividade:', error)
@@ -257,6 +256,8 @@ export const activityService = {
       subjectId,
       attachment
     ),
+  getLinkFromActivity: (activityId: number, studentId: number) =>
+    getLinkFromActivity(activityId, studentId),
   updateActivityGrades: (
     activityId: number,
     studentId: number,
@@ -270,6 +271,15 @@ export const activityService = {
     description: string,
     value: string,
     deliveryDate: Date,
-    activityId: number
-  ) => updateActivity(title, description, value, deliveryDate, activityId),
+    activityId: number,
+    attachment: string
+  ) =>
+    updateActivity(
+      title,
+      description,
+      value,
+      deliveryDate,
+      activityId,
+      attachment
+    ),
 }
