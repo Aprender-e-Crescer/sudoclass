@@ -91,6 +91,25 @@ async function createActivity(
   }
 }
 
+async function getLinkFromActivity(
+  activityId: number,
+  studentId: number
+): Promise<any> {
+  try {
+    const result = await db.query(
+      `SELECT anexos FROM atividade_aluno WHERE id_atividade = $1 AND id_aluno = $2`,
+      [activityId, studentId]
+    )
+    if (result.rows.length === 0) {
+      console.warn('Nenhum link encontrado para a atividade do aluno.')
+      return null
+    }
+
+    return result.rows[0].anexos
+  } catch (err) {
+    console.error('Erro ao buscar link da atividade do aluno:', err)
+  }
+}
 async function updateActivity(
   title: string,
   description: string,
@@ -114,6 +133,30 @@ async function updateActivity(
   } catch (err) {
     console.error('Erro ao atualizar atividade:', err)
     return 'Erro ao atualizar atividade'
+  }
+}
+
+async function updateLinkActivity(
+  activityId: number,
+  studentId: number,
+  attachment: string
+): Promise<string> {
+  try {
+    if (!activityId || !studentId || !attachment) {
+      return 'Parâmetros obrigatórios não fornecidos.'
+    }
+
+    await db.query(
+      `UPDATE atividade_aluno 
+       SET anexos = $1 
+       WHERE id_atividade = $2 AND id_aluno = $3`,
+      [attachment, activityId, studentId]
+    )
+
+    return 'Link atualizado com sucesso.'
+  } catch (err) {
+    console.error('Erro ao atualizar link da atividade do aluno:', err)
+    return 'Erro ao atualizar link da atividade.'
   }
 }
 
@@ -237,6 +280,13 @@ export const activityService = {
       subjectId,
       attachment
     ),
+  getLinkFromActivity: (activityId: number, studentId: number) =>
+    getLinkFromActivity(activityId, studentId),
+  updateLinkActivity: (
+    activityId: number,
+    studentId: number,
+    attachment: string
+  ) => updateLinkActivity(activityId, studentId, attachment),
   updateActivityGrades: (
     activityId: number,
     studentId: number,
