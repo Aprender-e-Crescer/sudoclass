@@ -12,7 +12,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-
+import { useLessonPlanController } from "@/controllers/lesson-plan-controller"; // Import the controller
 
 export const GenericTableLessonPlanView = ({
   data,
@@ -25,18 +25,23 @@ export const GenericTableLessonPlanView = ({
   expandedRows: number[];
   toggleRow: (index: number) => void;
 }) => {
-  const [dialogOpen, setDialogOpen] = useState(false); 
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+
+  // Get the deleteClass function from the controller
+  const { deleteClass } = useLessonPlanController();
 
   const handleDelete = () => {
     if (selectedRowIndex !== null) {
-      console.log(`Excluindo a linha ${selectedRowIndex}`);
-      setDialogOpen(false); 
+      const row = data[selectedRowIndex];
+      const lessonPlanId = row.idLessonPlan; // Adjust this field as needed
+      deleteClass(lessonPlanId); // Trigger delete via the controller
+      setDialogOpen(false); // Close dialog
     }
   };
 
   return (
-    <>  
+    <>
       <Table className="w-full">
         <TableHeader>
           <TableRow>
@@ -44,7 +49,7 @@ export const GenericTableLessonPlanView = ({
               <TableHead
                 key={index}
                 className={`font-semibold text-black ${
-                  col.accessor === "date" ? "max-sm:pl-24 sm:pl-32" : "hidden sm:table-cell"
+                  col.accessor === "data_aula" ? "max-sm:pl-20 sm:pl-28" : "hidden sm:table-cell"
                 }`}
               >
                 {col.header}
@@ -60,14 +65,14 @@ export const GenericTableLessonPlanView = ({
                   <TableCell key={colIndex} className="px-1 sm:py-2 sm:px-4">
                     {col.accessor === "actions" ? (
                       <div className="flex items-center space-x-0 sm:space-x-1 max-sm:-space-x-10">
+                        {/* Delete Button */}
                         <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
                           <AlertDialogTrigger asChild>
                             <Button
                               variant="ghostWhite"
                               size="small"
-                              className=""
                               onClick={() => {
-                                setSelectedRowIndex(rowIndex); 
+                                setSelectedRowIndex(rowIndex);
                                 setDialogOpen(true);
                               }}
                             >
@@ -76,7 +81,9 @@ export const GenericTableLessonPlanView = ({
                           </AlertDialogTrigger>
                           <AlertDialogContent className="max-sm:max-w-[300px]">
                             <AlertDialogHeader className="pb-4">
-                              <AlertDialogTitle className="flex justify-center max-sm:text-sm font-medium ">Você Deseja Excluir Esse Plano de Aula?</AlertDialogTitle>
+                              <AlertDialogTitle className="flex justify-center max-sm:text-sm font-medium">
+                                Você Deseja Excluir Esse Plano de Aula?
+                              </AlertDialogTitle>
                             </AlertDialogHeader>
                             <div className="flex justify-end max-sm:justify-center space-x-2">
                               <AlertDialogCancel>
@@ -91,15 +98,20 @@ export const GenericTableLessonPlanView = ({
                                 <Button
                                   variant="blueButton"
                                   className="font-medium"
-                                  onClick={handleDelete} 
+                                  onClick={handleDelete}
                                 >
-                                  Continue
+                                  Continuar
                                 </Button>
                               </AlertDialogAction>
                             </div>
                           </AlertDialogContent>
                         </AlertDialog>
-                        <Button variant="ghostWhite" className="sm:hidden" size="small" onClick={(e) => { e.stopPropagation(); toggleRow(rowIndex); }}>
+                        <Button
+                          variant="ghostWhite"
+                          className="sm:hidden"
+                          size="small"
+                          onClick={(e) => { e.stopPropagation(); toggleRow(rowIndex); }}
+                        >
                           {expandedRows.includes(rowIndex) ? (
                             <ChevronUp className="h-4 w-4 text-black" />
                           ) : (
@@ -107,13 +119,21 @@ export const GenericTableLessonPlanView = ({
                           )}
                         </Button>
                       </div>
-                    ) : col.accessor === "date" ? (
+                    ) : col.accessor === "data_aula" ? (
                       <div className="flex items-center max-sm:-space-x-5">
-                         <Link to='/register/students'>
-                        <Button variant="ghostWhite" size="small" className="max-sm:pr-10 hover:bg-transparent focus:outline-none">
-                          <Link to="/documents"></Link>
-                          <Edit className="h-4 w-4 text-black" />
-                        </Button>
+                        <Link
+                          to='/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/update-lesson-plan'
+                          params={{
+                            idCourse: row.idCourse || "defaultIdCourse",
+                            idClass: row.id_turma || "defaultIdClass",
+                            idSubject: row.id_materia || "defaultIdSubject",
+                            idLessonPlan: row.id_planoaula || "defaultIdLessonPlan",
+                          }}
+                          
+                        >
+                          <Button variant="ghostWhite" size="small" className="max-sm:pr-10 hover:bg-transparent focus:outline-none">
+                            <Edit className="h-4 w-4 text-black" />
+                          </Button>
                         </Link>
                         <span>{row[col.accessor]}</span>
                       </div>
@@ -127,9 +147,9 @@ export const GenericTableLessonPlanView = ({
                 <TableRow className="sm:hidden">
                   <TableCell colSpan={columns.length} className="p-4">
                     <div className="py-1">
-                      <p><strong>Início:</strong> {row.start}</p>
-                      <p><strong>Fim:</strong> {row.end}</p>
-                      <p><strong>Plano de Aula:</strong> {row.lessonPlan}</p>
+                      <p><strong>Início:</strong> {row.datainicio}</p>
+                      <p><strong>Fim:</strong> {row.datafim}</p>
+                      <p><strong>Plano de Aula:</strong> {row.detalhes}</p>
                     </div>
                   </TableCell>
                 </TableRow>
