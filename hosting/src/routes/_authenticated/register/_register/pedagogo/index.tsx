@@ -3,7 +3,7 @@ import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterAdminController } from '@/controllers/admin-register-controller'
 import { RegistrationAdminSchema } from '@/models/admin-registration-schema'
-import { usePedagogueListQuery } from '@/queries/use-list-admin-query'
+import { PEDAGOGUES_QUERY_KEY, usePedagogueListQuery } from '@/queries/use-list-admin-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { When } from 'react-if'
@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import avatar from '@/assets/avatar.png'
+import { useQueryClient } from '@tanstack/react-query'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -25,21 +26,27 @@ export const Route = createFileRoute(
 })
 
 const initialValues = {
-  id_pedagogo: '2',
   nome: '',
   cpf: '',
   senha: '',
-  contato: '', // Campo de contato adicionado
+  contato: '', 
 }
 
 function useLogic() {
   const { registerAdmin } = useRegisterAdminController()
   const { data: adminRequests } = usePedagogueListQuery()
   const { idAdmin, action } = Route.useSearch()
+  const queryClient = useQueryClient()
 
-  const handleOnAdminSubmit = (values: typeof initialValues) => {
-    registerAdmin(values)
+  const handleOnAdminSubmit = async (values: typeof initialValues) => {
+    try {
+      await registerAdmin(values)
+      queryClient.invalidateQueries({ queryKey: PEDAGOGUES_QUERY_KEY }) 
+    } catch (error) {
+      console.error('Erro ao registrar administrador:', error)
+    }
   }
+  
 
   return { handleOnAdminSubmit, adminRequests, action }
 }
@@ -131,11 +138,11 @@ export function AdminListing() {
                 />
                 <div className="flex justify-center gap-5">
                   <Link to="/register/pedagogo">
-                    <Button variant="ghostBlack" size="large" className="w-64">
+                    <Button  variant="ghostBlack" size="large" className="w-64">
                       Cancelar
                     </Button>
                   </Link>
-                  <Button variant="blueButton" size="large" className="w-64" type="submit">
+                  <Button type="submit" variant="blueButton" size="large" className="w-64" type="submit">
                     Cadastrar
                   </Button>
                 </div>

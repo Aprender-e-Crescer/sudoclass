@@ -1,13 +1,24 @@
-import { studentSchema } from '@/models/student-schema'
-import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
+import { api } from '@/services/api'
+
+export const STUDENTS_QUERY_KEY = ['students']
 
 export function useStudentsListQuery() {
   return useQuery({
-    queryKey: ['students'],
+    queryKey: STUDENTS_QUERY_KEY,
     queryFn: async () => {
-      const { data } = await api.get('/alunos')
-      return data
+      try {
+        const response = await api.get('/alunos')
+        return response.data || []
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          return [] 
+        }
+        throw error
+      }
     },
+    retry: false, 
+    refetchOnWindowFocus: true,
   })
 }
+

@@ -1,13 +1,23 @@
-import { pedagogueSchema} from '@/models/pedagogue-schema'
-import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
+import { api } from '@/services/api'
+
+export const PEDAGOGUES_QUERY_KEY = ['pedagogues']
 
 export function usePedagogueListQuery() {
   return useQuery({
-    queryKey: ['pedagogues'],
+    queryKey: PEDAGOGUES_QUERY_KEY,
     queryFn: async () => {
-      const { data } = await api.get('/pedagogos')
-      return data
+      try {
+        const response = await api.get('/pedagogos')
+        return response.data || []
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          return [] 
+        }
+        throw error
+      }
     },
+    retry: false,
+    refetchOnWindowFocus: true, 
   })
 }

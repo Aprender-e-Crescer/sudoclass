@@ -3,7 +3,7 @@ import { alunoService } from '../services/alunos.service';
 
 const alunosController = {
     createAlunos: async (req: Request, res: Response): Promise<void> => {
-        const {id,
+        const {
             nomeCompleto,
             email,
             estadodeexpedicaorg,
@@ -22,7 +22,7 @@ const alunosController = {
             
         
         try {
-            const retorno = await alunoService.createAluno(id,
+            const retorno = await alunoService.createAluno(
                 nomeCompleto,
                 email,
                 estadodeexpedicaorg,

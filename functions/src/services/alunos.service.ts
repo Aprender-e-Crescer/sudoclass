@@ -1,7 +1,6 @@
 import { db } from '../config/database'
 
 async function createAluno(
-  id: string,
   nomeCompleto: string,
   email: string,
   estadodeexpedicaorg: string,
@@ -20,7 +19,6 @@ async function createAluno(
   try {
     let resposta = ''
     if (
-      !id ||
       !nomeCompleto ||
       !email ||
       !estado ||
@@ -40,10 +38,9 @@ async function createAluno(
       return resposta
     }
 
-    await db.query(
-      'INSERT INTO alunos (id_aluno, nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
+    const result = await db.query(
+      'INSERT INTO alunos (nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id_aluno',
       [
-        id,
         nomeCompleto,
         dataDeNascimento,
         email,
@@ -60,7 +57,14 @@ async function createAluno(
         cpf,
       ]
     )
-    resposta = await getStudent(id)
+
+    const generatedId = result.rows[0]?.id_aluno
+    if (!generatedId) {
+      throw new Error('Erro ao obter o ID do aluno criado.')
+    }
+
+  
+    resposta = await getStudent(generatedId)
     return resposta
   } catch (error) {
     console.error('Erro ao criar aluno:', error)
@@ -206,7 +210,6 @@ async function getAllStudents() {
 
 export const alunoService = {
   createAluno: (
-    id: string,
     nomeCompleto: string,
     email: string,
     estadodeexpedicaorg: string,
@@ -223,7 +226,6 @@ export const alunoService = {
     cidadeDeNascimeto: string
   ) =>
     createAluno(
-      id,
       nomeCompleto,
       email,
       estadodeexpedicaorg,

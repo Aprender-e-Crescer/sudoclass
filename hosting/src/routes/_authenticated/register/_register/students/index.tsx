@@ -3,7 +3,7 @@ import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterStudentController } from '@/controllers/student-register-controller'
 import { studentSchema } from '@/models/student-schema'
-import { useStudentsListQuery } from '@/queries/use-students-list-query'
+import { STUDENTS_QUERY_KEY, useStudentsListQuery } from '@/queries/use-students-list-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { When } from 'react-if'
@@ -43,37 +43,48 @@ const initialValues = {
   attachDocuments: '',
 }
 
+import { useQueryClient } from '@tanstack/react-query'
+
+
 function useLogic() {
+  const queryClient = useQueryClient() // Obtenha o cliente de queries
   const { registerStudent } = useRegisterStudentController()
   const { idStudent, action } = Route.useSearch()
   const { data: studentRequests } = useStudentsListQuery()
 
-  const handleOnStudentSubmit = (values: typeof initialValues) => {
-    console.log(values)
+  const handleOnStudentSubmit = async (values: typeof initialValues) => {
+    try {
+      console.log(values)
 
-    registerStudent({
-      nomeCompleto: values.name,
-      attachDocuments: 'aaaaaaaaaaaaaaaaaa',
-      estadodeexpedicaorg: values.stateOfBirth,
-      estado: values.address.state,
-      municipio: values.address.city,
-      rua: values.address.street,
-      bairro: values.address.neighborhood,
-      numero: values.address.streetNumber,
-      dataDeNascimento: values.dateOfBirth,
-      dataExpedicaoRg: values.shippingDate,
-      estadoDeNascimento: values.stateOfBirth,
-      cidadeDeNascimeto: values.cityOfBirth,
-      cpf: values.cpf,
-      rg: values.rg,
-      id: '31267',
-      responsible: values.responsible || '',
-      ...values,
-    })
+      await registerStudent({
+        nomeCompleto: values.name,
+        attachDocuments: 'aaaaaaaaaaaaaaaaaa',
+        estadodeexpedicaorg: values.stateOfBirth,
+        estado: values.address.state,
+        municipio: values.address.city,
+        rua: values.address.street,
+        bairro: values.address.neighborhood,
+        numero: values.address.streetNumber,
+        dataDeNascimento: values.dateOfBirth,
+        dataExpedicaoRg: values.shippingDate,
+        estadoDeNascimento: values.stateOfBirth,
+        cidadeDeNascimeto: values.cityOfBirth,
+        cpf: values.cpf,
+        rg: values.rg,
+        responsible: values.responsible || '',
+        ...values,
+      })
+
+      queryClient.invalidateQueries({ queryKey: STUDENTS_QUERY_KEY })
+    } catch (error) {
+      console.error('Erro ao registrar estudante:', error)
+    }
   }
 
   return { handleOnStudentSubmit, studentRequests, action }
 }
+
+
 
 export function StudentsListing() {
   const { handleOnStudentSubmit, studentRequests, action } = useLogic()
@@ -250,7 +261,7 @@ export function StudentsListing() {
                       Cancelar
                     </Button>
                   </Link>
-                  <Button variant="blueButton" size="large" className="w-64">
+                  <Button type="submit" variant="blueButton" size="large" className="w-64">
                     Cadastrar
                   </Button>
                 </div>

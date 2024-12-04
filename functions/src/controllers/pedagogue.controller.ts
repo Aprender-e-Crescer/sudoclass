@@ -3,10 +3,10 @@ import { pedagogoService } from '../services/pedagogue.service';
 
 const pedagogosController = {
     createPedagogue: async (req: Request, res: Response): Promise<void> => {
-        const {id_pedagogo, nome, cpf, senha, contato} = req.body;~
+        const {nome, cpf, senha, contato} = req.body;~
         console.log(req.body)   
         try {
-            const result = await pedagogoService.createPedagogue(id_pedagogo, nome, cpf, senha, contato);
+            const result = await pedagogoService.createPedagogue(nome, cpf, senha, contato);
             if (!result) {
                 res.status(500).send('Não foi possível cadastrar o pedagogo');
             } else {

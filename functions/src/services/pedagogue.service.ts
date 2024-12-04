@@ -1,16 +1,16 @@
 import { db } from "../config/database";
 
-async function createPedagogue(id_pedagogo:string, nome: string, cpf: string, senha: string, contato: string): Promise<any> {
+async function createPedagogue(nome: string, cpf: string, senha: string, contato: string): Promise<any> {
     try {
         if (!nome || !cpf || !senha || !contato) {
             return 'Nome, CPF, senha e contato são obrigatórios.';
         }
 
-        console.log('Iniciando criação de pedagogo com os dados:', {id_pedagogo, nome, cpf, senha, contato });
+        console.log('Iniciando criação de pedagogo com os dados:', { nome, cpf, senha, contato });
 
         const response = await db.query(
-            `INSERT INTO pedagogo (id_pedagogo, nome, cpf, senha, contato) VALUES ($1, $2, $3, $4, $5)`,
-            [id_pedagogo, nome, cpf, senha, contato]
+            `INSERT INTO pedagogo (nome, cpf, senha, contato) VALUES ($1, $2, $3, $4) RETURNING id_pedagogo`,
+            [nome, cpf, senha, contato]
         );
 
         if (response.rows.length === 0) {
@@ -25,6 +25,7 @@ async function createPedagogue(id_pedagogo:string, nome: string, cpf: string, se
         return `Erro ao cadastrar pedagogo. Detalhes: ${error.message}`;
     }
 }
+
 
 async function updatePedagogue(id: string, nome: string, cpf: string, senha: string, contato: string): Promise<any> {
     try {
@@ -114,7 +115,7 @@ async function getAllPedagogue() {
 }
 
 export const pedagogoService = {
-    createPedagogue: (id_pedagogo: string, nome: string, cpf: string, senha: string, contato: string) => createPedagogue(id_pedagogo, nome, cpf, senha, contato),
+    createPedagogue: ( nome: string, cpf: string, senha: string, contato: string) => createPedagogue(nome, cpf, senha, contato),
     updatePedagogue: (id: string, nome: string, cpf: string, senha: string, contato: string) => updatePedagogue(id, nome, cpf, senha, contato),
     deletePedagogue: (id: string) => deletePedagogue(id),
     getPedagogue: (id: string) => getPedagogue(id),
