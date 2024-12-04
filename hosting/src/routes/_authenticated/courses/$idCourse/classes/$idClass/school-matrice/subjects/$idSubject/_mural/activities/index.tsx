@@ -37,7 +37,7 @@ export function ListActivity() {
     <>
       <div className="min-h-screen overflow-y-hidden w-full">
         <div className="flex flex-col md:flex-row overflow-hidden">
-          <div className="flex flex-col w-full mx-24 h-auto p-2 md:p-4 overflow-hidden">
+          <div className="flex flex-col w-full md:mx-24 h-auto p-2 md:p-4 overflow-hidden">
             {user?.type === 'professor' && (
               <div>
                 <Link
