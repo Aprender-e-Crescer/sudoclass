@@ -123,39 +123,57 @@ export async function updateLessonPlan(
     id_turma: string,
     id_materia: string,
     data_aula: string,
-    datainicio: string,
-    datafim: string,
+    inicio_aula: string,
+    fim_aula: string,
     conteudoformativo: string,
     mododeensino: string,
     recursosdidaticos: string
 ): Promise<string> {
     try {
+        // console.log(!id_professor,
+        //     !id_turma,
+        //     !id_materia,
+        //     !data_aula,
+        //     !inicio_aula,
+        //     !fim_aula,
+        //     !conteudoformativo,
+        //     !mododeensino,
+        //     !recursosdidaticos,
+        // `- -- -`,
+        //     id_professor,
+        //     id_turma,
+        //     id_materia,
+        //     data_aula,
+        //     inicio_aula,
+        //     fim_aula,
+        //     conteudoformativo,
+        //     mododeensino,
+        //     recursosdidaticos)
         if (
-            !id_planoaula ||
             !id_professor ||
             !id_turma ||
             !id_materia ||
             !data_aula ||
-            !datainicio ||
-            !datafim ||
+            !inicio_aula ||
+            !fim_aula ||
             !conteudoformativo ||
             !mododeensino ||
             !recursosdidaticos
         ) {
             return "Todos os campos são obrigatórios.";
         }
+                    // "{"id_professor":"3","id_turma":"123","id_materia":"2","data_aula":"2000-10-20","inicio_aula":"10:10","fim_aula":"20:30","conteudoformativo":"Conteúdo inicial","mododeensino":"Metodologia inicial","recursosdidaticos":"Recursos iniciais"}"
 
         const planoDeAula = await db.query("SELECT * FROM planoaula WHERE id_planoaula = $1", [id_planoaula]);
         if (planoDeAula.rows.length === 0) return "Plano de aula não encontrado.";
 
         await db.query(
             `UPDATE planoaula 
-            SET id_professor = $1, id_turma = $2, id_materia = $3, data_aula = $4, datainicio = $5, datafim = $6, 
+            SET id_professor = $1, id_turma = $2, id_materia = $3, data_aula = $4, inicio_aula = $5, fim_aula = $6, 
             conteudoformativo = $7, mododeensino = $8, recursosdidaticos = $9 
             WHERE id_planoaula = $10`,
-            [id_professor, id_turma, id_materia, data_aula, datainicio, datafim, conteudoformativo, mododeensino, recursosdidaticos, id_planoaula]
+            [id_professor, id_turma, id_materia, data_aula, inicio_aula, fim_aula, conteudoformativo, mododeensino, recursosdidaticos, id_planoaula]
         );
-
         return `Plano de aula atualizado com sucesso. ID: ${id_planoaula}`;
     } catch (error) {
         console.error("Erro ao atualizar plano de aula:", error);

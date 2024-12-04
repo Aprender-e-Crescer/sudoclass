@@ -48,14 +48,14 @@ const LessonPlanController = {
             id_turma,
             id_materia,
             data_aula,
-            datainicio,
-            datafim,
+            inicio_aula,
+            fim_aula,
             conteudoformativo,
             mododeensino,
             recursosdidaticos,
         } = req.body;
-
         const id_planoaula = req.params.id;
+        console.log(req.body);
 
         try {
             const retorno = await lessonPlanService.updateLessonPlan(
@@ -64,13 +64,12 @@ const LessonPlanController = {
                 id_turma,
                 id_materia,
                 data_aula,
-                datainicio,
-                datafim,
+                inicio_aula,
+                fim_aula,
                 conteudoformativo,
                 mododeensino,
                 recursosdidaticos
             );
-
             if (!retorno) {
                 res.status(404).send('Plano de aula não encontrado para atualização.');
             } else {

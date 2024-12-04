@@ -6,8 +6,6 @@ export const Route = createFileRoute(
 )({
   component: () => (
     <div>
-      Hello
-      /_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject!
       <Outlet/>
     </div>
   ),

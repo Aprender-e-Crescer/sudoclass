@@ -25,6 +25,7 @@ export function LessonPlanView() {
   if (isError) return <p>Erro ao carregar planos de aula</p>;
 
   const formattedData = lessonPlans.map((lessonPlan: LessonPlan) => ({
+    ...lessonPlan,
     idProfessor: lessonPlan.id_professor,
     idLessonPlan: lessonPlan.id_planoaula,
     data_aula: new Date(lessonPlan.data_aula).toLocaleDateString('pt-BR'),
