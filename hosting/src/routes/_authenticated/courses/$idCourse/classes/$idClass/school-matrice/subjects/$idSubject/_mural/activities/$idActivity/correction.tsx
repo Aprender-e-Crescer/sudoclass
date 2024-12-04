@@ -10,6 +10,7 @@ import { InputNoteSchema } from '@/models/input-note-schema'
 import { InputForm } from '@/components/custom/text-input'
 import { useAddGradeMutation } from '@/mutations/use-add-grade-mutation'
 import { z } from 'zod'
+import { useGetLinkFromActivity } from '@/queries/use-get-link-from-activity-query'
 
 const validateSearch = z.object({
   idStudent: z.string().optional(),
@@ -31,7 +32,7 @@ interface Student {
   id: string
   name: string
   picture: string
-  variant: 'undefined' | 'corrected' // Adiciona a variante ao estudante
+  variant: 'undefined' | 'corrected'
 }
 
 function Correction() {
@@ -57,7 +58,6 @@ function Correction() {
       variant: 'undefined',
     },
   ])
-
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [successMessage, setSuccessMessage] = useState('')
   const [formKey, setFormKey] = useState(0)
@@ -72,6 +72,10 @@ function Correction() {
     }
   }
 
+  const { data: link } = useGetLinkFromActivity(Number(idActivity), Number(selectedStudent?.id))
+  console.log(link)
+  console.log(selectedStudent?.id)
+
   const { mutate: addGrade } = useAddGradeMutation()
 
   const handleSubmitNote = async (values: any, { resetForm }: { resetForm: () => void }) => {
@@ -84,7 +88,6 @@ function Correction() {
 
       addGrade({ activityId, studentId, grade })
 
-      // Atualiza o estado dos estudantes para marcar como "corrected"
       setStudents((prevStudents) =>
         prevStudents.map((student) =>
           student.id === selectedStudent.id ? { ...student, variant: 'corrected' } : student,
@@ -136,7 +139,8 @@ function Correction() {
             </Formik>
             {successMessage && <p className="text-green-500">{successMessage}</p>}
             <div>
-              <Input type="file" className="h-96 w-80" />
+              <p>Retorno do Aluno:</p>
+              <a href={link}>{link}</a>
             </div>
           </div>
         )}

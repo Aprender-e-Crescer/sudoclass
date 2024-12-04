@@ -32,6 +32,29 @@ const activitiesController = {
     }
   },
 
+  getLinkFromActivity: async (req: Request, res: Response): Promise<void> => {
+    const activityId = parseInt(req.params.activityId, 10)
+    const studentId = parseInt(req.params.studentId, 10)
+    if (isNaN(activityId) || isNaN(studentId)) {
+      res.status(400).send('ID inválido.')
+      return
+    }
+    try {
+      const ret = await activityService.getLinkFromActivity(
+        activityId,
+        studentId
+      )
+      if (ret == null) {
+        res.status(404).send('Não há links nessa atividade')
+      } else {
+        res.status(200).json(ret)
+      }
+    } catch (err) {
+      console.error('Erro buscando link da atividade:', err)
+      res.status(500).send('Ocorreu um erro ao buscar o link.')
+    }
+  },
+
   upgradeActivity: async (req: Request, res: Response): Promise<void> => {
     const { title, description, value, deliveryDate, attachment } = req.body
     const activityId = parseInt(req.params.activityId, 10)
