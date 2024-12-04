@@ -1,25 +1,27 @@
-import { CreationClass } from '@/models/creation-class-schema'
-import { firestore } from '@/services/firebase'
+import { api } from '@/services/api'
 import { useMutation } from '@tanstack/react-query'
-import { collection, doc, setDoc } from 'firebase/firestore'
 
-export function useRegisterClassMutation() {
-  const docRef = doc(collection(firestore, 'classes'))
+interface Results {
+  onSuccess: () => void
+  onError: () => void
+}
 
+interface CreationClass {
+  nome_turma: string,
+  turno: string,
+  cargahoraria: number,
+  datainicio: Date,
+  datafim: Date,
+  ementa: string,
+  dataFinalIncricao: Date,
+  vagasincricoes: number,
+}
+
+export function useRegisterClassMutation({ onSuccess, onError }: Results) {
   return useMutation({
     mutationKey: ['register-class'],
-    mutationFn: (values: CreationClass) => {
-      return setDoc(docRef, {
-        class: values.class,
-        shift: values.shift,
-        startForecast: values.startForecast,
-        endPrediction: values.endPrediction,
-        registrationEndlDate: values.registrationFinalDate,
-        numberOfHours: values.quantityHours,
-        totalVacancies: values.totalVacancies,
-        // completed: values.
-        // released: values.
-      })
-    },
+    mutationFn: (values: CreationClass) => api.post('/turmas', values),
+    onSuccess,
+    onError
   })
 }

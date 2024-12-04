@@ -7,7 +7,7 @@ export function useStudentListBySubjectQuery(subjectId: number) {
   return useQuery({
     queryKey: STUDENT_LIST_BY_SUBJECT_QUERY,
     queryFn: async () => {
-      const response = await api.get(`/subject/studentListBySubject/${subjectId}`)
+      const response = await api.get(`/subject/studentlistbysubject/${subjectId}`)
       return response.data
     },
     enabled: !!subjectId,

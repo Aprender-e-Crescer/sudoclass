@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/notes-screen',
-)({
+)( {
   component: StudentGrades,
 })
 
@@ -30,8 +30,16 @@ export default function StudentGrades() {
 
   const students: Student[] = data || []
 
+  const getGradeColor = (grade: number | null) => {
+    if (grade === null) return 'bg' 
+    if (grade > 7) return 'bg-green-50' 
+    if (grade === 7) return 'bg-orange-50' 
+    return 'bg-red-50'
+  }
+  
+
   return (
-    <Card className="w-full">
+    <Card className="w-full px-4">
       <CardHeader className="border-b p-4">
         <CardTitle className="text-lg sm:text-xl font-medium">Média geral</CardTitle>
         <p className="text-xs sm:text-sm text-muted-foreground">Para cada aluno</p>
@@ -39,7 +47,10 @@ export default function StudentGrades() {
       <CardContent className="p-0">
         <div>
           {students.map((student) => (
-            <div key={student.idAluno} className="flex items-center justify-between p-4">
+            <div
+              key={student.idAluno}
+              className={`flex items-center justify-between p-4 ml-5 mr-5 rounded-sm ${getGradeColor(student.media)}`}
+            >
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-blue-500 text-white text-xs sm:text-sm">

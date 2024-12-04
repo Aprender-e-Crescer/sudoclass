@@ -1,4 +1,3 @@
-import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterTeacherController } from '@/controllers/teacher-controller'
@@ -6,15 +5,17 @@ import { registerTeacherSchema } from '@/models/teachers-schema'
 import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
-import { When } from 'react-if'
+import { Else, If, Then, When } from 'react-if'
 import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import avatar from '@/assets/avatar.png'
+import { AlertDialogComponent } from '@/components/custom/alert-dialog'
+import { Loader2 } from 'lucide-react'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
-  idTeacher: z.string().optional(),
+  idTeacher: z.number().optional(),
 })
 
 export const Route = createFileRoute('/_authenticated/register/_register/teachers/')({
@@ -38,17 +39,22 @@ const initialValues = {
   rgDispatchStatus: '',
   rgDispatchDate: '',
   telephone: '',
-  password: '',
+  // password: '',
 }
 
 function useLogic() {
-  const { registerTeacher, updateTeacher } = useRegisterTeacherController()
-  const { action } = Route.useSearch()
-  const { data: registerRequests } = useTeachersListingQuery()
+  const { registerTeacher, updateTeacher, deleteTeacher } = useRegisterTeacherController()
+  const { action, idTeacher } = Route.useSearch()
+  const {
+    data: registerRequests,
+    isFetching: isFetchingTeachers,
+    isSuccess: isSuccessLoadingTeachers,
+  } = useTeachersListingQuery()
 
-  const handleOnCreateOrEditSubmit = (idTeacher: number, values: typeof initialValues) => {
+  const handleOnCreateOrEditSubmit = (values: typeof initialValues) => {
     if (idTeacher && action === 'edit')
       return updateTeacher({
+        idTeacher,
         bairro: values.neighborhood,
         cidadedenascimento: values.birthCity,
         cpf: values.cpf,
@@ -57,7 +63,7 @@ function useLogic() {
         email: values.email,
         estado: values.state,
         estadodeexpedicaorg: values.rgDispatchStatus,
-        estadonascimento: new Date(values.birthStatus),
+        estadonascimento: values.birthStatus,
         municipio: values.municipality,
         nome: values.fullName,
         numero: values.number,
@@ -74,7 +80,7 @@ function useLogic() {
       email: values.email,
       estado: values.state,
       estadodeexpedicaorg: values.rgDispatchStatus,
-      estadonascimento: new Date(values.birthStatus),
+      estadonascimento: values.birthStatus,
       municipio: values.municipality,
       nome: values.fullName,
       numero: values.number,
@@ -83,15 +89,29 @@ function useLogic() {
     })
   }
 
-  return { registerRequests, action, handleOnCreateOrEditSubmit }
+  return {
+    registerRequests,
+    action,
+    handleOnCreateOrEditSubmit,
+    deleteTeacher,
+    isFetchingTeachers,
+    isSuccessLoadingTeachers,
+  }
 }
 
 export function TeachersListing() {
-  const { registerRequests, action, handleOnCreateOrEditSubmit } = useLogic()
+  const {
+    registerRequests,
+    action,
+    handleOnCreateOrEditSubmit,
+    deleteTeacher,
+    isFetchingTeachers,
+    isSuccessLoadingTeachers,
+  } = useLogic()
 
   return (
     <>
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 mt-2">
         <div className="flex sm:flex-row flex-col justify-between items-center">
           <h1 className="text-2xl font-bold">Professores</h1>
           <Link to="/register/teachers" search={{ action: 'create' }}>
@@ -102,27 +122,43 @@ export function TeachersListing() {
         </div>
 
         <div className="flex sm:flex-row flex-col">
-          <div className="flex flex-1 flex-col p-3 data-[isaction=true]:max-w-96" data-isaction={!!action}>
-            {registerRequests?.map(({ fullName, idTeacher }, index) => (
-              <div key={index} className="flex justify-between items-start">
-                <Link
-                  to="/register/teachers"
-                  search={{ action: 'edit' }}
-                  params={{ idTeacher: idTeacher }}
-                  className="flex flex-col flex-1"
-                >
-                  <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
-                    <Avatar>
-                      <AvatarImage src={avatar} />
-                      <AvatarFallback>carregando...</AvatarFallback>
-                    </Avatar>
-                    <p>{fullName}</p>
+          {isFetchingTeachers && (
+            <div className="flex flex-1 gap-2">
+              <p>Carregando os professores...</p>
+              <Loader2 className="animate-spin" />
+            </div>
+          )}
+          {isSuccessLoadingTeachers && !isFetchingTeachers && (
+            <div className="flex flex-1 flex-col p-3 data-[isaction=true]:max-w-96" data-isaction={!!action}>
+              {registerRequests?.map(({ fullName, idTeacher }, index) => (
+                <div key={index} className="flex gap-2 justify-between items-center">
+                  <Link
+                    to="/register/teachers"
+                    search={{ action: 'edit', idTeacher: idTeacher }}
+                    params={{ idTeacher: idTeacher }}
+                    className="flex flex-col flex-1"
+                  >
+                    <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
+                      <Avatar>
+                        <AvatarImage src={avatar} />
+                        <AvatarFallback>carregando...</AvatarFallback>
+                      </Avatar>
+                      <p>{fullName}</p>
+                    </div>
+                  </Link>
+                  <div className="flex gap-2">
+                    <AlertDialogComponent
+                      title="Deseja excluir a turma?"
+                      cancelButtonValue="Excluir"
+                      variantCancelButton="blueButton"
+                      onClick={() => deleteTeacher(idTeacher)}
+                    />
                   </div>
-                </Link>
-              </div>
-            ))}
-          </div>
-          <When condition={!!action}>
+                </div>
+              ))}
+            </div>
+          )}
+          <When condition={!!action && isSuccessLoadingTeachers}>
             <Formik
               initialValues={initialValues}
               onSubmit={handleOnCreateOrEditSubmit}
@@ -259,31 +295,22 @@ export function TeachersListing() {
                     label="birthCity"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
-                  <InputForm
-                    title="Senha"
-                    placeholder="Senha padrão para o professor"
-                    id="password"
-                    name="password"
-                    label="password"
-                    customStyleInput="rounded-lg border-2 p-[6px]"
-                  />
-
-                  <InputFile
-                    title="Anexar arquivos"
-                    placeholder="ImagemDocumentoAnexado.png 90kb"
-                    id="attachDocuments"
-                    name="attachDocuments"
-                    label="attachDocuments"
-                  />
                   <div className="flex justify-center gap-5">
                     <Link to="/register/teachers">
                       <Button variant="ghostBlack" size="large" className="w-64">
                         Cancelar
                       </Button>
                     </Link>
-                    <Button variant="blueButton" size="large" className="w-64">
-                      Cadastrar
-                    </Button>
+                    <If condition={action === 'create'}>
+                      <Then>
+                        <Button variant="blueButton" size="large" className="w-64">
+                          Cadastrar
+                        </Button>
+                      </Then>
+                      <Else>
+                        <Button variant="blueButton">Editar</Button>
+                      </Else>
+                    </If>
                   </div>
                 </div>
               </Form>

@@ -20,6 +20,7 @@ import formRoutes from './routes/form.routes'
 import schoolCallRouter from './routes/school-call.routes'
 import pedagogue from './routes/pedagogue.routes'
 import warningsRouter from './routes/warning.routes'
+import justificationsRouter from './routes/presence-justification.routes'
 
 const app = express()
 
@@ -48,5 +49,6 @@ app.use(formRoutes)
 app.use(schoolCallRouter)
 app.use(pedagogue)
 app.use(warningsRouter)
+app.use(justificationsRouter)
 
 export default app

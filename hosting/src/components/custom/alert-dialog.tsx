@@ -1,5 +1,6 @@
 import {
   AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -18,6 +19,8 @@ interface AlertDialogProps {
   title?: string
   cancelButtonValue?: string
   onClick?: () => void
+  width?: number
+  height?: number
 }
 
 export function AlertDialogComponent({
@@ -26,23 +29,29 @@ export function AlertDialogComponent({
   variantCancelButton,
   cancelButtonValue,
   onClick,
+  width = 32,
+  height = 32,
 }: AlertDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogTrigger asChild onClick={() => setIsOpen(true)}>
-        <X className="border rounded text-red-500 mr-4 w-8 h-8 cursor-pointer" />
+        <X className="border rounded text-red-500 mr-4 cursor-pointer" width={width} height={height} />
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex flex-1 justify-between">
+          <AlertDialogCancel asChild className="flex flex-1">
+            <Button onClick={() => setIsOpen(false)} variant={variantCancelButton}>
+              Cancelar
+            </Button>
+          </AlertDialogCancel>
           {variantCancelButton && (
             <Button
-              className="w-full"
               variant={variantCancelButton}
               onClick={() => {
                 onClick?.()
@@ -52,11 +61,7 @@ export function AlertDialogComponent({
               {cancelButtonValue}
             </Button>
           )}
-          {variantContinueButton && (
-            <Button className="w-full" variant={variantContinueButton}>
-              {cancelButtonValue}
-            </Button>
-          )}
+          {variantContinueButton && <Button variant={variantContinueButton}>{cancelButtonValue}</Button>}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

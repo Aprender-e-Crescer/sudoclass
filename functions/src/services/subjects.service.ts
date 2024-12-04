@@ -128,6 +128,15 @@ async function getSubjectById(idMateria: string): Promise<any> {
     throw new Error('Falha ao buscar matéria')
   }
 }
+async function getSubjects(): Promise<any> {
+  try {
+    const response = await db.query('SELECT * FROM materia')
+
+    return response.rows
+  } catch (error) {
+    throw new Error('Falha ao buscar matérias')
+  }
+}
 
 async function addSubjectToClass(
   id_turma: string,
@@ -146,19 +155,27 @@ async function addSubjectToClass(
 }
 async function studentListBySubject(id_materia: string): Promise<any> {
   try {
-    const response = await db.query(
-      `SELECT p.nome, m.id
-            FROM alunos p
-            INNER JOIN matricula m ON p.id_aluno = m.id_aluno
-            INNER JOIN materiaturma mt ON m.id_materia = mt.id_materia
-            WHERE mt.id_materia = $1`,
-      [id_materia]
-    )
+      const response = await db.query(
+          `SELECT p.id_aluno, p.nome, m.id AS matricula_id, mt.id_materia
+          FROM alunos p
+          INNER JOIN matricula m ON p.id_aluno = m.id_aluno
+          INNER JOIN materiaturma mt ON m.id_materia = mt.id_materia
+          WHERE mt.id_materia = $1`,
+          [id_materia]
+      );
+
+      return response.rows.map((row: any) => ({
+          id: row.matricula_id,
+          student_id: row.id_aluno, 
+          name: row.nome,
+      }));
   } catch (error) {
-    console.error('Erro ao buscar alunos matriculados na materia:', error)
-    throw new Error('Erro ao buscar alunos matriculados na matéria')
+      console.error('Erro ao buscar alunos matriculados na matéria:', error);
+      throw new Error('Erro ao buscar alunos matriculados na matéria');
   }
 }
+
+
 async function subjectsByStudent(id_estudante: string): Promise<any> {
   try {
     const response = await db.query(
@@ -220,11 +237,12 @@ export const materiaService = {
       ementa
     ),
 
-
-    deleteSubject: (idMateria: string) => deleteSubject(idMateria),
-    getSubjectById: (idMateria: string) => getSubjectById(idMateria),
-    addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria),
-    studentListBySubject: (id_materia: string) => studentListBySubject(id_materia),
-    subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante)
-};
-
+  deleteSubject: (idMateria: string) => deleteSubject(idMateria),
+  getSubjectById: (idMateria: string) => getSubjectById(idMateria),
+  getSubjects: () => getSubjects(),
+  addSubjectToClass: (idCurso: string, idMateria: string) =>
+    addSubjectToClass(idCurso, idMateria),
+  studentListBySubject: (id_materia: string) =>
+    studentListBySubject(id_materia),
+  subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante),
+}

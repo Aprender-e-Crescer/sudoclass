@@ -7,7 +7,15 @@ router.post('/subjects/:subjectId/activity', activiesController.createActivity)
 router.put('/activity/:activityId', activiesController.upgradeActivity)
 router.patch('/activity/:activityId', activiesController.updateActivityGrades)
 router.get('/activity/:activityId', activiesController.getActivityById)
-router.get('/activity', activiesController.getActivities)
+router.get('/activities/:subjectId', activiesController.getActivities)
 router.delete('/activity', activiesController.deleteActivity)
+router.get(
+  '/activities/:activityId/student/:studentId',
+  activiesController.getLinkFromActivity
+)
+router.patch(
+  '/activities/:activityId/student/:studentId',
+  activiesController.updateLinkActivity
+)
 
 export default router

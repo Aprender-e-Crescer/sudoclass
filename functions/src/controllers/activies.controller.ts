@@ -4,7 +4,7 @@ import { activityService } from '../services/activity.service'
 const activitiesController = {
   createActivity: async (req: Request, res: Response): Promise<void> => {
     const subjectId = parseInt(req.params.subjectId, 10)
-    const { title, description, value, deliveryDate } = req.body
+    const { title, description, value, deliveryDate, attachment } = req.body
 
     if (!title || !description || !value || !deliveryDate) {
       res.status(400).send('Todos os campos são obrigatórios.')
@@ -17,7 +17,8 @@ const activitiesController = {
         description,
         value,
         deliveryDate,
-        subjectId
+        subjectId,
+        attachment
       )
 
       if (!ret) {
@@ -31,8 +32,59 @@ const activitiesController = {
     }
   },
 
+  updateLinkActivity: async (req: Request, res: Response): Promise<void> => {
+    const { attachment } = req.body
+    const activityId = parseInt(req.params.activityId, 10)
+    const studentId = parseInt(req.params.studentId, 10)
+
+    if (!attachment) {
+      res.status(400).send('Parâmetros inválidos.')
+      return
+    }
+
+    try {
+      const ret = await activityService.updateLinkActivity(
+        activityId,
+        studentId,
+        attachment
+      )
+
+      if (!ret) {
+        res.status(404).send('Atividade ou estudante não encontrado.')
+      } else {
+        res.status(200).send('Link atualizado com sucesso.')
+      }
+    } catch (err) {
+      console.error('Erro atualizando link da atividade:', err)
+      res.status(500).send('Erro ao atualizar o link da atividade.')
+    }
+  },
+
+  getLinkFromActivity: async (req: Request, res: Response): Promise<void> => {
+    const activityId = parseInt(req.params.activityId, 10)
+    const studentId = parseInt(req.params.studentId, 10)
+    if (isNaN(activityId) || isNaN(studentId)) {
+      res.status(400).send('ID inválido.')
+      return
+    }
+    try {
+      const ret = await activityService.getLinkFromActivity(
+        activityId,
+        studentId
+      )
+      if (ret == null) {
+        res.status(404).send('Não há links nessa atividade')
+      } else {
+        res.status(200).json(ret)
+      }
+    } catch (err) {
+      console.error('Erro buscando link da atividade:', err)
+      res.status(500).send('Ocorreu um erro ao buscar o link.')
+    }
+  },
+
   upgradeActivity: async (req: Request, res: Response): Promise<void> => {
-    const { title, description, value, deliveryDate } = req.body
+    const { title, description, value, deliveryDate, attachment } = req.body
     const activityId = parseInt(req.params.activityId, 10)
 
     if (!title || !description || !value || !deliveryDate) {
@@ -45,7 +97,8 @@ const activitiesController = {
         description,
         value,
         deliveryDate,
-        activityId
+        activityId,
+        attachment
       )
       if (!ret) {
         res.status(404).send('Atividade não encontrada.')
@@ -130,8 +183,9 @@ const activitiesController = {
   },
 
   getActivities: async (req: Request, res: Response): Promise<void> => {
+    const subjectId = parseInt(req.params.subjectId, 10)
     try {
-      const activities = await activityService.getActivities()
+      const activities = await activityService.getActivities(subjectId)
 
       if (!activities || activities.length === 0) {
         res.status(404).send('Nenhuma atividade encontrada.')

@@ -1,11 +1,9 @@
-
 import { Request, Response } from 'express'
 import { classesService } from '../services/classes.service'
 
 const classesController = {
   createClass: async (req: Request, res: Response): Promise<void> => {
     const {
-      id_turma,
       nome_turma,
       turno,
       cargahoraria,
@@ -18,7 +16,6 @@ const classesController = {
 
     try {
       if (
-        !id_turma ||
         !nome_turma ||
         !turno ||
         !cargahoraria ||
@@ -33,7 +30,6 @@ const classesController = {
       }
 
       const result = await classesService.createClass(
-        id_turma,
         nome_turma,
         turno,
         cargahoraria,

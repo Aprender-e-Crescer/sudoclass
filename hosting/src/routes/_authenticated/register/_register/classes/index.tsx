@@ -1,6 +1,4 @@
 import { AlertDialogComponent } from '@/components/custom/alert-dialog'
-import { InputCheckbox } from '@/components/custom/checkbox-input'
-import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useClassesController } from '@/controllers/use-class-controller'
@@ -8,11 +6,10 @@ import { creationClassSchema } from '@/models/creation-class-schema'
 import { useListClassQuery } from '@/queries/use-class-list-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
-import { Pencil } from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { parse } from 'date-fns'
 import { z } from 'zod'
+import { Loader2 } from 'lucide-react'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -34,57 +31,43 @@ const initialValues = {
   totalVacancies: '',
 }
 
-const checkboxFinishedValues = [
-  {
-    value: 'Sim',
-    label: 'yesFinished',
-  },
-  {
-    value: 'Não',
-    label: 'noFinished',
-  },
-]
-
-const checkboxReleasedValues = [
-  {
-    value: 'Sim',
-    label: 'yes',
-  },
-  {
-    value: 'Não',
-    label: 'no',
-  },
-]
-
 export function ClassList() {
-  const { action } = Route.useSearch()
+  const { action, idTurma } = Route.useSearch()
   const { registerClassForm, updateClass, deleteClass } = useClassesController()
-  const { data: classes } = useListClassQuery()
+  const { data: classes, isFetching: isFetchingClasses, isSuccess: isSuccessLoadClasses } = useListClassQuery()
 
-  const handleOnClassCreationSubmit = (
-    values: {
-      class: string
-      shift: string
-      startForecast: string
-      endPrediction: string
-      registrationFinalDate: string
-      quantityHours: string
-      totalVacancies: string
-    },
-    id?: number,
-  ) => {
-    const formattedValues = {
-      ...values,
-      startForecast: parse(values.startForecast, 'dd/MM/yyyy', new Date()),
-      endPrediction: parse(values.endPrediction, 'dd/MM/yyyy', new Date()),
-      registrationFinalDate: parse(values.registrationFinalDate, 'dd/MM/yyyy', new Date()),
+  const handleOnClassCreationSubmit = (values: {
+    class: string
+    shift: string
+    startForecast: Date
+    endPrediction: Date
+    registrationFinalDate: Date
+    quantityHours: number
+    totalVacancies: number
+  }) => {
+    if (idTurma) {
+      return updateClass({
+        idTurma,
+        nome_turma: values.class,
+        turno: values.shift,
+        cargahoraria: values.quantityHours,
+        datainicio: values.startForecast,
+        datafim: values.endPrediction,
+        ementa: 'ementa',
+        dataFinalIncricao: values.registrationFinalDate,
+        vagasincricoes: values.totalVacancies,
+      })
     }
-
-
-    if (id) {
-      return updateClass(id, formattedValues)
-    }
-    registerClassForm(formattedValues)
+    registerClassForm({
+      nome_turma: values.class,
+      turno: values.shift,
+      cargahoraria: values.quantityHours,
+      datainicio: values.startForecast,
+      datafim: values.endPrediction,
+      ementa: 'ementa',
+      dataFinalIncricao: values.registrationFinalDate,
+      vagasincricoes: values.totalVacancies,
+    })
   }
 
   return (
@@ -96,15 +79,25 @@ export function ClassList() {
           </Button>
         </Link>
 
-        <div className="flex lg:flex-row flex-col gap-7">
-          <div
-            className="flex flex-col gap-4 font-bold text-blue-950 text-lg data-[no-action=true]:flex-1"
-            data-no-action={!action}
-          >
-            {classes?.map(({ name, id_turma }, index) => (
-              <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
-                <p className="border rounded-xl p-3 flex justify-between">
-                  {name}
+        <div className="flex lg:flex-row flex-col gap-5">
+          {isFetchingClasses && (
+            <div className="flex flex-1 gap-2">
+              <p>Carregando as turmas...</p>
+              <Loader2 className="animate-spin" />
+            </div>
+          )}
+          {isSuccessLoadClasses && !isFetchingClasses && (
+            <div
+              className="flex flex-col gap-4 font-bold text-blue-950 text-lg data-[no-action=true]:flex-1"
+              data-no-action={!action}
+            >
+              {classes?.map(({ name, id_turma }, index) => (
+                <div className="flex items-center gap-2">
+                  <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }} className="flex flex-1">
+                    <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
+                      <p className="border rounded-xl p-3 flex justify-between">{name}</p>
+                    </div>
+                  </Link>
                   <div className="flex gap-2">
                     <AlertDialogComponent
                       title="Deseja excluir a turma?"
@@ -116,10 +109,10 @@ export function ClassList() {
                       <Pencil className="border rounded text-zinc-500 w-8 h-8 cursor-pointer" />
                     </Link>
                   </div>
-                </p>
-              </div>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
           <When condition={!!action}>
             <Formik
               onSubmit={(values) => handleOnClassCreationSubmit(values)}
@@ -128,6 +121,13 @@ export function ClassList() {
             >
               <Form className="flex flex-1">
                 <div className="flex flex-1 flex-col border p-2 rounded-lg">
+                  <div className="flex flex-col flex-1 justify-end items-end">
+                    <Link to="/charts" search={{ idClass: idTurma }}>
+                      <Button variant="blueButton" size="large" className="w-64">
+                        Estatisticas da turma
+                      </Button>
+                    </Link>
+                  </div>
                   <InputForm title="Turmas" id="class" name="class" label="class" placeholder="Nome Da Turma" />
 
                   <InputForm title="Turno" id="shift" name="shift" label="shift" placeholder="Turno" />
@@ -175,29 +175,7 @@ export function ClassList() {
                     placeholder="Total de Vagas"
                   />
 
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col">
-                      <p>Concluido</p>
-                      <div className="flex gap-8">
-                        <InputCheckbox checkboxValues={checkboxFinishedValues} />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col">
-                      <p>Liberado</p>
-                      <div className="flex gap-8">
-                        <InputCheckbox checkboxValues={checkboxReleasedValues} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <InputFile
-                    title="Anexar Arquivo"
-                    label="attachment"
-                    id="Anexar Arquivo"
-                    name="Anexar Arquivo"
-                    placeholder="Anexar Arquivo"
-                  />
+                  <InputForm title="Ementa" label="attachment" id="menu" name="menu" placeholder="menu" />
 
                   <div className="flex items-center justify-center gap-3">
                     <Link to="/register/classes">

@@ -13,18 +13,21 @@ export function useCreateActivityMutation() {
       deliveryDate,
       value,
       subjectId,
+      attachment,
     }: {
       title: string
       instruction: string
       deliveryDate: string
       value: number
       subjectId: number
+      attachment: string | null
     }) => {
       const requestBody = {
         title,
         description: instruction,
         value,
         deliveryDate,
+        attachment,
       }
 
       try {
