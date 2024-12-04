@@ -19,7 +19,11 @@ async function createActivity(
     const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
     console.log('Estudantes encontrados:', matriceStudents)
 
-    const createdAt = new Date().toISOString().split('T')[0]
+    const createdAt = new Date()
+    const offset = createdAt.getTimezoneOffset()
+    createdAt.setMinutes(createdAt.getMinutes() - offset)
+
+    const createdAtString = createdAt.toISOString().split('T')[0]
 
     const result = await db.query(
       `INSERT INTO atividade (titulo, descricao, valor, data_entrega, data_postagem, id_materia, anexo) 
@@ -29,7 +33,7 @@ async function createActivity(
         description,
         value,
         deliveryDate,
-        createdAt,
+        createdAtString,
         subjectId,
         attachment,
       ]

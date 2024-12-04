@@ -42,7 +42,7 @@ export function CreateActivity() {
           instruction: activityData.instruction,
           value: activityData.value,
           deliveryDate: activityData.deliveryDate,
-          attachement: activityData.attachment,
+          attachment: activityData.attachment,
         }
       : {
           title: '',
