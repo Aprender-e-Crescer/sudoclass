@@ -1,7 +1,22 @@
-import { Home, History, UniversityIcon, FileText, FormInput, Settings, MessageSquareLock, User } from 'lucide-react'
+import {
+  Home,
+  History,
+  UniversityIcon,
+  FileText,
+  FormInput,
+  Settings,
+  MessageSquareLock,
+  User,
+  SquarePen,
+  SquarePlus,
+} from 'lucide-react'
 import { MenuItem } from './menu-item'
 import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'
+
+import { Link } from '@tanstack/react-router'
+import { useCourseListingQuery } from '@/queries/use-course-listing-query'
+import { useCourseController } from '@/controllers/use-courses-controller'
 
 interface LeftMenuProps {
   type: 'StudentPortal' | 'TeacherClassroom' | 'AdminPortal'
@@ -29,10 +44,18 @@ const menuItemsTeacherClassroom = [
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
-const courses = ['Curso 1', 'Curso 2', 'Curso 3']
-
 function LeftMenu({ type }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('')
+  const { data: course } = useCourseListingQuery()
+  const { deleteCourse } = useCourseController()
+
+  const handleDeleteCourse = async (id: number) => {
+    try {
+      await deleteCourse(id)
+    } catch (error) {
+      console.log('erro ao deletar curso', error)
+    }
+  }
 
   const renderMenuItems = (menuItems: typeof menuItemsStudentPortal) =>
     menuItems.map((item, index) => (
@@ -47,22 +70,29 @@ function LeftMenu({ type }: LeftMenuProps) {
     ))
 
   return (
-    <div className="flex gap-8 flex-col">
+    <div className="flex gap-4 flex-col border-r-2">
       {type === 'StudentPortal' && renderMenuItems(menuItemsStudentPortal)}
       {type === 'AdminPortal' && renderMenuItems(menuItemsAdminPortal)}
       {type === 'TeacherClassroom' && renderMenuItems(menuItemsTeacherClassroom)}
 
       <div className="flex-col gap-4 w-52 border-t-2 hidden min-[420px]:flex">
-        <div className="w-44 h-10 pt-6 flex items-center rounded-lg">
-          <p className="font-bold text-[#787486] text-[12px] pl-3">CURSOS</p>
+        <div className="w-44 h-10 justify-between pt-6 flex items-center rounded-lg ">
+          <p className="font-bold text-[#787486] text-[12px] pl-4">CURSOS</p>
+          {type === 'AdminPortal' && (
+            <Link to="/add-new-course">
+              <SquarePen className="cursor-pointer" size={16} color="#787486" />
+            </Link>
+          )}
+          {type === 'TeacherClassroom' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
         </div>
-        {courses.map((course, index) => (
+        {course?.map(({ nome_curso, id_curso }, index) => (
           <CourseItem
             key={index}
-            course={course}
+            course={nome_curso}
             activeItem={activeItem}
-            onClick={() => setActiveItem(course)}
+            onClick={() => setActiveItem(nome_curso)}
             index={index}
+            onDelete={type === 'AdminPortal' ? () => handleDeleteCourse(id_curso) : undefined}
           />
         ))}
       </div>

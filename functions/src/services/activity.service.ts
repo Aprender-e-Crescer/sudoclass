@@ -5,7 +5,8 @@ async function createActivity(
   description: string,
   value: string,
   deliveryDate: Date,
-  subjectId: number
+  subjectId: number,
+  attachment: string
 ): Promise<string> {
   console.log('Função createActivity chamada')
 
@@ -21,9 +22,17 @@ async function createActivity(
     const createdAt = new Date().toISOString().split('T')[0]
 
     const result = await db.query(
-      `INSERT INTO atividade (titulo, descricao, valor, data_entrega, data_postagem, id_materia) 
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_atividade`,
-      [title, description, value, deliveryDate, createdAt, subjectId]
+      `INSERT INTO atividade (titulo, descricao, valor, data_entrega, data_postagem, id_materia, anexo) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id_atividade`,
+      [
+        title,
+        description,
+        value,
+        deliveryDate,
+        createdAt,
+        subjectId,
+        attachment,
+      ]
     )
 
     const activityId = result.rows[0]?.id_atividade
@@ -192,9 +201,14 @@ async function getActivityById(activityId: number): Promise<any> {
   }
 }
 
-async function getActivities(): Promise<any> {
+async function getActivities(subjectId: number): Promise<any> {
   try {
-    const activitiesResult = await db.query(`SELECT * FROM atividade`)
+    const activitiesResult = await await db.query(
+      `SELECT *
+       FROM atividade 
+       WHERE id_materia = $1`,
+      [subjectId]
+    )
     console.log('Atividades retornadas do banco:', activitiesResult.rows)
     return activitiesResult.rows
   } catch (error) {
@@ -228,8 +242,17 @@ export const activityService = {
     description: string,
     value: string,
     deliveryDate: Date,
-    subjectId: number
-  ) => createActivity(title, description, value, deliveryDate, subjectId),
+    subjectId: number,
+    attachment: string
+  ) =>
+    createActivity(
+      title,
+      description,
+      value,
+      deliveryDate,
+      subjectId,
+      attachment
+    ),
   updateActivityGrades: (
     activityId: number,
     studentId: number,
@@ -237,7 +260,7 @@ export const activityService = {
   ) => updateActivityGrades(activityId, studentId, grade),
   deleteActivity: (activityId: number) => deleteActivity(activityId),
   getActivityById: (activityId: number) => getActivityById(activityId),
-  getActivities: () => getActivities(),
+  getActivities: (subjectId: number) => getActivities(subjectId),
   updateActivity: (
     title: string,
     description: string,

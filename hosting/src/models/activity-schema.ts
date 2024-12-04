@@ -8,7 +8,8 @@ export const activitySchema = z.preprocess(
     value: obj?.valor,
     deliveryDate: obj?.data_entrega,
     datePosting: obj?.data_postagem ?? undefined,
-    subjectId: obj?.id_materia, // Aqui já deve estar no formato esperado
+    subjectId: obj?.id_materia,
+    attachment: obj?.anexo,
   }),
   z.object({
     id: z.number(),
@@ -41,7 +42,7 @@ export const activitySchema = z.preprocess(
       .number()
       .nonnegative('O ID da matéria não pode ser negativo')
       .int('O ID da matéria deve ser um número inteiro'),
-    // Converte para número
+    attachment: z.string().optional().nullable(),
   }),
 )
 

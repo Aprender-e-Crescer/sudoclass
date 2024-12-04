@@ -1,18 +1,22 @@
-import { warningSchema } from '@/models/warning-schema'
+import { useQuery } from '@tanstack/react-query'
 import { api } from '@/services/api'
-import { dataTagSymbol, useQuery } from '@tanstack/react-query'
-import { z } from 'zod'
 
-export const WARNING_WALL_QUERY = ['getWarnings']
-export function useListWarningsQuery(subjectId: string) {
+export const WARNING_WALL_QUERY = ['warnings']
+
+export function useListWarningsQuery(idSubject: string) {
   return useQuery({
-    queryKey: [...WARNING_WALL_QUERY, subjectId],
+    queryKey: [...WARNING_WALL_QUERY, idSubject],
     queryFn: async () => {
-      const { data } = await api.get(`/warnings/${subjectId}`)
-      // const warnings = z.array(warningSchema).parse(data)
-      console.log('api:', data)
-
-      return data
+      try {
+        const response = await api.get(`/warnings/${idSubject}`)
+        return response.data || []
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          return []
+        }
+        throw error
+      }
     },
+    retry: false,
   })
 }

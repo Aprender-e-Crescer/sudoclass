@@ -18,6 +18,8 @@ interface AlertDialogProps {
   title?: string
   cancelButtonValue?: string
   onClick?: () => void
+  width?: number
+  height?: number
 }
 
 export function AlertDialogComponent({
@@ -26,13 +28,15 @@ export function AlertDialogComponent({
   variantCancelButton,
   cancelButtonValue,
   onClick,
+  width = 32,
+  height = 32,
 }: AlertDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogTrigger asChild onClick={() => setIsOpen(true)}>
-        <X className="border rounded text-red-500 mr-4 w-8 h-8 cursor-pointer" />
+        <X className="border rounded text-red-500 mr-4 cursor-pointer" width={width} height={height} />
       </AlertDialogTrigger>
 
       <AlertDialogContent>

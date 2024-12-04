@@ -7,11 +7,22 @@ export function useCreateWarningMutation() {
 
   return useMutation({
     mutationKey: ['createWarning'],
-    mutationFn: async ({ message, userId, subjectId }: { message: string; userId: number; subjectId: number }) => {
+    mutationFn: async ({
+      message,
+      userId,
+      subjectId,
+      created_by,
+    }: {
+      message: string
+      userId: number
+      subjectId: number
+      created_by: string
+    }) => {
       const requestBody = {
         mensagem: message,
         id_usuario: userId,
         id_materia: subjectId,
+        criado_por: created_by,
       }
 
       const { data } = await api.post('/warnings', requestBody)

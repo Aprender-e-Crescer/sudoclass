@@ -31,28 +31,32 @@ interface Student {
   id: string
   name: string
   picture: string
+  variant: 'undefined' | 'corrected' // Adiciona a variante ao estudante
 }
 
 function Correction() {
   const { idActivity } = Route.useParams()
 
-  const students: Student[] = [
+  const [students, setStudents] = useState<Student[]>([
     {
       id: '1',
       name: 'João Silva',
       picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
+      variant: 'undefined',
     },
     {
       id: '2',
       name: 'Maria Oliveira',
       picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
+      variant: 'undefined',
     },
     {
       id: '3',
       name: 'Pedro Souza',
       picture: 'https://cdn-icons-png.flaticon.com/512/4537/4537019.png',
+      variant: 'undefined',
     },
-  ]
+  ])
 
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [successMessage, setSuccessMessage] = useState('')
@@ -79,6 +83,14 @@ function Correction() {
       const activityId = parseInt(idActivity, 10)
 
       addGrade({ activityId, studentId, grade })
+
+      // Atualiza o estado dos estudantes para marcar como "corrected"
+      setStudents((prevStudents) =>
+        prevStudents.map((student) =>
+          student.id === selectedStudent.id ? { ...student, variant: 'corrected' } : student,
+        ),
+      )
+
       setSuccessMessage('Nota atribuída com sucesso!')
       resetForm()
     }
@@ -90,7 +102,7 @@ function Correction() {
         <div>
           {students.map((student) => (
             <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
-              <ListStudents name={student.name} picture={student.picture} variant="corrected" />
+              <ListStudents name={student.name} picture={student.picture} variant={student.variant} />
             </div>
           ))}
         </div>
@@ -137,7 +149,12 @@ function Correction() {
               <div className="flex justify-center items-center w-full">
                 <div>
                   {students.map((student) => (
-                    <ListStudents key={student.id} name={student.name} picture={student.picture} variant="corrected" />
+                    <ListStudents
+                      key={student.id}
+                      name={student.name}
+                      picture={student.picture}
+                      variant={student.variant}
+                    />
                   ))}
                 </div>
               </div>

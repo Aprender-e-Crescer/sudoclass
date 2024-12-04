@@ -42,6 +42,14 @@ function RouteComponent() {
   const { data, isLoading, error } = ListFormsQuery()
   const [searchValue, setSearchValue] = useState('')
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
+      </div>
+    )
+  }
+
   if (error) {
     return error.message
   }
@@ -51,40 +59,37 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col gap-4 mx-20 my-10">
-      {isLoading && <Loader2 />}
-      {!isLoading && !error && (
-        <>
-          <div>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={toFormikValidationSchema(getInputSchema)}
-              onSubmit={(values) => {
-                setSearchValue(values.value)
-              }}
-            >
-              {({ handleChange }) => (
-                <Form>
-                  <Field
-                    name="value"
-                    as={InputWithoutLabel}
-                    icon={<Search />}
-                    placeholder="Procurar Formularios"
-                    id="value"
-                    onChange={(e: { target: { value: SetStateAction<string> } }) => {
-                      handleChange(e)
-                      setSearchValue(e.target.value)
-                    }}
-                  />
-                </Form>
-              )}
-            </Formik>
-          </div>
-          <div>
-            <h1 className="font-bold text-blue-950 text-4xl">Formulários Disponíveis</h1>
-          </div>
-          <GenericTable data={filteredData} columns={columns} />
-        </>
-      )}
+      <>
+        <div>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={toFormikValidationSchema(getInputSchema)}
+            onSubmit={(values) => {
+              setSearchValue(values.value)
+            }}
+          >
+            {({ handleChange }) => (
+              <Form>
+                <Field
+                  name="value"
+                  as={InputWithoutLabel}
+                  icon={<Search />}
+                  placeholder="Procurar Formularios"
+                  id="value"
+                  onChange={(e: { target: { value: SetStateAction<string> } }) => {
+                    handleChange(e)
+                    setSearchValue(e.target.value)
+                  }}
+                />
+              </Form>
+            )}
+          </Formik>
+        </div>
+        <div>
+          <h1 className="font-bold text-blue-950 text-4xl">Formulários Disponíveis</h1>
+        </div>
+        <GenericTable data={filteredData} columns={columns} />
+      </>
     </div>
   )
 }

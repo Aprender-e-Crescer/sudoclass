@@ -1,6 +1,4 @@
 import { AlertDialogComponent } from '@/components/custom/alert-dialog'
-import { InputCheckbox } from '@/components/custom/checkbox-input'
-import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useClassesController } from '@/controllers/use-class-controller'
@@ -11,11 +9,11 @@ import { Form, Formik } from 'formik'
 import { Pencil } from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { parse } from 'date-fns'
 import { z } from 'zod'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
+  idTurma: z.number().optional(),
 })
 
 export const Route = createFileRoute('/_authenticated/register/_register/classes/')({
@@ -33,52 +31,44 @@ const initialValues = {
   totalVacancies: '',
 }
 
-const checkboxFinishedValues = [
-  {
-    value: 'Sim',
-    label: 'yesFinished',
-  },
-  {
-    value: 'Não',
-    label: 'noFinished',
-  },
-]
-
-const checkboxReleasedValues = [
-  {
-    value: 'Sim',
-    label: 'yes',
-  },
-  {
-    value: 'Não',
-    label: 'no',
-  },
-]
-
 export function ClassList() {
-  const { action } = Route.useSearch()
-  const { registerClassForm } = useClassesController()
+  const { action, idTurma } = Route.useSearch()
+  const { registerClassForm, updateClass, deleteClass } = useClassesController()
   const { data: classes } = useListClassQuery()
-  const { deleteClass } = useClassesController()
 
   const handleOnClassCreationSubmit = (values: {
     class: string
     shift: string
-    startForecast: string
-    endPrediction: string
-    registrationFinalDate: string
-    quantityHours: string
-    totalVacancies: string
+    startForecast: Date
+    endPrediction: Date
+    registrationFinalDate: Date
+    quantityHours: number
+    totalVacancies: number
   }) => {
-    const formattedValues = {
-      ...values,
-      startForecast: parse(values.startForecast, 'dd/MM/yyyy', new Date()),
-      endPrediction: parse(values.endPrediction, 'dd/MM/yyyy', new Date()),
-      registrationFinalDate: parse(values.registrationFinalDate, 'dd/MM/yyyy', new Date()),
+    if (idTurma) {
+      return updateClass(idTurma, {
+        nome_turma: values.class,
+        turno: values.shift,
+        cargahoraria: values.quantityHours,
+        datainicio: values.startForecast,
+        datafim: values.endPrediction,
+        ementa: 'ementa',
+        dataFinalIncricao: values.registrationFinalDate,
+        vagasincricoes: values.totalVacancies,
+      })
     }
-
-    registerClassForm(formattedValues)
+    registerClassForm({
+      nome_turma: values.class,
+      turno: values.shift,
+      cargahoraria: values.quantityHours,
+      datainicio: values.startForecast,
+      datafim: values.endPrediction,
+      ementa: 'ementa',
+      dataFinalIncricao: values.registrationFinalDate,
+      vagasincricoes: values.totalVacancies,
+    })
   }
+
   return (
     <div className="w-full px-4 flex justify-center flex-col gap-6 mt-5">
       <div className="flex flex-col flex-1 gap-5">
@@ -104,8 +94,8 @@ export function ClassList() {
                       variantCancelButton="blueButton"
                       onClick={() => deleteClass(id_turma)}
                     />
-                    <Link to="/register/classes" search={{ action: 'edit' }}>
-                      <Pencil className="border rounded text-zinc-500 w-8 h-8" />
+                    <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }}>
+                      <Pencil className="border rounded text-zinc-500 w-8 h-8 cursor-pointer" />
                     </Link>
                   </div>
                 </p>
@@ -114,7 +104,7 @@ export function ClassList() {
           </div>
           <When condition={!!action}>
             <Formik
-              onSubmit={handleOnClassCreationSubmit}
+              onSubmit={(values) => handleOnClassCreationSubmit(values)}
               initialValues={initialValues}
               validationSchema={toFormikValidationSchema(creationClassSchema)}
             >
@@ -129,6 +119,7 @@ export function ClassList() {
                     id="startForecast"
                     name="startForecast"
                     label="startForecast"
+                    type="date"
                     placeholder="Previsão de início"
                   />
 
@@ -137,6 +128,7 @@ export function ClassList() {
                     id="endPrediction"
                     name="endPrediction"
                     label="endPrediction"
+                    type="date"
                     placeholder="Previsão de Fim"
                   />
 
@@ -145,6 +137,7 @@ export function ClassList() {
                     id="registrationFinalDate"
                     name="registrationFinalDate"
                     label="registrationFinalDate"
+                    type="date"
                     placeholder="Data Final de Inscrição"
                   />
 
@@ -164,29 +157,7 @@ export function ClassList() {
                     placeholder="Total de Vagas"
                   />
 
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col">
-                      <p>Concluido</p>
-                      <div className="flex gap-8">
-                        <InputCheckbox checkboxValues={checkboxFinishedValues} />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col">
-                      <p>Liberado</p>
-                      <div className="flex gap-8">
-                        <InputCheckbox checkboxValues={checkboxReleasedValues} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <InputFile
-                    title="Anexar Arquivo"
-                    label="attachment"
-                    id="Anexar Arquivo"
-                    name="Anexar Arquivo"
-                    placeholder="Anexar Arquivo"
-                  />
+                  <InputForm title="Ementa" label="attachment" id="menu" name="menu" placeholder="menu" />
 
                   <div className="flex items-center justify-center gap-3">
                     <Link to="/register/classes">

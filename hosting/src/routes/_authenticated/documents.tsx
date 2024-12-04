@@ -1,82 +1,78 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Timestamp } from 'firebase/firestore'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { getInputSchema } from '@/models/get-input-schema'
 import { InputWithoutLabel } from '@/components/custom/without-label-input'
-import { Download, Search } from 'lucide-react'
+import { Download, Loader2, Search } from 'lucide-react'
 import { Form, Formik } from 'formik'
 import { GenericTable } from '@/components/custom/generic-table'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
+import { useGetUserQuery } from '@/queries/use-get-user-query'
+import { useListStudentDocumentsQuery } from '@/queries/use-list-student-documents'
 
 export const Route = createFileRoute('/_authenticated/documents')({
   component: RouteComponent,
 })
 
-const data = [
-  {
-    id: '1',
-    name: 'Declaração de Matrícula',
-    createdBy: { id: '101', name: 'João Silva' },
-    createdDate: new Date('2024-01-15'),
-  },
-  {
-    id: '2',
-    name: 'Histórico Escolar',
-    createdBy: { id: '102', name: 'Maria Oliveira' },
-    createdDate: new Date('2023-12-10'),
-  },
-  {
-    id: '3',
-    name: 'Certificado de Conclusão',
-    createdBy: { id: '103', name: 'Carlos Santos' },
-    createdDate: new Date('2024-02-05'),
-  },
-  {
-    id: '4',
-    name: 'Boletim',
-    createdBy: { id: '104', name: 'Ana Souza' },
-    createdDate: new Date('2023-11-20'),
-  },
-  {
-    id: '5',
-    name: 'Comprovante de Pagamento',
-    createdBy: { id: '105', name: 'Pedro Alves' },
-    createdDate: new Date('2023-10-25'),
-  },
-]
-
-const columns = [
-  { header: 'Documento', accessor: 'name' },
-  { header: 'Criado Por', accessor: 'createdBy' },
-  {
-    header: 'Criado Em',
-    accessor: 'createdDate',
-  },
-  {
-    header: 'Ações',
-    Cell: () => (
-      <span className="cursor-pointer">
-        <Download />
-      </span>
-    ),
-  },
-]
+function downloadDocument(url: string) {
+  const link = document.createElement('a')
+  link.href = url
+  link.download = url.split('/').pop() || 'document'
+  link.target = '_blank'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 
 function RouteComponent() {
-  // const { data: user } = useCurrentUserQuery()
-  // const { data, isLoading, error } = useListStudentDocumentsQuery(user?.uid)
+  const currentUser = useCurrentUserQuery()
+  const { data: userData } = useGetUserQuery(currentUser?.data?.uid)
+  const { data, isLoading, error } = useListStudentDocumentsQuery(userData?.idStudent)
+
+  const columns = [
+    { header: 'Documento', accessor: 'nome' },
+    {
+      header: 'Ações',
+      accessor: 'url',
+      Cell: (row: any) => {
+        const documentUrl = row.url
+
+        console.log(documentUrl)
+        return (
+          <span
+            className="cursor-pointer"
+            onClick={() => {
+              if (documentUrl) {
+                downloadDocument(documentUrl)
+              } else {
+                alert('Documento não disponível')
+              }
+            }}
+          >
+            <Download />
+          </span>
+        )
+      },
+    },
+  ]
+
   const [searchTerm, setSearchTerm] = useState('')
 
-  const formattedData = data?.map((item) => ({
-    ...item,
-    createdBy: item.createdBy.name,
-    createdDate:
-      item.createdDate instanceof Timestamp
-        ? new Date(item.createdDate.toDate()).toLocaleDateString()
-        : new Date(item.createdDate).toLocaleDateString(),
-  }))
+  const formattedData = data ? data.map((item) => ({ ...item })) : []
 
-  const filteredData = formattedData?.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredData = formattedData.filter((item) => item.nome.toLowerCase().includes(searchTerm.toLowerCase()))
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
+  }
 
   return (
     <div className="flex flex-col gap-4 mx-20 my-10">
@@ -90,7 +86,8 @@ function RouteComponent() {
                 placeholder="Digite aqui..."
                 id="value"
                 onChange={(e) => {
-                  setFieldValue('value', e.target.value), setSearchTerm(e.target.value)
+                  setFieldValue('value', e.target.value)
+                  setSearchTerm(e.target.value)
                 }}
               />
             </Form>

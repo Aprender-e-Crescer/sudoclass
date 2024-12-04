@@ -2,7 +2,7 @@ import axios from 'axios';
 import { auth } from './firebase';
 
 const api = axios.create({
-    baseURL: 'https://us-central1-sudo-class-staging.cloudfunctions.net/api/',
+    baseURL: import.meta.env.VITE_API_URL,
 });
 
 api.interceptors.request.use(async function (config) {

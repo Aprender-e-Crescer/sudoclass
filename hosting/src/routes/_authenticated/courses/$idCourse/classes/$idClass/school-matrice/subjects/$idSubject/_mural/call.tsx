@@ -2,25 +2,18 @@ import React, { useState, useEffect } from 'react'
 import ListStudents from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { createFileRoute } from '@tanstack/react-router'
-import { useStudentsListQuery } from '@/queries/use-students-list-query'
-import { collection, addDoc } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@radix-ui/react-popover'
+import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover'
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
+import { useStudentListBySubjectQuery } from '@/queries/use-list-students-subject'
 
 export function DatePickerDemo({
   date,
   setDate,
 }: {
   date: Date | undefined
-
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
 }) {
   return (
@@ -29,10 +22,7 @@ export function DatePickerDemo({
         <Button
           size="medium"
           variant="ghostBlack"
-          className={cn(
-            'bg-slate-200 justify-start text-left',
-            !date && 'text-muted-foreground',
-          )}
+          className={cn('bg-slate-200 justify-start text-left', !date && 'text-muted-foreground')}
         >
           {date ? format(date, 'PPP') : <span>Escolha a data</span>}
         </Button>
@@ -54,95 +44,63 @@ export function DatePickerDemo({
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/call',
-)({
+)( {
   component: Call,
 })
 
 export function Call() {
-  const { data: students } = useStudentsListQuery()
-  const [studentList, setStudentList] = useState(students || [])
-  const [currentIndex, setCurrentIndex] = useState(-1)
   const [date, setDate] = useState<Date | undefined>(undefined)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [studentList, setStudentList] = useState<any[]>([])  
+
+  const { data: students, isLoading, isError } = useStudentListBySubjectQuery(1) 
 
   useEffect(() => {
-    if (students && students.length > 0) {
-      setStudentList(students)
-      setCurrentIndex(students.length - 1)
-      console.log('Lista de alunos carregada:', students)
+    if (students) {
+      const updatedStudents = students.map((student: any) => ({
+        ...student,
+        variant: 'undefined', 
+      }))
+      setStudentList(updatedStudents)
     }
   }, [students])
 
   const updateStudentStatus = (id: string, status: any) => {
     setStudentList((prevList) =>
-      prevList.map((student) =>
-        student.id === id ? { ...student, variant: status } : student,
-      ),
+      prevList.map((student) => (student.student_id === id ? { ...student, variant: status } : student)),
     )
   }
 
-  const addCall = async (values: {
-    studentId: string
-    status: string
-    date: Date
-  }) => {
-    try {
-      const callRef = collection(
-        firestore,
-        'student',
-        'U2IvXW4yX8IE5QksHSox',
-        'call',
-      )
-      const newCall = {
-        studentId: values.studentId,
-        status: values.status,
-        date: values.date,
-      }
-
-      console.log('Tentando adicionar chamada:', newCall)
-      await addDoc(callRef, newCall)
-      console.log('Chamada adicionada com sucesso:', newCall)
-    } catch (error) {
-      console.error('Erro ao adicionar chamada:', error.message || error)
-    }
-  }
-
   const handleAddCall = () => {
-    console.log('Current Index:', currentIndex)
-    console.log('Student List:', studentList)
+    console.log('Finalizando chamada...')
+    console.log('Lista de Alunos:', studentList)
+  
+    setStudentList((prevList) =>
+      prevList.map((student) => ({ ...student, variant: 'undefined' }))
+    )
+  
+    setCurrentIndex(0)
+    setDate(undefined)
+  
+    console.log('Chamada finalizada!')
+  }
+  
 
-    if (currentIndex === 0 || !studentList[currentIndex]) {
-      console.error('Nenhum aluno selecionado.')
-      return
-    }
-
-    if (!date) {
-      console.error('Data não está definida.')
-      return
-    }
-
-    const values = {
-      studentId: studentList[currentIndex].id,
-      status: 'active',
-      date: date,
-    }
-
-    console.log('Valores antes de adicionar a chamada:', values)
-    addCall(values)
+  if (isLoading) {
+    return <div>Loading...</div>  
   }
 
-  // const [copyStudentList, setCopyStudentList] = useState(students || []);
+  if (isError) {
+    return <div>Error loading students</div>  
+  }
 
+  console.log
   return (
     <>
       <div className="flex flex-1">
         <div className="flex-1">
           {studentList.map((student) => (
-            <ListStudents
-              key={student.id}
-              name={student.name}
-              picture={student.picture}
-              variant={student.variant}
-            />
+            <ListStudents key={student.student_id} name={student.name} picture={`https://media.istockphoto.com/id/1408041355/pt/foto/happy-black-businesswoman-using-a-smartphone-in-a-creative-office.jpg?s=612x612&w=0&k=20&c=pee_hk8ZXj4HVeitj8ASOQ1qCPhIZI18WcoDIkMe2BU=`} variant={student.variant} />
           ))}
         </div>
         <div className="w-full">
@@ -151,14 +109,15 @@ export function Call() {
             currentIndex={currentIndex}
             onStudentUpdate={updateStudentStatus}
             setCurrentIndex={setCurrentIndex}
+            date={date}
           />
-          <div className="flex justify-around mb-10">
+          <div className="flex justify-around mt-2">
+            <DatePickerDemo date={date} setDate={setDate} />
+          </div>
+          <div className="flex justify-around mt-2">
             <Button onClick={handleAddCall} size="medium">
               Finalizar Chamada
             </Button>
-          </div>
-          <div className="flex justify-around mb-6">
-            <DatePickerDemo date={date} setDate={setDate} />
           </div>
         </div>
       </div>
