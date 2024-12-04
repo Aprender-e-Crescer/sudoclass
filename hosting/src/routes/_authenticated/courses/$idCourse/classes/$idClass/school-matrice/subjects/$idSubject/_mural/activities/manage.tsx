@@ -141,7 +141,12 @@ export function CreateActivity() {
               <p>Link</p>
               <div className="w-full">
                 {linkToDisplay && (
-                  <a href={linkToDisplay} target="_blank" rel="noopener noreferrer" className="text-blue-600">
+                  <a
+                    href={linkToDisplay}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 block w-4/5 overflow-hidden text-ellipsis"
+                  >
                     {linkToDisplay}
                   </a>
                 )}
