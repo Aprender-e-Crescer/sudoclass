@@ -7,11 +7,11 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import avatarpng from '@/assets/avatar.png'
 
 export const Route = createFileRoute('/_authenticated')({
- /*  beforeLoad: async ({ location: { pathname } }) => {
+  beforeLoad: async ({ location: { pathname } }) => {
     await auth.authStateReady()
 
     if (!auth.currentUser && pathname !== '/login') throw redirect({ to: '/login' })
-  }, */
+  },
   component: Authenticated,
 })
 
