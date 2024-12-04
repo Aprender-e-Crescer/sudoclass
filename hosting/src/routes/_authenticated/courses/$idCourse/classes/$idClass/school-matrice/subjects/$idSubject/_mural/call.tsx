@@ -85,7 +85,6 @@ export function Call() {
     console.log('Chamada finalizada!')
   }
   
-
   if (isLoading) {
     return <div>Loading...</div>  
   }
@@ -94,26 +93,39 @@ export function Call() {
     return <div>Error loading students</div>  
   }
 
-  console.log
   return (
     <>
       <div className="flex flex-1">
         <div className="flex-1">
-          {studentList.map((student) => (
-            <ListStudents key={student.student_id} name={student.name} picture={`https://media.istockphoto.com/id/1408041355/pt/foto/happy-black-businesswoman-using-a-smartphone-in-a-creative-office.jpg?s=612x612&w=0&k=20&c=pee_hk8ZXj4HVeitj8ASOQ1qCPhIZI18WcoDIkMe2BU=`} variant={student.variant} />
-          ))}
+          {studentList.map((student) => {
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`;
+            return (
+              <ListStudents
+                key={student.student_id}
+                name={student.name}
+                picture={avatarUrl}
+                variant={student.variant}
+              />
+            );
+          })}
         </div>
-        <div className="w-full">
-          <StudentPoster
-            students={studentList}
-            currentIndex={currentIndex}
-            onStudentUpdate={updateStudentStatus}
-            setCurrentIndex={setCurrentIndex}
-            date={date}
-          />
+
+        <div className="w-full pt-2">
+          {currentIndex < studentList.length && (
+            <StudentPoster
+              students={studentList}
+              imageUrl={`https://ui-avatars.com/api/?name=${encodeURIComponent(studentList[currentIndex].name)}&background=random`}
+              currentIndex={currentIndex}
+              onStudentUpdate={updateStudentStatus}
+              setCurrentIndex={setCurrentIndex}
+              date={date}
+            />
+          )}
+
           <div className="flex justify-around mt-2">
             <DatePickerDemo date={date} setDate={setDate} />
           </div>
+
           <div className="flex justify-around mt-2">
             <Button onClick={handleAddCall} size="medium">
               Finalizar Chamada

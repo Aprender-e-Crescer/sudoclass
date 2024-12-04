@@ -33,7 +33,7 @@ export function Authenticated() {
         <Header avatarFallBack="" avatarImage={avatarpng} />
         <div className="flex">
           <LeftMenu type={type} />
-          <div className="flex-1 ml-5">
+          <div className="flex-1">
             <Outlet />
           </div>
         </div>

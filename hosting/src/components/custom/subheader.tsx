@@ -98,7 +98,7 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
   }
 
   return (
-    <div className="flex pb-2 justify-center">
+    <div className="flex pb-2 justify-center border-b-2">
       <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">{content}</ul>
     </div>
   )
