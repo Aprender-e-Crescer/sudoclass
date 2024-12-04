@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 
 interface SubHeaderProps {
-  hasPrivilege?: 'teacher' | 'student' | 'pedagogue'
+  hasPrivilege?: 'teacher' | 'student' | 'pedagogue' | 'requests'
 }
 
 export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
@@ -95,10 +95,25 @@ export function SubHeader({ hasPrivilege = 'student' }: SubHeaderProps) {
         </li>
       </>
     )
+  } else if (hasPrivilege === 'requests') {
+    content = (
+      <>
+        <li>
+          <Link to="/password-change-request" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
+            Solicitações de troca de senha
+          </Link>
+        </li>
+        <li>
+          <Link to="/justifications" onClick={handleClick} className="menu-link cursor-pointer text-gray-500">
+            justificativas de falta
+          </Link>
+        </li>
+      </>
+    )
   }
 
   return (
-    <div className="flex pb-2 justify-center border-b-2">
+    <div className="flex pb-2 justify-center border-b mt-2">
       <ul className="flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide">{content}</ul>
     </div>
   )

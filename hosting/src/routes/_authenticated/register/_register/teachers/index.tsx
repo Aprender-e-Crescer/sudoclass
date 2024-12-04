@@ -5,7 +5,7 @@ import { registerTeacherSchema } from '@/models/teachers-schema'
 import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
-import { When } from 'react-if'
+import { Else, If, Then, When } from 'react-if'
 import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -92,7 +92,7 @@ export function TeachersListing() {
 
   return (
     <>
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 mt-2">
         <div className="flex sm:flex-row flex-col justify-between items-center">
           <h1 className="text-2xl font-bold">Professores</h1>
           <Link to="/register/teachers" search={{ action: 'create' }}>
@@ -261,31 +261,22 @@ export function TeachersListing() {
                     label="birthCity"
                     customStyleInput="rounded-lg border-2 p-[6px]"
                   />
-                  {/* <InputForm
-                    title="Senha"
-                    placeholder="Senha padrão para o professor"
-                    id="password"
-                    name="password"
-                    label="password"
-                    customStyleInput="rounded-lg border-2 p-[6px]"
-                  />
-
-                  <InputForm
-                    title="Ementa"
-                    placeholder="Conteudo da ementa"
-                    id="attachDocuments"
-                    name="attachDocuments"
-                    label="attachDocuments"
-                  /> */}
                   <div className="flex justify-center gap-5">
                     <Link to="/register/teachers">
                       <Button variant="ghostBlack" size="large" className="w-64">
                         Cancelar
                       </Button>
                     </Link>
-                    <Button variant="blueButton" size="large" className="w-64">
-                      Cadastrar
-                    </Button>
+                    <If condition={action === 'create'}>
+                      <Then>
+                        <Button variant="blueButton" size="large" className="w-64">
+                          Cadastrar
+                        </Button>
+                      </Then>
+                      <Else>
+                        <Button variant="blueButton">Editar</Button>
+                      </Else>
+                    </If>
                   </div>
                 </div>
               </Form>

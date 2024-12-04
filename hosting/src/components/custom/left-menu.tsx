@@ -34,7 +34,7 @@ const menuItemsStudentPortal = [
 const menuItemsAdminPortal = [
   { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
   { name: 'Formulário', icon: FormInput, to: '/admin/forms' },
-  { name: 'Solicitações', icon: MessageSquareLock, to: '/_requests/password-change-request' },
+  { name: 'Solicitações', icon: MessageSquareLock, to: '/password-change-request' },
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
   { name: 'Cadastro', icon: User, to: '/register' },
 ]
