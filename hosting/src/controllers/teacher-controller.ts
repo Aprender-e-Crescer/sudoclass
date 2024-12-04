@@ -8,6 +8,7 @@ export function useRegisterTeacherController() {
   const queryClient = useQueryClient()
   const { mutateAsync: registerTeacher } = useRegisterTeacherMutation({
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teachers'] }),
       toast({
         title: 'Sucesso!',
         duration: 2000,
@@ -27,6 +28,7 @@ export function useRegisterTeacherController() {
 
   const { mutateAsync: updateTeacher } = useUpdateTeacherMutation({
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teachers'] }),
       toast({
         title: 'Sucesso!',
         duration: 2000,
