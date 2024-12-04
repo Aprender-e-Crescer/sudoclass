@@ -1,18 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
-import { chartsSchema, Charts } from '@/models/chart-schema'
+import { chartsSchema } from '@/models/chart-schema'
+import { api } from '@/services/api'
+import { z } from 'zod'
 
-export function useChartsQuery() {
+export function useChartsQuery(idClass: string) {
   return useQuery({
-    queryKey: ['getCharts'],
+    queryKey: ['getCharts', idClass],
     queryFn: async () => {
-      const chartsRef = collection(firestore, 'charts').withConverter({
-        toFirestore: (charts: Charts) => charts,
-        fromFirestore: (snapshot) => chartsSchema.parse({ ...snapshot.data(), id: snapshot.id}),
-      })
-      const snapshot = await getDocs(chartsRef)
-      return snapshot.docs.map((doc) => doc.data())
+      const { data } = await api.get(`/alunos/nota/${idClass}`)
+      const chartData = z.array(chartsSchema).parse(data)
+
+      return chartData
     },
   })
 }
