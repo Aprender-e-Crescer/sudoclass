@@ -10,6 +10,7 @@ import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import avatar from '@/assets/avatar.png'
+import { X } from 'lucide-react'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -41,7 +42,7 @@ const initialValues = {
 }
 
 function useLogic() {
-  const { registerTeacher, updateTeacher } = useRegisterTeacherController()
+  const { registerTeacher, updateTeacher, deleteTeacher } = useRegisterTeacherController()
   const { action, idTeacher } = Route.useSearch()
   const { data: registerRequests } = useTeachersListingQuery()
 
@@ -83,11 +84,11 @@ function useLogic() {
     })
   }
 
-  return { registerRequests, action, handleOnCreateOrEditSubmit }
+  return { registerRequests, action, handleOnCreateOrEditSubmit, deleteTeacher }
 }
 
 export function TeachersListing() {
-  const { registerRequests, action, handleOnCreateOrEditSubmit } = useLogic()
+  const { registerRequests, action, handleOnCreateOrEditSubmit, deleteTeacher } = useLogic()
 
   return (
     <>
@@ -119,6 +120,7 @@ export function TeachersListing() {
                     <p>{fullName}</p>
                   </div>
                 </Link>
+                <X onClick={() => deleteTeacher(idTeacher)} className="cursor-pointer" />
               </div>
             ))}
           </div>
