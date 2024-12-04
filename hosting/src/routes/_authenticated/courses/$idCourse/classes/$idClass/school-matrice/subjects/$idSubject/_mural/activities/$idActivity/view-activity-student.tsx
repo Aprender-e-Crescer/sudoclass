@@ -1,36 +1,33 @@
-import { createFileRoute } from '@tanstack/react-router'
-import NoteValue from '@/components/custom/note-value'
-import AttachmentView from '@/components/custom/attachment-view'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { ArrowLeft, ChevronUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import ModalUpload from '@/components/custom/modal-upload'
-import { useGetActivityQuery } from '@/queries/use-get-activity-query'
-import { format } from 'date-fns'
-import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
+import { createFileRoute } from '@tanstack/react-router';
+import NoteValue from '@/components/custom/note-value';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ArrowLeft, ChevronUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useState } from 'react';
+import { useGetActivityQuery } from '@/queries/use-get-activity-query';
+import { format } from 'date-fns';
+import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query';
+import { useCurrentUserQuery } from '@/queries/use-current-user-query';
+import { useGetUserQuery } from '@/queries/use-get-user-query';
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
 )({
   component: ViewActivityStudent,
-})
+});
 
 export function ViewActivityStudent() {
-  const [openModal, setOpoenModal] = useState<boolean>(false)
-  const { idActivity } = Route.useParams()
-  const { data: activity } = useGetActivityQuery(Number(idActivity))
-  const currentUser = useCurrentUserQuery()
-  const { data: user } = useGetUserQuery(currentUser?.data?.uid)
-  const { data: notes } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent))
+  const { idActivity } = Route.useParams();
+  const { data: activity } = useGetActivityQuery(Number(idActivity));
+  const currentUser = useCurrentUserQuery();
+  const { data: user } = useGetUserQuery(currentUser?.data?.uid);
+  const { data: notes } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent));
+  const [savedLink, setSavedLink] = useState<string | null>(null);
 
   return (
     <>
-      <ModalUpload hasInput={false} onOpenChange={setOpoenModal} open={openModal} />
-
-      <div className=" flex flex-col md:hidden">
+      <div className="flex flex-col md:hidden">
         <div className="flex flex-col mx-5 gap-3">
           <ArrowLeft className="mt-4 text-gray-400" />
           <p className="text-gray-500 text-xs">
@@ -38,13 +35,17 @@ export function ViewActivityStudent() {
           </p>
           <p className="text-blue-600 text-2xl font-semibold">{activity?.title}</p>
           <div className="flex text-gray-500">
-            <NoteValue note={0} maxGrade={Number(activity?.value)} />
+            <NoteValue note={notes?.nota} maxGrade={Number(activity?.value)} />
           </div>
-          <div className=" w-full h-0.5 bg-gray-400"></div>
-          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos{activity?.attachment}</h1>
-          <AttachmentView url="" imageUrl="" title="" linkText="" />
+          <div className="w-full h-0.5 bg-gray-400"></div>
+          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
+          <div>
+            <a href={activity?.attachment || undefined}>
+              <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{activity?.attachment}</h1>
+            </a>
+          </div>
 
-          <div className=" w-full h-0.5 bg-gray-400"></div>
+          <div className="w-full h-0.5 bg-gray-400"></div>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <div className="w-full">
@@ -57,19 +58,25 @@ export function ViewActivityStudent() {
                   </div>
                 </AccordionTrigger>
               </div>
-              <div className=" w-full h-full">
+              <div className="w-full h-full">
                 <AccordionContent>
-                  <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus anexos</h1>
-                  <div className="flex flex-col w-full gap-3">
-                    <AttachmentView url="" imageUrl="" title="" linkText="" />
+                  <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus Anexos</h1>
+                  <div>
+                    {savedLink ? (
+                      <a href={savedLink} target="_blank" rel="noopener noreferrer">
+                        <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{savedLink}</h1>
+                      </a>
+                    ) : (
+                      <p className="text-gray-500">Nenhum anexo adicionado.</p>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-5 mt-5">
-                    <Button variant="lightTextBlack" className="w-full" onClick={() => setOpoenModal(true)}>
-                      + Adicionar trabalho
+                    <Button variant="lightTextBlack" className="w-full">
+                      <AddWorkPopover setSavedLink={setSavedLink} />
                     </Button>
-                    <Button variant="blueButton" className=" w-full">
-                      Enviar novamente
+                    <Button variant="blueButton" className="w-full">
+                      Enviar
                     </Button>
                   </div>
                 </AccordionContent>
@@ -90,30 +97,77 @@ export function ViewActivityStudent() {
           <div className="flex text-gray-500">
             <NoteValue note={notes?.nota} maxGrade={Number(activity?.value)} />
           </div>
-          <div className=" w-full h-0.5 bg-gray-300"></div>
-          <div className="flex flex-col gap-10">
+          <div className="w-full h-0.5 bg-gray-300"></div>
+          <div className="flex flex-col gap-4">
             <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
-            <div className=" w-full h-0.5 bg-gray-300"></div>
+            <div>
+              <a href={activity?.attachment || undefined}>
+                <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{activity?.attachment}</h1>
+              </a>
+            </div>
+            <div className="w-full h-0.5 bg-gray-300"></div>
           </div>
         </div>
         <div className="flex flex-col w-1/3 border mx-10 p-5 rounded-lg">
-          <h1 className="flex text-lg font-bold text-gray-600">Seus trabalhos</h1>
-          <div className="flex flex-col w-full gap-3">
-            <AttachmentView url="" imageUrl="" title="" linkText="" />
-            <AttachmentView url="" imageUrl="" title="" linkText="" />
+          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus Anexos</h1>
+          <div>
+            {savedLink ? (
+              <a href={savedLink} target="_blank" rel="noopener noreferrer">
+                <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{savedLink}</h1>
+              </a>
+            ) : (
+              <p className="text-gray-500">Nenhum anexo adicionado.</p>
+            )}
           </div>
           <div className="flex flex-col mt-6">
             <div className="flex flex-col gap-5">
-              <Button variant="lightTextBlack" className="w-full" onClick={() => setOpoenModal(true)}>
-                + Adicionar trabalho
-              </Button>
-              <Button variant="blueButton" className=" w-full">
-                Enviar novamente
+              <AddWorkPopover setSavedLink={setSavedLink} />
+
+              <Button variant="blueButton" className="w-full">
+                Enviar
               </Button>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
+}
+
+function AddWorkPopover({ setSavedLink }: { setSavedLink: React.Dispatch<React.SetStateAction<string | null>> }) {
+  const [tempLink, setTempLink] = useState('');
+
+  const handleSaveLink = () => {
+    setSavedLink(tempLink);
+    setTempLink(''); // Limpa o campo após salvar
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="lightTextBlack" className="w-full">
+          + Adicionar trabalho
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-96">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h1 className="font-medium leading-none">Insira um link abaixo</h1>
+          </div>
+          <div className="grid gap-2">
+            <input
+              type="text"
+              placeholder="Digite um link"
+              className="border rounded-sm w-full p-2"
+              value={tempLink}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTempLink(e.target.value)}
+            />
+            <Button size="medium" onClick={handleSaveLink}>
+              Salvar
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 }
