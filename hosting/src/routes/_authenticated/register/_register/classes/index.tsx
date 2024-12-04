@@ -85,22 +85,21 @@ export function ClassList() {
             data-no-action={!action}
           >
             {classes?.map(({ name, id_turma }, index) => (
-              <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
-                <p className="border rounded-xl p-3 flex justify-between">
-                  {name}
-                  <div className="flex gap-2">
-                    <AlertDialogComponent
-                      title="Deseja excluir a turma?"
-                      cancelButtonValue="Excluir"
-                      variantCancelButton="blueButton"
-                      onClick={() => deleteClass(id_turma)}
-                    />
-                    <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }}>
-                      <Pencil className="border rounded text-zinc-500 w-8 h-8 cursor-pointer" />
-                    </Link>
-                  </div>
-                </p>
-              </div>
+              <Link to="/register/classes" search={{ action: 'edit', idTurma: id_turma }}>
+                <div key={index} className="flex flex-col gap-10 min-w-96 w-full">
+                  <p className="border rounded-xl p-3 flex justify-between">
+                    {name}
+                    <div className="flex gap-2">
+                      <AlertDialogComponent
+                        title="Deseja excluir a turma?"
+                        cancelButtonValue="Excluir"
+                        variantCancelButton="blueButton"
+                        onClick={() => deleteClass(id_turma)}
+                      />
+                    </div>
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
           <When condition={!!action}>
@@ -111,6 +110,13 @@ export function ClassList() {
             >
               <Form className="flex flex-1">
                 <div className="flex flex-1 flex-col border p-2 rounded-lg">
+                  <div className="flex flex-col flex-1 justify-end items-end">
+                    <Link to="/charts" search={{ idClass: idTurma }}>
+                      <Button variant="blueButton" size="large" className="w-64">
+                        Estatisticas da turma
+                      </Button>
+                    </Link>
+                  </div>
                   <InputForm title="Turmas" id="class" name="class" label="class" placeholder="Nome Da Turma" />
 
                   <InputForm title="Turno" id="shift" name="shift" label="shift" placeholder="Turno" />
