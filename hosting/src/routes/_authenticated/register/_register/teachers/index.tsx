@@ -11,6 +11,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import avatar from '@/assets/avatar.png'
 import { AlertDialogComponent } from '@/components/custom/alert-dialog'
+import { Loader2 } from 'lucide-react'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -44,7 +45,11 @@ const initialValues = {
 function useLogic() {
   const { registerTeacher, updateTeacher, deleteTeacher } = useRegisterTeacherController()
   const { action, idTeacher } = Route.useSearch()
-  const { data: registerRequests } = useTeachersListingQuery()
+  const {
+    data: registerRequests,
+    isFetching: isFetchingTeachers,
+    isSuccess: isSuccessLoadingTeachers,
+  } = useTeachersListingQuery()
 
   const handleOnCreateOrEditSubmit = (values: typeof initialValues) => {
     if (idTeacher && action === 'edit')
@@ -84,11 +89,25 @@ function useLogic() {
     })
   }
 
-  return { registerRequests, action, handleOnCreateOrEditSubmit, deleteTeacher }
+  return {
+    registerRequests,
+    action,
+    handleOnCreateOrEditSubmit,
+    deleteTeacher,
+    isFetchingTeachers,
+    isSuccessLoadingTeachers,
+  }
 }
 
 export function TeachersListing() {
-  const { registerRequests, action, handleOnCreateOrEditSubmit, deleteTeacher } = useLogic()
+  const {
+    registerRequests,
+    action,
+    handleOnCreateOrEditSubmit,
+    deleteTeacher,
+    isFetchingTeachers,
+    isSuccessLoadingTeachers,
+  } = useLogic()
 
   return (
     <>
@@ -103,35 +122,43 @@ export function TeachersListing() {
         </div>
 
         <div className="flex sm:flex-row flex-col">
-          <div className="flex flex-1 flex-col p-3 data-[isaction=true]:max-w-96" data-isaction={!!action}>
-            {registerRequests?.map(({ fullName, idTeacher }, index) => (
-              <div key={index} className="flex gap-2 justify-between items-center">
-                <Link
-                  to="/register/teachers"
-                  search={{ action: 'edit', idTeacher: idTeacher }}
-                  params={{ idTeacher: idTeacher }}
-                  className="flex flex-col flex-1"
-                >
-                  <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
-                    <Avatar>
-                      <AvatarImage src={avatar} />
-                      <AvatarFallback>carregando...</AvatarFallback>
-                    </Avatar>
-                    <p>{fullName}</p>
+          {isFetchingTeachers && (
+            <div className="flex flex-1 gap-2">
+              <p>Carregando os professores...</p>
+              <Loader2 className="animate-spin" />
+            </div>
+          )}
+          {isSuccessLoadingTeachers && !isFetchingTeachers && (
+            <div className="flex flex-1 flex-col p-3 data-[isaction=true]:max-w-96" data-isaction={!!action}>
+              {registerRequests?.map(({ fullName, idTeacher }, index) => (
+                <div key={index} className="flex gap-2 justify-between items-center">
+                  <Link
+                    to="/register/teachers"
+                    search={{ action: 'edit', idTeacher: idTeacher }}
+                    params={{ idTeacher: idTeacher }}
+                    className="flex flex-col flex-1"
+                  >
+                    <div className="flex gap-x-4 my-2 items-center border p-3 cursor-pointer rounded-sm">
+                      <Avatar>
+                        <AvatarImage src={avatar} />
+                        <AvatarFallback>carregando...</AvatarFallback>
+                      </Avatar>
+                      <p>{fullName}</p>
+                    </div>
+                  </Link>
+                  <div className="flex gap-2">
+                    <AlertDialogComponent
+                      title="Deseja excluir a turma?"
+                      cancelButtonValue="Excluir"
+                      variantCancelButton="blueButton"
+                      onClick={() => deleteTeacher(idTeacher)}
+                    />
                   </div>
-                </Link>
-                <div className="flex gap-2">
-                  <AlertDialogComponent
-                    title="Deseja excluir a turma?"
-                    cancelButtonValue="Excluir"
-                    variantCancelButton="blueButton"
-                    onClick={() => deleteTeacher(idTeacher)}
-                  />
                 </div>
-              </div>
-            ))}
-          </div>
-          <When condition={!!action}>
+              ))}
+            </div>
+          )}
+          <When condition={!!action && isSuccessLoadingTeachers}>
             <Formik
               initialValues={initialValues}
               onSubmit={handleOnCreateOrEditSubmit}

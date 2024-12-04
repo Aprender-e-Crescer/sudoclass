@@ -12,6 +12,7 @@ export function useClassesController() {
         toast({
           title: 'Sucesso!',
           description: 'A turma foi cadastrada.',
+          duration: 2000,
           variant: 'success',
         })
     },
@@ -19,6 +20,7 @@ export function useClassesController() {
       toast({
         title: 'Erro!',
         description: 'Erro ao cadastrar a turma.',
+        duration: 2000,
         variant: 'destructive',
       }),
   })
@@ -28,6 +30,7 @@ export function useClassesController() {
         toast({
           title: 'Sucesso!',
           description: 'A turma foi excluida.',
+          duration: 2000,
           variant: 'success',
         })
     },
@@ -45,6 +48,7 @@ export function useClassesController() {
         toast({
           title: 'Sucesso!',
           description: 'A turma foi atualizada.',
+          duration: 2000,
           variant: 'success',
         })
     },
