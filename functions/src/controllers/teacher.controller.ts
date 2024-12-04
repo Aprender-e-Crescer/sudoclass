@@ -18,7 +18,7 @@ const teachersController = {
       estadodeexpedicaorg,
       estadonascimento,
       cidadedenascimento,
-    } = req.body;
+    } = req.body;    
     try {
       const retorno = await teacherService.createTeacher(
         nome,

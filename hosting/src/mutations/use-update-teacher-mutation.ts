@@ -14,7 +14,7 @@ interface UpdateTeacherPayload {
   rg: string,
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
-  estadonascimento: Date,
+  estadonascimento: string,
   cidadedenascimento: string
 }
 
