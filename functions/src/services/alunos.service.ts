@@ -63,7 +63,6 @@ async function createAluno(
       throw new Error('Erro ao obter o ID do aluno criado.')
     }
 
-  
     resposta = await getStudent(generatedId)
     return resposta
   } catch (error) {
@@ -175,26 +174,25 @@ async function getStudent(id: string): Promise<string> {
   }
 }
 
-async function getDocStudent(id_aluno: string): Promise<string[]> {
+async function getDocStudent(id_aluno: string): Promise<object[] | string> {
   try {
     if (!id_aluno) {
-      throw new Error('ID é obrigatório.')
+      return 'ID é obrigatório.'
     }
 
     const resposta = await db.query(
-      `SELECT nome FROM docalunos WHERE id_aluno = $1`,
+      `SELECT * FROM docalunos WHERE id_aluno = $1`,
       [id_aluno]
     )
 
     if (resposta.rows.length === 0) {
-      throw new Error('Documento do aluno não encontrado.')
+      return `Documentos do aluno não encontrados.`
     }
 
-    const documents = resposta.rows
-    return documents
+    return resposta.rows
   } catch (erro) {
-    console.error('Erro ao buscar o documento:', erro)
-    throw new Error('Erro ao buscar o documento.')
+    console.error('Erro ao buscar os documentos:', erro)
+    return 'Erro ao buscar os documentos.'
   }
 }
 
