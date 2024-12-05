@@ -71,6 +71,7 @@ function RouteComponent() {
   }
 
   if (error) {
+    console.log(error)
     return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
   }
 

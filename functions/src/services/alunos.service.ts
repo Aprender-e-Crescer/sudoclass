@@ -1,20 +1,20 @@
-import { db } from "../config/database";
-import { responsibleService } from "./responsible.service";
+import { db } from '../config/database'
+import { responsibleService } from './responsible.service'
 
 function validateEmail(email: string) {
-  const re = /\S+@\S+\.\S+/;
-  return re.test(email);
+  const re = /\S+@\S+\.\S+/
+  return re.test(email)
 }
 
 function validateRG(RG: string) {
-  const valid = new RegExp(/^(\d{1,2})\.(\d{3})\.(\d{3})-(\d|X|x)$/);
-  return valid.test(RG);
+  const valid = new RegExp(/^(\d{1,2})\.(\d{3})\.(\d{3})-(\d|X|x)$/)
+  return valid.test(RG)
 }
 
 function validarDataNascimento(data: string): boolean {
-  const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/
 
-  return regex.test(data);
+  return regex.test(data)
 }
 
 function validateStudent(
@@ -24,13 +24,13 @@ function validateStudent(
   RG: string,
   datadenascimento: string
 ) {
-  if (nome.length < 4) return false;
-  if (cpf.length < 11) return false;
-  if (!validateEmail(email)) return false;
-  if (!validateRG(RG)) return false;
-  if (!validarDataNascimento(datadenascimento)) return false;
+  if (nome.length < 4) return false
+  if (cpf.length < 11) return false
+  if (!validateEmail(email)) return false
+  if (!validateRG(RG)) return false
+  if (!validarDataNascimento(datadenascimento)) return false
 
-  return true;
+  return true
 }
 
 async function createStudent(
@@ -66,7 +66,7 @@ async function createStudent(
   documentos_responsavel: string
 ): Promise<string> {
   try {
-    let resposta = "";
+    let resposta = ''
     if (
       !id_aluno ||
       !nome ||
@@ -84,10 +84,10 @@ async function createStudent(
       !cidadenascimento ||
       !cpf
     ) {
-      resposta = "Todos os campos são obrigatórios.";
-      return resposta;
+      resposta = 'Todos os campos são obrigatórios.'
+      return resposta
     } else {
-      if (!validateStudent) return (resposta = "O dado enviado é inválido.");
+      if (!validateStudent) return (resposta = 'O dado enviado é inválido.')
       else {
         await db.query(
           `INSERT INTO alunos (
@@ -124,7 +124,7 @@ async function createStudent(
             cidadenascimento,
             cpf,
           ]
-        );
+        )
       }
     }
     responsibleService.createResponsable(
@@ -142,13 +142,13 @@ async function createStudent(
       cpf_responsavel,
       rg_responsavel,
       documentos_responsavel
-    );
+    )
 
-    resposta = await getStudent(id_aluno);
-    return resposta;
+    resposta = await getStudent(id_aluno)
+    return resposta
   } catch (error) {
-    console.error(error);
-    return `Não foi possível cadastrar o Aluno`;
+    console.error(error)
+    return `Não foi possível cadastrar o Aluno`
   }
 }
 
@@ -170,7 +170,7 @@ async function updateStudent(
   cpf: string
 ): Promise<string> {
   try {
-    let resposta = "";
+    let resposta = ''
     if (
       !id_aluno ||
       !nome ||
@@ -188,10 +188,10 @@ async function updateStudent(
       !cidadenascimento ||
       !cpf
     ) {
-      resposta = "Todos os dados são obrigatórios.";
-      return resposta;
+      resposta = 'Todos os dados são obrigatórios.'
+      return resposta
     } else {
-      if (!validateStudent) return (resposta = "O dado enviado é inválido.");
+      if (!validateStudent) return (resposta = 'O dado enviado é inválido.')
       else {
         await db.query(
           `UPDATE alunos
@@ -228,51 +228,51 @@ async function updateStudent(
             cidadenascimento,
             data_nasc,
           ]
-        );
+        )
       }
-      resposta = await getStudent(id_aluno);
-      return resposta;
+      resposta = await getStudent(id_aluno)
+      return resposta
     }
   } catch (error) {
-    console.error("Erro ao atualizar aluno:", error);
-    return "Não foi possível atualizar o aluno";
+    console.error('Erro ao atualizar aluno:', error)
+    return 'Não foi possível atualizar o aluno'
   }
 }
 
 async function getAllStudent(): Promise<string | any[]> {
   try {
-    const resposta = await db.query("SELECT * FROM alunos");
+    const resposta = await db.query('SELECT * FROM alunos')
 
     if (resposta.rows.length === 0) {
-      return "Nenhum aluno encontrado.";
+      return 'Nenhum aluno encontrado.'
     }
-    return resposta.rows;
+    return resposta.rows
   } catch (error) {
-    console.error("Erro ao buscar o aluno:", error);
-    return "Erro ao buscar o aluno";
+    console.error('Erro ao buscar o aluno:', error)
+    return 'Erro ao buscar o aluno'
   }
 }
 
 async function getStudent(id_aluno: string): Promise<string> {
   try {
     if (!id_aluno) {
-      return "ID é obrigatório.";
+      return 'ID é obrigatório.'
     }
 
     const resposta = await db.query(
-      "SELECT * FROM alunos WHERE id_aluno = $1",
+      'SELECT * FROM alunos WHERE id_aluno = $1',
       [parseInt(id_aluno)]
-    );
+    )
 
     if (resposta.rows.length === 0) {
-      return `aluno com ID ${id_aluno} não encontrado.`;
+      return `aluno com ID ${id_aluno} não encontrado.`
     }
 
-    const aluno = resposta.rows[0];
-    return aluno;
+    const aluno = resposta.rows[0]
+    return aluno
   } catch (erro) {
-    console.error("Erro ao buscar aluno:", erro);
-    return "Erro ao buscar aluno.";
+    console.error('Erro ao buscar aluno:', erro)
+    return 'Erro ao buscar aluno.'
   }
 }
 
@@ -283,8 +283,8 @@ async function getDocStudent(id_aluno: string): Promise<object[] | string> {
     }
 
     const resposta = await db.query(
-      `SELECT * FROM docalunos WHERE id_aluno = $1,
-      [id_aluno]`
+      `SELECT * FROM docalunos WHERE id_aluno = $1`,
+      [id_aluno]
     )
 
     if (resposta.rows.length === 0) {
@@ -300,26 +300,26 @@ async function getDocStudent(id_aluno: string): Promise<object[] | string> {
 
 async function deleteStudent(id_aluno: string) {
   try {
-    let resposta = "";
+    let resposta = ''
     if (!id_aluno) {
-      resposta = "Aluno não enontrado";
-      return resposta;
+      resposta = 'Aluno não enontrado'
+      return resposta
     } else {
-      await db.query("DELETE FROM alunos WHERE id_aluno = $1", [
+      await db.query('DELETE FROM alunos WHERE id_aluno = $1', [
         parseInt(id_aluno),
-      ]);
-      return "Aluno removido com seucesso.";
+      ])
+      return 'Aluno removido com seucesso.'
     }
   } catch (error) {
-    console.log(`Erro ao excluir aluno`, error);
-    return `Erro ao excluir aluno`;
+    console.log(`Erro ao excluir aluno`, error)
+    return `Erro ao excluir aluno`
   }
 }
 
-  async function presenceStudent(id_turma:string): Promise<any> {
-    try{
-      const students = await db.query(
-        `SELECT
+async function presenceStudent(id_turma: string): Promise<any> {
+  try {
+    const students = await db.query(
+      `SELECT
               a.id_aluno,
               a.nome,
               AVG(case when c.status = 'true' then 1 else 0 end) AS media_preseca
@@ -334,20 +334,19 @@ async function deleteStudent(id_aluno: string) {
           WHERE
               ta.id_turma = $1
           GROUP BY
-              a.id_aluno, a.nome`, [
-        parseInt(id_turma)
-      ])
-      return students.rows;
-      }
-      catch (error) {
-        console.log(`Erro ao buscar o nome do aluno`, error);
-        return `Erro ao buscar o nome do aluno`;
-      }
-    }
-    async function presenceMateria(id_turma:string): Promise<any> {
-      try{
-        const students = await db.query(
-          `SELECT
+              a.id_aluno, a.nome`,
+      [parseInt(id_turma)]
+    )
+    return students.rows
+  } catch (error) {
+    console.log(`Erro ao buscar o nome do aluno`, error)
+    return `Erro ao buscar o nome do aluno`
+  }
+}
+async function presenceMateria(id_turma: string): Promise<any> {
+  try {
+    const students = await db.query(
+      `SELECT
               c.id_turma,
               c.id_materia,
               COUNT(CASE WHEN c.status = true THEN 1 END) AS presencas,
@@ -365,21 +364,20 @@ async function deleteStudent(id_aluno: string) {
           WHERE
               ta.id_turma = $1
           GROUP BY
-              c.id_turma, c.id_materia`, [
-          parseInt(id_turma)
-        ])
-        return students.rows;
-        }
-        catch (error) {
-          console.log(`Erro ao buscar o nome do aluno`, error);
-          return `Erro ao buscar o nome do aluno`;
-        }
-      }
+              c.id_turma, c.id_materia`,
+      [parseInt(id_turma)]
+    )
+    return students.rows
+  } catch (error) {
+    console.log(`Erro ao buscar o nome do aluno`, error)
+    return `Erro ao buscar o nome do aluno`
+  }
+}
 
-      async function presenceTurma(id_turma:string): Promise<any> {
-        try{
-          const students = await db.query(
-            `SELECT
+async function presenceTurma(id_turma: string): Promise<any> {
+  try {
+    const students = await db.query(
+      `SELECT
                 c.id_turma,
                 COUNT(CASE WHEN c.status = true THEN 1 END) AS presencas,
                 COUNT(*) AS total_chamadas,
@@ -397,21 +395,20 @@ async function deleteStudent(id_aluno: string) {
             WHERE
                 ta.id_turma = $1
             GROUP BY
-                c.id_turma`, [
-            parseInt(id_turma)
-          ])
-          return students.rows;
-          }
-          catch (error) {
-            console.log(`Erro ao buscar o nome do aluno`, error);
-            return `Erro ao buscar o nome do aluno`;
-          }
-        }
-      
-        async function noteStudent(id_turma:string): Promise<any> {
-          try{
-            const students = await db.query(
-              `SELECT 
+                c.id_turma`,
+      [parseInt(id_turma)]
+    )
+    return students.rows
+  } catch (error) {
+    console.log(`Erro ao buscar o nome do aluno`, error)
+    return `Erro ao buscar o nome do aluno`
+  }
+}
+
+async function noteStudent(id_turma: string): Promise<any> {
+  try {
+    const students = await db.query(
+      `SELECT 
                     a.id_aluno,
                     a.nome, 
                     AVG(aa.nota) AS media_nota
@@ -426,16 +423,15 @@ async function deleteStudent(id_aluno: string) {
                 WHERE 
                     ta.id_turma = $1
                 GROUP BY 
-                    a.id_aluno, a.nome`, [
-              parseInt(id_turma)
-            ])
-            return students.rows;
-            }
-            catch (error) {
-              console.log(`Erro ao buscar o nome do aluno`, error);
-              return `Erro ao buscar o nome do aluno`;
-            }
-          }
+                    a.id_aluno, a.nome`,
+      [parseInt(id_turma)]
+    )
+    return students.rows
+  } catch (error) {
+    console.log(`Erro ao buscar o nome do aluno`, error)
+    return `Erro ao buscar o nome do aluno`
+  }
+}
 export const alunoService = {
   noteStudent,
   presenceStudent,
@@ -447,4 +443,4 @@ export const alunoService = {
   getStudent,
   getAllStudent,
   getDocStudent,
-};
+}
