@@ -73,7 +73,7 @@ function useLogic() {
 export function RequestChangePassword() {
   const {toast, formikInputCopyRef, passwords } = useLogic()
   const queryClient = useQueryClient()
-  const { data: user } = usePasswordChangeListingQuery()
+  const { data: users } = usePasswordChangeListingQuery()
   const { mutateAsync: updatePasswordChange} = useUpdatePasswordChangeMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] }),
@@ -94,38 +94,18 @@ export function RequestChangePassword() {
       });
     },
   })
+
+  const [user, setUser] = useState(null);
   
   return (
     <>
-      {user?.map(({ idUser, studentName, subjectName}) => (
-        <div key={idUser} className="flex flex-col flex-1 p-2">
-          <div className="rounded-md border-2 flex p-3 items-center my-5 gap-5">
-            <img className="size-12" src={avatarLogo} />
-            <div>
-              <h1 className="font-bold font-[inter]">{studentName}</h1>
-              <p className="text-gray-300 font-[inter]">Curso: {subjectName}</p>
-            </div>
-            <div className="gap-3 flex ml-auto">
-              <AlertDialog>
-                <AlertDialogTrigger
-                  onClick={() =>
-                    toast({
-                      duration: 1500,
-                      variant: 'sucesss',
-                      title: 'Atualizado com sucesso ✓',
-                    })
-                  }
-                >
-                  <div className="flex border h-8 rounded-md justify-center items-center p-1" onClick={() => updatePasswordChange(idUser)} >
-                    <Check className="text-green-500" />
-                  </div>
-                </AlertDialogTrigger>
+                  <AlertDialog open={!!user}>
                 <AlertDialogContent className="p-9  h-56 w-full">
                   <AlertDialogHeader className="flex text-start flex-row gap-3">
-                    <AlertDialogCancel className="w-10">
+                    <AlertDialogCancel className="w-10" onClick={() => setUser(null)}>
                       <ChevronLeft className="size-8 mt-[13px]" />
                     </AlertDialogCancel>
-                    <AlertDialogTitle className="text-2xl">Nova senha - {studentName}</AlertDialogTitle>
+                    <AlertDialogTitle className="text-2xl">Nova senha - {user?.studentName}</AlertDialogTitle>
                   </AlertDialogHeader>
                   <AlertDialogDescription>Essa será a senha padrão fornecida ao aluno</AlertDialogDescription>
                   <Formik
@@ -142,12 +122,36 @@ export function RequestChangePassword() {
                         placeholder="Sua nova senha"
                         icon={<Key />}
                         isCopyInput
-                        value={passwords[studentName] || 12345678}
+                        value={passwords[user?.studentName] || 12345678}
                       />
                     </Form>
                   </Formik>
                 </AlertDialogContent>
               </AlertDialog>
+      {users?.map(({ idUser, studentName, subjectName}) => (
+        <div key={idUser} className="flex flex-col flex-1 p-2">
+          <div className="rounded-md border-2 flex p-3 items-center my-5 gap-5">
+            <img className="size-12" src={avatarLogo} />
+            
+            <div>
+              <h1 className="font-bold font-[inter]">{studentName}</h1>
+              <p className="text-gray-300 font-[inter]">Curso: {subjectName}</p>
+            </div>
+            <div className="gap-3 flex ml-auto">
+            <div
+                  onClick={() =>{
+                    setUser({idUser, studentName, subjectName})
+                    toast({
+                      duration: 3500,
+                      variant: 'sucesss',
+                      title: 'Atualizado com sucesso ✓',
+                    })
+                  }}
+                >
+                  <div className="flex border h-8 rounded-md justify-center items-center p-1" onClick={() => updatePasswordChange(idUser)} >
+                    <Check className="text-green-500" />
+                  </div>
+                </div>
               <div className="flex border h-8 rounded-md justify-center items-center p-1"  onClick={() => updatePasswordChange(idUser)}>
                 <X className="text-red-700" />
               </div>
