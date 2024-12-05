@@ -3,6 +3,7 @@ import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 export const Route = createFileRoute('/_authenticated/charts')({
   component: () => (
     <div className="mt-3 mb-2">
+      <ul className='flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide mb-4 place-content-center'>
       <li>
         <Link
           to="/charts/$idClass/materia-presences"
@@ -35,6 +36,8 @@ export const Route = createFileRoute('/_authenticated/charts')({
           Presença da turma
         </Link>
       </li>
+      </ul>
+      <hr />
       <Outlet />
     </div>
   ),

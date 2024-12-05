@@ -32,7 +32,6 @@ export const mediumPresenceSchema = z.object({
 })
 
 export const presenceTurmaSchema = z.object({
-  id_aluno: z.number(),
   id_turma: z.number(),
   presencas: z.preprocess((value) => value ? Number(value) : null, z.number().nullable()),
   media_notas: z.preprocess((value) => value ? Number(value) : null, z.number().nullable()),
@@ -41,7 +40,6 @@ export const presenceTurmaSchema = z.object({
 })
 
 export const presenceMateriaSchema = z.object({
-  id_aluno: z.number(),
   id_turma: z.number(),
   id_materia: z.number(),
   presencas: z.preprocess((value) => value ? Number(value) : null, z.number().nullable()),

@@ -119,7 +119,7 @@ export function ClassList() {
               <Form className="flex flex-1">
                 <div className="flex flex-1 flex-col border p-2 rounded-lg">
                   <div className="flex flex-col flex-1 justify-end items-end">
-                    <Link to="/charts" search={{ idClass: idTurma }}>
+                    <Link to="/charts/$idClass/materia-presences" params={{ idClass: idTurma }}>
                       <Button variant="blueButton" size="large" className="w-64">
                         Estatisticas da turma
                       </Button>
