@@ -1,21 +1,24 @@
-import { Student, studentSchema } from '@/models/student-schema'
-import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs } from 'firebase/firestore'
- 
+import { api } from '@/services/api'
+
+export const STUDENTS_QUERY_KEY = ['students']
+
 export function useStudentsListQuery() {
   return useQuery({
-    queryKey: ['students'],
+    queryKey: STUDENTS_QUERY_KEY,
     queryFn: async () => {
-      const studentsRef = collection(firestore, 'students').withConverter({
-        toFirestore: (doc: Student) => doc,
-        fromFirestore: (snapshot) => studentSchema.parse({ ...snapshot.data(), id: snapshot.id }),
-      })
- 
-      const docSnap = await getDocs(studentsRef)
- 
-      return docSnap.docs.map((doc) => doc.data())
+      try {
+        const response = await api.get('/alunos')
+        return response.data || []
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          return [] 
+        }
+        throw error
+      }
     },
+    retry: false, 
+    refetchOnWindowFocus: true,
   })
 }
- 
+

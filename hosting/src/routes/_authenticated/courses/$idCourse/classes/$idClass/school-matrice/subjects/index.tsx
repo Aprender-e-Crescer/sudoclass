@@ -1,7 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { CardSubject } from '@/components/custom/card-subject'
 import { useListSubjectsQuery } from '@/queries/use-list-subjects-query'
 import { CustomLoading } from '@/components/custom/custom-loading'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/')({
   component: HomeListSubjects,
@@ -44,6 +45,22 @@ function HomeListSubjects() {
           backgroundColor={colors[index % colors.length]}
         />
       ))}
+
+      <CardSubject
+        description="Aprender & Crescer"
+        name="PDS"
+        backgroundColor="marrom"
+        id="1"
+        idClass="1"
+        idCourse="1"
+      />
+       <div className="w-full flex justify-center mt-6">
+        <Link to="/add-new-subject">
+          <Button variant="blueButton" size="large">
+            Adicionar Matéria
+          </Button>
+        </Link>
+      </div>
     </div>
   )
 }

@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button'
 import { Formik, Form } from 'formik'
 import { createFileRoute } from '@tanstack/react-router'
 import { IoMdAdd } from 'react-icons/io'
+import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query' // Adicionando a importação da query
 
 export const Route = createFileRoute('/_authenticated/select-teacher')({
-  component: selectTeacher,
+  component: SelectTeacher,
 })
 
 interface Professor {
@@ -14,15 +15,7 @@ interface Professor {
   initials: string
 }
 
-const professores: Professor[] = [
-  { id: 1, name: 'Jane Cooper', initials: 'J' },
-  { id: 2, name: 'Floyd Miles', initials: 'F' },
-  { id: 3, name: 'Ronald Richards', initials: 'R' },
-  { id: 4, name: 'Marvin McKinney', initials: 'M' },
-  { id: 5, name: 'Jerome Bell', initials: 'J' },
-]
-
-export function selectTeacher() {
+export function SelectTeacher() {
   return (
     <Formik
       initialValues={{ text: '' }}
@@ -31,10 +24,7 @@ export function selectTeacher() {
       }}
     >
       {({ handleSubmit }) => (
-        <Form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-5 w-full p-5"
-        >
+        <Form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full p-5">
           <Professores />
         </Form>
       )}
@@ -42,15 +32,17 @@ export function selectTeacher() {
   )
 }
 
-const colors = [
-  'bg-blue-500',
-  'bg-yellow-500',
-  'bg-red-500',
-  'bg-orange-500',
-  'bg-green-500',
-]
-
 const Professores: React.FC = () => {
+  // Usando a query para buscar os professores
+  const { data, isLoading, isError, error } = useTeachersListingQuery()
+
+  // Verificando se os dados estão carregados e validando o tipo dos dados
+  if (isLoading) return <p>Carregando professores...</p>
+  if (isError) return <p>Erro ao carregar professores: {error?.message}</p>
+
+  // Garantindo que data seja um array válido
+  const professores = Array.isArray(data) ? data : []
+
   return (
     <div className="p-6">
       <div className="text-2xl font-semibold flex space-x-14">
@@ -68,22 +60,21 @@ const Professores: React.FC = () => {
       </div>
 
       <ul className="space-y-4">
-        {professores.map((professor, index) => (
-          <ProfessorItem
-            key={professor.id}
-            professor={professor}
-            index={index}
-          />
-        ))}
+        {professores.length > 0 ? (
+          professores.map((professor, index) => (
+            <ProfessorItem key={professor.id} professor={professor} index={index} />
+          ))
+        ) : (
+          <li className="text-gray-500">Nenhum professor encontrado.</li>
+        )}
       </ul>
     </div>
   )
 }
 
-const ProfessorItem: React.FC<{ professor: Professor; index: number }> = ({
-  professor,
-  index,
-}) => {
+const colors = ['bg-blue-500', 'bg-yellow-500', 'bg-red-500', 'bg-orange-500', 'bg-green-500']
+
+const ProfessorItem: React.FC<{ professor: Professor; index: number }> = ({ professor, index }) => {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -97,7 +88,7 @@ const ProfessorItem: React.FC<{ professor: Professor; index: number }> = ({
       >
         {professor.initials}
       </div>
-      <span className="text-gray-800">{professor.name}</span>
+      <span className="text-gray-800">{professor.fullName}</span>
     </li>
   )
 }

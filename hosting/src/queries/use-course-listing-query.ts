@@ -1,7 +1,7 @@
 import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
 
-export function useCourseListingQuery() {
+export function useCursosListingQuery() {
   return useQuery({
     queryKey: ['course'],
     queryFn: async () => {
