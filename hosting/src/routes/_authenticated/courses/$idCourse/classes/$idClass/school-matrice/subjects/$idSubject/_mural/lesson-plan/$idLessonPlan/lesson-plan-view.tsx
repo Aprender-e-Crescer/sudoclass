@@ -1,10 +1,14 @@
+
+
+
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { GenericTableLessonPlanView } from '@/components/custom/generic-table-lesson-plan-view';
 import { createFileRoute } from '@tanstack/react-router';
 import { useListLessonPlan } from '@/queries/use-list-lesson-plan';
 import { LessonPlan } from '@/models/lesson-plan';
+import { LESSON_PLAN_QUERY_KEY } from '@/constants/queries';
 
-// Definindo a rota com apenas o idLessonPlan
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
 )({
@@ -14,13 +18,12 @@ export const Route = createFileRoute(
   },
 });
 
-
-
 export function LessonPlanView() {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const queryClient = useQueryClient(); // React Query Client
 
   const { data: lessonPlans = [], isLoading, isError, error } = useListLessonPlan();
-  console.log(error);
+
   if (isLoading) return <p>Carregando...</p>;
   if (isError) return <p>Erro ao carregar planos de aula</p>;
 
@@ -39,10 +42,23 @@ export function LessonPlanView() {
       </>
     ),
   }));
+
   const toggleRow = (index: number) => {
     setExpandedRows((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
+  };
+
+  const handleDelete = async (lessonPlanId: string) => {
+    try {
+
+      await deleteClass(lessonPlanId);
+
+     
+      queryClient.invalidateQueries({ queryKey: LESSON_PLAN_QUERY_KEY });
+    } catch (error) {
+      console.error('Erro ao excluir o plano de aula:', error);
+    }
   };
 
   const columns = [
@@ -50,7 +66,19 @@ export function LessonPlanView() {
     { header: 'Início', accessor: 'datainicio' },
     { header: 'Fim', accessor: 'datafim' },
     { header: 'Detalhes do Plano', accessor: 'detalhes' },
-    { accessor: 'actions' },
+    {
+      accessor: 'actions',
+      cell: (row: any, rowIndex: number) => (
+        <div>
+          <button
+            onClick={() => handleDelete(row.idLessonPlan)}
+            className="text-red-500 hover:underline"
+          >
+            Excluir
+          </button>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -62,3 +90,11 @@ export function LessonPlanView() {
     />
   );
 }
+function deleteClass(lessonPlanId: string) {
+  throw new Error('Function not implemented.');
+}
+
+
+
+
+
