@@ -39,7 +39,7 @@ export default function StudentGrades() {
   
 
   return (
-    <Card className="w-full">
+    <Card className="w-full px-4">
       <CardHeader className="border-b p-4">
         <CardTitle className="text-lg sm:text-xl font-medium">Média geral</CardTitle>
         <p className="text-xs sm:text-sm text-muted-foreground">Para cada aluno</p>

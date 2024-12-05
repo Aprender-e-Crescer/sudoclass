@@ -6,13 +6,31 @@ import { useQueryClient } from '@tanstack/react-query'
 
 export function useClassesController() {
   const queryClient = useQueryClient()
-  const { mutateAsync: registerClassForm } = useRegisterClassMutation()
+  const { mutateAsync: registerClassForm } = useRegisterClassMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classes'] }),
+        toast({
+          title: 'Sucesso!',
+          description: 'A turma foi cadastrada.',
+          duration: 2000,
+          variant: 'success',
+        })
+    },
+    onError: () =>
+      toast({
+        title: 'Erro!',
+        description: 'Erro ao cadastrar a turma.',
+        duration: 2000,
+        variant: 'destructive',
+      }),
+  })
   const { mutateAsync: deleteClass } = useDeleteClassMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] }),
         toast({
           title: 'Sucesso!',
           description: 'A turma foi excluida.',
+          duration: 2000,
           variant: 'success',
         })
     },
@@ -30,6 +48,7 @@ export function useClassesController() {
         toast({
           title: 'Sucesso!',
           description: 'A turma foi atualizada.',
+          duration: 2000,
           variant: 'success',
         })
     },

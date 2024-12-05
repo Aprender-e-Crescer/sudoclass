@@ -17,15 +17,10 @@ interface MutationResults {
   onError: () => void
 }
 
-interface MutationParams {
-  id: number
-  values: UpdateClassPayload
-}
-
 export function useUpdateClassMutation({ onSuccess, onError }: MutationResults) {
   return useMutation({
     mutationKey: ['update-class'],
-    mutationFn: ({id, values}: MutationParams) => api.put(`/turmas/${id}`, values),
+    mutationFn: (values: UpdateClassPayload) => api.put(`/turmas/${values.idTurma}`, values),
     onSuccess,
     onError,
   })
