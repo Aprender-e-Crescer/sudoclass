@@ -1,176 +1,278 @@
-import { db } from '../config/database'
+import { db } from "../config/database";
+import { responsibleService } from "./responsible.service";
 
-async function createAluno(
-  nomeCompleto: string,
+function validateEmail(email: string) {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
+
+function validateRG(RG: string) {
+  const valid = new RegExp(/^(\d{1,2})\.(\d{3})\.(\d{3})-(\d|X|x)$/);
+  return valid.test(RG);
+}
+
+function validarDataNascimento(data: string): boolean {
+  const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+
+  return regex.test(data);
+}
+
+function validateStudent(
+  nome: string,
+  cpf: string,
   email: string,
-  estadodeexpedicaorg: string,
+  RG: string,
+  datadenascimento: string
+) {
+  if (nome.length < 4) return false;
+  if (cpf.length < 11) return false;
+  if (!validateEmail(email)) return false;
+  if (!validateRG(RG)) return false;
+  if (!validarDataNascimento(datadenascimento)) return false;
+
+  return true;
+}
+
+async function createStudent(
+  id_aluno: string,
+  nome: string,
+  email: string,
+  data_nasc: string,
   estado: string,
   municipio: string,
   rua: string,
-  bairro: number,
-  numero: number,
-  dataDeNascimento: Date,
+  bairro: string,
+  numero: string,
   cpf: string,
   rg: string,
-  dataExpedicaoRg: Date,
-  estadoDeNascimento: string,
-  cidadeDeNascimeto: string
+  datadeexpedicaorg: Date,
+  estadodeexpedicaorg: string,
+  estadonascimento: Date,
+  cidadenascimento: string,
+
+  id_responsavel: string,
+  tipo_responsavel: string,
+  nome_responsavel: string,
+  email_responsavel: string,
+  telefone_responsavel: string,
+  estado_responsavel: string,
+  municipio_responsavel: string,
+  rua_responsavel: string,
+  bairro_responsavel: string,
+  numero_responsavel: string,
+  dataNascimento_responsavel: string,
+  cpf_responsavel: string,
+  rg_responsavel: string,
+  documentos_responsavel: string
 ): Promise<string> {
   try {
-    let resposta = ''
+    let resposta = "";
     if (
-      !nomeCompleto ||
+      !id_aluno ||
+      !nome ||
       !email ||
+      !data_nasc ||
       !estado ||
       !municipio ||
       !rua ||
       !bairro ||
       !numero ||
-      !dataDeNascimento ||
-      !cpf ||
       !rg ||
-      !dataExpedicaoRg ||
-      !estadoDeNascimento ||
+      !datadeexpedicaorg ||
       !estadodeexpedicaorg ||
-      !cidadeDeNascimeto
+      !estadonascimento ||
+      !cidadenascimento ||
+      !cpf
     ) {
-      resposta = 'Todos os campos são obrigatórios para cadastrar o aluno.'
-      return resposta
+      resposta = "Todos os campos são obrigatórios.";
+      return resposta;
+    } else {
+      if (!validateStudent) return (resposta = "O dado enviado é inválido.");
+      else {
+        await db.query(
+          `INSERT INTO alunos (
+                      id_aluno,
+                      nome,
+                      email,
+                      data_nasc,
+                      estado,
+                      municipio,
+                      rua,
+                      bairro,
+                      numero,
+                      rg,
+                      datadeexpedicaorg,
+                      estadodeexpedicaorg,
+                      estadonascimento,
+                      cidadenascimento,
+                      cpf)
+                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+          [
+            parseInt(id_aluno),
+            nome,
+            email,
+            data_nasc,
+            estado,
+            municipio,
+            rua,
+            bairro,
+            numero,
+            rg,
+            datadeexpedicaorg,
+            estadodeexpedicaorg,
+            estadonascimento,
+            cidadenascimento,
+            cpf,
+          ]
+        );
+      }
     }
+    responsibleService.createResponsable(
+      id_responsavel,
+      tipo_responsavel,
+      nome_responsavel,
+      email_responsavel,
+      telefone_responsavel,
+      estado_responsavel,
+      municipio_responsavel,
+      rua_responsavel,
+      bairro_responsavel,
+      numero_responsavel,
+      dataNascimento_responsavel,
+      cpf_responsavel,
+      rg_responsavel,
+      documentos_responsavel
+    );
 
-    const result = await db.query(
-      'INSERT INTO alunos (nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id_aluno',
-      [
-        nomeCompleto,
-        dataDeNascimento,
-        email,
-        estado,
-        municipio,
-        rua,
-        bairro,
-        numero,
-        rg,
-        dataExpedicaoRg,
-        estadodeexpedicaorg,
-        estadoDeNascimento,
-        cidadeDeNascimeto,
-        cpf,
-      ]
-    )
-
-    const generatedId = result.rows[0]?.id_aluno
-    if (!generatedId) {
-      throw new Error('Erro ao obter o ID do aluno criado.')
-    }
-
-    resposta = await getStudent(generatedId)
-    return resposta
+    resposta = await getStudent(id_aluno);
+    return resposta;
   } catch (error) {
-    console.error('Erro ao criar aluno:', error)
-    return 'Erro ao cadastrar aluno'
+    console.error(error);
+    return `Não foi possível cadastrar o Aluno`;
   }
 }
-async function updateAluno(
-  id: string,
-  nomeCompleto: string,
-  cpf: string,
+
+async function updateStudent(
+  id_aluno: string,
+  nome: string,
   email: string,
-  telefone: string,
+  data_nasc: string,
   estado: string,
   municipio: string,
   rua: string,
   bairro: string,
-  numeroDaCasa: number,
-  dataDeNascimento: string,
+  numero: number,
   rg: string,
-  dataExpedicaoRg: string,
-  estadoDeNascimento: string,
-  cidadeDeNascimeto: string
+  datadeexpedicaorg: Date,
+  estadodeexpedicaorg: string,
+  estadonascimento: string,
+  cidadenascimento: string,
+  cpf: string
 ): Promise<string> {
   try {
-    let resposta = ''
+    let resposta = "";
     if (
-      !id ||
-      !nomeCompleto ||
-      !cpf ||
+      !id_aluno ||
+      !nome ||
       !email ||
-      !telefone ||
+      !data_nasc ||
       !estado ||
       !municipio ||
       !rua ||
       !bairro ||
-      !numeroDaCasa ||
-      !dataDeNascimento ||
+      !numero ||
       !rg ||
-      !estadoDeNascimento ||
-      !cidadeDeNascimeto ||
-      !dataExpedicaoRg
+      !datadeexpedicaorg ||
+      !estadodeexpedicaorg ||
+      !estadonascimento ||
+      !cidadenascimento ||
+      !cpf
     ) {
-      resposta = 'Todos os campos são obrigatórios para cadastrar o aluno.'
-      return resposta
+      resposta = "Todos os dados são obrigatórios.";
+      return resposta;
+    } else {
+      if (!validateStudent) return (resposta = "O dado enviado é inválido.");
+      else {
+        await db.query(
+          `UPDATE alunos
+          SET
+            nome = $2,
+            email = $3,
+            estado = $4,
+            municipio = $5,
+            rua = $6,
+            bairro = $7,
+            numero = $8,
+            cpf = $9,
+            rg = $10,
+            datadeexpedicaorg = $11,
+            estadodeexpedicaorg = $12,
+            estadonascimento = $13,
+            cidadenascimento = $14,
+            data_nasc = $15
+          WHERE id_aluno = $1`,
+          [
+            parseInt(id_aluno),
+            nome,
+            email,
+            estado,
+            municipio,
+            rua,
+            bairro,
+            numero,
+            cpf,
+            rg,
+            datadeexpedicaorg,
+            estadodeexpedicaorg,
+            estadonascimento,
+            cidadenascimento,
+            data_nasc,
+          ]
+        );
+      }
+      resposta = await getStudent(id_aluno);
+      return resposta;
     }
-    await db.query(
-      'INSERT INTO alunos (id_aluno, nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
-      [
-        id,
-        nomeCompleto,
-        email,
-        telefone,
-        estado,
-        municipio,
-        rua,
-        bairro,
-        numeroDaCasa,
-        dataDeNascimento,
-        cpf,
-        rg,
-        dataExpedicaoRg,
-        estadoDeNascimento,
-        cidadeDeNascimeto,
-      ]
-    )
-    resposta = await getStudent(id)
-    return resposta
   } catch (error) {
-    console.error('Erro ao atualizar aluno:', error)
-    return 'Erro ao atualizar aluno'
+    console.error("Erro ao atualizar aluno:", error);
+    return "Não foi possível atualizar o aluno";
   }
 }
 
-async function deleteStudent(id: string): Promise<string> {
+async function getAllStudent(): Promise<string | any[]> {
   try {
-    let resposta = ''
-    if (!id) {
-      resposta = 'O id é obrigatório para deletar o aluno.'
-      return resposta
+    const resposta = await db.query("SELECT * FROM alunos");
+
+    if (resposta.rows.length === 0) {
+      return "Nenhum aluno encontrado.";
     }
-    const response = await db.query(
-      'INSERT INTO aluno (id_aluno) VALUES ($1)',
-      [id]
-    )
-    resposta = 'Aluno deletado com sucesso'
-    return response.rows[0], resposta
+    return resposta.rows;
   } catch (error) {
-    console.log(error)
-    return 'Erro ao deletar o aluno'
+    console.error("Erro ao buscar o aluno:", error);
+    return "Erro ao buscar o aluno";
   }
 }
 
-async function getStudent(id: string): Promise<string> {
+async function getStudent(id_aluno: string): Promise<string> {
   try {
-    let resposta = ''
-    if (!id) {
-      resposta = 'ID é obrigatório'
-      return resposta
+    if (!id_aluno) {
+      return "ID é obrigatório.";
     }
-    const response = await db.query(
-      'select * from alunos where id_aluno = $1',
-      [parseInt(id)]
-    )
-    return response.rows[0]
-  } catch (error) {
-    console.error('Erro ao buscar o aluno:', error)
-    return 'Erro ao buscar o aluno'
+
+    const resposta = await db.query(
+      "SELECT * FROM alunos WHERE id_aluno = $1",
+      [parseInt(id_aluno)]
+    );
+
+    if (resposta.rows.length === 0) {
+      return `aluno com ID ${id_aluno} não encontrado.`;
+    }
+
+    const aluno = resposta.rows[0];
+    return aluno;
+  } catch (erro) {
+    console.error("Erro ao buscar aluno:", erro);
+    return "Erro ao buscar aluno.";
   }
 }
 
@@ -181,12 +283,12 @@ async function getDocStudent(id_aluno: string): Promise<object[] | string> {
     }
 
     const resposta = await db.query(
-      `SELECT * FROM docalunos WHERE id_aluno = $1`,
-      [id_aluno]
+      `SELECT * FROM docalunos WHERE id_aluno = $1,
+      [id_aluno]`
     )
 
     if (resposta.rows.length === 0) {
-      return `Documentos do aluno não encontrados.`
+      return 'Documentos do aluno não encontrados.'
     }
 
     return resposta.rows
@@ -196,85 +298,153 @@ async function getDocStudent(id_aluno: string): Promise<object[] | string> {
   }
 }
 
-async function getAllStudents() {
+async function deleteStudent(id_aluno: string) {
   try {
-    const response = await db.query('SELECT * FROM alunos')
-    return response.rows
+    let resposta = "";
+    if (!id_aluno) {
+      resposta = "Aluno não enontrado";
+      return resposta;
+    } else {
+      await db.query("DELETE FROM alunos WHERE id_aluno = $1", [
+        parseInt(id_aluno),
+      ]);
+      return "Aluno removido com seucesso.";
+    }
   } catch (error) {
-    console.error('Erro ao buscar os alunos:', error)
-    return 'Erro ao buscar os alunos'
+    console.log(`Erro ao excluir aluno`, error);
+    return `Erro ao excluir aluno`;
   }
 }
 
+  async function presenceStudent(id_turma:string): Promise<any> {
+    try{
+      const students = await db.query(
+        `SELECT
+              a.id_aluno,
+              a.nome,
+              AVG(case when c.status = 'true' then 1 else 0 end) AS media_preseca
+          FROM
+              alunosturma ta
+          JOIN
+              alunos a
+              ON a.id_aluno = ta.id_aluno
+          JOIN
+              chamada c
+              ON c.id_aluno = ta.id_aluno
+          WHERE
+              ta.id_turma = $1
+          GROUP BY
+              a.id_aluno, a.nome`, [
+        parseInt(id_turma)
+      ])
+      return students.rows;
+      }
+      catch (error) {
+        console.log(`Erro ao buscar o nome do aluno`, error);
+        return `Erro ao buscar o nome do aluno`;
+      }
+    }
+    async function presenceMateria(id_turma:string): Promise<any> {
+      try{
+        const students = await db.query(
+          `SELECT
+              c.id_turma,
+              c.id_materia,
+              COUNT(CASE WHEN c.status = true THEN 1 END) AS presencas,
+              COUNT(*) AS total_chamadas,
+              ROUND((COUNT(CASE WHEN c.status = true THEN 1 END) * 100.0) / COUNT(*), 2) AS percentual_presenca,
+              AVG(aa.nota) AS media_notas -- Média das notas para o aluno
+          FROM
+              alunosturma ta
+          JOIN
+              alunos a ON a.id_aluno = ta.id_aluno
+          JOIN
+              chamada c ON c.id_aluno = ta.id_aluno AND c.id_turma = ta.id_turma
+          JOIN
+              atividade_aluno aa ON aa.id_aluno = ta.id_aluno
+          WHERE
+              ta.id_turma = $1
+          GROUP BY
+              c.id_turma, c.id_materia`, [
+          parseInt(id_turma)
+        ])
+        return students.rows;
+        }
+        catch (error) {
+          console.log(`Erro ao buscar o nome do aluno`, error);
+          return `Erro ao buscar o nome do aluno`;
+        }
+      }
+
+      async function presenceTurma(id_turma:string): Promise<any> {
+        try{
+          const students = await db.query(
+            `SELECT
+                c.id_turma,
+                COUNT(CASE WHEN c.status = true THEN 1 END) AS presencas,
+                COUNT(*) AS total_chamadas,
+                ROUND(
+                (COUNT(CASE WHEN c.status = true THEN 1 END) * 100.0) / COUNT(*), 2) AS percentual_presenca,
+                AVG(aa.nota) AS media_notas -- Média das notas para o aluno
+            FROM
+                alunosturma ta
+            JOIN
+                alunos a ON a.id_aluno = ta.id_aluno
+            JOIN
+                chamada c ON c.id_aluno = ta.id_aluno AND c.id_turma = ta.id_turma
+            JOIN
+                atividade_aluno aa ON aa.id_aluno = ta.id_aluno
+            WHERE
+                ta.id_turma = $1
+            GROUP BY
+                c.id_turma`, [
+            parseInt(id_turma)
+          ])
+          return students.rows;
+          }
+          catch (error) {
+            console.log(`Erro ao buscar o nome do aluno`, error);
+            return `Erro ao buscar o nome do aluno`;
+          }
+        }
+      
+        async function noteStudent(id_turma:string): Promise<any> {
+          try{
+            const students = await db.query(
+              `SELECT 
+                    a.id_aluno,
+                    a.nome, 
+                    AVG(aa.nota) AS media_nota
+                FROM 
+                    alunosturma ta 
+                JOIN 
+                    alunos a 
+                    ON a.id_aluno = ta.id_aluno
+                JOIN 
+                    atividade_aluno aa 
+                    ON aa.id_aluno = ta.id_aluno
+                WHERE 
+                    ta.id_turma = $1
+                GROUP BY 
+                    a.id_aluno, a.nome`, [
+              parseInt(id_turma)
+            ])
+            return students.rows;
+            }
+            catch (error) {
+              console.log(`Erro ao buscar o nome do aluno`, error);
+              return `Erro ao buscar o nome do aluno`;
+            }
+          }
 export const alunoService = {
-  createAluno: (
-    nomeCompleto: string,
-    email: string,
-    estadodeexpedicaorg: string,
-    estado: string,
-    municipio: string,
-    rua: string,
-    bairro: number,
-    numero: number,
-    dataDeNascimento: Date,
-    cpf: string,
-    rg: string,
-    dataExpedicaoRg: Date,
-    estadoDeNascimento: string,
-    cidadeDeNascimeto: string
-  ) =>
-    createAluno(
-      nomeCompleto,
-      email,
-      estadodeexpedicaorg,
-      estado,
-      municipio,
-      rua,
-      bairro,
-      numero,
-      dataDeNascimento,
-      cpf,
-      rg,
-      dataExpedicaoRg,
-      estadoDeNascimento,
-      cidadeDeNascimeto
-    ),
-  updateAluno: (
-    id: string,
-    nomeCompleto: string,
-    cpf: string,
-    email: string,
-    telefone: string,
-    estado: string,
-    municipio: string,
-    rua: string,
-    bairro: string,
-    numeroDaCasa: number,
-    dataDeNascimento: string,
-    rg: string,
-    dataExpedicaoRg: string,
-    estadoDeNascimento: string,
-    cidadeDeNascimeto: string
-  ) =>
-    updateAluno(
-      id,
-      nomeCompleto,
-      cpf,
-      email,
-      telefone,
-      estado,
-      municipio,
-      rua,
-      bairro,
-      numeroDaCasa,
-      dataDeNascimento,
-      rg,
-      dataExpedicaoRg,
-      estadoDeNascimento,
-      cidadeDeNascimeto
-    ),
-  deleteStudent: (id: string) => deleteStudent(id),
-  getStudent: (id: string) => getStudent(id),
-  getAllStudents: () => getAllStudents(),
-  getDocStudent: (id: string) => getDocStudent(id),
-}
+  noteStudent,
+  presenceStudent,
+  presenceMateria,
+  presenceTurma,
+  createStudent,
+  updateStudent,
+  deleteStudent,
+  getStudent,
+  getAllStudent,
+  getDocStudent,
+};
