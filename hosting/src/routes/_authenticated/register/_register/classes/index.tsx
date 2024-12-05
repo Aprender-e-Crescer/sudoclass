@@ -9,7 +9,7 @@ import { Form, Formik } from 'formik'
 import { Else, If, Then, When } from 'react-if'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { z } from 'zod'
-import { Loader2 } from 'lucide-react'
+import { ArrowRightToLine, Loader2 } from 'lucide-react'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -98,13 +98,16 @@ export function ClassList() {
                       <p className="border rounded-xl p-3 flex justify-between">{name}</p>
                     </div>
                   </Link>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     <AlertDialogComponent
                       title="Deseja excluir a turma?"
                       cancelButtonValue="Excluir"
                       variantCancelButton="blueButton"
                       onClick={() => deleteClass(id_turma)}
                     />
+                    <Link to="/courses/1/classes/1/school-matrice/subjects">
+                      <ArrowRightToLine className="cursor-pointer" />
+                    </Link>
                   </div>
                 </div>
               ))}
