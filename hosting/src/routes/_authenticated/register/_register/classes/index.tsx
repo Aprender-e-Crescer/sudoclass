@@ -10,6 +10,8 @@ import { Else, If, Then, When } from 'react-if'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { z } from 'zod'
 import { ArrowRightToLine, Loader2 } from 'lucide-react'
+import { SelectInput } from '@/components/custom/select-input'
+import { useCourseListingQuery } from '@/queries/use-course-listing-query'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -35,6 +37,7 @@ export function ClassList() {
   const { action, idTurma } = Route.useSearch()
   const { registerClassForm, updateClass, deleteClass } = useClassesController()
   const { data: classes, isFetching: isFetchingClasses, isSuccess: isSuccessLoadClasses } = useListClassQuery()
+  const { data: courses } = useCourseListingQuery()
 
   const handleOnClassCreationSubmit = (values: {
     class: string
@@ -174,6 +177,15 @@ export function ClassList() {
                     label="totalVacancies"
                     placeholder="Total de Vagas"
                   />
+                  <div>
+                    Selecione o curso relacionado
+                    <SelectInput
+                      optionsSelectItem={courses?.map((course) => ({
+                        selectOption: course.nome_curso,
+                      }))}
+                      label="course"
+                    />
+                  </div>
 
                   <InputForm title="Ementa" label="attachment" id="menu" name="menu" placeholder="menu" />
 
