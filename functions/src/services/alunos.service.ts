@@ -233,6 +233,100 @@ async function noteStudent(id_turma:string): Promise<any> {
     }
   }
 
+  async function presenceStudent(id_turma:string): Promise<any> {
+    try{
+      const students = await db.query(
+        `SELECT
+              a.id_aluno,
+              a.nome,
+              AVG(case when c.status = 'true' then 1 else 0 end) AS media_preseca
+          FROM
+              alunosturma ta
+          JOIN
+              alunos a
+              ON a.id_aluno = ta.id_aluno
+          JOIN
+              chamada c
+              ON c.id_aluno = ta.id_aluno
+          WHERE
+              ta.id_turma = $1
+          GROUP BY
+              a.id_aluno, a.nome`, [
+        parseInt(id_turma)
+      ])
+      return students.rows;
+      }
+      catch (error) {
+        console.log(`Erro ao buscar o nome do aluno`, error);
+        return `Erro ao buscar o nome do aluno`;
+      }
+    }
+    async function presenceMateria(id_turma:string): Promise<any> {
+      try{
+        const students = await db.query(
+          `SELECT
+              c.id_turma,
+              c.id_materia,
+              COUNT(CASE WHEN c.status = true THEN 1 END) AS presencas,
+              COUNT(*) AS total_chamadas,
+              ROUND((COUNT(CASE WHEN c.status = true THEN 1 END) * 100.0) / COUNT(*), 2) AS percentual_presenca,
+              AVG(aa.nota) AS media_notas -- Média das notas para o aluno
+          FROM
+              alunosturma ta
+          JOIN
+              alunos a ON a.id_aluno = ta.id_aluno
+          JOIN
+              chamada c ON c.id_aluno = ta.id_aluno AND c.id_turma = ta.id_turma
+          JOIN
+              atividade_aluno aa ON aa.id_aluno = ta.id_aluno
+          WHERE
+              ta.id_turma = $1
+          GROUP BY
+              c.id_turma, c.id_materia`, [
+          parseInt(id_turma)
+        ])
+        return students.rows;
+        }
+        catch (error) {
+          console.log(`Erro ao buscar o nome do aluno`, error);
+          return `Erro ao buscar o nome do aluno`;
+        }
+      }
+
+      async function presenceTurma(id_turma:string): Promise<any> {
+        try{
+          const students = await db.query(
+            `SELECT
+                c.id_turma,
+                COUNT(CASE WHEN c.status = true THEN 1 END) AS presencas,
+                COUNT(*) AS total_chamadas,
+                ROUND(
+                (COUNT(CASE WHEN c.status = true THEN 1 END) * 100.0) / COUNT(*), 2) AS percentual_presenca,
+                AVG(aa.nota) AS media_notas -- Média das notas para o aluno
+            FROM
+                alunosturma ta
+            JOIN
+                alunos a ON a.id_aluno = ta.id_aluno
+            JOIN
+                chamada c ON c.id_aluno = ta.id_aluno AND c.id_turma = ta.id_turma
+            JOIN
+                atividade_aluno aa ON aa.id_aluno = ta.id_aluno
+            WHERE
+                ta.id_turma = $1
+            GROUP BY
+                c.id_turma`, [
+            parseInt(id_turma)
+          ])
+          return students.rows;
+          }
+          catch (error) {
+            console.log(`Erro ao buscar o nome do aluno`, error);
+            return `Erro ao buscar o nome do aluno`;
+          }
+        }
+
+    
+
 export const alunoService = {
   createAluno: (
     id: string,
@@ -307,4 +401,7 @@ export const alunoService = {
   getAllStudents: () => getAllStudents(),
   getDocStudent: (id: string) => getDocStudent(id),
   noteStudent,
+  presenceStudent,
+  presenceMateria,
+  presenceTurma,
 }
