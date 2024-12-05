@@ -45,7 +45,7 @@ async function createTeacher(
   rg: string,
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
-  estadonascimento: Date,
+  estadonascimento: string,
   cidadedenascimento: string
 ) {
   try {
@@ -70,10 +70,15 @@ async function createTeacher(
       return resposta;
     }
 
+    let result = await db.query('SELECT COALESCE(MAX(id_professor), 0) + 1 AS next_id_professor FROM professor');
+    let id_professor = result.rows[0].next_id_professor;
+
+
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
     else {
       await db.query(
         `INSERT INTO professor(
+              id_professor,
               nome, 
               datanasc,
               email,
@@ -88,9 +93,9 @@ async function createTeacher(
               estadodeexpedicaorg,
               estadonascimento,
               cidadedenascimento) 
-              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-              RETURNING id_professor`,
+              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
         [
+          id_professor,
           nome,
           datanasc,
           email,
@@ -108,6 +113,7 @@ async function createTeacher(
         ]
       );
     }
+    return await getTeacher(id_professor)
   } catch (error) {
     console.error(error);
     return `Não foi possível cadastrar o professor`;
@@ -270,7 +276,7 @@ export const teacherService = {
     rg: string,
     datadeexpedicaorg: Date,
     estadodeexpedicaorg: string,
-    estadonascimento: Date,
+    estadonascimento: string,
     cidadedenascimento: string
   ) =>
     createTeacher(

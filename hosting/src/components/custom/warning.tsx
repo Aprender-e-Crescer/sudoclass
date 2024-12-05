@@ -11,7 +11,7 @@ interface WarningProps {
   date: string
   comment: string
   textAvatar?: string
-  avatarSrc: string | ArrayBuffer
+  avatarSrc?: string
 }
 
 export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: WarningProps) {

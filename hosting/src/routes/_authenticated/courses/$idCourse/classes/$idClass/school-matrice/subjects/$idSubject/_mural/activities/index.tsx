@@ -19,6 +19,10 @@ export function ListActivity() {
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
+  function capitalizeFirstLetter(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+  }
+
   if (isLoading)
     return (
       <>
@@ -33,8 +37,7 @@ export function ListActivity() {
     <>
       <div className="min-h-screen overflow-y-hidden w-full">
         <div className="flex flex-col md:flex-row overflow-hidden">
-          <div className="flex flex-col w-full mx-24 h-auto p-2 md:p-4 overflow-hidden">
-            <div className="border-t -ml-4 border-gray-300 my-2 relative -mr-10"></div>
+          <div className="flex flex-col w-full md:mx-24 h-auto p-2 md:p-4 overflow-hidden">
             {user?.type === 'professor' && (
               <div>
                 <Link
@@ -72,10 +75,10 @@ export function ListActivity() {
                           idClass={idClass}
                           idCourse={idCourse}
                           idSubject={idSubject}
-                          title={activity.title}
+                          title={capitalizeFirstLetter(activity.title)}
                           instruction={activity.instruction}
                           type={user?.type ?? 'aluno'}
-                          assigned={0}
+                          assigned={3}
                           pending={26}
                           dateActivity={
                             activity.datePosting

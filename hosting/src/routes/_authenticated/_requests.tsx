@@ -1,3 +1,4 @@
+import { SubHeader } from '@/components/custom/subheader'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/_requests')({
@@ -5,5 +6,10 @@ export const Route = createFileRoute('/_authenticated/_requests')({
 })
 
 export function Requests() {
-  return <Outlet />
+  return (
+    <div className="flex flex-col flex-1">
+      <SubHeader hasPrivilege="requests" />
+      <Outlet />
+    </div>
+  )
 }

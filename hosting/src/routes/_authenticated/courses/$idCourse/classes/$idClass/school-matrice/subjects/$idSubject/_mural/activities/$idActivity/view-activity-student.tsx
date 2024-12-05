@@ -1,12 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 import NoteValue from '@/components/custom/note-value'
-import AttachmentView from '@/components/custom/attachment-view'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { ArrowLeft, ChevronUp, MessageSquareMore } from 'lucide-react'
+import { ArrowLeft, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useState } from 'react'
-import ModalUpload from '@/components/custom/modal-upload'
-import { CommentActivity } from '@/components/custom/comment-activity'
+import { useGetActivityQuery } from '@/queries/use-get-activity-query'
+import { format } from 'date-fns'
+import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
+import { useGetUserQuery } from '@/queries/use-get-user-query'
+import { useUpdateLinkActivityMutation } from '@/mutations/use-update-link-activity-mutation'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
@@ -15,76 +19,34 @@ export const Route = createFileRoute(
 })
 
 export function ViewActivityStudent() {
-  const [inputValue, setInputValue] = useState<string>('')
-  const [comments, setComments] = useState<{ id: number; sendBy: string; text: string }[]>([])
-  const [openModal, setOpoenModal] = useState<boolean>(false)
-
-  const handleSubmitComment = () => {
-    if (inputValue.trim() === '') {
-      return
-    }
-
-    const newComment = {
-      id: Date.now(),
-      sendBy: 'Samuel Molinari',
-      text: inputValue,
-    }
-
-    setComments((prev) => [...prev, newComment])
-    setInputValue('')
-  }
+  const { idActivity } = Route.useParams()
+  const { data: activity } = useGetActivityQuery(Number(idActivity))
+  const currentUser = useCurrentUserQuery()
+  const { data: user } = useGetUserQuery(currentUser?.data?.uid)
+  const { data: notes } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent))
+  const [savedLink, setSavedLink] = useState<string | null>(null)
 
   return (
     <>
-      <ModalUpload hasInput={false} onOpenChange={setOpoenModal} open={openModal} />
-
-      <div className=" flex flex-col md:hidden">
+      <div className="flex flex-col md:hidden">
         <div className="flex flex-col mx-5 gap-3">
           <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-gray-500 text-xs">Prazo: Prazo da atv</p>
-          <p className="text-blue-600 text-2xl font-semibold">Titulo da atv</p>
+          <p className="text-gray-500 text-xs">
+            Prazo: {activity?.deliveryDate ? format(activity.deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
+          </p>
+          <p className="text-blue-600 text-2xl font-semibold">{activity?.title}</p>
           <div className="flex text-gray-500">
-            <NoteValue note={20} maxGrade={100} />
+            <NoteValue note={notes?.nota} maxGrade={Number(activity?.value)} />
           </div>
-
-          <div className="flex flex-col gap-4 ">
-            <div className="flex gap-5">
-              <MessageSquareMore className="text-gray-400" />
-              <p className="font-semibold text-gray-400">Comentários da turma</p>
-            </div>
-            <h1 className="text-gray-400">Comentários</h1>
-
-            <div className="flex flex-col gap-4 max-h-44 overflow-auto">
-              {comments.map((comment) => (
-                <CommentActivity mensagem={comment.text} sendBy={comment.sendBy} id_comentario={1} />
-              ))}
-            </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                handleSubmitComment()
-              }}
-              className="flex justify-center items-center gap-x-3"
-            >
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Escreva seu comentário"
-                className="flex-grow border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500"
-              />
-              <Button type="submit" variant="blueButton" size="medium">
-                Enviar
-              </Button>
-            </form>
-          </div>
-
-          <div className=" w-full h-0.5 bg-gray-400"></div>
-          <p className="text-gray-400 text-sm ">Clique no link abaixo para iniciar o jogo</p>
+          <div className="w-full h-0.5 bg-gray-400"></div>
           <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
-          <AttachmentView url="" imageUrl="" title="" linkText="" />
+          <div>
+            <a href={activity?.attachment || undefined}>
+              <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{activity?.attachment}</h1>
+            </a>
+          </div>
 
-          <div className=" w-full h-0.5 bg-gray-400"></div>
+          <div className="w-full h-0.5 bg-gray-400"></div>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <div className="w-full">
@@ -97,20 +59,29 @@ export function ViewActivityStudent() {
                   </div>
                 </AccordionTrigger>
               </div>
-              <div className=" w-full h-full">
+              <div className="w-full h-full">
                 <AccordionContent>
-                  <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus anexos</h1>
-                  <div className="flex flex-col w-full gap-3">
-                    <AttachmentView url="" imageUrl="" title="" linkText="" />
-                    <AttachmentView url="" imageUrl="" title="" linkText="" />
+                  <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus Anexos</h1>
+                  <div>
+                    {savedLink ? (
+                      <a href={savedLink} target="_blank" rel="noopener noreferrer">
+                        <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{savedLink}</h1>
+                      </a>
+                    ) : (
+                      <p className="text-gray-500">Nenhum anexo adicionado.</p>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-5 mt-5">
-                    <Button variant="lightTextBlack" className="w-full" onClick={() => setOpoenModal(true)}>
-                      + Adicionar trabalho
+                    <Button variant="lightTextBlack" className="w-full">
+                      <AddWorkPopover
+                        setSavedLink={setSavedLink}
+                        activityId={Number(idActivity)}
+                        studentId={Number(user?.idStudent)}
+                      />
                     </Button>
-                    <Button variant="blueButton" className=" w-full">
-                      Enviar novamente
+                    <Button variant="blueButton" className="w-full">
+                      Enviar
                     </Button>
                   </div>
                 </AccordionContent>
@@ -123,65 +94,108 @@ export function ViewActivityStudent() {
       <div className="hidden md:flex w-full">
         <div className="flex flex-col mx-5 gap-3 w-full">
           <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-blue-600 text-4xl font-semibold">Titulo da atv</p>
-          <p className="text-gray-500 text-base">Prazo: Prazo da atv</p>
+          <p className="text-blue-600 text-4xl font-semibold">{activity?.title}</p>
+          <p className="text-gray-500 text-base">
+            Prazo: {activity?.deliveryDate ? format(activity.deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
+          </p>
 
           <div className="flex text-gray-500">
-            <NoteValue note={20} maxGrade={100} />
+            <NoteValue note={notes?.nota} maxGrade={Number(activity?.value)} />
           </div>
-          <div className=" w-full h-0.5 bg-gray-300"></div>
-          <div className="flex flex-col gap-10">
+          <div className="w-full h-0.5 bg-gray-300"></div>
+          <div className="flex flex-col gap-4">
             <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
-            <AttachmentView url="" imageUrl="" title="" linkText="" />
-            <div className=" w-full h-0.5 bg-gray-300"></div>
-            <div className="flex gap-5">
-              <MessageSquareMore className="text-gray-400" />
-              <p className="font-semibold text-gray-400">Comentários da turma</p>
+            <div>
+              <a href={activity?.attachment || undefined}>
+                <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{activity?.attachment}</h1>
+              </a>
             </div>
+            <div className="w-full h-0.5 bg-gray-300"></div>
           </div>
-          <div className="flex flex-col gap-4 max-h-44 overflow-auto">
-            {comments.map((comment) => (
-              <CommentActivity mensagem={comment.text} sendBy={comment.sendBy} id_comentario={1} />
-            ))}
-          </div>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              handleSubmitComment()
-            }}
-            className="flex justify-center items-center gap-x-3"
-          >
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Escreva seu comentário"
-              className="flex-grow border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500"
-            />
-            <Button type="submit" variant="blueButton" size="medium">
-              Enviar
-            </Button>
-          </form>
         </div>
         <div className="flex flex-col w-1/3 border mx-10 p-5 rounded-lg">
-          <h1 className="flex text-lg font-bold text-gray-600">Seus trabalhos</h1>
-          <div className="flex flex-col w-full gap-3">
-            <AttachmentView url="" imageUrl="" title="" linkText="" />
-            <AttachmentView url="" imageUrl="" title="" linkText="" />
+          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus Anexos</h1>
+          <div>
+            {savedLink ? (
+              <a href={savedLink} target="_blank" rel="noopener noreferrer">
+                <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{savedLink}</h1>
+              </a>
+            ) : (
+              <p className="text-gray-500">Nenhum anexo adicionado.</p>
+            )}
           </div>
           <div className="flex flex-col mt-6">
             <div className="flex flex-col gap-5">
-              <Button variant="lightTextBlack" className="w-full" onClick={() => setOpoenModal(true)}>
-                + Adicionar trabalho
-              </Button>
-              <Button variant="blueButton" className=" w-full">
-                Enviar novamente
+              <AddWorkPopover
+                setSavedLink={setSavedLink}
+                activityId={Number(idActivity)}
+                studentId={Number(user?.idStudent)}
+              />
+
+              <Button variant="blueButton" className="w-full">
+                Enviar
               </Button>
             </div>
           </div>
         </div>
       </div>
     </>
+  )
+}
+
+function AddWorkPopover({
+  setSavedLink,
+  activityId,
+  studentId,
+}: {
+  setSavedLink: React.Dispatch<React.SetStateAction<string | null>>
+  activityId: number
+  studentId: number
+}) {
+  const [tempLink, setTempLink] = useState('')
+  const { mutateAsync } = useUpdateLinkActivityMutation()
+
+  const handleSaveLink = async () => {
+    try {
+      await mutateAsync({
+        activityId,
+        studentId,
+        attachment: tempLink,
+      })
+      setSavedLink(tempLink)
+      setTempLink('')
+    } catch (error) {
+      console.error('Erro ao salvar link:', error)
+      alert('Erro ao salvar o link.')
+    }
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="lightTextBlack" className="w-full">
+          + Adicionar trabalho
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-96">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h1 className="font-medium leading-none">Insira um link abaixo</h1>
+          </div>
+          <div className="grid gap-2">
+            <input
+              type="text"
+              placeholder="Digite um link"
+              className="border rounded-sm w-full p-2"
+              value={tempLink}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTempLink(e.target.value)}
+            />
+            <Button size="medium" onClick={handleSaveLink}>
+              Salvar
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

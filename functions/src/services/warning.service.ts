@@ -3,7 +3,8 @@ import { db } from '../config/database'
 async function createWarning(
   mensagem: string,
   id_materia: number,
-  id_usuario: number
+  id_usuario: number,
+  criado_por: string
 ): Promise<string> {
   console.log('createWarning chamada')
 
@@ -19,8 +20,8 @@ async function createWarning(
 
   try {
     const result = await db.query(
-      'INSERT INTO aviso (mensagem, id_materia, id_usuario, data_postagem) VALUES ($1, $2, $3, $4) RETURNING id_aviso',
-      [mensagem, id_materia, id_usuario, data_postagem]
+      'INSERT INTO aviso (mensagem, id_materia, id_usuario, data_postagem, criado_por) VALUES ($1, $2, $3, $4, $5) RETURNING id_aviso',
+      [mensagem, id_materia, id_usuario, data_postagem, criado_por]
     )
     return `Aviso criado com sucesso, ID: ${result.rows[0].id_aviso}`
   } catch (error) {
@@ -83,8 +84,12 @@ async function deleteWarning(id_aviso: number): Promise<string> {
 }
 
 export const warningService = {
-  createWarning: (message: string, id_materia: number, id_usuario: number) =>
-    createWarning(message, id_materia, id_usuario),
+  createWarning: (
+    message: string,
+    id_materia: number,
+    id_usuario: number,
+    criado_por: string
+  ) => createWarning(message, id_materia, id_usuario, criado_por),
   updateWarning,
   getWarnings: (subjectId: number) => getWarnings(subjectId),
   deleteWarning,

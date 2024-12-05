@@ -38,6 +38,22 @@ async function getNotesByStudentId(
   }
 }
 
+async function getNotesByActivity(
+  activityId: number,
+  studentId: number
+): Promise<any> {
+  try {
+    const result = await db.query(
+      'SELECT nota FROM atividade_aluno WHERE id_atividade = $1 AND id_aluno = $2',
+      [activityId, studentId]
+    )
+    return result.rows[0]
+  } catch (err) {
+    console.error('Erro ao buscar nota na atividade do aluno:', err)
+    throw new Error('Erro ao buscar notas por atividade')
+  }
+}
+
 async function getNotesBySubject(
   subjectId: number
 ): Promise<
@@ -145,6 +161,8 @@ async function getAverageBySubject(subjectId: number): Promise<number> {
 
 export const notaService = {
   getNotesByStudentId: (studentId: number) => getNotesByStudentId(studentId),
+  getNotesByActivity: (activityId: number, studentId: number) =>
+    getNotesByActivity(activityId, studentId),
   getAverageByStudentAndSubject: (subjectId: number) =>
     getAverageByStudentAndSubject(subjectId),
   getNotesBySubject: (subjectId: number) => getNotesBySubject(subjectId),

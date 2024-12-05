@@ -33,6 +33,7 @@ function AttendanceDropdown({ onJustify }: { onJustify: () => void }) {
 export default function FrenquencyPortalAluno() {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null)
+  const [selectedAttendanceId, setSelectedAttendanceId] = useState<number | null>(null)
 
   const currentUser = useCurrentUserQuery()
   const { data: userData } = useGetUserQuery(currentUser?.data?.uid)
@@ -40,11 +41,11 @@ export default function FrenquencyPortalAluno() {
   const { data: studentAttendance, isLoading, isError } = useGetStudentAttendance(userData?.idStudent)
   const { data: subjectsData } = useGetSubjectsByStudentQuery(userData?.idStudent)
 
-  const handleJustify = () => {
+  const handleJustify = (id_chamada: number) => {
+    setSelectedAttendanceId(id_chamada)
     setOpenModal(true)
   }
 
-  // Adiciona a opção "Todas" ao início da lista de opções
   const options = [
     { selectOption: 'Todas', label: 'Todas' },
     ...(subjectsData?.map((item) => ({
@@ -65,11 +66,15 @@ export default function FrenquencyPortalAluno() {
     {
       header: 'Status',
       accessor: 'status',
-      Cell: (row: any) => (row.status ? <CheckIcon color="green" /> : <AttendanceDropdown onJustify={handleJustify} />),
+      Cell: (row: any) =>
+        row.status ? (
+          <CheckIcon color="green" />
+        ) : (
+          <AttendanceDropdown onJustify={() => handleJustify(row.id_chamada)} />
+        ),
     },
   ]
 
-  // Filtra as presenças baseadas na matéria selecionada
   const filteredAttendance =
     selectedSubject && selectedSubject !== 'Todas'
       ? studentAttendance?.filter((attendance: any) => attendance.subject === selectedSubject)
@@ -97,7 +102,7 @@ export default function FrenquencyPortalAluno() {
           label="Matérias"
           optionsSelectItem={options}
           onChange={(value) => {
-            setSelectedSubject(value) // Atualiza o filtro com a matéria selecionada
+            setSelectedSubject(value)
           }}
         />
 
@@ -105,7 +110,13 @@ export default function FrenquencyPortalAluno() {
           <div className="py-6 sm:px-0">
             <div className="rounded-lg border bg-white overflow-hidden">
               <div className="overflow-x-auto">
-                <ModalUpload open={openModal} onOpenChange={setOpenModal} hasInput={true} />
+                <ModalUpload
+                  open={openModal}
+                  onOpenChange={setOpenModal}
+                  hasInput={true}
+                  id_chamada={selectedAttendanceId}
+                  userId={currentUser?.data?.uid}
+                />
                 <GenericTable data={filteredAttendance ?? []} columns={columns} />
               </div>
             </div>

@@ -33,7 +33,7 @@ export function WallSubjects() {
     console.error('Tipo de usuário não encontrado')
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <CustomLoading message="Carregando usuário" size={70} />
+        <CustomLoading message="Carregando mural" size={70} />
       </div>
     )
   }
@@ -48,6 +48,7 @@ export function WallSubjects() {
         message: values.message,
         userId: user.idUser,
         subjectId: parseInt(idSubject, 10),
+        created_by: userName,
       })
       resetForm()
     } else {
@@ -59,7 +60,7 @@ export function WallSubjects() {
     return (
       <>
         <div className="w-full h-full flex items-center justify-center">
-          <CustomLoading message="Carregando WallSubjects" size={70} />
+          <CustomLoading message="Carregando mural" size={70} />
         </div>
       </>
     )
@@ -110,11 +111,11 @@ export function WallSubjects() {
                 <Warning
                   id={warning.id_aviso}
                   key={warning.id_aviso}
-                  name={userName}
+                  name={warning.criado_por}
                   date={formattedDate}
-                  avatarSrc={currentUserImage.selectedImage || ''}
+                  avatarSrc=""
                   comment={warning.mensagem}
-                  textAvatar="U"
+                  textAvatar={warning?.criado_por?.charAt(0).toUpperCase()}
                 />
               )
             })}

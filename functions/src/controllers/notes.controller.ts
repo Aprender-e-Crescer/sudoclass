@@ -18,6 +18,23 @@ const noteController = {
     }
   },
 
+  getNotesByActivity: async (req: Request, res: Response): Promise<void> => {
+    const activityId = Number(req.params.activityId)
+    const studentId = Number(req.params.studentId)
+
+    try {
+      const notes = await notaService.getNotesByActivity(activityId, studentId)
+      if (typeof notes === 'string') {
+        res.status(400).send(notes) // Em caso de erro, envie um status 400
+      } else {
+        res.status(200).json(notes) // Se a requisição for bem-sucedida, envie as notas
+      }
+    } catch (error) {
+      console.error('Erro ao buscar notas da atividade do aluno:', error)
+      res.status(500).send('Erro ao buscar as notas da atividade do aluno.')
+    }
+  },
+
   getAverageByStudentAndSubject: async (
     req: Request,
     res: Response
