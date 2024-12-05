@@ -37,7 +37,7 @@ export function AlertDialogComponent({
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogTrigger asChild onClick={() => setIsOpen(true)}>
-        <X className="border rounded text-red-500 mr-4 cursor-pointer" width={width} height={height} />
+        <X className="text-red-500 hover:text-red-700 mr-4 cursor-pointer" width={width} height={height} />
       </AlertDialogTrigger>
 
       <AlertDialogContent>
