@@ -155,19 +155,27 @@ async function addSubjectToClass(
 }
 async function studentListBySubject(id_materia: string): Promise<any> {
   try {
-    const response = await db.query(
-      `SELECT p.nome, m.id
-            FROM alunos p
-            INNER JOIN matricula m ON p.id_aluno = m.id_aluno
-            INNER JOIN materiaturma mt ON m.id_materia = mt.id_materia
-            WHERE mt.id_materia = $1`,
-      [id_materia]
-    )
+      const response = await db.query(
+          `SELECT p.id_aluno, p.nome, m.id AS matricula_id, mt.id_materia
+          FROM alunos p
+          INNER JOIN matricula m ON p.id_aluno = m.id_aluno
+          INNER JOIN materiaturma mt ON m.id_materia = mt.id_materia
+          WHERE mt.id_materia = $1`,
+          [id_materia]
+      );
+
+      return response.rows.map((row: any) => ({
+          id: row.matricula_id,
+          student_id: row.id_aluno, 
+          name: row.nome,
+      }));
   } catch (error) {
-    console.error('Erro ao buscar alunos matriculados na materia:', error)
-    throw new Error('Erro ao buscar alunos matriculados na matéria')
+      console.error('Erro ao buscar alunos matriculados na matéria:', error);
+      throw new Error('Erro ao buscar alunos matriculados na matéria');
   }
 }
+
+
 async function subjectsByStudent(id_estudante: string): Promise<any> {
   try {
     const response = await db.query(

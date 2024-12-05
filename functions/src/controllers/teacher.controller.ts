@@ -4,6 +4,7 @@ import { teacherService } from "../services/teacher.service";
 const teachersController = {
   createTeacher: async (req: Request, res: Response): Promise<void> => {
     const {
+      id_professor,
       nome,
       datanasc,
       email,
@@ -21,6 +22,7 @@ const teachersController = {
     } = req.body;
     try {
       const retorno = await teacherService.createTeacher(
+        id_professor,
         nome,
         datanasc,
         email,

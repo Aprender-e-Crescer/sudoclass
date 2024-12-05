@@ -148,7 +148,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
         </div>
       </div>
     )
-  }
-
+  } 
   return null
+
 }

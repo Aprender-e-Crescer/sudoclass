@@ -48,14 +48,14 @@ const LessonPlanController = {
             id_turma,
             id_materia,
             data_aula,
-            datainicio,
-            datafim,
+            inicio_aula,
+            fim_aula,
             conteudoformativo,
             mododeensino,
             recursosdidaticos,
         } = req.body;
-
         const id_planoaula = req.params.id;
+        console.log(req.body);
 
         try {
             const retorno = await lessonPlanService.updateLessonPlan(
@@ -64,13 +64,12 @@ const LessonPlanController = {
                 id_turma,
                 id_materia,
                 data_aula,
-                datainicio,
-                datafim,
+                inicio_aula,
+                fim_aula,
                 conteudoformativo,
                 mododeensino,
                 recursosdidaticos
             );
-
             if (!retorno) {
                 res.status(404).send('Plano de aula não encontrado para atualização.');
             } else {
@@ -124,6 +123,23 @@ const LessonPlanController = {
             });
         }
     },
+    getLessonPlans: async (req: Request, res: Response): Promise<void> => {
+        try {
+            const lessonPlans = await lessonPlanService.getLessonPlans();
+    
+            if (!lessonPlans || lessonPlans.length === 0) {
+                res.status(404).send('Nenhum plano de aula encontrado.');
+            } else {
+                res.status(200).json(lessonPlans);
+            }
+        } catch (error: any) {
+            console.error('Erro ao buscar planos de aula:', error.message || error);
+            res.status(500).json({
+                message: 'Erro ao buscar planos de aula.',
+                details: error.message || 'Erro desconhecido',
+            });
+        }
+    },    
 };
 
 export default LessonPlanController;

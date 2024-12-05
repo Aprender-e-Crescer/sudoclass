@@ -6,5 +6,6 @@ router.post('/lessonPlan', LessonPlanController.createLessonPlan);
 router.put('/lessonPlan/:id', LessonPlanController.updateLessonPlan);
 router.delete('/lessonPlan/:id', LessonPlanController.deleteLessonPlan);
 router.get('/lessonPlan/:id', LessonPlanController.getLessonPlan);
+router.get('/lessonPlans', LessonPlanController.getLessonPlans);
 
 export default router;

@@ -15,7 +15,7 @@ function useSubjectId() {
   return Number(idSubject)
 }
 
-export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex, date }) {
+export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex, date, imageUrl }) {
   const subjectId = useSubjectId()
   const [swipedIndices, setSwipedIndices] = useState([])
   const [callHistory, setCallHistory] = useState([])
@@ -27,7 +27,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
 
   const handleSwipe = async (direction, selectedDate) => {
     if (students && currentIndex >= 0 && currentIndex < students.length) {
-      const studentId = students[currentIndex].id
+      const studentId = students[currentIndex].student_id
       const status = direction === 'right'
 
       const currentDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : new Date().toISOString().split('T')[0]
@@ -84,7 +84,7 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
         console.error('Erro ao excluir a chamada:', error)
       }
 
-      setCurrentIndex(students.findIndex((student) => student.id === lastCall.studentId))
+      setCurrentIndex(students.findIndex((student) => student.student_id === lastCall.studentId))
     }
   }
 
@@ -98,17 +98,16 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
         {currentIndex >= 0 && currentIndex < students.length && (
           <TinderCard
             className="absolute w-full h-full"
-            key={students[currentIndex].id}
+            key={students[currentIndex].student_id}
             onSwipe={(dir) => handleSwipe(dir, date)}
             preventSwipe={['up', 'down']}
           >
             <div className="relative bg-white border-2 w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
               <div className="w-full h-[500px] bg-gray-200 rounded-md mb-4 flex items-center justify-center">
                 <img
-                  src={
-                    'https://media.istockphoto.com/id/1408041355/pt/foto/happy-black-businesswoman-using-a-smartphone-in-a-creative-office.jpg?s=612x612&w=0&k=20&c=pee_hk8ZXj4HVeitj8ASOQ1qCPhIZI18WcoDIkMe2BU='
-                  }
+                  src={imageUrl || 'https://via.placeholder.com/150'}
                   className="w-full h-full object-cover rounded-md"
+                  alt={`Foto de ${students[currentIndex].name}`}
                 />
               </div>
 

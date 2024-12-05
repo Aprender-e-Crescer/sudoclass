@@ -12,7 +12,7 @@ router.delete('/subject/:id', subjectsController.deleteSubject)
 router.get('/subject/:id', subjectsController.getSubjectById)
 router.post('/subject/class/:idTurma', subjectsController.addSubjectToClass)
 router.get(
-  '/subject/studentListBySubject/:id',
+  '/subject/studentlistbysubject/:id',
   subjectsController.studentListBySubject
 )
 router.get(

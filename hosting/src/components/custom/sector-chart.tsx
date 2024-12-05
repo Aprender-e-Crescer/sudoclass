@@ -1,5 +1,5 @@
-import {Label,PolarGrid,PolarRadiusAxis,RadialBar,RadialBarChart} from "recharts"
-import {Card,CardContent,CardFooter} from "@/components/ui/card"
+import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { ChartContainer } from "@/components/ui/chart"
 
 interface Props{
@@ -7,16 +7,16 @@ interface Props{
     browser: string;
     visitors: number;
     fill: string;
-}[]
-chartConfig: {
-  visitors: {
-      label: string;
+  }[];
+  chartConfig: {
+    visitors: {
+        label: string;
+    };
+    safari: {
+        label: string;
+        color: string;
+    };
   };
-  safari: {
-      label: string;
-      color: string;
-  };
-}
   descriptionChart: string;
   endAngle: number;
   innerRadius: number;
@@ -59,26 +59,24 @@ export function SectorChart({
             <RadialBar dataKey="visitors" background cornerRadius={20} />
             <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
             <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
+              content={({ viewBox }) => 
+                viewBox && "cx" in viewBox && "cy" in viewBox && (
+                    <text
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      <tspan
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
+                        className={valueSize}
                       >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className={valueSize}
-                        >
-                          {chartData[0].visitors.toLocaleString()}
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
+                        {chartData[0].visitors.toLocaleString()}
+                      </tspan>
+                    </text>
+                  )
+                }
               />
             </PolarRadiusAxis>
           </RadialBarChart>
