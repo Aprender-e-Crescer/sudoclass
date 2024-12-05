@@ -1,111 +1,44 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { ChartConfig } from '@/components/ui/chart'
-import { SectorChart } from '@/components/custom/sector-chart'
-import { useChartsQuery, useMediumNotesQuery } from '@/queries/use-charts-query'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { z } from 'zod'
-
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  safari: {
-    label: 'Safari',
-    color: '#D9D9D9',
-  },
-} satisfies ChartConfig
+import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/charts')({
-  validateSearch: z.object({
-    idClass: z.number()
-  }),
-  component: ChartsScreen,
-})
-
-function ChartsScreen() {
-  const { idClass } = Route.useSearch()
-  const { data: chartDocs, isLoading, error } = useChartsQuery()
-  const {
-    data: mediumNotes,
-    isLoading: isLoadingMediumNotes,
-    error: errorMediumNotes,
-  } = useMediumNotesQuery(idClass)
-
-  if (isLoading || isLoadingMediumNotes) {
-    return (
-      <div>
-        <h1>Carregando...</h1>
-      </div>
-    )
-  }
-
-  if (error || errorMediumNotes)
-    return (
-      <h1>
-        Erro ao carregar os dados: {error.message ?? errorMediumNotes?.message}
-      </h1>
-    )
-
-  return (
-    <div>
-      <div className="flex flex-wrap justify-center">
-        {chartDocs?.map(
-          ({
-            id,
-            data,
-            descriptionChart,
-            endAngle,
-            innerRadius,
-            outerRadius,
-            polarRadius,
-            valueSize,
-          }) => (
-            <div key={id} className="flex-1 min-w-75 p-2">
-              <SectorChart
-                chartData={data}
-                chartConfig={chartConfig}
-                descriptionChart={descriptionChart}
-                endAngle={endAngle}
-                polarRadius={polarRadius}
-                innerRadius={innerRadius}
-                outerRadius={outerRadius}
-                valueSize={valueSize}
-              />
-            </div>
-          ),
-        )}
-      </div>
-      <Table className="min-w-full mt-16">
-        <TableHeader>
-          <TableRow className="bg-gray-200 text-gray-600  text-md">
-            <TableHead className="py-3 px-6 text-center border-r">
-              Nome
-            </TableHead>
-            <TableHead className="py-3 px-6 text-center border-r">
-              Nota média
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody className="text-md border-b">
-          {mediumNotes?.map(({ id_aluno, media_nota, nome }) => (
-            <TableRow key={id_aluno} className="border-b">
-              <TableCell className="py-3 px-6 text-center border-r border-l">
-                {nome}
-              </TableCell>
-              <TableCell className="py-3 px-6 text-center border-r border-l">
-                {media_nota ?? 'Não foi possível calcular a média'}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+  component: () => (
+    <div className="mt-3 mb-2">
+      <ul className='flex space-x-6 overflow-x-auto whitespace-nowrap scrollbar-hide mb-4 place-content-center'>
+      <li>
+        <Link
+          to="/charts/$idClass/materia-presences"
+          className="menu-link cursor-pointer text-gray-500"
+        >
+          Presença
+        </Link>
+      </li>
+      <li>
+        <Link
+          to="/charts/$idClass/medium-notes"
+          className="menu-link cursor-pointer text-gray-500"
+        >
+          Notas
+        </Link>
+      </li>
+      <li>
+        <Link
+          to="/charts/$idClass/medium-presences"
+          className="menu-link cursor-pointer text-gray-500"
+        >
+          Média de presença
+        </Link>
+      </li>
+      <li>
+        <Link
+          to="/charts/$idClass/turma-presences"
+          className="menu-link cursor-pointer text-gray-500"
+        >
+          Presença da turma
+        </Link>
+      </li>
+      </ul>
+      <hr />
+      <Outlet />
     </div>
-  )
-}
+  ),
+})
