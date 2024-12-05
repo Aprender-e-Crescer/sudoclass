@@ -1,3 +1,4 @@
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Edit, X, ChevronDown, ChevronUp } from "lucide-react";
@@ -13,6 +14,8 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { useLessonPlanController } from "@/controllers/lesson-plan-controller"; // Import the controller
+import { useQueryClient } from "@tanstack/react-query";
+import { LESSON_PLAN_QUERY_KEY } from "@/constants/queries";
 
 export const GenericTableLessonPlanView = ({
   data,
@@ -30,7 +33,7 @@ export const GenericTableLessonPlanView = ({
 
   // Get the deleteClass function from the controller
   const { deleteClass } = useLessonPlanController();
-
+  
   const handleDelete = () => {
     if (selectedRowIndex !== null) {
       const row = data[selectedRowIndex];
@@ -161,3 +164,9 @@ export const GenericTableLessonPlanView = ({
     </>
   );
 };
+
+
+
+
+
+

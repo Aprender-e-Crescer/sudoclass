@@ -13,3 +13,5 @@ export function useListLessonPlan() {
     },
   });
 }
+export { LESSON_PLAN_QUERY_KEY };
+
