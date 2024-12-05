@@ -33,7 +33,6 @@ function validateTeacher(
 }
 
 async function createTeacher(
-  id_professor: string,
   nome: string,
   datanasc: string,
   email: string,
@@ -46,13 +45,12 @@ async function createTeacher(
   rg: string,
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
-  estadonascimento: Date,
+  estadonascimento: string,
   cidadedenascimento: string
-): Promise<string> {
+) {
   try {
     let resposta = "";
     if (
-      !id_professor ||
       !nome ||
       !cpf ||
       !rg ||
@@ -71,6 +69,10 @@ async function createTeacher(
       resposta = "Todos os campos são obrigatórios.";
       return resposta;
     }
+
+    let result = await db.query('SELECT COALESCE(MAX(id_professor), 0) + 1 AS next_id_professor FROM professor');
+    let id_professor = result.rows[0].next_id_professor;
+
 
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
     else {
@@ -93,7 +95,7 @@ async function createTeacher(
               cidadedenascimento) 
               VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
         [
-          parseInt(id_professor),
+          id_professor,
           nome,
           datanasc,
           email,
@@ -111,9 +113,7 @@ async function createTeacher(
         ]
       );
     }
-
-    resposta = await getTeacher(id_professor);
-    return resposta;
+    return await getTeacher(id_professor)
   } catch (error) {
     console.error(error);
     return `Não foi possível cadastrar o professor`;
@@ -264,7 +264,6 @@ async function deleteTeacher(idprofessor: string) {
 
 export const teacherService = {
   createTeacher: (
-    id_professor: string,
     nome: string,
     datanasc: string,
     email: string,
@@ -277,11 +276,10 @@ export const teacherService = {
     rg: string,
     datadeexpedicaorg: Date,
     estadodeexpedicaorg: string,
-    estadonascimento: Date,
+    estadonascimento: string,
     cidadedenascimento: string
   ) =>
     createTeacher(
-      id_professor,
       nome,
       datanasc,
       email,
