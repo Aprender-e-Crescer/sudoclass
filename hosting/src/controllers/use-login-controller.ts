@@ -7,7 +7,7 @@ export function useLoginController() {
   })
   const { mutateAsync: login } = useLoginMutation({
     onSuccess: () => {
-      navigate({ to: '/' })
+      navigate({ to: '/courses/$idcourse/classes/$idclass/school-matrice/subjects/index' })
     },
     onError: (error) => {
       console.error('Erro durante a autenticação:', error.message)
