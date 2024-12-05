@@ -2,7 +2,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 
 interface SubHeaderProps {
-  hasPrivilege?: 'teacher' | 'student' | 'pedagogue'
+  hasPrivilege?: 'professor' | 'aluno' | 'pedagogo'
 }
 
 export function SubHeader({ hasPrivilege }: SubHeaderProps) {
@@ -34,7 +34,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
     }
   }, [location])
 
-  if (hasPrivilege === 'teacher') {
+  if (hasPrivilege === 'professor') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
@@ -80,7 +80,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
         </div>
       </div>
     )
-  } else if (hasPrivilege === 'pedagogue') {
+  } else if (hasPrivilege === 'pedagogo') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
@@ -126,7 +126,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
         </div>
       </div>
     )
-  } else if (hasPrivilege === 'student') {
+  } else if (hasPrivilege === 'aluno') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
