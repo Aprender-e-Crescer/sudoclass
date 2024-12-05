@@ -3,6 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { cva } from 'class-variance-authority'
 import { EllipsisVertical } from 'lucide-react'
 import { useSubjectController } from '@/controllers/subject-controller'
+import { Link } from '@tanstack/react-router'
 
 const cardSubjectStyle = cva(
   'w-full max-w-[384px] sm:w-[443px] h-44 sm:h-80 rounded-lg shadow-lg flex flex-col justify-between',
@@ -54,6 +55,14 @@ export function CardSubject({
   }
 
   return (
+    <Link
+      to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject"
+      params={{
+        idCourse,
+        idClass,
+        idSubject: id,
+      }}
+    >
     <div className={cardSubjectStyle({ backgroundColor: cardColor })}>
       <div className="flex justify-between m-6">
         <div className="flex flex-col">
@@ -73,5 +82,6 @@ export function CardSubject({
       </div>
       <div className="bg-white w-full rounded-b-lg py-6"></div>
     </div>
+    </Link>
   )
 }
