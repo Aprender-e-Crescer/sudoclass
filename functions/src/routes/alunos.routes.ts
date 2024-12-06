@@ -3,7 +3,7 @@ import alunosController from "../controllers/alunos.controller";
 
 const router = Router();
 
-router.post("/alunos", alunosController.createAlunos);
+router.post("/alunos", alunosController.createstudent);
 
 router.put("/alunos/:id", alunosController.updateStudent);
 router.get('/alunos/:id', alunosController.getStudent)
@@ -18,3 +18,4 @@ router.get("/alunos/presenca-materia/:id_turma", alunosController.getpresenceMat
 
 
 export default router;
+ 
