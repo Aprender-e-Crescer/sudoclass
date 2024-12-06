@@ -288,7 +288,7 @@ async function getDocStudent(id_aluno: string): Promise<object[] | string> {
     )
 
     if (resposta.rows.length === 0) {
-      return `Documentos do aluno não encontrados.`
+      return 'Documentos do aluno não encontrados.'
     }
 
     return resposta.rows
@@ -432,7 +432,6 @@ async function noteStudent(id_turma: string): Promise<any> {
     return `Erro ao buscar o nome do aluno`
   }
 }
-
 export const alunoService = {
   noteStudent,
   presenceStudent,

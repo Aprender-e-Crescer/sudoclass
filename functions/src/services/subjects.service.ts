@@ -1,45 +1,29 @@
 import { db } from '../config/database'
+
 async function createSubject(
-  nomeMatéria: string,
-  cargaHorária: string,
-  dataInício: Date,
-  dataFim: Date,
+  nomeMateria: string,
+  cargaHorariaMateria: string,
+  datainicio: Date,
+  datafim: Date,
   idProfessor: string,
-  idMateria: string,
-  ementa: string,
-  idCurso: string
+  ementa: string
 ): Promise<string> {
   try {
-    if (
-      !idMateria ||
-      !nomeMatéria ||
-      !cargaHorária ||
-      !dataInício ||
-      !dataFim ||
-      !idProfessor ||
-      !ementa ||
-      !idCurso
-    ) {
-      return 'ID, Nome da matéria, carga horária, data de início, data de fim, ID do professor, e curso são obrigatórios.'
-    }
-
     const response = await db.query(
-      `INSERT INTO materia (id_materia, id_curso, id_professor, nome_materia, carga_horaria_materia, datainicio, datafim, ementa)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO materia (nome_materia, carga_horaria_materia, datainicio, datafim, id_professor, ementa)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *`,
       [
-        idMateria,
-        idCurso,
+        nomeMateria,
+        cargaHorariaMateria,
+        datainicio,
+        datafim,
         idProfessor,
-        nomeMatéria,
-        cargaHorária,
-        dataInício,
-        dataFim,
         ementa,
       ]
     )
 
-    const resposta = `Matéria ${nomeMatéria} do curso ${idCurso}, com carga horária de ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor} foi cadastrada com sucesso.`
+    const resposta = `Matéria ${nomeMateria} foi cadastrada com sucesso.`
     console.log(resposta)
     return resposta
   } catch (error) {
@@ -128,15 +112,6 @@ async function getSubjectById(idMateria: string): Promise<any> {
     throw new Error('Falha ao buscar matéria')
   }
 }
-async function getSubjects(): Promise<any> {
-  try {
-    const response = await db.query('SELECT * FROM materia')
-
-    return response.rows
-  } catch (error) {
-    throw new Error('Falha ao buscar matérias')
-  }
-}
 
 async function addSubjectToClass(
   id_turma: string,
@@ -155,36 +130,29 @@ async function addSubjectToClass(
 }
 async function studentListBySubject(id_materia: string): Promise<any> {
   try {
-      const response = await db.query(
-          `SELECT p.id_aluno, p.nome, m.id AS matricula_id, mt.id_materia
-          FROM alunos p
-          INNER JOIN matricula m ON p.id_aluno = m.id_aluno
-          INNER JOIN materiaturma mt ON m.id_materia = mt.id_materia
-          WHERE mt.id_materia = $1`,
-          [id_materia]
-      );
-
-      return response.rows.map((row: any) => ({
-          id: row.matricula_id,
-          student_id: row.id_aluno, 
-          name: row.nome,
-      }));
+    const response = await db.query(
+      `SELECT p.nome, m.id
+            FROM alunos p
+            INNER JOIN matricula m ON p.id_aluno = m.id_aluno
+            INNER JOIN materiaturma mt ON m.id_materia = mt.id_materia
+            WHERE mt.id_materia = $1`,
+      [id_materia]
+    )
   } catch (error) {
-      console.error('Erro ao buscar alunos matriculados na matéria:', error);
-      throw new Error('Erro ao buscar alunos matriculados na matéria');
+    console.error('Erro ao buscar alunos matriculados na materia:', error)
+    throw new Error('Erro ao buscar alunos matriculados na matéria')
   }
 }
-
 
 async function subjectsByStudent(id_estudante: string): Promise<any> {
   try {
     const response = await db.query(
       `SELECT mt.*
-            FROM materia mt
-            INNER JOIN materiaturma mtur ON mt.id_materia = mtur.id_materia
-            INNER JOIN alunosturma atur ON mtur.id_turma = atur.id_turma
-            INNER JOIN alunos a ON atur.id_aluno = a.id_aluno
-            WHERE a.id_aluno = $1;`,
+                  FROM materia mt
+                  INNER JOIN materiaturma mtur ON mt.id_materia = mtur.id_materia
+                  INNER JOIN alunosturma atur ON mtur.id_turma = atur.id_turma
+                  INNER JOIN alunos a ON atur.id_aluno = a.id_aluno
+                  WHERE a.id_aluno = $1;`,
       [id_estudante]
     )
 
@@ -195,27 +163,34 @@ async function subjectsByStudent(id_estudante: string): Promise<any> {
   }
 }
 
+async function getallsubject() {
+  try {
+    const response = await db.query('SELECT * FROM materia')
+    return response.rows
+  } catch (error) {
+    console.error('Erro ao buscar', error)
+    return 'Erro ao buscar'
+  }
+}
+
 export const materiaService = {
   createSubject: (
-    idMateria: string,
-    nomeMatéria: string,
-    cargaHorária: string,
-    dataInício: Date,
+    nomeMateria: string,
+    cargaHoraria: string,
+    datainicio: Date,
     dataFim: Date,
     idProfessor: string,
-    ementa: string,
-    idCurso: string
-  ) =>
-    createSubject(
-      nomeMatéria,
-      cargaHorária,
-      dataInício,
+    ementa: string
+  ) => {
+    return createSubject(
+      nomeMateria,
+      cargaHoraria,
+      datainicio,
       dataFim,
       idProfessor,
-      idMateria,
-      ementa,
-      idCurso
-    ),
+      ementa
+    )
+  },
   updateSubject: (
     idMateria: string,
     idCurso: string,
@@ -239,10 +214,10 @@ export const materiaService = {
 
   deleteSubject: (idMateria: string) => deleteSubject(idMateria),
   getSubjectById: (idMateria: string) => getSubjectById(idMateria),
-  getSubjects: () => getSubjects(),
   addSubjectToClass: (idCurso: string, idMateria: string) =>
     addSubjectToClass(idCurso, idMateria),
   studentListBySubject: (id_materia: string) =>
     studentListBySubject(id_materia),
+  getallsubject: () => getallsubject(),
   subjectsByStudent: (id_estudante: string) => subjectsByStudent(id_estudante),
 }

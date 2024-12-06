@@ -1,31 +1,23 @@
-import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs } from 'firebase/firestore'
-import { RegistrationAdmin } from '@/models/admin-registration-schema'
-import { RegistrationAdminSchema } from '@/models/admin-registration-schema'
+import { api } from '@/services/api'
 
-export function useAdminSchemaQuery() {
+export const PEDAGOGUES_QUERY_KEY = ['pedagogues']
+
+export function usePedagogueListQuery() {
   return useQuery({
-    queryKey: ['admins'],
+    queryKey: PEDAGOGUES_QUERY_KEY,
     queryFn: async () => {
-      const adminsRef = collection(firestore, 'admins').withConverter({
-        toFirestore: (doc: RegistrationAdmin) => doc,
-        fromFirestore: (snapshot) => {
-          const data = snapshot.data()
-
-          try {
-           
-            return RegistrationAdminSchema.parse(data)
-          } catch (error) {
-            console.error('Invalid admin data', error)
-            return null
-          }
-        },
-      })
-
-      const docSnap = await getDocs(adminsRef)
-      
-      return docSnap.docs.map((doc) => doc.data()).filter((data) => data !== null)
+      try {
+        const response = await api.get('/pedagogos')
+        return response.data || []
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          return [] 
+        }
+        throw error
+      }
     },
+    retry: false,
+    refetchOnWindowFocus: true, 
   })
 }

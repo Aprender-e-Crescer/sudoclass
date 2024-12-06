@@ -6,15 +6,15 @@ import { auth } from '@/services/firebase'
 export const Route = createRootRoute({
   beforeLoad: async ({ matches }) => {
     await auth.authStateReady()
-    
-    if (auth.currentUser && matches[1].id !== "/_authenticated") throw redirect({ to: '/' })
+
+    if (auth.currentUser && matches[1].id !== '/_authenticated') throw redirect({ to: '/' })
   },
   component: () => (
     <>
       <Toaster />
 
       <Outlet />
-      <TanStackRouterDevtools />
+      {import.meta.env.MODE !== 'production' && <TanStackRouterDevtools />}
     </>
   ),
 })

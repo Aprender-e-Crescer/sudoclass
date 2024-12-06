@@ -115,14 +115,6 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
           >
             <p>Pedagogo</p>
           </Link>
-
-          <Link
-            to="/"
-            onClick={() => setSelectedLink('attendance')}
-            className={`${selectedLink === 'attendance' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
-          >
-            <p>Frequência</p>
-          </Link>
         </div>
       </div>
     )

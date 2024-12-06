@@ -4,91 +4,59 @@ import { materiaService } from '../services/subjects.service'
 const subjectsController = {
   createSubject: async (req: Request, res: Response): Promise<void> => {
     const {
-      idCurso,
-      nomeMatéria,
-      cargaHorária,
-      dataInício,
+      nomeMateria,
+      cargaHoraria,
+      dataInicio,
       dataFim,
       idProfessor,
-      id: idMateria,
       ementa,
     } = req.body
 
-    if (
-      !idCurso ||
-      !nomeMatéria ||
-      !cargaHorária ||
-      !dataInício ||
-      !dataFim ||
-      !idProfessor ||
-      !idMateria ||
-      !ementa
-    ) {
-      res.status(400).send('Todos os campos são obrigatórios.')
-      return
-    }
-
     try {
       const retorno = await materiaService.createSubject(
-        idMateria,
-        nomeMatéria,
-        cargaHorária,
-        dataInício,
+        nomeMateria,
+        cargaHoraria,
+        dataInicio,
         dataFim,
         idProfessor,
-        ementa,
-        idCurso
+        ementa
       )
       res.status(200).send(retorno)
     } catch (error) {
-      console.error('Erro ao cadastrar matéria:', error)
+      console.error('Erro ao cadastrar materia:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar cadastrar a matéria.')
+        .send('Ocorreu um erro no servidor ao tentar cadastrar a materia.')
     }
   },
 
   updateSubject: async (req: Request, res: Response): Promise<void> => {
     const { idMateria, idCurso, idProfessor } = req.params
 
-    const { nomeMatéria, cargaHorária, dataInício, dataFim, ementa } = req.body
-
-    if (
-      !idMateria ||
-      !idCurso ||
-      !idProfessor ||
-      !nomeMatéria ||
-      !cargaHorária ||
-      !dataInício ||
-      !dataFim ||
-      !ementa
-    ) {
-      res.status(400).send('Todos os campos são obrigatórios.')
-      return
-    }
+    const { nomeMateria, cargaHoraria, dataInicio, dataFim, ementa } = req.body
 
     try {
       const ret = await materiaService.updateSubject(
         idMateria,
         idCurso,
-        nomeMatéria,
-        cargaHorária,
-        dataInício,
+        nomeMateria,
+        cargaHoraria,
+        dataInicio,
         dataFim,
         idProfessor,
         ementa
       )
 
       if (!ret) {
-        res.status(500).send('Não foi possível atualizar a matéria.')
+        res.status(500).send('Nao foi possivel atualizar a materia.')
       } else {
         res.status(200).send(ret)
       }
     } catch (error) {
-      console.error('Erro ao atualizar matéria:', error)
+      console.error('Erro ao atualizar materia:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar atualizar a matéria.')
+        .send('Ocorreu um erro no servidor ao tentar atualizar a materia.')
     }
   },
 
@@ -96,22 +64,22 @@ const subjectsController = {
     const idMateria = req.params.id
 
     if (!idMateria) {
-      res.status(400).send('ID da matéria é obrigatório.')
+      res.status(400).send('ID da materia e obrigatorio.')
       return
     }
 
     try {
       const ret = await materiaService.deleteSubject(idMateria)
       if (!ret) {
-        res.status(500).send('Não foi possível deletar a matéria.')
+        res.status(500).send('Nao foi possivel deletar a materia.')
       } else {
-        res.status(200).send('Matéria deletada com sucesso.')
+        res.status(200).send('Materia deletada com sucesso.')
       }
     } catch (error) {
-      console.error('Erro ao deletar matéria:', error)
+      console.error('Erro ao deletar materia:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar deletar a matéria.')
+        .send('Ocorreu um erro no servidor ao tentar deletar a materia.')
     }
   },
 
@@ -119,33 +87,22 @@ const subjectsController = {
     const idMateria = req.params.id
 
     if (!idMateria) {
-      res.status(400).send('ID da matéria é obrigatório.')
+      res.status(400).send('ID da materia e obrigatorio.')
       return
     }
 
     try {
       const ret = await materiaService.getSubjectById(idMateria)
       if (!ret) {
-        res.status(404).send('Matéria não encontrada.')
+        res.status(404).send('Materia nao encontrada.')
       } else {
         res.status(200).send(ret)
       }
     } catch (error) {
-      console.error('Erro ao buscar matéria:', error)
+      console.error('Erro ao buscar materia:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar buscar a matéria.')
-    }
-  },
-  getSubjects: async (req: Request, res: Response): Promise<void> => {
-    try {
-      const ret = await materiaService.getSubjects()
-      res.status(200).json(ret)
-    } catch (error) {
-      console.error('Erro ao buscar matérias:', error)
-      res
-        .status(500)
-        .send('Ocorreu um erro no servidor ao tentar buscar as matérias.')
+        .send('Ocorreu um erro no servidor ao tentar buscar a materia.')
     }
   },
   addSubjectToClass: async (req: Request, res: Response): Promise<void> => {
@@ -156,33 +113,42 @@ const subjectsController = {
       res
         .status(200)
         .send(
-          `Matéria com ID ${idMateria} adicionada a turma com ID ${idTurma} com sucesso.`
+          `Materia com ID ${idMateria} adicionada a turma com ID ${idTurma} com sucesso.`
         )
     } catch (error) {
-      console.error('Erro ao adicionar matéria a turma:', error)
+      console.error('Erro ao adicionar materia a turma:', error)
       res
         .status(500)
         .send(
-          'Ocorreu um erro no servidor ao tentar adicionar a matéria a turma.'
+          'Ocorreu um erro no servidor ao tentar adicionar a materia a turma.'
         )
     }
   },
   studentListBySubject: async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params
     if (!id) {
-      res.status(400).send('ID da matéria e obrigaorio.')
+      res.status(400).send('ID da materia e obrigatorio.')
       return
     }
 
     try {
       const resposta = await materiaService.studentListBySubject(id)
       if (!resposta) {
-        res.status(404).send('Nenhum aluno encontrado para esta matéria.')
+        res.status(404).send('Nenhum aluno encontrado para esta materia.')
       } else {
         res.status(200).send(resposta)
       }
     } catch (error) {
       console.error('Erro ao buscar alunos por materia:', error)
+      res.status(500).send('Ocorreu um erro')
+    }
+  },
+  getAllSubjects: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const resposta = await materiaService.getallsubject()
+      res.status(200).send(resposta)
+    } catch (error) {
+      console.error('Erro ao buscar todas as materias:', error)
       res.status(500).send('Ocorreu um erro')
     }
   },

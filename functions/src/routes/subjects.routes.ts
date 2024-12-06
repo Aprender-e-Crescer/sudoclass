@@ -12,13 +12,13 @@ router.delete('/subject/:id', subjectsController.deleteSubject)
 router.get('/subject/:id', subjectsController.getSubjectById)
 router.post('/subject/class/:idTurma', subjectsController.addSubjectToClass)
 router.get(
-  '/subject/studentlistbysubject/:id',
+  '/subject/studentListBySubject/:id',
   subjectsController.studentListBySubject
 )
 router.get(
   '/subject/subjectsByStudent/:id',
   subjectsController.subjectsByStudent
 )
-router.get('/subjects', subjectsController.getSubjects)
+router.get('/subject', subjectsController.getAllSubjects)
 
 export default router
