@@ -79,7 +79,7 @@ function LeftMenu({ type }: LeftMenuProps) {
         <div className="w-44 h-10 justify-between pt-6 flex items-center rounded-lg ">
           <p className="font-bold text-[#787486] text-[12px] pl-4">CURSOS</p>
           {type === 'AdminPortal' && (
-            <Link to="/add-new-course">
+            <Link to="/courses">
               <SquarePen className="cursor-pointer" size={16} color="#787486" />
             </Link>
           )}

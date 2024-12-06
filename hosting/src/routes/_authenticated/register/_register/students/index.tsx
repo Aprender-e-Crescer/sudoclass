@@ -11,6 +11,8 @@ import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import avatar from '@/assets/avatar.png'
+import { useQueryClient } from '@tanstack/react-query'
+import { AddStudentToClassButton } from '@/routes/_authenticated/add-student-in-class'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -43,7 +45,7 @@ const initialValues = {
   attachDocuments: '',
 }
 
-import { useQueryClient } from '@tanstack/react-query'
+
 
 
 function useLogic() {
@@ -97,6 +99,7 @@ export function StudentsListing() {
             Cadastrar novo estudante
           </Button>
         </Link>
+        <AddStudentToClassButton />
       </div>
 
       <div className="flex sm:flex-row flex-col">
@@ -273,3 +276,6 @@ export function StudentsListing() {
     </div>
   )
 }
+
+  
+

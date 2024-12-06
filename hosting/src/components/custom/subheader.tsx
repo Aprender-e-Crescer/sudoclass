@@ -115,6 +115,22 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
           >
             <p>Pedagogo</p>
           </Link>
+
+          <Link
+            to="/frequency"
+            onClick={() => setSelectedLink('attendance')}
+            className={`${selectedLink === 'attendance' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+          >
+            <p>Frequência</p>
+          </Link>
+
+          <Link
+            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/lesson-plan-view"
+            onClick={() => setSelectedLink('lesson-plan')}
+            className={`${selectedLink === 'lesson-plan' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+          >
+            <p>Plano de aula</p>
+          </Link>
         </div>
       </div>
     )
@@ -140,7 +156,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
         </div>
       </div>
     )
-  } 
-  return null
+  }
 
+  return null
 }
