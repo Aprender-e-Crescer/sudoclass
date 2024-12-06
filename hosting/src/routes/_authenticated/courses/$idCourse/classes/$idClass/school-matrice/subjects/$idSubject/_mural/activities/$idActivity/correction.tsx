@@ -37,8 +37,8 @@ interface Student {
 }
 
 function Correction() {
-  const { idActivity } = Route.useParams()
-  const { data: studentsData, isLoading, isError } = useListNotesQuery(1)
+  const { idActivity, idSubject } = Route.useParams()
+  const { data: studentsData, isLoading, isError } = useListNotesQuery(Number(idSubject))
   console.log(studentsData)
   const [students, setStudents] = useState<Student[]>([])
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
