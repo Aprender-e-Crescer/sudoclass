@@ -6,6 +6,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router'
 function getUserType() {
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
+  console.log(user?.type)
   return user?.type
 }
 
