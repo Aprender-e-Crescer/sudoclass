@@ -11,6 +11,7 @@ import { useAddGradeMutation } from '@/mutations/use-add-grade-mutation'
 import { useStudentListBySubjectQuery } from '@/queries/use-list-students-subject'
 import { z } from 'zod'
 import { useGetLinkFromActivity } from '@/queries/use-get-link-from-activity-query'
+import { useListNotesQuery } from '@/queries/use-list-notes-query'
 
 const validateSearch = z.object({
   idStudent: z.string().optional(),
@@ -37,7 +38,8 @@ interface Student {
 
 function Correction() {
   const { idActivity } = Route.useParams()
-  const { data: studentsData, isLoading, isError } = useStudentListBySubjectQuery(1)
+  const { data: studentsData, isLoading, isError } = useListNotesQuery(1)
+  console.log(studentsData)
   const [students, setStudents] = useState<Student[]>([])
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [successMessage, setSuccessMessage] = useState('')
@@ -46,9 +48,9 @@ function Correction() {
   useEffect(() => {
     if (studentsData) {
       const updatedStudents = studentsData.map((student: any) => ({
-        id: student.student_id,
-        name: student.name,
-        picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`,
+        id: student.idAluno,
+        name: student.nomeAluno,
+        picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(student.nomeAluno)}&background=random`,
         variant: 'undefined',
       }))
       setStudents(updatedStudents)
