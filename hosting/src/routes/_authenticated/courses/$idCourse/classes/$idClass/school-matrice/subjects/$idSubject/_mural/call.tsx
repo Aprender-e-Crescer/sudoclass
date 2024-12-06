@@ -7,7 +7,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
-import { useStudentListBySubjectQuery } from '@/queries/use-list-students-subject'
+import { useListNotesQuery } from '@/queries/use-list-notes-query'
 
 export function DatePickerDemo({
   date,
@@ -44,26 +44,27 @@ export function DatePickerDemo({
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/call',
-)( {
+)({
   component: Call,
 })
 
 export function Call() {
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [studentList, setStudentList] = useState<any[]>([])  
+  const [studentList, setStudentList] = useState<any[]>([])
 
-  const { data: students, isLoading, isError } = useStudentListBySubjectQuery(1) 
+  const { data: notesData, isLoading, isError } = useListNotesQuery(1)
 
   useEffect(() => {
-    if (students) {
-      const updatedStudents = students.map((student: any) => ({
-        ...student,
-        variant: 'undefined', 
+    if (notesData) {
+      const updatedStudents = notesData.map((student: any) => ({
+        student_id: student.idAluno,
+        name: student.nomeAluno,
+        variant: 'undefined',
       }))
       setStudentList(updatedStudents)
     }
-  }, [students])
+  }, [notesData])
 
   const updateStudentStatus = (id: string, status: any) => {
     setStudentList((prevList) =>
@@ -74,31 +75,26 @@ export function Call() {
   const handleAddCall = () => {
     console.log('Finalizando chamada...')
     console.log('Lista de Alunos:', studentList)
-  
+
     setStudentList((prevList) =>
-      prevList.map((student) => ({ ...student, variant: 'undefined' }))
+      prevList.map((student) => ({ ...student, variant: 'undefined' })),
     )
-  
+
     setCurrentIndex(0)
     setDate(undefined)
-  
+
     console.log('Chamada finalizada!')
   }
-  
-  if (isLoading) {
-    return <div>Loading...</div>  
-  }
 
-  if (isError) {
-    return <div>Error loading students</div>  
-  }
+  if (isLoading) return <div>Carregando alunos...</div>
+  if (isError) return <div>Erro ao carregar alunos.</div>
 
   return (
     <>
       <div className="flex flex-1">
         <div className="flex-1">
           {studentList.map((student) => {
-            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`;
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`
             return (
               <ListStudents
                 key={student.student_id}
@@ -106,7 +102,7 @@ export function Call() {
                 picture={avatarUrl}
                 variant={student.variant}
               />
-            );
+            )
           })}
         </div>
 
