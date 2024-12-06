@@ -1,14 +1,26 @@
-import { datePreprocessedSchema } from '@/utils/schema'
 import { z } from 'zod'
 
-export const subjectsSchema = z.object({
-  name: z.string().min(2, { message: 'O nome da matéria não pode ser inferior a 2 letras' }),
-  description: z.string().min(2, { message: 'A descrição da matéria não pode ser inferior a 2 letras' }),
-  startDate:  datePreprocessedSchema,
-  endDate:  datePreprocessedSchema,
-  workload: z.string().nonempty({ message: 'A carga horária não pode ser vazia' }).optional(),
-  teacher: z.string().optional(),
-  ementa: z.string().optional(),
-})
+export const subjectsSchema = z.preprocess(
+  (obj) => ({
+    id: obj?.id_materia,
+    course: obj?.id_curso,
+    teacher: obj?.id_professor,
+    name: obj?.nome_materia,
+    workload: obj?.carga_horaria_materia,
+    startDate: obj?.datainicio,
+    endDate: obj?.datafim,
+    menu: obj?.ementa,
+  }),
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    endDate: z.string(),
+    startDate: z.string(),
+    workload: z.string(),
+    teacher: z.number(),
+    menu: z.string(),
+    course: z.number(),
+  }),
+)
 
 export type Subject = z.infer<typeof subjectsSchema>

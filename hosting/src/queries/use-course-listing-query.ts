@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/services/api'
 
+
 export const COURSES_QUERY_KEY = ['course']
+
 
 export function useCourseListingQuery() {
   return useQuery({
