@@ -13,7 +13,7 @@ const rest = (cpfDigits: number[]) => (count: number) => {
     return result % 10;
 };
 
-function isValidCPF(cpf: string) {
+export function isValidCPF(cpf: string) {
     if (typeof cpf !== "string") return false;
 
     const nonDigitRegex = /[^\d]+/g;
@@ -28,6 +28,6 @@ function isValidCPF(cpf: string) {
     return restWithDigits(10) === cpfDigits[9] && restWithDigits(11) === cpfDigits[10];
 }
 
-export const loginDataSchema = z.object({ cpf: z.string().refine(isValidCPF, "Invalid CPF"), password: z.string().min(8) })
+export const loginDataSchema = z.object({ cpf: z.string().refine(isValidCPF, "Inválido"), password: z.string().min(8) })
 
 export type LoginData = z.infer<typeof loginDataSchema>;
