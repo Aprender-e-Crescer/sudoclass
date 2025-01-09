@@ -16,7 +16,7 @@ const buttonVariants = cva(
         whiteButtom: "bg-[#F8FAFC] text-[#1A73E8] border-[#1A73E8] border-[1.5px]  hover: bg-[#1A73E8] text-[#1A73E8]",
       },
       size: {
-        Login: "w-[480px] h-[36px]",
+        Login: "flex-1 w-full h-[36px]",
         small: "w-[96px] h-[36px]",
         medium: "w-[160px] h-[36px]",
         large: "w-[222px] h-[36px]",

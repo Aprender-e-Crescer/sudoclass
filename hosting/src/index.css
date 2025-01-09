@@ -63,7 +63,20 @@
   * {
     @apply border-border;
   }
+
+  html {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  body, div#root {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 }

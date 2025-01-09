@@ -16,12 +16,12 @@ export function InputCheckbox({ checkboxValues, fieldName }: CheckboxProps) {
     <>
       {checkboxValues.map(({ value, label }, index) => (
         <div className="flex items-center space-x-2 mt-2" key={index}>
-          <Checkbox id={label} name={label} onCheckedChange={() => setFieldValue(fieldName, value)} />
+          <Checkbox defaultChecked={value} id={label} name={label} onCheckedChange={(checked) => setFieldValue(fieldName, checked)} />
           <label
             htmlFor={label}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            {value}
+            {label}
           </label>
         </div>
       ))}
