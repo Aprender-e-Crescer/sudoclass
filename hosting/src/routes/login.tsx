@@ -10,6 +10,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useLoginController } from '@/controllers/use-login-controller'
 import { loginSchema } from '@/models/login-schema'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { masks } from '@/utils/masks'
+import { formatWithMask } from '@/utils/formatWithMask'
 
 export const Route = createFileRoute('/login')({
   component: Login,
@@ -30,16 +32,31 @@ const initialValues = {
 function useLogic() {
   const { login } = useLoginController()
 
+  const handleOnLoginFormSubmit = ({ cpf, password }: {
+    cpf: string
+    password: string
+  }) => {
+    const { unmasked } = formatWithMask({
+      text: cpf,
+      mask: masks.BRL_CPF,
+    });
+    
+    login({
+      cpf: unmasked,
+      password,
+    })
+  }
+
   return {
-    login,
+    handleOnLoginFormSubmit,
   }
 }
 
 export function Login() {
-  const { login } = useLogic()
+  const { handleOnLoginFormSubmit } = useLogic()
 
   return (
-    <Formik initialValues={initialValues} validationSchema={toFormikValidationSchema(loginSchema)} onSubmit={login}>
+    <Formik initialValues={initialValues} validationSchema={toFormikValidationSchema(loginSchema)} onSubmit={handleOnLoginFormSubmit}>
       <Form className='flex flex-col flex-1 justify-center'>
         <div className='mx-6'>
           <div className="flex flex-col justify-center items-center font-poppins px-4 sm:px-0">
@@ -67,7 +84,7 @@ export function Login() {
                   <div className="w-full flex flex-col items-start mb-2 text-blue-600 px-4 space-y-1">
                     <p>CPF</p>
                     <div className="w-full">
-                      <InputAuth icon={<AiOutlineIdcard />} placeholder="000.000.000-00" id="cpf" name="cpf" />
+                      <InputAuth icon={<AiOutlineIdcard />} mask={masks.BRL_CPF} placeholder="000.000.000-00" id="cpf" name="cpf" />
                     </div>
 
                     <p>Senha</p>

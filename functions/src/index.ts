@@ -1,17 +1,17 @@
 import { HttpsError, onCall } from 'firebase-functions/v2/https'
-import { onRequest } from 'firebase-functions/v1/https'
 import { info } from 'firebase-functions/logger'
 import { auth, firestore } from './services/firebase'
 import { loginDataSchema } from './schemas/login'
-import app from './app'
 import { getTitleDataSchema } from './schemas/form'
 
 export const loginWithCPF = onCall(async (request) => {
   try {
       const { cpf, password } = loginDataSchema.parse(request.data)
 
-      const studentsDocumentSnapshot = await firestore.collection("users")
-          .where("cpf", "==", cpf)
+      const studentsDocumentSnapshot = await firestore
+          .collection("users")
+          .doc(cpf)
+          .collection("credentials")
           .where("password", "==", password)
           .limit(1)
           .get()
@@ -25,8 +25,6 @@ export const loginWithCPF = onCall(async (request) => {
       return new HttpsError("unauthenticated", "Invalid CPF or inexistent user")
   }
 });
-
-export const api = onRequest(app)
 
 export const getTitleByUrl = onCall(async (request) => {
   const { url } = getTitleDataSchema.parse(request.data)

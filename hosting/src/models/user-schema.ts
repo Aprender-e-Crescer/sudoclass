@@ -1,27 +1,10 @@
+import { docRefSchema } from '@/utils/schema'
 import { z } from 'zod'
 
-export const userSchema = z.preprocess(
-  (obj: any) => ({
-    idUser: obj?.id_usuario,
-    idStudent: obj?.id_aluno,
-    idTeacher: obj?.id_professor,
-    idPedagogue: obj?.id_pedagogo,
-    email: obj?.email,
-    password: obj?.senha,
-    type: obj?.tipo,
-    changedPassword: obj?.trocardesenha,
-  }),
-  z.object({
-    idUser: z.number(),
-    idStudent: z.number().nullable(),
-    idTeacher: z.number().nullable(),
-    idPedagogue: z.number().nullable(),
-    email: z.string(),
-    password: z.string(),
-    type: z.enum(['aluno', 'professor', 'pedagogo']),
-    changedPassword: z.boolean().nullable(),
-  }),
-)
+export const userSchema = z.object({
+  roleRef: docRefSchema,
+  requireNewPassword: z.boolean(),
+})
 
 export type User = z.infer<typeof userSchema>
 

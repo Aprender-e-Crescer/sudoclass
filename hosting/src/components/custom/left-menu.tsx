@@ -19,7 +19,7 @@ import { useCourseListingQuery } from '@/queries/use-course-listing-query'
 import { useCourseController } from '@/controllers/use-courses-controller'
 
 interface LeftMenuProps {
-  type: 'StudentPortal' | 'TeacherClassroom' | 'AdminPortal'
+  type: 'student' | 'teacher' | 'admin' | 'responsible'
 }
 
 const menuItemsStudentPortal = [
@@ -71,19 +71,19 @@ function LeftMenu({ type }: LeftMenuProps) {
 
   return (
     <div className="flex gap-8 flex-col">
-      {type === 'StudentPortal' && renderMenuItems(menuItemsStudentPortal)}
-      {type === 'AdminPortal' && renderMenuItems(menuItemsAdminPortal)}
-      {type === 'TeacherClassroom' && renderMenuItems(menuItemsTeacherClassroom)}
+      {type === 'student' && renderMenuItems(menuItemsStudentPortal)}
+      {type === 'admin' && renderMenuItems(menuItemsAdminPortal)}
+      {type === 'teacher' && renderMenuItems(menuItemsTeacherClassroom)}
 
       <div className="flex-col gap-4 w-52 border-t-2 hidden min-[420px]:flex">
         <div className="w-44 h-10 justify-between pt-6 flex items-center rounded-lg ">
           <p className="font-bold text-[#787486] text-[12px] pl-4">CURSOS</p>
-          {type === 'AdminPortal' && (
+          {type === 'admin' && (
             <Link to="/courses">
               <SquarePen className="cursor-pointer" size={16} color="#787486" />
             </Link>
           )}
-          {type === 'TeacherClassroom' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
+          {type === 'teacher' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
         </div>
         {course?.map(({ nome_curso, id_curso }) => (
           <CourseItem
@@ -92,7 +92,7 @@ function LeftMenu({ type }: LeftMenuProps) {
             activeItem={activeItem}
             onClick={() => setActiveItem(nome_curso)}
             index={id_curso}
-            onDelete={type === 'AdminPortal' ? () => handleDeleteCourse(id_curso) : undefined}
+            onDelete={type === 'admin' ? () => handleDeleteCourse(id_curso) : undefined}
           />
         ))}
       </div>

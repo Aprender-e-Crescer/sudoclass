@@ -30,6 +30,7 @@ const validateFirebaseIdToken = async (req: express.Request, res: express.Respon
 
   try {
     const decodedIdToken = await auth.verifyIdToken(idToken);
+    // @ts-expect-error
     req.user = decodedIdToken;
     next();
     return;

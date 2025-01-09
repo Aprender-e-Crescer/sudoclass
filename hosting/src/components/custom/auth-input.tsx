@@ -4,7 +4,7 @@ import { Copy, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from '@/hooks/use-toast'
 import { formatWithMask } from '@/utils/formatWithMask'
-import { masks } from '@/utils/masks'
+import { Mask } from '@/utils/formatWithMask.types'
 
 interface AuthInputProps {
   id: string
@@ -15,6 +15,7 @@ interface AuthInputProps {
   isCopyInput?: boolean
   value?: string
   disabled?: boolean
+  mask?: Mask
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -26,6 +27,7 @@ export function InputAuth({
   icon,
   isPasswordInput,
   isCopyInput,
+  mask,
   onChange,
   disabled,
 }: AuthInputProps) {
@@ -78,11 +80,10 @@ export function InputAuth({
           className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold text-[#2F2F2F]"
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             onChange?.(event)
-
+              
             const { masked } = formatWithMask({
               text: event.target.value,
-              mask: masks.BRL_CPF,
-              obfuscationCharacter: '-',
+              mask: mask,
             });
 
             setFieldValue(name, masked)
