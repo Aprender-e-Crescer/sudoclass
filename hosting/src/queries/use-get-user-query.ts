@@ -8,7 +8,8 @@ export function useGetUserQuery(uid: string | undefined) {
     queryKey: ['get-user', uid],
     queryFn: async () => {
       const userRef = doc(firestore, 'users', uid!)
-      const { data } = await getDoc(userRef)
+      const userDoc = await getDoc(userRef)
+      const data = userDoc.data()
       const user = userSchema.parse(data)
 
       return user
