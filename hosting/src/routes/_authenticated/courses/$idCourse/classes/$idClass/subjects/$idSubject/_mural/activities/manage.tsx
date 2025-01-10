@@ -7,7 +7,11 @@ import { useGetActivityQuery } from '@/queries/use-get-activity-query'
 import { correctionSchema } from '@/models/correction-schema'
 import { z } from 'zod'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Link } from 'lucide-react'
 import { CustomLoading } from '@/components/custom/custom-loading'
 
@@ -17,7 +21,7 @@ const validateSearch = z.object({
 })
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/manage',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/manage',
 )({
   component: CreateActivity,
   validateSearch,
@@ -30,7 +34,8 @@ export function CreateActivity() {
   const navigate = useNavigate()
   const { mutateAsync: createActivity } = useCreateActivityMutation()
   const { mutateAsync: updateActivity } = useUpdateActivityMutation()
-  const { data: activityData, isLoading: activityDataLoading } = useGetActivityQuery(Number(idActivity))
+  const { data: activityData, isLoading: activityDataLoading } =
+    useGetActivityQuery(Number(idActivity))
   const [deliveryDate, setDeliveryDate] = React.useState<string>('')
   const [linkToDisplay, setLinkToDisplay] = React.useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -101,7 +106,9 @@ export function CreateActivity() {
   }
 
   if (action === 'edit' && activityDataLoading) {
-    return <CustomLoading message="Carregando informações da atividade" size={70} />
+    return (
+      <CustomLoading message="Carregando informações da atividade" size={70} />
+    )
   }
 
   return (
@@ -122,13 +129,20 @@ export function CreateActivity() {
 
                 <h1 className="text-lg">Adicione um link</h1>
                 <div className="flex gap-10 flex-col border justify-center items-center p-10">
-                  <PopoverDemo setLinkToDisplay={setLinkToDisplay} setFieldValue={setFieldValue} />
+                  <PopoverDemo
+                    setLinkToDisplay={setLinkToDisplay}
+                    setFieldValue={setFieldValue}
+                  />
                 </div>
               </div>
             </div>
 
             <div className="w-1/4 h-min border p-4 mt-5 mr-5">
-              <ValueField errors={errors} touched={touched} setFieldValue={setFieldValue} />
+              <ValueField
+                errors={errors}
+                touched={touched}
+                setFieldValue={setFieldValue}
+              />
               <DeliveryDateField
                 deliveryDate={deliveryDate}
                 setDeliveryDate={setDeliveryDate}
@@ -150,8 +164,16 @@ export function CreateActivity() {
                 )}
               </div>
               <div className="flex mt-6">
-                <Button type="submit" size="manage" disabled={isLoading || activityDataLoading}>
-                  {isLoading ? 'Carregando...' : action === 'edit' ? 'Atualizar atividade' : 'Criar atividade'}
+                <Button
+                  type="submit"
+                  size="manage"
+                  disabled={isLoading || activityDataLoading}
+                >
+                  {isLoading
+                    ? 'Carregando...'
+                    : action === 'edit'
+                      ? 'Atualizar atividade'
+                      : 'Criar atividade'}
                 </Button>
               </div>
             </div>
@@ -166,7 +188,10 @@ function PopoverDemo({ setLinkToDisplay, setFieldValue }: any) {
 
   return (
     <Popover>
-      <PopoverTrigger asChild className="border-2 rounded-full w-16 h-16 p-2 hover:scale-110 hover:bg-gray-200">
+      <PopoverTrigger
+        asChild
+        className="border-2 rounded-full w-16 h-16 p-2 hover:scale-110 hover:bg-gray-200"
+      >
         <Link />
       </PopoverTrigger>
       <PopoverContent className="w-96">
@@ -180,7 +205,9 @@ function PopoverDemo({ setLinkToDisplay, setFieldValue }: any) {
               placeholder="Digite um link"
               className="border rounded-sm w-full p-2"
               value={tempLink}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTempLink(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setTempLink(e.target.value)
+              }
             />
             <Button
               size="medium"
@@ -204,10 +231,14 @@ function TitleField({ errors, touched, initialValues, action }: any) {
       <p>Título</p>
       <Field
         name="title"
-        placeholder={action === 'edit' ? initialValues.title : 'Digite o título'}
+        placeholder={
+          action === 'edit' ? initialValues.title : 'Digite o título'
+        }
         className="border rounded-sm w-full p-2"
       />
-      {touched.title && errors.title && <div className="text-red-500 text-sm">{errors.title}</div>}
+      {touched.title && errors.title && (
+        <div className="text-red-500 text-sm">{errors.title}</div>
+      )}
     </div>
   )
 }
@@ -219,10 +250,14 @@ function InstructionField({ errors, touched, initialValues, action }: any) {
       <Field
         as="textarea"
         name="instruction"
-        placeholder={action === 'edit' ? initialValues.instruction : 'Digite as instruções'}
+        placeholder={
+          action === 'edit' ? initialValues.instruction : 'Digite as instruções'
+        }
         className="border p-2 rounded-sm w-full h-44 resize-none"
       />
-      {touched.instruction && errors.instruction && <div className="text-red-500 text-sm">{errors.instruction}</div>}
+      {touched.instruction && errors.instruction && (
+        <div className="text-red-500 text-sm">{errors.instruction}</div>
+      )}
     </div>
   )
 }
@@ -245,12 +280,20 @@ function ValueField({ errors, touched, setFieldValue }: any) {
           </option>
         ))}
       </Field>
-      {touched.value && errors.value && <div className="text-red-500 text-sm">{errors.value}</div>}
+      {touched.value && errors.value && (
+        <div className="text-red-500 text-sm">{errors.value}</div>
+      )}
     </div>
   )
 }
 
-function DeliveryDateField({ deliveryDate, setDeliveryDate, setFieldValue, errors, touched }: any) {
+function DeliveryDateField({
+  deliveryDate,
+  setDeliveryDate,
+  setFieldValue,
+  errors,
+  touched,
+}: any) {
   return (
     <div>
       <p>Data de entrega</p>
@@ -264,7 +307,9 @@ function DeliveryDateField({ deliveryDate, setDeliveryDate, setFieldValue, error
         }}
         className="border p-2 rounded-sm bg-slate-200 w-full"
       />
-      {touched.deliveryDate && errors.deliveryDate && <div className="text-red-500 text-sm">{errors.deliveryDate}</div>}
+      {touched.deliveryDate && errors.deliveryDate && (
+        <div className="text-red-500 text-sm">{errors.deliveryDate}</div>
+      )}
     </div>
   )
 }

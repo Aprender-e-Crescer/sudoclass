@@ -1,19 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik, Form } from 'formik'
 import { toFormikValidate } from 'zod-formik-adapter'
-import { useListSubjectsQuery } from '@/queries/use-list-subjects-query'
 import { subjectsSchema } from '@/models/subjects-schema'
 import { addDoc, collection } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
+import { useGetSubjectsQuery } from '@/queries/use-get-subjects-query'
 
 export const Route = createFileRoute('/_authenticated/list-subjects')({
   component: ListSubjects,
 })
 
 function ListSubjects() {
-  const { data } = useListSubjectsQuery('aQjvxCKlEuHc9YQEedCQ')
+  const { data } = useGetSubjectsQuery()
   const validate = toFormikValidate(subjectsSchema)
 
   return (

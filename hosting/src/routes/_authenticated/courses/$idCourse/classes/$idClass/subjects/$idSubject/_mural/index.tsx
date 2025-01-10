@@ -12,7 +12,7 @@ import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { useProfileImage } from '@/hooks/use-profile-image'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/',
 )({
   component: WallSubjects,
 })
@@ -42,7 +42,10 @@ export function WallSubjects() {
 
   console.log('Dados de warnings:', warnings)
 
-  const handleFormSubmit = (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
+  const handleFormSubmit = (
+    values: typeof initialValues,
+    { resetForm }: FormikHelpers<typeof initialValues>,
+  ) => {
     if (userName) {
       createWarningMutation.mutate({
         message: values.message,
@@ -66,13 +69,20 @@ export function WallSubjects() {
     )
   }
 
-  const validWarnings = Array.isArray(warnings) ? warnings : warnings ? [warnings] : []
+  const validWarnings = Array.isArray(warnings)
+    ? warnings
+    : warnings
+      ? [warnings]
+      : []
 
   return (
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
         <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <CardComponent name={subject?.nome_materia} description="Aprender & Crescer" />
+          <CardComponent
+            name={subject?.nome_materia}
+            description="Aprender & Crescer"
+          />
         </div>
 
         <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full">
@@ -91,7 +101,9 @@ export function WallSubjects() {
                     </button>
                   }
                 />
-                {errors.message && touched.message && <div className="text-red-500 text-sm">{errors.message}</div>}
+                {errors.message && touched.message && (
+                  <div className="text-red-500 text-sm">{errors.message}</div>
+                )}
               </Form>
             )}
           </Formik>

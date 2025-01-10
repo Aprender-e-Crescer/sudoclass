@@ -20,14 +20,13 @@ const cardSubjectStyle = cva('w-[200px] md:w-[400px] h-[200px] rounded-lg shadow
   },
 })
 
-interface CardSubjectProps {
-  id: string
+interface CardColorProps {
   name: string
   idCourse: string
   idClass: string
 }
 
-export function CardSubject({ id, name, idClass, idCourse }: CardSubjectProps) {
+export function CardColor({ name, idClass, idCourse }: CardColorProps) {
   const colors = ['vermelho', 'amarelo', 'azul', 'laranja', 'rosa', 'ciano', 'verde', 'roxo', 'marrom']
 
   const getRandomColor = () => {
@@ -37,11 +36,11 @@ export function CardSubject({ id, name, idClass, idCourse }: CardSubjectProps) {
   const cardColor = getRandomColor()
 
   return (
-    <Link to={`/courses/${idCourse}/classes/${idClass}/school-matrice/subjects/${id}`}>
+    <Link to={`/courses/${idCourse}/classes/${idClass}/subjects`}>
       <div className={cardSubjectStyle({ backgroundColor: cardColor })}>
         <div className="flex justify-between m-6">
           <div className="flex flex-col">
-            <div className="text-white font-bold text-xl mr-5 mb-1">{name}</div>
+            <div className="text-white font-bold text-xl mr-5 mb-1 line-clamp-2">{name}</div>
           </div>
         </div>
         <div className="bg-white w-full rounded-b-lg py-6"></div>
