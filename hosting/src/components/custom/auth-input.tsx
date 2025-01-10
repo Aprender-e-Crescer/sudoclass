@@ -3,6 +3,8 @@ import { Input } from '@/components/ui/input'
 import { Copy, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from '@/hooks/use-toast'
+import { formatWithMask } from '@/utils/formatWithMask'
+import { Mask } from '@/utils/formatWithMask.types'
 
 interface AuthInputProps {
   id: string
@@ -13,6 +15,7 @@ interface AuthInputProps {
   isCopyInput?: boolean
   value?: string
   disabled?: boolean
+  mask?: Mask
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -24,6 +27,7 @@ export function InputAuth({
   icon,
   isPasswordInput,
   isCopyInput,
+  mask,
   onChange,
   disabled,
 }: AuthInputProps) {
@@ -70,17 +74,25 @@ export function InputAuth({
           name={name}
           as={Input}
           type={newType}
-          value={value}
+          defaultValue={value}
           placeholder={placeholder}
           disabled={disabled}
           className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold text-[#2F2F2F]"
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             onChange?.(event)
-            setFieldValue(name, event.target.value)
+              
+            const { masked } = formatWithMask({
+              text: event.target.value,
+              mask: mask,
+            });
+
+            setFieldValue(name, masked)
           }}
         />
+        
         <div className={`${isPasswordInput ? 'flex' : 'hidden'} absolute inset-y-0 right-0 pr-3 items-center`}>
           <button
+            title='Mostrar senha'
             onClick={handleOnToggleIconClick}
             type="button"
             data-is-password={typePassword == 'password'}
@@ -91,7 +103,7 @@ export function InputAuth({
         </div>
 
         <div className={`${isCopyInput ? 'flex' : 'hidden'} absolute top-2 sm:right-8 right-3 items-center`}>
-          <button type="button" className="w-3 h-3" onClick={handleOnCopyTextInputIconClick}>
+          <button title='Copiar código' type="button" className="w-3 h-3" onClick={handleOnCopyTextInputIconClick}>
             <Copy className="text-blue-500" />
           </button>
         </div>

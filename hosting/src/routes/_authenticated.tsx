@@ -1,10 +1,9 @@
 import { Header } from '@/components/custom/header'
 import LeftMenu from '@/components/custom/left-menu'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { auth } from '@/services/firebase'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import avatarpng from '@/assets/avatar.png'
+import { useGetFullUser } from '@/hooks/use-get-full-user'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ location: { pathname } }) => {
@@ -15,24 +14,17 @@ export const Route = createFileRoute('/_authenticated')({
   component: Authenticated,
 })
 
-type TypeMenu = 'TeacherClassroom' | 'StudentPortal' | 'AdminPortal'
-
 export function Authenticated() {
-  const currentUser = useCurrentUserQuery()
-  const { data: User } = useGetUserQuery(currentUser?.data?.uid)
+  const user = useGetFullUser()
 
-  let type: TypeMenu = 'TeacherClassroom'
-
-  User?.type == 'professor' ? (type = 'TeacherClassroom') : ''
-  User?.type == 'aluno' ? (type = 'StudentPortal') : ''
-  User?.type == 'pedagogo' ? (type = 'AdminPortal') : ''
+  if (!user) return null
 
   return (
     <div className="flex">
       <div className="flex-col flex w-full">
         <Header avatarFallBack="" avatarImage={avatarpng} />
         <div className="flex">
-          <LeftMenu type={type} />
+          <LeftMenu type={user.type} />
           <div className="flex-1">
             <Outlet />
           </div>

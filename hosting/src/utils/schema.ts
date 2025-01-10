@@ -1,3 +1,4 @@
+import { DocumentReference } from "firebase/firestore";
 import { z } from "zod";
 
 export const datePreprocessedSchema = z.preprocess(data => {
@@ -7,3 +8,7 @@ export const datePreprocessedSchema = z.preprocess(data => {
 
     return new Date(data);
 }, z.date())
+
+export const docRefSchema = z.any().refine(
+    (documentReference: object): documentReference is DocumentReference => documentReference instanceof DocumentReference,
+  )
