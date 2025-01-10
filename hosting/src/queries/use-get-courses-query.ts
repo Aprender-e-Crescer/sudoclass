@@ -16,4 +16,5 @@ export function useGetCoursesQuery() {
       return courses
     },
   })
+
 }
