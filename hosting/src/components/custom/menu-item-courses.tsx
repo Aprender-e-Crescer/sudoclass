@@ -1,16 +1,14 @@
 import { Link } from '@tanstack/react-router'
-import { AlertDialogComponent } from './alert-dialog'
 
 interface Props {
   course: string
-  index: number
+  index: string
   activeItem: string
   onClick: (name: string) => void
   to?: string
-  onDelete?: (name: string) => void
 }
 
-export function CourseItem({ course, activeItem, onClick, index, to, onDelete }: Props) {
+export function CourseItem({ course, activeItem, onClick, index, to }: Props) {
   const content = (
     <div
       key={index}
@@ -22,18 +20,6 @@ export function CourseItem({ course, activeItem, onClick, index, to, onDelete }:
       <p className="font-semibold text-[#787486] hidden min-[420px]:flex text-ellipsis overflow-hidden whitespace-nowrap w-full">
         {course}
       </p>
-      {onDelete && (
-        <div className="flex items-center justify-center ">
-          <AlertDialogComponent
-            title="Deseja excluir a turma?"
-            cancelButtonValue="Excluir"
-            variantCancelButton="blueButton"
-            onClick={() => onDelete(course)}
-            height={20}
-            width={20}
-          />
-        </div>
-      )}
     </div>
   )
   return to ? <Link to={to}>{content}</Link> : content

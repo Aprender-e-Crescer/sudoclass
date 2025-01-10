@@ -20,10 +20,10 @@ export function Authenticated() {
   if (!user) return null
 
   return (
-    <div className="flex">
+    <div className="flex h-full">
       <div className="flex-col flex w-full">
         <Header avatarFallBack="" avatarImage={avatarpng} />
-        <div className="flex">
+        <div className="flex  h-full">
           <LeftMenu type={user.type} />
           <div className="flex-1">
             <Outlet />

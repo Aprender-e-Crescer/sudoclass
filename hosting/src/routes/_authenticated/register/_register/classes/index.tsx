@@ -11,7 +11,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { z } from 'zod'
 import { ArrowRightToLine, Loader2 } from 'lucide-react'
 import { SelectInput } from '@/components/custom/select-input'
-import { useCourseListingQuery } from '@/queries/use-course-listing-query'
+import { useGetCoursesQuery } from '@/queries/use-get-courses-query'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
@@ -37,7 +37,7 @@ export function ClassList() {
   const { action, idTurma } = Route.useSearch()
   const { registerClassForm, updateClass, deleteClass } = useClassesController()
   const { data: classes, isFetching: isFetchingClasses, isSuccess: isSuccessLoadClasses } = useListClassQuery()
-  const { data: courses } = useCourseListingQuery()
+  const { data: courses } = useGetCoursesQuery()
 
   const handleOnClassCreationSubmit = (values: {
     class: string

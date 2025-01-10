@@ -1,61 +1,33 @@
-import {
-  Home,
-  History,
-  UniversityIcon,
-  FileText,
-  FormInput,
-  Settings,
-  MessageSquareLock,
-  User,
-  SquarePen,
-  SquarePlus,
-} from 'lucide-react'
+import { Home, Settings, SquarePen, SquarePlus } from 'lucide-react'
 import { MenuItem } from './menu-item'
 import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'
 
 import { Link } from '@tanstack/react-router'
-import { useCourseListingQuery } from '@/queries/use-course-listing-query'
-import { useCourseController } from '@/controllers/use-courses-controller'
+import { useGetCoursesQuery } from '@/queries/use-get-courses-query'
 
 interface LeftMenuProps {
   type: 'student' | 'teacher' | 'admin' | 'responsible'
 }
 
 const menuItemsStudentPortal = [
-  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
-  { name: 'Frequencia', icon: History, to: '/frequency-portal-aluno' },
-  { name: 'Matriz Escolar', icon: UniversityIcon, to: '/courses/$idCourse/classes/$idClass/school-matrice/' },
-  { name: 'Documentos', icon: FileText, to: '/documents' },
-  { name: 'Formulários', icon: FormInput, to: '/forms' },
+  { name: 'Início', icon: Home, to: '/courses' },
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
 const menuItemsAdminPortal = [
-  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
-  { name: 'Formulário', icon: FormInput, to: '/admin/forms' },
-  { name: 'Solicitações', icon: MessageSquareLock, to: '/password-change-request' },
+  { name: 'Início', icon: Home, to: '/courses' },
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
-  { name: 'Cadastro', icon: User, to: '/register' },
 ]
 
 const menuItemsTeacherClassroom = [
-  { name: 'Início', icon: Home, to: '/courses/$idCourse/classes/$idClass/school-matrice/subjects/' },
+  { name: 'Início', icon: Home, to: '/courses' },
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
 function LeftMenu({ type }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('')
-  const { data: course } = useCourseListingQuery()
-  const { deleteCourse } = useCourseController()
-
-  const handleDeleteCourse = async (id: number) => {
-    try {
-      await deleteCourse(id)
-    } catch (error) {
-      console.log('erro ao deletar curso', error)
-    }
-  }
+  const { data: course } = useGetCoursesQuery()
 
   const renderMenuItems = (menuItems: typeof menuItemsStudentPortal) =>
     menuItems.map((item, index) => (
@@ -70,7 +42,7 @@ function LeftMenu({ type }: LeftMenuProps) {
     ))
 
   return (
-    <div className="flex gap-8 flex-col">
+    <div className="flex gap-8 flex-col border-r-2  p-3">
       {type === 'student' && renderMenuItems(menuItemsStudentPortal)}
       {type === 'admin' && renderMenuItems(menuItemsAdminPortal)}
       {type === 'teacher' && renderMenuItems(menuItemsTeacherClassroom)}
@@ -85,15 +57,20 @@ function LeftMenu({ type }: LeftMenuProps) {
           )}
           {type === 'teacher' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
         </div>
-        {course?.map(({ nome_curso, id_curso }) => (
-          <CourseItem
-            key={id_curso}
-            course={nome_curso}
-            activeItem={activeItem}
-            onClick={() => setActiveItem(nome_curso)}
-            index={id_curso}
-            onDelete={type === 'admin' ? () => handleDeleteCourse(id_curso) : undefined}
-          />
+        {course?.map((course: any) => (
+          <Link
+            key={course.id}
+            to={`/courses/${course.id}/classes/elmW6W9gPuX2NdR1ruXB/subjects`}
+            onClick={() => setActiveItem(course.name)}
+            className="w-full"
+          >
+            <CourseItem
+              course={course.name}
+              activeItem={activeItem}
+              onClick={() => setActiveItem(course.name)}
+              index={course.id}
+            />
+          </Link>
         ))}
       </div>
     </div>
