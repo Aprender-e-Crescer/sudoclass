@@ -1,16 +1,13 @@
-
-
-
-import { Formik, Form, Field } from 'formik';
-import { Button } from '@/components/ui/button';
-import { InputForm } from '@/components/custom/text-input';
-import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan';
-import { Link } from '@tanstack/react-router';
-import { createFileRoute } from '@tanstack/react-router';
-import { useListLessonPlan } from '@/queries/use-list-lesson-plan';
-import { useNavigate } from '@tanstack/react-router';
-import { LessonPlanUpdate } from '@/mutations/use-update-lesson-plan';
-import { z } from 'zod';
+import { Formik, Form, Field } from 'formik'
+import { Button } from '@/components/ui/button'
+import { InputForm } from '@/components/custom/text-input'
+import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan'
+import { Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
+import { useListLessonPlan } from '@/queries/use-list-lesson-plan'
+import { useNavigate } from '@tanstack/react-router'
+import { LessonPlanUpdate } from '@/mutations/use-update-lesson-plan'
+import { z } from 'zod'
 
 export const updateLessonPlanSchema = z.object({
   id_professor: z.string(),
@@ -22,50 +19,52 @@ export const updateLessonPlanSchema = z.object({
   conteudoformativo: z.string().min(1, 'Conteúdo formativo é obrigatório'),
   mododeensino: z.string().min(1, 'Metodologia de ensino é obrigatória'),
   recursosdidaticos: z.string().min(1, 'Recursos didáticos são obrigatórios'),
-});
+})
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/update-lesson-plan',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/update-lesson-plan',
 )({
   component: UpdateLessonPlan,
-});
+})
 
 function UpdateLessonPlan() {
-  const navigate = useNavigate();
-  const { idLessonPlan, idClass, idSubject, idCourse } = Route.useParams();
+  const navigate = useNavigate()
+  const { idLessonPlan, idClass, idSubject, idCourse } = Route.useParams()
 
-  const { data: lessonPlans = [] } = useListLessonPlan();
+  const { data: lessonPlans = [] } = useListLessonPlan()
 
   const lessonPlan = lessonPlans.find(
-    (lessonPlan) => lessonPlan.id_planoaula === Number(idLessonPlan)
-  );
-  console.log('teste');
+    (lessonPlan) => lessonPlan.id_planoaula === Number(idLessonPlan),
+  )
+  console.log('teste')
 
   const { mutate, isLoading, isError } = useUpdateLessonPlanMutation(
     {
       onSuccess: () => {
-        console.log('Plano de aula atualizado com sucesso!');
+        console.log('Plano de aula atualizado com sucesso!')
         navigate({
           to: `/courses/${idCourse}/classes/${idClass}/school-matrice/subjects/${idSubject}/lesson-plan/${idLessonPlan}/lesson-plan-view`,
           replace: true,
-        });
+        })
       },
     },
     {
       onSuccess: () => {
-        console.log('Plano de aula atualizado com sucesso!');
+        console.log('Plano de aula atualizado com sucesso!')
       },
       onError: (err: any) => {
-        console.error('Erro ao atualizar o plano de aula:', err);
-        alert('Houve um erro ao atualizar o plano de aula. Tente novamente mais tarde.');
+        console.error('Erro ao atualizar o plano de aula:', err)
+        alert(
+          'Houve um erro ao atualizar o plano de aula. Tente novamente mais tarde.',
+        )
       },
     },
     (err: any) => {
-      console.error('Erro na mutação:', err);
-    }
-  );
+      console.error('Erro na mutação:', err)
+    },
+  )
 
-  if (!lessonPlan) return null;
+  if (!lessonPlan) return null
 
   const initialValues = {
     id_professor: lessonPlan.id_professor,
@@ -77,7 +76,7 @@ function UpdateLessonPlan() {
     conteudoformativo: lessonPlan.conteudoformativo,
     mododeensino: lessonPlan.mododeensino,
     recursosdidaticos: lessonPlan.recursosdidaticos,
-  };
+  }
 
   const handleSubmit = (values: typeof initialValues) => {
     const transformedValues: LessonPlanUpdate = {
@@ -91,11 +90,11 @@ function UpdateLessonPlan() {
       conteudoformativo: values.conteudoformativo || '',
       mododeensino: values.mododeensino || '',
       recursosdidaticos: values.recursosdidaticos || '',
-    };
+    }
 
-    console.log(transformedValues);
-    mutate(transformedValues); 
-  };
+    console.log(transformedValues)
+    mutate(transformedValues)
+  }
 
   return (
     <div className="flex flex-row h-screen relative mx-5">
@@ -211,9 +210,7 @@ function UpdateLessonPlan() {
         </Formik>
       </div>
     </div>
-  );
+  )
 }
 
-
-export default UpdateLessonPlan;
-
+export default UpdateLessonPlan

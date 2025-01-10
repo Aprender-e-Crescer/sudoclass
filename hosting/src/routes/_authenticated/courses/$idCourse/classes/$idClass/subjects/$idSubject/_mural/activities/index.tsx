@@ -8,14 +8,18 @@ import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/activities/',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/',
 )({
   component: ListActivity,
 })
 
 export function ListActivity() {
   const { idClass, idCourse, idSubject } = Route.useParams()
-  const { data: activities, error, isLoading } = useListActivitiesQuery(parseInt(idSubject))
+  const {
+    data: activities,
+    error,
+    isLoading,
+  } = useListActivitiesQuery(parseInt(idSubject))
   const currentUser = useCurrentUserQuery()
   const { data: user } = useGetUserQuery(currentUser?.data?.uid)
 
@@ -66,10 +70,17 @@ export function ListActivity() {
             <div className="md:ml-5">
               <div>
                 {activities
-                  ?.sort((a, b) => new Date(b.datePosting ?? 0).getTime() - new Date(a.datePosting ?? 0).getTime())
+                  ?.sort(
+                    (a, b) =>
+                      new Date(b.datePosting ?? 0).getTime() -
+                      new Date(a.datePosting ?? 0).getTime(),
+                  )
                   .map((activity) => {
                     return (
-                      <div className="flex flex-col justify-center items-center w-full" key={activity.id}>
+                      <div
+                        className="flex flex-col justify-center items-center w-full"
+                        key={activity.id}
+                      >
                         <ActivitiesMaterials
                           id={activity.id.toString()}
                           idClass={idClass}

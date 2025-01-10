@@ -3,7 +3,11 @@ import ListStudents from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover'
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@radix-ui/react-popover'
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
@@ -22,7 +26,10 @@ export function DatePickerDemo({
         <Button
           size="medium"
           variant="ghostBlack"
-          className={cn('bg-slate-200 justify-start text-left', !date && 'text-muted-foreground')}
+          className={cn(
+            'bg-slate-200 justify-start text-left',
+            !date && 'text-muted-foreground',
+          )}
         >
           {date ? format(date, 'PPP') : <span>Escolha a data</span>}
         </Button>
@@ -43,7 +50,7 @@ export function DatePickerDemo({
 }
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/call',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/call',
 )({
   component: Call,
 })
@@ -68,7 +75,9 @@ export function Call() {
 
   const updateStudentStatus = (id: string, status: any) => {
     setStudentList((prevList) =>
-      prevList.map((student) => (student.student_id === id ? { ...student, variant: status } : student)),
+      prevList.map((student) =>
+        student.student_id === id ? { ...student, variant: status } : student,
+      ),
     )
   }
 

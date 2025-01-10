@@ -1,4 +1,5 @@
 import { Home, Settings, SquarePen, SquarePlus } from 'lucide-react'
+
 import { MenuItem } from './menu-item'
 import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'

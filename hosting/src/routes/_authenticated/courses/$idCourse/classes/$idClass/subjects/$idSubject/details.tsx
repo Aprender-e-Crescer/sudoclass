@@ -7,7 +7,7 @@ import { Form, Formik } from 'formik'
 import { Loader2 } from 'lucide-react'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/details',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/details',
 )({
   component: SubjectDetails,
 })
@@ -26,7 +26,9 @@ export function SubjectDetails() {
   }
 
   if (error) {
-    return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
+    return (
+      <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
+    )
   }
 
   return (
@@ -41,7 +43,9 @@ export function SubjectDetails() {
       {({ values }) => (
         <Form className="flex flex-col gap-4 mx-20 my-10">
           <div>
-            <h1 className="font-bold text-blue-950 text-4xl">Ementa da disciplina</h1>
+            <h1 className="font-bold text-blue-950 text-4xl">
+              Ementa da disciplina
+            </h1>
           </div>
 
           <div className="flex flex-col gap-3">
