@@ -4,8 +4,8 @@ import { useListNotesQuery } from '@/queries/use-list-notes-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/notes-screen',
-)( {
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/notes-screen',
+)({
   component: StudentGrades,
 })
 
@@ -21,28 +21,35 @@ export default function StudentGrades() {
   const { data, isLoading, error } = useListNotesQuery(subjectId)
 
   if (isLoading) {
-    return <p className="p-4 text-center text-muted-foreground">Carregando...</p>
+    return (
+      <p className="p-4 text-center text-muted-foreground">Carregando...</p>
+    )
   }
 
   if (error) {
-    return <p className="p-4 text-center text-red-500">Erro ao carregar os dados.</p>
+    return (
+      <p className="p-4 text-center text-red-500">Erro ao carregar os dados.</p>
+    )
   }
 
   const students: Student[] = data || []
 
   const getGradeColor = (grade: number | null) => {
-    if (grade === null) return 'bg' 
-    if (grade > 7) return 'bg-green-50' 
-    if (grade === 7) return 'bg-orange-50' 
+    if (grade === null) return 'bg'
+    if (grade > 7) return 'bg-green-50'
+    if (grade === 7) return 'bg-orange-50'
     return 'bg-red-50'
   }
-  
 
   return (
     <Card className="w-full px-4">
       <CardHeader className="border-b p-4">
-        <CardTitle className="text-lg sm:text-xl font-medium">Média geral</CardTitle>
-        <p className="text-xs sm:text-sm text-muted-foreground">Para cada aluno</p>
+        <CardTitle className="text-lg sm:text-xl font-medium">
+          Média geral
+        </CardTitle>
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          Para cada aluno
+        </p>
       </CardHeader>
       <CardContent className="p-0">
         <div>
@@ -57,7 +64,9 @@ export default function StudentGrades() {
                     {student.nomeAluno.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-xs sm:text-sm font-medium">{student.nomeAluno}</span>
+                <span className="text-xs sm:text-sm font-medium">
+                  {student.nomeAluno}
+                </span>
               </div>
               <div className="flex items-center">
                 <span className="text-xs sm:text-sm font-medium">
