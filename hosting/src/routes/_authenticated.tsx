@@ -19,7 +19,6 @@ export const Route = createFileRoute('/_authenticated')({
 export function Authenticated() {
   const user = useGetFullUser()
   const { avatarImage } = useProfileImage()
-  console.log(user)
 
   const logout = () => {
     signOut(auth)
@@ -32,7 +31,7 @@ export function Authenticated() {
       <div className="flex-col flex w-full">
         <Header avatarFallBack="" avatarImage={avatarImage} logout={logout} />
         <div className="flex  h-full">
-          <LeftMenu type={'student'} />
+          <LeftMenu type={'admin'} />
           <div className="flex-1">
             <Outlet />
           </div>
