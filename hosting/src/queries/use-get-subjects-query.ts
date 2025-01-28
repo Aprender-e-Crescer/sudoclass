@@ -2,12 +2,9 @@ import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 
-interface useGetSubjectsProps {
-  idCourse: string
-  idClass: string
-}
 
-export function useGetSubjectsQuery({idCourse, idClass}: useGetSubjectsProps) {
+
+export function useGetSubjectsQuery(idCourse: string, idClass: string) {
   return useQuery({
     queryKey: ['get-subjects'],
     queryFn: async () => {
