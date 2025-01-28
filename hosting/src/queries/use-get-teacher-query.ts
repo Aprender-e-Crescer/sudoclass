@@ -1,4 +1,4 @@
-import { teacherSchema } from '@/models/teachers-schema'
+import { teacherSchema } from '@/models/teacher-schema'
 import { api } from '@/services/api'
 import { useQuery } from '@tanstack/react-query'
 

@@ -1,0 +1,1 @@
+export type role = 'student' | 'teacher' | 'admin' | 'responsible'
