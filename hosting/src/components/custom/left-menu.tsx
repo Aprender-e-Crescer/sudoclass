@@ -8,7 +8,7 @@ import { Link } from '@tanstack/react-router'
 import { useGetCoursesQuery } from '@/queries/use-get-courses-query'
 
 interface LeftMenuProps {
-  type: 'student' | 'teacher' | 'admin' | 'responsible'
+  type: 'student' | 'teacher' | 'admin' | 'responsible' | undefined
 }
 
 const menuItemsStudentPortal = [

@@ -8,11 +8,10 @@ import { signInWithCustomToken } from 'firebase/auth'
 const loginWithCPF = httpsCallable<LoginData, string>(functions, 'loginWithCPF')
 
 interface LoginResponses {
-  onSuccess: () => void
   onError: (error: unknown) => void
 }
 
-export function useLoginMutation({ onSuccess, onError }: LoginResponses) {
+export function useLoginMutation({ onError }: LoginResponses) {
   return useMutation({
     mutationKey: ['login'],
     mutationFn: async (credentials: LoginData) => {
@@ -22,7 +21,6 @@ export function useLoginMutation({ onSuccess, onError }: LoginResponses) {
 
       return signInWithCustomToken(auth, token)
     },
-    onSuccess,
     onError,
   })
 }

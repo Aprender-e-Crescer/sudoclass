@@ -5,7 +5,7 @@ import { DropdownHeaderAccount } from './dropdown-header-account'
 
 export interface HeaderProps {
   avatarFallBack?: string
-  avatarImage?: string
+  avatarImage: string | null | undefined
   logout: () => void
 }
 
