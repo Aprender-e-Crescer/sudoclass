@@ -142,7 +142,7 @@ export function AdminListing() {
                       Cancelar
                     </Button>
                   </Link>
-                  <Button type="submit" variant="blueButton" size="large" className="w-64" type="submit">
+                  <Button type="submit" variant="blueButton" size="large" className="w-64">
                     Cadastrar
                   </Button>
                 </div>
