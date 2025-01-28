@@ -15,8 +15,8 @@ function RouteComponent() {
   const { data: student } = useStudentPersonalClasses(fullUser?.role, fullUser?.roleRef)
   const { data: teacher } = useTeacherPersonalSubjects(fullUser?.role, fullUser?.roleRef)
   const { data: classes } = useGetClassesQuery(String(idCourse), fullUser?.role, student?.classes, teacher?.subjects)
-  console.log(classes)
-  console.log(student)
+  console.log('a', classes)
+  console.log('estudantes:', student)
 
   return <div></div>
 }

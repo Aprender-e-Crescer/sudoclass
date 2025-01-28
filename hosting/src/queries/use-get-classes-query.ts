@@ -6,7 +6,7 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import { collection, query, where, getDocs, documentId } from 'firebase/firestore'
 import { Class, classSchema } from '@/models/class-schema'
 
-export const getClassesQueryOptions = (
+const getClassesQueryOptions = (
   courseId: string,
   role: role | undefined,
   studentClasses: Student['classes'] | undefined,
@@ -21,18 +21,21 @@ export const getClassesQueryOptions = (
 
       if (role === 'teacher') {
         if (!teacherSubjects) throw new Error('Subjects are not defined')
-        classRefs = teacherSubjects.map((subjectRef) => subjectRef.parent.parent)
+        classRefs = teacherSubjects.map((subjectRef) => subjectRef.parent.parent?.parent.id)
       }
 
       if (role === 'student' || role === 'responsible') {
         if (!studentClasses) throw new Error('Classes are not defined')
+
         classRefs = studentClasses.map((classRef) => classRef)
+        console.log('Student Classes IDs:', classRefs)
       }
 
       const classCollectionRef = collection(firestore, `courses/${courseId}/classes`).withConverter({
         toFirestore: (classItem: Class) => classItem,
         fromFirestore: (snapshot, options) => {
           const data = snapshot.data(options)
+          console.log('data', data)
           return classSchema.parse({ ...data, id: snapshot.id })
         },
       })
@@ -41,10 +44,11 @@ export const getClassesQueryOptions = (
 
       const queryRef = query(classCollectionRef, ...conditions)
       const querySnapshot = await getDocs(queryRef)
-
+      console.log('Documents found:', querySnapshot.size)
       return querySnapshot.docs.map((doc) => doc.data())
     },
   })
+
 export function useGetClassesQuery(
   courseId: string,
   role: role | undefined,
