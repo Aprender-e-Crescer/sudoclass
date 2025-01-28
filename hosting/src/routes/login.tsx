@@ -55,7 +55,7 @@ function Login() {
     }
   }
 
-  if (isUserLoggedIn) return <Navigate to="/courses" />
+  if (isUserLoggedIn) return <Navigate to="/" />
 
   return (
     <>
