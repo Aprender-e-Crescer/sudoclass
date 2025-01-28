@@ -1,19 +1,16 @@
 import { useLoginMutation } from '@/mutations/use-login-mutation'
-import { useNavigate } from '@tanstack/react-router'
+import { useAuthStateReady } from '@/queries/use-auth-state-ready-query'
+import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 
 export function useLoginController() {
-  const navigate = useNavigate({
-    from: '/login',
-  })
+  const { data: isAuthStateReady } = useAuthStateReady()
+  const { data: currentUser } = useCurrentUserQuery(isAuthStateReady)
 
   const { mutateAsync: login } = useLoginMutation({
-    onSuccess: () => {
-      navigate({ to: '/courses' })
-    },
     onError: (error) => {
       console.error('Erro durante a autenticação:', error.message)
     },
   })
 
-  return { login }
+  return { login, isUserLoggedIn: !!currentUser }
 }

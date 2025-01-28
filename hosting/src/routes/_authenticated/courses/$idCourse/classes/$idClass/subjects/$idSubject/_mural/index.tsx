@@ -25,11 +25,11 @@ export function WallSubjects() {
   const { idSubject } = Route.useParams()
   const { data: warnings, isLoading } = useListWarningsQuery(idSubject)
   const createWarningMutation = useCreateWarningMutation()
-  const { name, user } = useGetFullUser()
+  const fullUser = useGetFullUser()
   const { data: subject } = useGetSubjectByIdQuery(parseInt(idSubject))
   const currentUserImage = useProfileImage()
 
-  if (!user) {
+  if (!fullUser) {
     console.error('Tipo de usuário não encontrado')
     return (
       <div className="w-full h-full flex items-center justify-center">
@@ -38,20 +38,18 @@ export function WallSubjects() {
     )
   }
 
-  const userName = name
-
   console.log('Dados de warnings:', warnings)
 
   const handleFormSubmit = (
     values: typeof initialValues,
     { resetForm }: FormikHelpers<typeof initialValues>,
   ) => {
-    if (userName) {
+    if (fullUser?.displayName) {
       createWarningMutation.mutate({
         message: values.message,
-        userId: user.idUser,
+        userId: fullUser.cpf,
         subjectId: parseInt(idSubject, 10),
-        created_by: userName,
+        created_by: fullUser?.displayName,
       })
       resetForm()
     } else {

@@ -4,7 +4,7 @@ import { AiOutlineIdcard } from 'react-icons/ai'
 import { InputAuth } from '@/components/custom/auth-input'
 import { FaKey } from 'react-icons/fa6'
 import { InputCheckbox } from '@/components/custom/checkbox-input'
-import { Link } from '@tanstack/react-router'
+import { Link, Navigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { useLoginController } from '@/controllers/use-login-controller'
@@ -32,7 +32,7 @@ const initialValues = {
 }
 
 function Login() {
-  const { login } = useLoginController()
+  const { login, isUserLoggedIn } = useLoginController()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleOnLoginFormSubmit = async ({ cpf, password }: { cpf: string; password: string }) => {
@@ -54,6 +54,8 @@ function Login() {
       setIsLoading(false)
     }
   }
+
+  if (isUserLoggedIn) return <Navigate to="/courses" />
 
   return (
     <>

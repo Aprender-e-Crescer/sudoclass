@@ -4,20 +4,16 @@ import { onAuthStateChanged } from 'firebase/auth'
 
 export const QUERY_KEY_CURRENT_USER = ['currentUser']
 const QUERY_KEY_CURRENT_USER_SUBSCRIPTION = ['currentUserSubscription']
-export const currentUserQueryOptions = queryOptions({
-  initialData: auth.currentUser ? auth.currentUser : null,
+export const currentUserQueryOptions = (isAuthStateReady: boolean) => queryOptions({
   queryKey: QUERY_KEY_CURRENT_USER,
-  queryFn: async () => {
-    await auth.authStateReady()
-
-    return auth.currentUser ? auth.currentUser : null
-  },
+  queryFn: async () => auth.currentUser,
+  enabled: isAuthStateReady,
 })
 
-export function useCurrentUserQuery() {
+export function useCurrentUserQuery(isAuthStateReady: boolean) {
   const queryClient = useQueryClient()
 
-  const result = useQuery(currentUserQueryOptions)
+  const result = useQuery(currentUserQueryOptions(isAuthStateReady))
 
   useQuery({
     queryKey: QUERY_KEY_CURRENT_USER_SUBSCRIPTION,
@@ -30,6 +26,7 @@ export function useCurrentUserQuery() {
         unsubscribe()
       }
     },
+    enabled: isAuthStateReady,
   })
 
   return result
