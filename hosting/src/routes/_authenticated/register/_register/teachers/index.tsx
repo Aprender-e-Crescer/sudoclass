@@ -1,7 +1,7 @@
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
 import { useRegisterTeacherController } from '@/controllers/teacher-controller'
-import { registerTeacherSchema } from '@/models/teachers-schema'
+import { registerTeacherSchema } from '@/models/teacher-schema'
 import { useTeachersListingQuery } from '@/queries/use-teachers-listing-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'

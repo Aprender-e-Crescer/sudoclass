@@ -1,4 +1,4 @@
-import { datePreprocessedSchema } from '@/utils/schema'
+import { datePreprocessedSchema, docRefSchema } from '@/utils/schema'
 import { z } from 'zod'
 
 export const teacherListSchema = z.preprocess((obj: any) => ({
@@ -35,39 +35,9 @@ export const teacherListSchema = z.preprocess((obj: any) => ({
   birthCity: z.string().min(1, "O campo 'Cidade de nascimento' é obrigatório"),
 }));
 
-export const teacherSchema = z.preprocess((obj) => ({
-  idTeacher: obj?.id_professor,
-  name: obj?.nome,
-  birthDate: obj?.datanasc,
-  email: obj?.email,
-  state: obj?.estado,
-  municipality: obj?.municipio,
-  street: obj?.rua,
-  neighborhood: obj?.bairro,
-  number: obj?.numero,
-  rgNumber: obj?.rg,
-  cpf: obj?.cpf,
-  rgDispatchDate: obj?.datadeexpedicaorg,
-  rgDispatchStatus: obj?.estadodeexpedicaorg,
-  birthStatus: obj?.estadonascimento,
-  birthCity: obj?.cidadedenascimento,
-}), z.object({
-  idTeacher: z.number(),
-  name: z.string(),
-  birthDate: datePreprocessedSchema,
-  email: z.string(),
-  state: z.string(),
-  municipality: z.string(),
-  street: z.string(),
-  neighborhood: z.string(),
-  number: z.number().or(z.string()),
-  rgNumber: z.string(),
-  cpf: z.string(),
-  rgDispatchDate: z.string(),
-  rgDispatchStatus: z.string(),
-  birthStatus: z.string(),
-  birthCity: z.string(),
-}))
+export const teacherSchema = z.object({
+  subjects: z.array(docRefSchema),
+})
 
 export type Teacher = z.infer<typeof teacherSchema>
 

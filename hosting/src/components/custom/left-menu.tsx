@@ -5,10 +5,12 @@ import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'
 
 import { Link } from '@tanstack/react-router'
-import { useGetCoursesQuery } from '@/queries/use-get-courses-query'
+import { Course } from '@/models/course-schema'
+import { role } from '@/types/user'
 
 interface LeftMenuProps {
-  type: 'student' | 'teacher' | 'admin' | 'responsible' | undefined
+  type: role | undefined
+  courses: Course[] | undefined
 }
 
 const menuItemsStudentPortal = [
@@ -31,9 +33,8 @@ const menuItemsTeacherClassroom = [
   { name: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
-function LeftMenu({ type }: LeftMenuProps) {
+function LeftMenu({ type, courses }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('')
-  const { data: course } = useGetCoursesQuery()
 
   const renderMenuItems = (menuItems: typeof menuItemsStudentPortal) =>
     menuItems.map((item, index) => (
@@ -63,18 +64,19 @@ function LeftMenu({ type }: LeftMenuProps) {
           )}
           {type === 'teacher' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
         </div>
-        {course?.map((course: any) => (
+        {courses?.map(({ id, name, color }) => (
           <Link
-            key={course.id}
-            to={`/courses/${course.id}/classes/elmW6W9gPuX2NdR1ruXB/subjects`}
-            onClick={() => setActiveItem(course.name)}
+            key={id}
+            to={`/courses/${id}`}
+            onClick={() => setActiveItem(name)}
             className="w-full"
           >
             <CourseItem
-              course={course.name}
+              backgroundColor={color}
+              course={name}
               activeItem={activeItem}
-              onClick={() => setActiveItem(course.name)}
-              index={course.id}
+              onClick={() => setActiveItem(name)}
+              index={id}
             />
           </Link>
         ))}

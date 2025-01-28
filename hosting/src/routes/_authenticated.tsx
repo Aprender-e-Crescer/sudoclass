@@ -8,6 +8,10 @@ import { getUserQueryOptions } from '@/queries/use-get-user-query'
 import { currentUserQueryOptions } from '@/queries/use-current-user-query'
 import { authStateReadyQueryOptions } from '@/queries/use-auth-state-ready-query'
 import { useEffect } from 'react'
+import { getCoursesQueryOptions, useGetCoursesQuery } from '@/queries/use-get-courses-query'
+import { studentPersonalClassesQueryOptions, useStudentPersonalClasses } from '@/queries/use-student-personal-classes-query'
+import { teacherPersonalSubjectsQueryOptions, useTeacherPersonalSubjects } from '@/queries/use-teacher-personal-subjects-query'
+import { getRoleFromRef } from '@/utils/getRoleFromRef'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ matches, context: { queryClient } }) => {
@@ -18,13 +22,27 @@ export const Route = createFileRoute('/_authenticated')({
 
     if (!currentUser && isUserInsideAuthenticatedBoundaries) throw redirect({ to: '/login' })
 
-    await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
+    const user = await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
+    const role = getRoleFromRef(user?.roleRef)
+
+    const student = studentPersonalClassesQueryOptions(role, user?.roleRef).enabled ? 
+      await queryClient.ensureQueryData(studentPersonalClassesQueryOptions(role, user?.roleRef)) : 
+      undefined
+
+    const teacher = teacherPersonalSubjectsQueryOptions(role, user?.roleRef).enabled ?
+      await queryClient.ensureQueryData(teacherPersonalSubjectsQueryOptions(role, user?.roleRef)) :
+      undefined
+    
+    await queryClient.ensureQueryData(getCoursesQueryOptions(role, student?.classes, teacher?.subjects))
   },
   component: Authenticated,
 })
 
 export function Authenticated() {
   const fullUser = useGetFullUser()
+  const { data: student } = useStudentPersonalClasses(fullUser?.role, fullUser?.roleRef)
+  const { data: teacher } = useTeacherPersonalSubjects(fullUser?.role, fullUser?.roleRef)
+  const { data: courses } = useGetCoursesQuery(fullUser?.role, student?.classes, teacher?.subjects)
 
   const router = useRouter()
 
@@ -43,7 +61,7 @@ export function Authenticated() {
       <div className="flex-col flex w-full">
         <Header avatarFallBack="" avatarImage={fullUser?.photoURL} logout={logout} />
         <div className="flex  h-full">
-          <LeftMenu type={fullUser?.type} />
+          <LeftMenu type={fullUser?.role} courses={courses} />
           <div className="flex-1">
             <Outlet />
           </div>
