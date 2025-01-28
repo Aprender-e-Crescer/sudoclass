@@ -31,7 +31,7 @@ export function Authenticated() {
       <div className="flex-col flex w-full">
         <Header avatarFallBack="" avatarImage={avatarImage} logout={logout} />
         <div className="flex  h-full">
-          <LeftMenu type={'admin'} />
+          <LeftMenu type={user.type} />
           <div className="flex-1">
             <Outlet />
           </div>
