@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { Timestamp } from 'firebase/firestore'
 
 export const classSchema = z.object({
+  id: z.string(),
   name: z.string(),
   color: z.string(),
   shift: z.enum(['morning', 'afternoon', 'night']),
