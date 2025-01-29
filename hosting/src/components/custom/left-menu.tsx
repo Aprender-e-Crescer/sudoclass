@@ -65,12 +65,7 @@ function LeftMenu({ type, courses }: LeftMenuProps) {
           {type === 'teacher' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
         </div>
         {courses?.map(({ id, name, color }) => (
-          <Link
-            key={id}
-            to={`/courses/${id}`}
-            onClick={() => setActiveItem(name)}
-            className="w-full"
-          >
+          <Link key={id} to={`/courses/${id}/classes`} onClick={() => setActiveItem(name)} className="w-full">
             <CourseItem
               backgroundColor={color}
               course={name}

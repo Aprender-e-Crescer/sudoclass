@@ -1,11 +1,11 @@
+import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { Link, useLocation } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-
-interface SubHeaderProps {
-  hasPrivilege?: 'professor' | 'aluno' | 'pedagogo'
+function getUserType() {
+   const fullUser = useGetFullUser()
+  return fullUser?.role
 }
-
-export function SubHeader({ hasPrivilege }: SubHeaderProps) {
+export function SubHeader() {
   const location = useLocation()
   const [selectedLink, setSelectedLink] = useState<string>('')
 
@@ -34,7 +34,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
     }
   }, [location])
 
-  if (hasPrivilege === 'professor') {
+  if (getUserType() === 'teacher') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
@@ -80,7 +80,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
         </div>
       </div>
     )
-  } else if (hasPrivilege === 'pedagogo') {
+  } else if (getUserType() === 'admin') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
@@ -134,7 +134,7 @@ export function SubHeader({ hasPrivilege }: SubHeaderProps) {
         </div>
       </div>
     )
-  } else if (hasPrivilege === 'aluno') {
+  } else if (getUserType() === 'student') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">

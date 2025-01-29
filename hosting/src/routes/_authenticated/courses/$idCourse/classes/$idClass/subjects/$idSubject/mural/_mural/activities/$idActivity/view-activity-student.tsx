@@ -22,7 +22,7 @@ import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { useUpdateLinkActivityMutation } from '@/mutations/use-update-link-activity-mutation'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/$idActivity/view-activity-student',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/view-activity-student',
 )({
   component: ViewActivityStudent,
 })
