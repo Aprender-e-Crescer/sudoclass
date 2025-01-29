@@ -17,52 +17,35 @@ const getClassesQueryOptions = (
     queryFn: async () => {
       if (!role) throw new Error('Role is not defined')
 
-      let classesRefs
+      let classRefs
 
       if (role === 'teacher') {
         if (!teacherSubjects) throw new Error('Subjects are not defined')
-        classesRefs = teacherSubjects.map((subjectRef) => subjectRef.parent.parent)
+        classRefs = teacherSubjects.map((subjectRef) => subjectRef.parent.parent)
       }
 
       if (role === 'student' || role === 'responsible') {
         if (!studentClasses) throw new Error('Classes are not defined')
 
-        classesRefs = studentClasses
-        console.log('Student Classes IDs:', classesRefs)
+        classRefs = studentClasses.map((classRef) => classRef)
       }
 
-      const classRef = collection(firestore, `courses/mF9o1jqPaY1IgVKHx8mu/classes`).withConverter({
+      const classCollectionRef = collection(firestore, 'courses', courseId, 'classes').withConverter({
         toFirestore: (classItem: Class) => classItem,
         fromFirestore: (snapshot, options) => {
           const data = snapshot.data(options)
-          console.log('data', data)
+
           return classSchema.parse({ ...data, id: snapshot.id })
         },
       })
-      console.log('classRefReal', classRef)
 
-      const conditions =
-        role === 'admin'
-          ? []
-          : [
-              where(
-                documentId(),
-                'in',
-                classesRefs?.map((classRef) => classRef).filter((classRef) => classRef !== null),
-              ),
-            ]
+      const conditions = role === 'admin' ? [] : [where(documentId(), 'in', classRefs)]
 
-      const queryRef = query(classRef, ...conditions)
+      const queryRef = query(classCollectionRef, ...conditions)
       const querySnapshot = await getDocs(queryRef)
-      console.log('querySnapshot', querySnapshot) //ate aqui vem o id do doc
-      const classes = querySnapshot.docs.map((doc) => doc.data())
-      console.log('result', classes) //nao retorna
-      return classes
+
+      return querySnapshot.docs.map((doc) => doc.data())
     },
-    enabled:
-      (!!role && (role === 'student' || role === 'responsible') && !!studentClasses) ||
-      (!!role && role === 'admin') ||
-      (!!role && role === 'teacher' && !!teacherSubjects),
   })
 
 export function useGetClassesQuery(
