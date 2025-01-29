@@ -2,7 +2,7 @@ import { InputTeachingPlans } from '@/components/custom/input-teaching-plan'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/input-teaching-plan',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/input-teaching-plan',
 )({
   component: InputTeachingPlan,
 })

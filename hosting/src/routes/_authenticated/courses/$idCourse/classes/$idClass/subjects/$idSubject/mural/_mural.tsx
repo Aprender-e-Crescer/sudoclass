@@ -1,0 +1,13 @@
+import { SubHeader } from '@/components/custom/subheader'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural',
+)({
+  component: () => (
+    <div className="mt-3 mb-2">
+      <SubHeader />
+      <Outlet />
+    </div>
+  ),
+})
