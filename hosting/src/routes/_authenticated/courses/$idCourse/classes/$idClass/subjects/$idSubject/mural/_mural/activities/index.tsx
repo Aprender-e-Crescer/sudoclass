@@ -8,7 +8,7 @@ import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/',
 )({
   component: ListActivity,
 })

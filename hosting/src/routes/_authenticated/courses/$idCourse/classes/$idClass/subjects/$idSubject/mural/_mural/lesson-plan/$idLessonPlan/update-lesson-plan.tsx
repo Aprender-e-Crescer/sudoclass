@@ -22,7 +22,7 @@ export const updateLessonPlanSchema = z.object({
 })
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/update-lesson-plan',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/update-lesson-plan',
 )({
   component: UpdateLessonPlan,
 })

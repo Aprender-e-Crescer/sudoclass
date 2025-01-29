@@ -4,7 +4,7 @@ import { useListNotesQuery } from '@/queries/use-list-notes-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/notes-screen',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/notes-screen',
 )({
   component: StudentGrades,
 })

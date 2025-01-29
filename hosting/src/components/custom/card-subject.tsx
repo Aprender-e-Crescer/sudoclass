@@ -10,7 +10,7 @@ interface CardSubjectProps {
 
 export function CardSubject({ id, name, color, idClass, idCourse }: CardSubjectProps) {
   return (
-    <Link to={`/courses/${idCourse}/classes/${idClass}/school-matrice/subjects/${id}/_mural/`}>
+    <Link to={`/courses/${idCourse}/classes/${idClass}/subjects/${id}/mural`}>
       <div
         className={`w-[200px] md:w-[400px] h-[200px] rounded-lg shadow-lg flex flex-col justify-between`}
         style={{ backgroundColor: color }}

@@ -67,7 +67,8 @@ function LeftMenu({ type, courses }: LeftMenuProps) {
         {courses?.map(({ id, name, color }) => (
           <Link
             key={id}
-            to={`/courses/${id}`}
+            to="/courses/$idCourse/classes/kjIn4LuAgLq9WCGPGlL6/subjects/"
+            params={{ idCourse: id }}
             onClick={() => setActiveItem(name)}
             className="w-full"
           >

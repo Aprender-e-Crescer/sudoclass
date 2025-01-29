@@ -7,7 +7,7 @@ import { LessonPlan } from '@/models/lesson-plan'
 import { LESSON_PLAN_QUERY_KEY } from '@/constants/queries'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
 )({
   component: LessonPlanView,
   parseParams: (params: { idLessonPlan: string }) => {

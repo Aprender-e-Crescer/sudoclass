@@ -23,7 +23,7 @@ const validateSearch = z.object({
 })
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/_mural/activities/$idActivity/correction',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/correction',
 )({
   component: Correction,
   validateSearch,
