@@ -6,10 +6,10 @@ import { doc, getDoc } from 'firebase/firestore'
 
 export function useSentByProfilesQueries(warnings: Warning[] | undefined) {
     return useQueries({
-            queries: warnings?.map(({ sentBy }) => ({
-                queryKey: ['get-profiles', sentBy.id],
+            queries: warnings?.map(({ sentByProfile }) => ({
+                queryKey: ['get-profiles', sentByProfile.id],
                 queryFn: async () => {
-                const warningsRef = doc(firestore, 'profile', sentBy.id).withConverter({
+                const warningsRef = doc(firestore, 'profile', sentByProfile.id).withConverter({
                     fromFirestore: snapshot => profileSchema.parse({ id: snapshot.id, ...snapshot.data() }),
                     toFirestore: (warning: Profile) => warning
                 })
