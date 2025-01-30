@@ -1,15 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CardComponent } from '@/components/custom/card-bolletin-board'
-import { InputWithAvatar } from '@/components/custom/input-with-avatar'
-import { Form, Formik, FormikHelpers } from 'formik'
-import { SendHorizontal } from 'lucide-react'
-import { Warning } from '@/components/custom/warning'
-import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
-import { useListWarningsQuery } from '@/queries/use-warning-wall-query'
+
 import { CustomLoading } from '@/components/custom/custom-loading'
-import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
-import { useGetFullUser } from '@/hooks/use-get-full-user'
-import { useProfileImage } from '@/hooks/use-profile-image'
+
+import { useGetWarningsQuery } from '@/queries/use-warning-wall-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/warnings',
@@ -17,45 +11,11 @@ export const Route = createFileRoute(
   component: WallSubjects,
 })
 
-const initialValues = {
-  message: '',
-}
-
 export function WallSubjects() {
-  const { idSubject } = Route.useParams()
-  const { data: warnings, isLoading } = useListWarningsQuery(idSubject)
-  const createWarningMutation = useCreateWarningMutation()
-  const fullUser = useGetFullUser()
-  const { data: subject } = useGetSubjectByIdQuery(parseInt(idSubject))
-  const currentUserImage = useProfileImage()
-
-  if (!fullUser) {
-    console.error('Tipo de usuário não encontrado')
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <CustomLoading message="Carregando mural" size={70} />
-      </div>
-    )
-  }
+  const { idCourse, idClass, idSubject } = Route.useParams()
+  const { data: warnings, isError, error, isLoading } = useGetWarningsQuery(idCourse, idClass, idSubject)
 
   console.log('Dados de warnings:', warnings)
-
-  const handleFormSubmit = (
-    values: typeof initialValues,
-    { resetForm }: FormikHelpers<typeof initialValues>,
-  ) => {
-    if (fullUser?.displayName) {
-      createWarningMutation.mutate({
-        message: values.message,
-        userId: fullUser.cpf,
-        subjectId: parseInt(idSubject, 10),
-        created_by: fullUser?.displayName,
-      })
-      resetForm()
-    } else {
-      console.error('Usuário não autenticado')
-    }
-  }
 
   if (isLoading) {
     return (
@@ -67,70 +27,18 @@ export function WallSubjects() {
     )
   }
 
-  const validWarnings = Array.isArray(warnings)
-    ? warnings
-    : warnings
-      ? [warnings]
-      : []
-
   return (
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6">
         <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <CardComponent
-            name={subject?.nome_materia}
-            description="Aprender & Crescer"
-          />
+          <CardComponent name="asdadasdasda" description="Aprender & Crescer" />
         </div>
 
-        <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full">
-          <Formik initialValues={initialValues} onSubmit={handleFormSubmit}>
-            {({ handleSubmit, errors, touched, handleChange }) => (
-              <Form onSubmit={handleSubmit}>
-                <InputWithAvatar
-                  placeholder="Digite sua mensagem"
-                  id="message"
-                  name="message"
-                  onChange={handleChange}
-                  avatar={currentUserImage.selectedImage || ''}
-                  icon={
-                    <button type="submit" aria-label="Enviar mensagem">
-                      <SendHorizontal />
-                    </button>
-                  }
-                />
-                {errors.message && touched.message && (
-                  <div className="text-red-500 text-sm">{errors.message}</div>
-                )}
-              </Form>
-            )}
-          </Formik>
-        </div>
-
-        {validWarnings.length > 0 && (
-          <div className="my-4 mx-auto w-full sm:max-w-md lg:max-w-full flex flex-col gap-4">
-            {validWarnings.map((warning) => {
-              const date = new Date(warning.data_postagem)
-              const formattedDate = !isNaN(date.getTime())
-                ? `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`
-                : 'Data inválida'
-
-              console.log('Aviso renderizado:', warning)
-
-              return (
-                <Warning
-                  id={warning.id_aviso}
-                  key={warning.id_aviso}
-                  name={warning.criado_por}
-                  date={formattedDate}
-                  avatarSrc=""
-                  comment={warning.mensagem}
-                  textAvatar={warning?.criado_por?.charAt(0).toUpperCase()}
-                />
-              )
-            })}
+        <div className="bg-slate-400 p-5">
+          {warnings?.map((warning, index) => 
+          <h1 key={index}>{warning.message}</h1>
+          )}
           </div>
-        )}
       </div>
     </div>
   )

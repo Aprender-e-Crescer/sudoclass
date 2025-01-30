@@ -1,22 +1,23 @@
+
+import { Warning, warningsSchema } from '@/models/warning-schema'
+import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
-import { api } from '@/services/api'
+import { collection, getDocs } from 'firebase/firestore'
 
-export const WARNING_WALL_QUERY = ['warnings']
-
-export function useListWarningsQuery(idSubject: string) {
+export function useGetWarningsQuery(idCourse: string, idClass: string, idSubject: string) {
   return useQuery({
-    queryKey: [...WARNING_WALL_QUERY, idSubject],
+    queryKey: ['get-warnings'],
     queryFn: async () => {
-      try {
-        const response = await api.get(`/warnings/${idSubject}`)
-        return response.data || []
-      } catch (error: any) {
-        if (error.response?.status === 404) {
-          return []
-        }
-        throw error
-      }
+      const warningsRef = collection(firestore, 'courses', idCourse, 'classes', idClass, 'subjects', idSubject, 'warnings').withConverter({
+        fromFirestore: snapshot => warningsSchema.parse({ id: snapshot.id, ...snapshot.data() }),
+        toFirestore: (warning: Warning) => warning
+      })
+
+      const querySnapshot = await getDocs(warningsRef)
+      
+      const warnings = querySnapshot.docs.map(doc => doc.data())
+
+      return warnings
     },
-    retry: false,
   })
 }
