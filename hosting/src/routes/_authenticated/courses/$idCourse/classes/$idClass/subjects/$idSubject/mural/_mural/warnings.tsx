@@ -5,11 +5,10 @@ import { useGetWarningsQuery } from '@/queries/use-get-warnings-query'
 import { Warning } from '@/components/custom/warning'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 import { useGetCourseById } from '@/queries/use-get-course-by-id'
-import { useQueries } from '@tanstack/react-query'
-import { firestore } from '@/services/firebase'
 import { useSentByProfilesQueries } from '@/queries/use-sent-by-profiles-queries'
-
-// import { useGetFullUser } from '@/hooks/use-get-full-user'
+import { Button } from '@/components/ui/button'
+import { SendHorizonal } from 'lucide-react'
+import { useGetFullUser } from '@/hooks/use-get-full-user'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/warnings',
@@ -21,8 +20,9 @@ export function WallSubjects() {
   const { idCourse, idClass, idSubject } = Route.useParams()
   const { data: warnings, isError, error, isLoading } = useGetWarningsQuery(idCourse, idClass, idSubject)
   const sentByProfiles = useSentByProfilesQueries(warnings)
-  const { data: subject} = useGetSubjectByIdQuery(idCourse, idClass, idSubject)
-  const { data: course} = useGetCourseById(idCourse)
+  const { data: subject } = useGetSubjectByIdQuery(idCourse, idClass, idSubject)
+  const { data: course } = useGetCourseById(idCourse)
+  const fullUser = useGetFullUser()
 
   const warningsWithSentByProfiles = warnings?.map(({ id, message, sentDate, sentByProfile }) => {
     const sentByProfileData = sentByProfiles.find(({ data: currentSentByProfile }) => {
@@ -33,10 +33,12 @@ export function WallSubjects() {
       return false
     })
 
-    const author = sentByProfileData?.data ? {
-      name: sentByProfileData.data.displayName,
-      profilePhotoSrc: sentByProfileData.data.photoUrl,
-    } : undefined
+    const author = sentByProfileData?.data
+      ? {
+          name: sentByProfileData.data.displayName,
+          profilePhotoSrc: sentByProfileData.data.photoUrl,
+        }
+      : undefined
 
     return {
       key: id,
@@ -65,7 +67,7 @@ export function WallSubjects() {
   return (
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">
       <div className="w-full max-w-screen-lg p-4 sm:p-6 flex flex-col gap-5">
-        <div className="my-8 mx-auto w-full sm:max-w-md lg:max-w-full">
+        <div className="my-2 mx-auto w-full sm:max-w-md lg:max-w-full">
           <CardComponent name={subject?.name} courseName={course?.name} color={subject?.color} />
         </div>
 
@@ -73,22 +75,26 @@ export function WallSubjects() {
           {/* <p>{fullUser?.displayName}</p>
           <img src={fullUser?.photoURL ?? undefined} className="w-16 h-auto rounded-full" alt="" /> */}
 
-          <input
-            className="bg-white w-full p-7 border-2 rounded-lg border-slate-300 shadow-2xl"
-            type="text"
-            placeholder="Escreva um aviso para sua turma"
-          />
+          {fullUser?.role === 'teacher' || fullUser?.role === 'admin' ? (
+            <div>
+              <div className="flex items-center border-2 p-7 rounded-lg shadow-xl">
+                <img src={fullUser?.photoURL} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
+                <input
+                  type="text"
+                  placeholder="Escreva um aviso para sua turma"
+                  className="flex-grow p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
+                />
+                <button>
+                  <SendHorizonal />
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <div className="flex flex-col p-5 gap-5">
           {warningsWithSentByProfiles?.map(({ author, date, id, key, message }) => (
-            <Warning
-              key={key}
-              id={id}
-              date={date}
-              message={message}
-              author={author}
-            />
+            <Warning key={key} id={id} date={date} message={message} author={author} />
           ))}
         </div>
       </div>
