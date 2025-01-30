@@ -1,9 +1,10 @@
+// import { docRefSchema } from '@/utils/schema'
 import { z } from 'zod'
 
 export const warningsSchema = z.object({
-  sentBy: z.string(),
   message: z.string(),
- sentDate: z.date(),
+  // sentBy: z.array(docRefSchema),
+  // sentDate: z.string(),
 })
 
 export type Warning = z.infer<typeof warningsSchema>
