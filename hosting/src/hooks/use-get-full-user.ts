@@ -1,7 +1,6 @@
 import { useAuthStateReady } from '@/queries/use-auth-state-ready-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
-import { role } from '@/types/user'
 import { getRoleFromRef } from '@/utils/getRoleFromRef'
 
 export function useGetFullUser() {

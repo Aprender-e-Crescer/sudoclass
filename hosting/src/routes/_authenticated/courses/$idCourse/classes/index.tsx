@@ -18,7 +18,7 @@ function RouteComponent() {
   return (
     <>
       {classes?.map(({ id, name }) => (
-        <Link to="/courses/$idCourse/classes/$idClass" params={{ idCourse, idClass: id }}>{name}</Link>
+        <Link to="/courses/$idCourse/classes/$idClass/subjects" params={{ idCourse, idClass: id }}>{name}</Link>
       ))}
     </>
   )

@@ -12,7 +12,7 @@ import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { useProfileImage } from '@/hooks/use-profile-image'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/warnings',
 )({
   component: WallSubjects,
 })
