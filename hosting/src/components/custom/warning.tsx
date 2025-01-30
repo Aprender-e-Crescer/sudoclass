@@ -1,6 +1,7 @@
 import * as Avatar from '@radix-ui/react-avatar'
 import { EllipsisVertical } from 'lucide-react'
 import { useState } from 'react'
+import { format } from "date-fns";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 interface WarningProps {
@@ -17,6 +18,8 @@ export function Warning({ id, date, message, author }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(message)
   const { authorName, authorProfilePhotoSrc } = author ?? {}
+  const dateFormatted = format(date, "yyyy/MM/dd 'at' hh:mm a");
+
 
   return (
     <div>
@@ -32,8 +35,8 @@ export function Warning({ id, date, message, author }: WarningProps) {
           <div className="flex gap-2 flex-col sm:text-left w-full">
             <div className="flex gap-x-2 items-center">
               <span className="text-sm font-medium text-gray-800">{author ? authorName : message}</span>
-              {/* TODO - format this date */}
-              <span className="text-xs text-gray-500">{date.toString()}</span>
+
+              <span className="text-xs text-gray-500">{dateFormatted}</span>
             </div>
 
             {isEditing ? (
