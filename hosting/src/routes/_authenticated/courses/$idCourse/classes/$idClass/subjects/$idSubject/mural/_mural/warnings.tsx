@@ -53,7 +53,7 @@ export function WallSubjects() {
           />
         </div>
 
-        <div className=" p-5">
+        <div className="flex flex-col p-5 gap-5">
           {warnings?.map((warning, index) => <Warning key={index} comment={warning.message} />)}
         </div>
       </div>
