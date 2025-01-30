@@ -1,4 +1,4 @@
-import { WARNING_WALL_QUERY } from '@/queries/use-warning-wall-query'
+import { WARNING_WALL_QUERY } from '@/queries/use-get-warnings-query'
 import { api } from '@/services/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 

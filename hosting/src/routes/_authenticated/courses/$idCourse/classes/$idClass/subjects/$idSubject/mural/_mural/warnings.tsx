@@ -1,10 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CardComponent } from '@/components/custom/card-bolletin-board'
 import { CustomLoading } from '@/components/custom/custom-loading'
-import { useGetWarningsQuery } from '@/queries/use-warning-wall-query'
+import { useGetWarningsQuery } from '@/queries/use-get-warnings-query'
 import { Warning } from '@/components/custom/warning'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 import { useGetCourseById } from '@/queries/use-get-course-by-id'
+import { useQueries } from '@tanstack/react-query'
+import { firestore } from '@/services/firebase'
+import { useSentByProfilesQueries } from '@/queries/use-sent-by-profiles-queries'
 
 // import { useGetFullUser } from '@/hooks/use-get-full-user'
 
@@ -17,8 +20,32 @@ export const Route = createFileRoute(
 export function WallSubjects() {
   const { idCourse, idClass, idSubject } = Route.useParams()
   const { data: warnings, isError, error, isLoading } = useGetWarningsQuery(idCourse, idClass, idSubject)
+  const sentByProfiles = useSentByProfilesQueries(warnings)
   const { data: subject} = useGetSubjectByIdQuery(idCourse, idClass, idSubject)
   const { data: course} = useGetCourseById(idCourse)
+
+  const warningsWithSentByProfiles = warnings?.map(({ id, message, sentDate, sentByProfile }) => {
+    const sentByProfileData = sentByProfiles.find(({ data: currentSentByProfile }) => {
+      if (!currentSentByProfile) return false
+
+      if (currentSentByProfile.id === sentByProfile.id) return true
+
+      return false
+    })
+
+    const author = sentByProfileData?.data ? {
+      name: sentByProfileData.data.displayName,
+      profilePhotoSrc: sentByProfileData.data.photoUrl,
+    } : undefined
+
+    return {
+      key: id,
+      id: id,
+      date: sentDate,
+      message: message,
+      author: author,
+    }
+  })
 
   // const fullUser = useGetFullUser()
   // console.log('Dados da subject:', subject)
@@ -54,7 +81,15 @@ export function WallSubjects() {
         </div>
 
         <div className="flex flex-col p-5 gap-5">
-          {warnings?.map((warning, index) => <Warning key={index} comment={warning.message} />)}
+          {warningsWithSentByProfiles?.map(({ author, date, id, key, message }) => (
+            <Warning
+              key={key}
+              id={id}
+              date={date}
+              message={message}
+              author={author}
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -18,5 +18,6 @@ export function useGetFullUser() {
     cpf: currentUser.uid,
     role,
     roleRef: user?.roleRef,
+    profileRef: user?.profileRef,
   } : null
 }

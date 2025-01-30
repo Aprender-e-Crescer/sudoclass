@@ -4,31 +4,36 @@ import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 interface WarningProps {
-  id?: number
-  name?: string | undefined | null
-  date?: string
-  comment: string
-  textAvatar?: string
-  avatarSrc?: string
+  id: string
+  date: Date
+  message: string
+  author?: {
+    name: string
+    profilePhotoSrc: string
+  }
 }
 
-export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: WarningProps) {
+export function Warning({ id, date, message, author }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const [editedComment, setEditedComment] = useState(comment)
+  const [editedComment, setEditedComment] = useState(message)
+  const { authorName, authorProfilePhotoSrc } = author ?? {}
 
   return (
     <div>
       <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex justify-between">
         <div className="flex items-center gap-x-3 w-full">
-          <Avatar.Root className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
-            <Avatar.Image className="w-full h-full rounded-full object-cover" src={avatarSrc} />
-            <Avatar.Fallback className="text-xl text-gray-500">{textAvatar}</Avatar.Fallback>
-          </Avatar.Root>
+          {author ? (
+            <Avatar.Root className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
+              <Avatar.Image className="w-full h-full rounded-full object-cover" src={authorProfilePhotoSrc} />
+              <Avatar.Fallback className="text-xl text-gray-500">{authorName}</Avatar.Fallback>
+            </Avatar.Root>
+          ) : null}
 
           <div className="flex gap-2 flex-col sm:text-left w-full">
             <div className="flex gap-x-2 items-center">
-              <span className="text-sm font-medium text-gray-800">{name}</span>
-              <span className="text-xs text-gray-500">{date}</span>
+              <span className="text-sm font-medium text-gray-800">{author ? authorName : message}</span>
+              {/* TODO - format this date */}
+              <span className="text-xs text-gray-500">{date.toString()}</span>
             </div>
 
             {isEditing ? (
