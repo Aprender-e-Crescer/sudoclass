@@ -22,7 +22,7 @@ interface WarningProps {
 export function Warning({ id, date, message, author, idCourse, idClass, idSubject }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(message)
-  const [isDeleted, setIsDeleted] = useState(false) // Adiciona estado para controlar a exclusão
+  const [isDeleted, setIsDeleted] = useState(false) 
   const authorName = author?.name ?? 'Anônimo'
   const authorProfilePhotoSrc = author?.profilePhotoSrc
   const dateFormatted = format(date, "dd/MM/yyyy 'às' HH:mm")
@@ -32,15 +32,15 @@ export function Warning({ id, date, message, author, idCourse, idClass, idSubjec
   const handleDeleteClick = async () => {
     try {
       await warningDeleteMutation.mutateAsync(id)
-      setIsDeleted(true) // Marca o aviso como excluído
+      setIsDeleted(true)
     } catch (error) {
       console.error('Erro ao excluir:', error)
-      // Opcionalmente, você pode exibir uma mensagem de erro
+      
     }
   }
 
   if (isDeleted) {
-    return null // Retorna null para ocultar o aviso excluído
+    return null 
   }
 
   return (

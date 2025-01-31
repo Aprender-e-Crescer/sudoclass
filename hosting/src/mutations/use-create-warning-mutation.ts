@@ -7,7 +7,7 @@ interface CreateWarningData {
   idCourse: string
   idClass: string
   idSubject: string
-  authorId: string  // O ID do autor (usuário)
+  authorId: string 
 }
 
 export function useCreateWarningMutation() {
