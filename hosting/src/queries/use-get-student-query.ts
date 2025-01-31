@@ -10,7 +10,8 @@ export const getStudentsQueryOptions = (idCourse: string, idClass: string) =>
       const classSnapshot = await getDoc(classRef)
 
       const classData = classSnapshot.data()
-      const studentRefs = classData?.students
+      const studentRefs = classData?.studentsProfile
+      if (!studentRefs) throw new Error('No students')
 
       const studentSnapshots = await Promise.all(studentRefs.map((studentRef) => getDoc(studentRef)))
 
