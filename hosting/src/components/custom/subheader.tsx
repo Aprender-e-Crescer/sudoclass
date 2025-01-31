@@ -1,155 +1,130 @@
 import { useGetFullUser } from '@/hooks/use-get-full-user'
-import { Link, useLocation } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
-function getUserType() {
-   const fullUser = useGetFullUser()
-  return fullUser?.role
-}
+import { Link } from '@tanstack/react-router'
+
 export function SubHeader() {
-  const location = useLocation()
-  const [selectedLink, setSelectedLink] = useState<string>('')
+  const fullUser = useGetFullUser()
 
-  useEffect(() => {
-    const path = location.pathname
-    if (path.includes('mural')) {
-      setSelectedLink('mural')
-    } else if (path.includes('activities')) {
-      setSelectedLink('activities')
-    } else if (path.includes('notes')) {
-      setSelectedLink('notes')
-    } else if (path.includes('lesson-plan')) {
-      setSelectedLink('lesson-plan')
-    } else if (path.includes('call')) {
-      setSelectedLink('call')
-    } else if (path.includes('attendance')) {
-      setSelectedLink('attendance')
-    } else if (path.includes('student')) {
-      setSelectedLink('student')
-    } else if (path.includes('teacher')) {
-      setSelectedLink('teacher')
-    } else if (path.includes('classes')) {
-      setSelectedLink('classes')
-    } else if (path.includes('pedagogue')) {
-      setSelectedLink('pedagogue')
-    }
-  }, [location])
+  const role = fullUser?.role
 
-  if (getUserType() === 'teacher') {
+  if (role === 'teacher') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject"
-            onClick={() => setSelectedLink('mural')}
-            className={`${selectedLink === 'mural' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/warnings"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Mural</p>
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities"
-            onClick={() => setSelectedLink('activities')}
-            className={`${selectedLink === 'activities' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Atividades</p>
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/notes-screen"
-            onClick={() => setSelectedLink('notes')}
-            className={`${selectedLink === 'notes' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/notes-screen"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Notas</p>
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/lesson-plan-view"
-            onClick={() => setSelectedLink('lesson-plan')}
-            className={`${selectedLink === 'lesson-plan' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idLessonPlan/lesson-plan-view"
+            className="text-lg transform hover:scale-110 transition-all"
           >
             <p>Plano de aula</p>
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/call"
-            onClick={() => setSelectedLink('call')}
-            className={`${selectedLink === 'call' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/call"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Chamada</p>
           </Link>
         </div>
       </div>
     )
-  } else if (getUserType() === 'admin') {
+  }
+
+  if (role === 'admin') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
           <Link
             to="/register/students"
-            onClick={() => setSelectedLink('student')}
-            className={`${selectedLink === 'student' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Aluno</p>
           </Link>
 
           <Link
             to="/register/teachers"
-            onClick={() => setSelectedLink('teacher')}
-            className={`${selectedLink === 'teacher' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Professor</p>
           </Link>
 
           <Link
             to="/register/classes"
-            onClick={() => setSelectedLink('classes')}
-            className={`${selectedLink === 'classes' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Turmas</p>
           </Link>
 
           <Link
             to="/register/pedagogo"
-            onClick={() => setSelectedLink('pedagogue')}
-            className={`${selectedLink === 'pedagogue' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Pedagogo</p>
           </Link>
 
           <Link
             to="/frequency"
-            onClick={() => setSelectedLink('attendance')}
-            className={`${selectedLink === 'attendance' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Frequência</p>
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/lesson-plan/$idLessonPlan/lesson-plan-view"
-            onClick={() => setSelectedLink('lesson-plan')}
-            className={`${selectedLink === 'lesson-plan' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idLessonPlan/lesson-plan-view"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Plano de aula</p>
           </Link>
         </div>
       </div>
     )
-  } else if (getUserType() === 'student') {
+  }
+  
+  if (role === 'student') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject"
-            onClick={() => setSelectedLink('mural')}
-            className={`${selectedLink === 'mural' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Mural</p>
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/activities"
-            onClick={() => setSelectedLink('activities')}
-            className={`${selectedLink === 'activities' ? 'font-bold text-lg' : 'text-lg'} transform hover:scale-110 transition-all`}
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
           >
             <p>Atividades</p>
           </Link>

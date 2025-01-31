@@ -2,6 +2,7 @@ import { docRefSchema } from '@/utils/schema'
 import { z } from 'zod'
 
 export const userSchema = z.object({
+  profileRef: docRefSchema,
   roleRef: docRefSchema,
   requireNewPassword: z.boolean(),
 })

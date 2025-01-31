@@ -1,13 +1,24 @@
-import { api } from '@/services/api'
+import { Subject, subjectsSchema } from '@/models/subjects-schema'
+import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
+import { doc, getDoc } from 'firebase/firestore'
 
-export function useGetSubjectByIdQuery(subjectId: number) {
+export function useGetSubjectByIdQuery(idCourse: string, idClass: string, idSubject: string) {
   return useQuery({
-    queryKey: ['getSubjectById', subjectId],
+    queryKey: ['get-subject-by-id', idCourse, idClass, idSubject],
     queryFn: async () => {
-      const { data } = await api.get(`/subject/${subjectId}`)
-      console.log('subject_data:', data)
-      return data
+      const subjectRef = doc(firestore, 'courses', idCourse, 'classes', idClass, 'subjects', idSubject).withConverter({
+        fromFirestore: snapshot => subjectsSchema.parse({ id: snapshot.id,...snapshot.data() }),
+        toFirestore: (subject: Subject) => subject
+      })
+      
+      const subjectSnapshot = await getDoc(subjectRef)
+
+      if (!subjectSnapshot.exists()) {
+        throw new Error('Subject not found')
+      }
+
+      return subjectSnapshot.data()
     },
   })
 }

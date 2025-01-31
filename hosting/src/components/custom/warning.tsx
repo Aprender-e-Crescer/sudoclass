@@ -1,66 +1,48 @@
 import * as Avatar from '@radix-ui/react-avatar'
 import { EllipsisVertical } from 'lucide-react'
 import { useState } from 'react'
+import { format } from 'date-fns'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { useUpdateWarningMutation } from '@/mutations/use-update-warning-mutation'
-import { useDeleteWarningMutation } from '@/mutations/use-delete-warning-mutation'
+import { useGetFullUser } from '@/hooks/use-get-full-user'
 
 interface WarningProps {
-  id: number
-  name: string | undefined | null
-  date: string
-  comment: string
-  textAvatar?: string
-  avatarSrc?: string
+  id: string
+  date: Date
+  message: string
+  author?: {
+    name: string
+    profilePhotoSrc: string
+  }
 }
 
-export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: WarningProps) {
+export function Warning({ id, date, message, author }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const [editedComment, setEditedComment] = useState(comment)
-  const deleteWarningMutation = useDeleteWarningMutation()
-  const updateWarningMutation = useUpdateWarningMutation()
-
-  const handleEditClick = () => {
-    setIsEditing(true)
-  }
-
-  const handleSaveClick = () => {
-    console.log(editedComment)
-    updateWarningMutation.mutate(
-      { warningId: Number(id), message: editedComment },
-      {
-        onSuccess: () => {
-          setIsEditing(false)
-        },
-        onError: (error) => {
-          console.error('Erro ao atualizar o aviso:', error)
-        },
-      },
-    )
-  }
-
-  const handleCancelClick = () => {
-    setIsEditing(false)
-    setEditedComment(comment)
-  }
-
-  const handleDeleteClick = () => {
-    deleteWarningMutation.mutate(id)
-  }
+  const [editedComment, setEditedComment] = useState(message)
+  const authorName = author?.name ?? 'Anônimo'
+  const authorProfilePhotoSrc = author?.profilePhotoSrc
+  const dateFormatted = format(date, "dd/MM/yyyy 'às' HH:mm")
+  const fullUser = useGetFullUser()
 
   return (
     <div>
       <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex justify-between">
         <div className="flex items-center gap-x-3 w-full">
-          <Avatar.Root className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
-            <Avatar.Image className="w-full h-full rounded-full object-cover" src={avatarSrc} />
-            <Avatar.Fallback className="text-xl text-gray-500">{textAvatar}</Avatar.Fallback>
+          <Avatar.Root
+            className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${author ? 'bg-gray-100' : 'bg-yellow-300'}`}
+          >
+            {authorProfilePhotoSrc ? (
+              <Avatar.Image className="w-full h-full rounded-full object-cover" src={authorProfilePhotoSrc} />
+            ) : (
+              <Avatar.Fallback className="text-xl text-gray-800 font-bold">
+                {author ? authorName.charAt(0) : '?'}
+              </Avatar.Fallback>
+            )}
           </Avatar.Root>
 
           <div className="flex gap-2 flex-col sm:text-left w-full">
             <div className="flex gap-x-2 items-center">
-              <span className="text-sm font-medium text-gray-800">{name}</span>
-              <span className="text-xs text-gray-500">{date}</span>
+              <span className="text-sm font-medium text-gray-800">{authorName}</span>
+              <span className="text-xs text-gray-500">{dateFormatted}</span>
             </div>
 
             {isEditing ? (
@@ -70,14 +52,9 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
                   value={editedComment}
                   onChange={(e) => setEditedComment(e.target.value)}
                 />
-
                 <div className="flex gap-2 mt-2">
-                  <button className="px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleSaveClick}>
-                    Salvar
-                  </button>
-                  <button className="px-4 py-2 bg-gray-500 text-white rounded-md" onClick={handleCancelClick}>
-                    Cancelar
-                  </button>
+                  {/* <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Salvar</button>
+                  <button className="px-4 py-2 bg-gray-500 text-white rounded-md">Cancelar</button> */}
                 </div>
               </div>
             ) : (
@@ -86,19 +63,19 @@ export function Warning({ id, name, date, comment, textAvatar, avatarSrc }: Warn
           </div>
         </div>
 
-        {!isEditing && (
+        {fullUser?.role === 'teacher' || fullUser?.role === 'admin' ? (
           <div className="flex justify-center items-center">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <EllipsisVertical />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={handleEditClick}>Editar</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDeleteClick}>Excluir</DropdownMenuItem>
+                <DropdownMenuItem>Editar</DropdownMenuItem>
+                <DropdownMenuItem>Excluir</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )
