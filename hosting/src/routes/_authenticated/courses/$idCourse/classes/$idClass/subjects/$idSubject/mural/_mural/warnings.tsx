@@ -17,7 +17,7 @@ export const Route = createFileRoute(
 
 export function WallSubjects() {
   const { idCourse, idClass, idSubject } = Route.useParams()
-  const { isLoading, subject, course, fullUser, warningsWithSentByProfiles } = useWarningController({ idCourse, idClass, idSubject })
+  const { isLoading, subject, course, fullUser, warningsWithSentByProfiles, userPhoto } = useWarningController({ idCourse, idClass, idSubject })
   
   const { mutate: createWarning, isLoading: isCreatingWarning } = useCreateWarningMutation()
   
@@ -36,7 +36,8 @@ export function WallSubjects() {
       idCourse,
       idClass,
       idSubject,
-      authorId: fullUser?.uid ?? '', 
+      authorId: userPhoto.data?.id || ""
+
     })
     
     setMessage('') 
@@ -62,11 +63,12 @@ export function WallSubjects() {
         <When condition={hasPermissionToSendWarning}>
           <div>
             <div className="flex items-center border-2 p-7 rounded-lg shadow-xl">
-              <img src={fullUser.photoURL ?? avatarPlaceholder} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
+             
+              <img src={userPhoto.data?.photoURL ?? avatarPlaceholder} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
               <input
                 type="text"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)} // Atualiza o estado de message
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder="Escreva um aviso para sua turma"
                 className="flex-grow p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
               />

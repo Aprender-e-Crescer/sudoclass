@@ -1,5 +1,6 @@
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { useGetCourseById } from '@/queries/use-get-course-by-id'
+import { useGetProfileQuery } from '@/queries/use-get-profile-query'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 import { useGetWarningsQuery } from '@/queries/use-get-warnings-query'
 import { useSentByProfilesQueries } from '@/queries/use-sent-by-profiles-queries'
@@ -14,10 +15,12 @@ export function useWarningController({ idCourse, idClass, idSubject }: DTO) {
     const { data: warnings, isLoading: isLoadingWarnings } = useGetWarningsQuery(idCourse, idClass, idSubject)
     const { data: subject, isLoading: isLoadingSubject } = useGetSubjectByIdQuery(idCourse, idClass, idSubject)
     const { data: course, isLoading: isLoadingCourse } = useGetCourseById(idCourse)
-
+    
     const sentByProfiles = useSentByProfilesQueries(warnings)
 
     const fullUser = useGetFullUser()
+
+    const userPhoto = useGetProfileQuery(fullUser?.cpf);
 
     const isLoading = isLoadingWarnings || isLoadingSubject || isLoadingCourse
 
@@ -33,7 +36,7 @@ export function useWarningController({ idCourse, idClass, idSubject }: DTO) {
         const author = sentByProfileData?.data
             ? {
                 name: sentByProfileData.data.displayName,
-                profilePhotoSrc: sentByProfileData.data.photoUrl,
+                profilePhotoSrc: sentByProfileData.data.photoURL,
                 }
             : undefined
 
@@ -46,5 +49,5 @@ export function useWarningController({ idCourse, idClass, idSubject }: DTO) {
         }
     })
 
-    return { isLoading, subject, course, fullUser, warningsWithSentByProfiles }
+    return { isLoading, subject, course, fullUser, warningsWithSentByProfiles, userPhoto }
 }
