@@ -1,24 +1,13 @@
-import { WARNING_WALL_QUERY } from '@/queries/use-get-warnings-query'
-import { api } from '@/services/api'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+import { firestore } from '@/services/firebase'
+import { doc, deleteDoc } from 'firebase/firestore'
 
-export function useDeleteWarningMutation() {
-  const queryClient = useQueryClient()
-
+export function useDeleteWarningMutation(idCourse: string, idClass: string, idSubject: string) {
   return useMutation({
-    mutationKey: ['deleteWarning'],
-    mutationFn: async (warningId: number) => {
-      await api.delete(`/warnings/${warningId}`)
-    },
-    onSuccess: (_, variables) => {
-      queryClient.setQueryData(WARNING_WALL_QUERY, (oldData: any) => {
-        return oldData ? oldData.filter((warning: any) => warning.id !== variables) : []
-      })
+    mutationFn: async (id: string) => {
+      const warningRef = doc(firestore, 'courses', idCourse, 'classes', idClass, 'subjects', idSubject, 'warnings', id)
 
-      queryClient.invalidateQueries({ queryKey: WARNING_WALL_QUERY })
-    },
-    onError: (error) => {
-      console.error('Erro ao deletar aviso:', error)
+      await deleteDoc(warningRef)
     },
   })
 }

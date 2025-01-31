@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { format } from 'date-fns'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
+import { useDeleteWarningMutation } from '@/mutations/use-delete-warning-mutation'
 
 interface WarningProps {
   id: string
@@ -13,15 +14,34 @@ interface WarningProps {
     name: string
     profilePhotoSrc: string
   }
+  idCourse: string
+  idClass: string
+  idSubject: string
 }
 
-export function Warning({ id, date, message, author }: WarningProps) {
+export function Warning({ id, date, message, author, idCourse, idClass, idSubject }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(message)
+  const [isDeleted, setIsDeleted] = useState(false) // Adiciona estado para controlar a exclusão
   const authorName = author?.name ?? 'Anônimo'
   const authorProfilePhotoSrc = author?.profilePhotoSrc
   const dateFormatted = format(date, "dd/MM/yyyy 'às' HH:mm")
   const fullUser = useGetFullUser()
+  const warningDeleteMutation = useDeleteWarningMutation(idCourse, idClass, idSubject)
+
+  const handleDeleteClick = async () => {
+    try {
+      await warningDeleteMutation.mutateAsync(id)
+      setIsDeleted(true) // Marca o aviso como excluído
+    } catch (error) {
+      console.error('Erro ao excluir:', error)
+      // Opcionalmente, você pode exibir uma mensagem de erro
+    }
+  }
+
+  if (isDeleted) {
+    return null // Retorna null para ocultar o aviso excluído
+  }
 
   return (
     <div>
@@ -52,10 +72,6 @@ export function Warning({ id, date, message, author }: WarningProps) {
                   value={editedComment}
                   onChange={(e) => setEditedComment(e.target.value)}
                 />
-                <div className="flex gap-2 mt-2">
-                  {/* <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Salvar</button>
-                  <button className="px-4 py-2 bg-gray-500 text-white rounded-md">Cancelar</button> */}
-                </div>
               </div>
             ) : (
               <p className="mt-1 text-sm text-gray-700">{editedComment}</p>
@@ -71,7 +87,7 @@ export function Warning({ id, date, message, author }: WarningProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>Editar</DropdownMenuItem>
-                <DropdownMenuItem>Excluir</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDeleteClick}>Excluir</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

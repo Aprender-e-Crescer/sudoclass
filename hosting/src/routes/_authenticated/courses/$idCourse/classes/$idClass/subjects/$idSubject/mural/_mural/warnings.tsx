@@ -56,7 +56,7 @@ export function WallSubjects() {
 
         <div className="flex flex-col p-5 gap-5">
           {warningsWithSentByProfiles?.map(({ author, date, id, key, message }) => (
-            <Warning key={key} id={id} date={date} message={message} author={author} />
+            <Warning key={key} id={id} date={date} message={message} author={author} idCourse={idCourse} idClass={idClass} idSubject={idSubject} />
           ))}
         </div>
       </div>
