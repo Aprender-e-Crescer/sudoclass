@@ -6,7 +6,6 @@ import { Warning } from '@/components/custom/warning'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 import { useGetCourseById } from '@/queries/use-get-course-by-id'
 import { useSentByProfilesQueries } from '@/queries/use-sent-by-profiles-queries'
-import { Button } from '@/components/ui/button'
 import { SendHorizonal } from 'lucide-react'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 
@@ -18,7 +17,7 @@ export const Route = createFileRoute(
 
 export function WallSubjects() {
   const { idCourse, idClass, idSubject } = Route.useParams()
-  const { data: warnings, isError, error, isLoading } = useGetWarningsQuery(idCourse, idClass, idSubject)
+  const { data: warnings, isLoading } = useGetWarningsQuery(idCourse, idClass, idSubject)
   const sentByProfiles = useSentByProfilesQueries(warnings)
   const { data: subject } = useGetSubjectByIdQuery(idCourse, idClass, idSubject)
   const { data: course } = useGetCourseById(idCourse)
@@ -49,11 +48,6 @@ export function WallSubjects() {
     }
   })
 
-  // const fullUser = useGetFullUser()
-  // console.log('Dados da subject:', subject)
-  // console.log('Dados de warnings:', warnings)
-  // console.log('Dados do fullUser:', fullUser)
-
   if (isLoading) {
     return (
       <>
@@ -71,26 +65,21 @@ export function WallSubjects() {
           <CardComponent name={subject?.name} courseName={course?.name} color={subject?.color} />
         </div>
 
-        <div className="w-full">
-          {/* <p>{fullUser?.displayName}</p>
-          <img src={fullUser?.photoURL ?? undefined} className="w-16 h-auto rounded-full" alt="" /> */}
-
-          {fullUser?.role === 'teacher' || fullUser?.role === 'admin' ? (
-            <div>
-              <div className="flex items-center border-2 p-7 rounded-lg shadow-xl">
-                <img src={fullUser?.photoURL} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
-                <input
-                  type="text"
-                  placeholder="Escreva um aviso para sua turma"
-                  className="flex-grow p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
-                />
-                <button>
-                  <SendHorizonal />
-                </button>
-              </div>
+        {fullUser?.role === 'teacher' || fullUser?.role === 'admin' ? (
+          <div>
+            <div className="flex items-center border-2 p-7 rounded-lg shadow-xl">
+              <img src={fullUser?.photoURL} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
+              <input
+                type="text"
+                placeholder="Escreva um aviso para sua turma"
+                className="flex-grow p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
+              />
+              <button>
+                <SendHorizonal />
+              </button>
             </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
 
         <div className="flex flex-col p-5 gap-5">
           {warningsWithSentByProfiles?.map(({ author, date, id, key, message }) => (
