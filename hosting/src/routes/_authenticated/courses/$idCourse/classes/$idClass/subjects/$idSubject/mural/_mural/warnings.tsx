@@ -6,10 +6,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import avatarPlaceholder from '@/assets/user.png'
 import { SendHorizonal } from 'lucide-react'
 import { When } from 'react-if'
+import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation' // Importando a mutação
+import { useState } from 'react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/warnings',
-)({
+)( {
   component: WallSubjects,
 })
 
@@ -17,15 +19,34 @@ export function WallSubjects() {
   const { idCourse, idClass, idSubject } = Route.useParams()
   const { isLoading, subject, course, fullUser, warningsWithSentByProfiles } = useWarningController({ idCourse, idClass, idSubject })
   
+  const { mutate: createWarning, isLoading: isCreatingWarning } = useCreateWarningMutation()
+  
+  const [message, setMessage] = useState('') 
+
   const hasPermissionToSendWarning = fullUser?.role === 'teacher' || fullUser?.role === 'admin'
+
+  const handleSendWarning = () => {
+    if (!message.trim()) {
+      alert('Por favor, insira uma mensagem no aviso.')
+      return
+    }
+  
+    createWarning({
+      message,
+      idCourse,
+      idClass,
+      idSubject,
+      authorId: fullUser?.uid ?? '', 
+    })
+    
+    setMessage('') 
+  }
 
   if (isLoading) {
     return (
-      <>
-        <div className="w-full h-full flex items-center justify-center">
-          <CustomLoading message="Carregando mural" size={70} />
-        </div>
-      </>
+      <div className="w-full h-full flex items-center justify-center">
+        <CustomLoading message="Carregando mural" size={70} />
+      </div>
     )
   }
 
@@ -44,11 +65,13 @@ export function WallSubjects() {
               <img src={fullUser.photoURL ?? avatarPlaceholder} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
               <input
                 type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)} // Atualiza o estado de message
                 placeholder="Escreva um aviso para sua turma"
                 className="flex-grow p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
               />
-              <button>
-                <SendHorizonal />
+              <button onClick={handleSendWarning} disabled={isCreatingWarning}>
+                <SendHorizonal className={isCreatingWarning ? 'animate-spin' : ''} />
               </button>
             </div>
           </div>
