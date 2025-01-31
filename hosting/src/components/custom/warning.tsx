@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { useDeleteWarningMutation } from '@/mutations/use-delete-warning-mutation'
+import { useUpdateWarningMutation } from '@/mutations/use-update-warning-mutation'
 
 interface WarningProps {
   id: string
@@ -22,12 +23,14 @@ interface WarningProps {
 export function Warning({ id, date, message, author, idCourse, idClass, idSubject }: WarningProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedComment, setEditedComment] = useState(message)
+  const [previousMessage, setPreviousMessage] = useState(message)
   const [isDeleted, setIsDeleted] = useState(false) 
   const authorName = author?.name ?? 'Anônimo'
   const authorProfilePhotoSrc = author?.profilePhotoSrc
   const dateFormatted = format(date, "dd/MM/yyyy 'às' HH:mm")
   const fullUser = useGetFullUser()
   const warningDeleteMutation = useDeleteWarningMutation(idCourse, idClass, idSubject)
+  const warningUpdateMutation = useUpdateWarningMutation()
 
   const handleDeleteClick = async () => {
     try {
@@ -35,8 +38,32 @@ export function Warning({ id, date, message, author, idCourse, idClass, idSubjec
       setIsDeleted(true)
     } catch (error) {
       console.error('Erro ao excluir:', error)
-      
     }
+  }
+
+  const handleEditClick = () => {
+    setPreviousMessage(editedComment)
+    setIsEditing(true)
+  }
+
+  const handleSaveClick = async () => {
+    try {
+      await warningUpdateMutation.mutateAsync({
+        id,
+        idCourse,
+        idClass,
+        idSubject,
+        message: editedComment,
+      })
+      setIsEditing(false)
+    } catch (error) {
+      console.error('Erro ao atualizar:', error)
+    }
+  }
+
+  const handleCancelClick = () => {
+    setEditedComment(previousMessage)
+    setIsEditing(false)
   }
 
   if (isDeleted) {
@@ -47,9 +74,7 @@ export function Warning({ id, date, message, author, idCourse, idClass, idSubjec
     <div>
       <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex justify-between">
         <div className="flex items-center gap-x-3 w-full">
-          <Avatar.Root
-            className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${author ? 'bg-gray-100' : 'bg-yellow-300'}`}
-          >
+          <Avatar.Root className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${author ? 'bg-gray-100' : 'bg-yellow-300'}`}>            
             {authorProfilePhotoSrc ? (
               <Avatar.Image className="w-full h-full rounded-full object-cover" src={authorProfilePhotoSrc} />
             ) : (
@@ -72,6 +97,14 @@ export function Warning({ id, date, message, author, idCourse, idClass, idSubjec
                   value={editedComment}
                   onChange={(e) => setEditedComment(e.target.value)}
                 />
+                <div className="flex gap-2 mt-2">
+                  <button className="px-3 py-1 bg-blue-500 text-white rounded-md" onClick={handleSaveClick}>
+                    Salvar
+                  </button>
+                  <button className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md" onClick={handleCancelClick}>
+                    Cancelar
+                  </button>
+                </div>
               </div>
             ) : (
               <p className="mt-1 text-sm text-gray-700">{editedComment}</p>
@@ -86,7 +119,7 @@ export function Warning({ id, date, message, author, idCourse, idClass, idSubjec
                 <EllipsisVertical />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Editar</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleEditClick}>Editar</DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDeleteClick}>Excluir</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

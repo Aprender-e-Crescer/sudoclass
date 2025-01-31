@@ -1,24 +1,41 @@
-import { WARNING_WALL_QUERY } from '@/queries/use-get-warnings-query'
-import { api } from '@/services/api'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+import { firestore } from '@/services/firebase'
+import { doc, updateDoc } from 'firebase/firestore'
+
+interface UpdateWarningData {
+  id: string
+  idCourse: string
+  idClass: string
+  idSubject: string
+  message: string
+}
 
 export function useUpdateWarningMutation() {
-  const queryClient = useQueryClient()
-
   return useMutation({
-    mutationKey: ['updateWarning'],
-    mutationFn: async ({ warningId, message }: { warningId: number; message: string }) => {
-      const requestBody = {
-        mensagem: message,
-      }
+    mutationFn: async (data: UpdateWarningData) => {
+      try {
+        const warningRef = doc(
+          firestore,
+          'courses',
+          data.idCourse,
+          'classes',
+          data.idClass,
+          'subjects',
+          data.idSubject,
+          'warnings',
+          data.id
+        )
 
-      await api.put(`/warnings/${warningId}`, requestBody)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: WARNING_WALL_QUERY })
+        await updateDoc(warningRef, { message: data.message })
+      } catch (error) {
+        throw new Error('Erro ao atualizar o aviso: ' + error)
+      }
     },
     onError: (error) => {
-      console.error('Erro ao atualizar aviso:', error)
+      console.error(error)
+    },
+    onSuccess: () => {
+      console.log('Aviso atualizado com sucesso')
     },
   })
 }
