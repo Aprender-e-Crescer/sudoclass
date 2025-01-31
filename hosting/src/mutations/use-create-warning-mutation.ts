@@ -41,8 +41,5 @@ export function useCreateWarningMutation() {
     onError: (error) => {
       console.error(error)
     },
-    onSuccess: (data) => {
-      console.log('Aviso criado com sucesso. ID:', data)
-    },
   })
 }
