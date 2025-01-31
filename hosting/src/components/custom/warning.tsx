@@ -36,60 +36,61 @@ export function Warning(props: WarningProps) {
   if (isDeleted) return null
 
   return (
-    <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex justify-between">
-      <div className="flex items-center gap-x-3 w-full">
-        <Avatar.Root
-          className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${authorProfilePhotoSrc ? 'bg-gray-100' : 'bg-yellow-300'}`}
-        >
-          {authorProfilePhotoSrc ? (
-            <Avatar.Image className="w-full h-full rounded-full object-cover" src={authorProfilePhotoSrc} />
-          ) : (
-            <Avatar.Fallback className="text-xl text-gray-800 font-bold">
-              {authorName.charAt(0) || '?'}
-            </Avatar.Fallback>
-          )}
-        </Avatar.Root>
+    <div className="w-full max-w-[800px] px-4 py-4 bg-white shadow-lg rounded-lg flex flex-col">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-x-3">
+          <Avatar.Root className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+            {authorProfilePhotoSrc ? (
+              <Avatar.Image className="w-full h-full rounded-full object-cover" src={authorProfilePhotoSrc} />
+            ) : (
+              <Avatar.Fallback className="text-sm text-gray-800 font-bold">
+                {authorName.charAt(0) || '?'}
+              </Avatar.Fallback>
+            )}
+          </Avatar.Root>
 
-        <div className="flex gap-2 flex-col sm:text-left w-full">
-          <div className="flex gap-x-2 items-center">
+          <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-800">{authorName}</span>
             <span className="text-xs text-gray-500">{dateFormatted}</span>
           </div>
-
-          {isEditing ? (
-            <div className="w-full">
-              <textarea
-                className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={editedComment}
-                onChange={(e) => setEditedComment(e.target.value)}
-              />
-              <div className="flex gap-2 mt-2">
-                <button className="px-3 py-1 bg-blue-500 text-white rounded-md" onClick={handleSaveClick}>
-                  Salvar
-                </button>
-                <button className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md" onClick={handleCancelClick}>
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          ) : (
-            <p className="mt-1 text-sm text-gray-700">{editedComment}</p>
-          )}
         </div>
-      </div>
-      <When condition={hasPermissionToSendWarning}>
-        <div className="flex justify-center items-center">
+
+        <When condition={hasPermissionToSendWarning}>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <EllipsisVertical />
+              <EllipsisVertical className="cursor-pointer text-gray-500 hover:text-gray-700" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={handleEditClick}>Editar</DropdownMenuItem>
               <DropdownMenuItem onClick={handleDeleteClick}>Excluir</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      </When>
+        </When>
+      </div>
+
+      <div className="mt-2 w-full">
+        {isEditing ? (
+          <div className="w-full">
+            <textarea
+              className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={editedComment}
+              onChange={(e) => setEditedComment(e.target.value)}
+            />
+            <div className="flex gap-2 mt-2">
+              <button className="px-3 py-1 bg-blue-500 text-white rounded-md" onClick={handleSaveClick}>
+                Salvar
+              </button>
+              <button className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md" onClick={handleCancelClick}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="mt-1 text-sm text-gray-700 break-words whitespace-pre-wrap w-full">
+            {editedComment}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

@@ -6,8 +6,6 @@ import { createFileRoute } from '@tanstack/react-router'
 import avatarPlaceholder from '@/assets/user.png'
 import { SendHorizonal } from 'lucide-react'
 import { When } from 'react-if'
-import { useCreateWarningMutation } from '@/mutations/use-create-warning-mutation'
-import { useState } from 'react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/warnings',
