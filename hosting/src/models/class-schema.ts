@@ -12,7 +12,7 @@ export const classSchema = z.object({
   subscriptionEndDate: z.instanceof(Timestamp).transform((ts) => ts.toDate()),
   workload: z.number(),
   availableVacancies: z.number(),
-  students: z.array(docRefSchema),
+  studentsProfile: z.array(docRefSchema),
 })
 
 export type Class = z.infer<typeof classSchema>
