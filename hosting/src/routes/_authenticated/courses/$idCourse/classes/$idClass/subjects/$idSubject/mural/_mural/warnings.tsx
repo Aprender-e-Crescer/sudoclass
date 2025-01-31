@@ -17,32 +17,8 @@ export const Route = createFileRoute(
 
 export function WallSubjects() {
   const { idCourse, idClass, idSubject } = Route.useParams()
-  const { isLoading, subject, course, fullUser, warningsWithSentByProfiles, userPhoto } = useWarningController({ idCourse, idClass, idSubject })
+  const { isLoading, subject, course, fullUser, warningsWithSentByProfiles, userPhoto, hasPermissionToSendWarning, handleSendWarning, message, setMessage  } = useWarningController({ idCourse, idClass, idSubject })
   
-  const { mutate: createWarning, isLoading: isCreatingWarning } = useCreateWarningMutation()
-  
-  const [message, setMessage] = useState('') 
-
-  const hasPermissionToSendWarning = fullUser?.role === 'teacher' || fullUser?.role === 'admin'
-
-  const handleSendWarning = () => {
-    if (!message.trim()) {
-      alert('Por favor, insira uma mensagem no aviso.')
-      return
-    }
-  
-    createWarning({
-      message,
-      idCourse,
-      idClass,
-      idSubject,
-      authorId: userPhoto.data?.id || ""
-
-    })
-    
-    setMessage('') 
-  }
-
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
@@ -72,8 +48,8 @@ export function WallSubjects() {
                 placeholder="Escreva um aviso para sua turma"
                 className="flex-grow p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
               />
-              <button onClick={handleSendWarning} disabled={isCreatingWarning}>
-                <SendHorizonal className={isCreatingWarning ? 'animate-spin' : ''} />
+              <button onClick={handleSendWarning}>
+                <SendHorizonal />
               </button>
             </div>
           </div>
