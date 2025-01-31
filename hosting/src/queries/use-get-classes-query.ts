@@ -6,7 +6,7 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import { collection, query, where, getDocs, documentId } from 'firebase/firestore'
 import { Class, classSchema } from '@/models/class-schema'
 
-const getClassesQueryOptions = (
+export const getClassesQueryOptions = (
   courseId: string,
   role: role | undefined,
   studentClasses: Student['classes'] | undefined,
