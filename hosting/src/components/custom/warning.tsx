@@ -1,9 +1,8 @@
 import * as Avatar from '@radix-ui/react-avatar'
 import { EllipsisVertical } from 'lucide-react'
-import { useState } from 'react'
-import { format } from 'date-fns'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { useGetFullUser } from '@/hooks/use-get-full-user'
+import { When } from 'react-if'
+import { useWarningComponentController } from '@/controllers/use-warning-component-controller'
 
 interface WarningProps {
   id: string
@@ -13,69 +12,84 @@ interface WarningProps {
     name: string
     profilePhotoSrc: string
   }
+  idCourse: string
+  idClass: string
+  idSubject: string
 }
 
-export function Warning({ id, date, message, author }: WarningProps) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedComment, setEditedComment] = useState(message)
-  const authorName = author?.name ?? 'Anônimo'
-  const authorProfilePhotoSrc = author?.profilePhotoSrc
-  const dateFormatted = format(date, "dd/MM/yyyy 'às' HH:mm")
-  const fullUser = useGetFullUser()
+export function Warning(props: WarningProps) {
+  const {
+    isEditing,
+    editedComment,
+    setEditedComment,
+    handleEditClick,
+    handleSaveClick,
+    handleCancelClick,
+    handleDeleteClick,
+    isDeleted,
+    authorName,
+    authorProfilePhotoSrc,
+    dateFormatted,
+    hasPermissionToSendWarning,
+  } = useWarningComponentController(props)
+
+  if (isDeleted) return null
 
   return (
-    <div>
-      <div className="w-full max-w-[993px] p-4 bg-white shadow-lg rounded-lg flex justify-between">
-        <div className="flex items-center gap-x-3 w-full">
-          <Avatar.Root
-            className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${author ? 'bg-gray-100' : 'bg-yellow-300'}`}
-          >
+    <div className="w-full max-w-[800px] px-4 py-4 bg-white shadow-lg rounded-lg flex flex-col">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-x-3">
+          <Avatar.Root className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
             {authorProfilePhotoSrc ? (
               <Avatar.Image className="w-full h-full rounded-full object-cover" src={authorProfilePhotoSrc} />
             ) : (
-              <Avatar.Fallback className="text-xl text-gray-800 font-bold">
-                {author ? authorName.charAt(0) : '?'}
+              <Avatar.Fallback className="text-sm text-gray-800 font-bold">
+                {authorName.charAt(0) || '?'}
               </Avatar.Fallback>
             )}
           </Avatar.Root>
 
-          <div className="flex gap-2 flex-col sm:text-left w-full">
-            <div className="flex gap-x-2 items-center">
-              <span className="text-sm font-medium text-gray-800">{authorName}</span>
-              <span className="text-xs text-gray-500">{dateFormatted}</span>
-            </div>
-
-            {isEditing ? (
-              <div className="w-full">
-                <textarea
-                  className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={editedComment}
-                  onChange={(e) => setEditedComment(e.target.value)}
-                />
-                <div className="flex gap-2 mt-2">
-                  {/* <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Salvar</button>
-                  <button className="px-4 py-2 bg-gray-500 text-white rounded-md">Cancelar</button> */}
-                </div>
-              </div>
-            ) : (
-              <p className="mt-1 text-sm text-gray-700">{editedComment}</p>
-            )}
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-800">{authorName}</span>
+            <span className="text-xs text-gray-500">{dateFormatted}</span>
           </div>
         </div>
 
-        {fullUser?.role === 'teacher' || fullUser?.role === 'admin' ? (
-          <div className="flex justify-center items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <EllipsisVertical />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Editar</DropdownMenuItem>
-                <DropdownMenuItem>Excluir</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        <When condition={hasPermissionToSendWarning}>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical className="cursor-pointer text-gray-500 hover:text-gray-700" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={handleEditClick}>Editar</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDeleteClick}>Excluir</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </When>
+      </div>
+
+      <div className="mt-2 w-full">
+        {isEditing ? (
+          <div className="w-full">
+            <textarea
+              className="w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={editedComment}
+              onChange={(e) => setEditedComment(e.target.value)}
+            />
+            <div className="flex gap-2 mt-2">
+              <button className="px-3 py-1 bg-blue-500 text-white rounded-md" onClick={handleSaveClick}>
+                Salvar
+              </button>
+              <button className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md" onClick={handleCancelClick}>
+                Cancelar
+              </button>
+            </div>
           </div>
-        ) : null}
+        ) : (
+          <p className="mt-1 text-sm text-gray-700 break-words whitespace-pre-wrap w-full">
+            {editedComment}
+          </p>
+        )}
       </div>
     </div>
   )
