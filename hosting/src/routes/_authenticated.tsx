@@ -33,16 +33,16 @@ export const Route = createFileRoute('/_authenticated')({
       await queryClient.ensureQueryData(teacherPersonalSubjectsQueryOptions(role, user?.roleRef)) :
       undefined
     
-    await queryClient.ensureQueryData(getCoursesQueryOptions(role, student?.classes, teacher?.subjects))
+    return queryClient.ensureQueryData(getCoursesQueryOptions(role, student?.classes, teacher?.subjects))
   },
   component: Authenticated,
 })
 
 export function Authenticated() {
   const fullUser = useGetFullUser()
-  const { data: student } = useStudentPersonalClasses(fullUser?.role, fullUser?.roleRef)
-  const { data: teacher } = useTeacherPersonalSubjects(fullUser?.role, fullUser?.roleRef)
-  const { data: courses } = useGetCoursesQuery(fullUser?.role, student?.classes, teacher?.subjects)
+  const { data: student } = useStudentPersonalClasses(fullUser.role, fullUser.roleRef)
+  const { data: teacher } = useTeacherPersonalSubjects(fullUser.role, fullUser.roleRef)
+  const { data: courses } = useGetCoursesQuery(fullUser.role, student?.classes, teacher?.subjects)
 
   const router = useRouter()
 
@@ -59,9 +59,9 @@ export function Authenticated() {
   return (
     <div className="flex h-full">
       <div className="flex-col flex w-full">
-        <Header avatarFallBack="" avatarImage={fullUser?.photoURL} logout={logout} />
+        <Header avatarFallBack="" avatarImage={fullUser.photoURL} logout={logout} />
         <div className="flex  h-full">
-          <LeftMenu type={fullUser?.role} courses={courses} />
+          <LeftMenu type={fullUser.role} courses={courses} />
           <div className="flex-1">
             <Outlet />
           </div>

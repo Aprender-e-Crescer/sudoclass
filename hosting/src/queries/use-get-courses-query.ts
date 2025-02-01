@@ -3,7 +3,7 @@ import { Student } from '@/models/student-schema'
 import { Teacher } from '@/models/teacher-schema'
 import { firestore } from '@/services/firebase'
 import { role } from '@/types/user'
-import { queryOptions, useQuery } from '@tanstack/react-query'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { collection, getDocs, documentId, query, where } from 'firebase/firestore'
 
 export const getCoursesQueryOptions = (role: role | undefined, studentClasses: Student['classes'] | undefined, teacherSubjects: Teacher['subjects'] | undefined) => queryOptions({
@@ -50,5 +50,5 @@ export const getCoursesQueryOptions = (role: role | undefined, studentClasses: S
 
 
 export function useGetCoursesQuery(role: role | undefined, studentClasses: Student['classes'] | undefined, teacherSubjects: Teacher['subjects'] | undefined) {
-  return useQuery(getCoursesQueryOptions(role, studentClasses, teacherSubjects))
+  return useSuspenseQuery(getCoursesQueryOptions(role, studentClasses, teacherSubjects))
 }

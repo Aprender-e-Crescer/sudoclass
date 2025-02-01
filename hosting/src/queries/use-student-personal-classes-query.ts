@@ -10,14 +10,13 @@ export const studentPersonalClassesQueryOptions = (role: role | undefined, roleR
 
         const docRef = roleRef.withConverter({
             toFirestore: (data: Student) => data,
-            fromFirestore: (snapshot, options) => {
-                const data = snapshot.data(options)
-    
-                return studentSchema.parse({ ...data, id: snapshot.id })
-            },
+            fromFirestore: (snapshot, options) => studentSchema.parse({ ...snapshot.data(options), id: snapshot.id }),
         })
 
         const documentSnapshot = await getDoc(docRef)
+
+        if (!documentSnapshot.exists()) throw new Error('Document student does not exist')
+
         return documentSnapshot.data()
     },
     enabled: !!roleRef && role === 'student',

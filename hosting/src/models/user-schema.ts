@@ -1,3 +1,4 @@
+import { getRoleFromRef } from '@/utils/getRoleFromRef'
 import { docRefSchema } from '@/utils/schema'
 import { z } from 'zod'
 
@@ -5,7 +6,7 @@ export const userSchema = z.object({
   profileRef: docRefSchema,
   roleRef: docRefSchema,
   requireNewPassword: z.boolean(),
-})
+}).transform((data) => ({ ...data, role: getRoleFromRef(data.roleRef) }))
 
 export type User = z.infer<typeof userSchema>
 

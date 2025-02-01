@@ -1,10 +1,13 @@
-import { createRootRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { Toaster } from '@/components/ui/toaster'
 import { currentUserQueryOptions } from '@/queries/use-current-user-query'
 import { authStateReadyQueryOptions } from '@/queries/use-auth-state-ready-query'
+import { QueryClient } from '@tanstack/react-query'
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient
+}>()({
   beforeLoad: async ({ matches, context: { queryClient } }) => {
     const isAuthStateReady = await queryClient.ensureQueryData(authStateReadyQueryOptions)
     const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions(isAuthStateReady))
