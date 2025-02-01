@@ -1,45 +1,43 @@
 import { useMutation } from '@tanstack/react-query'
 import { firestore } from '@/services/firebase'
-import { collection, addDoc, doc } from 'firebase/firestore'
+import { collection, addDoc, DocumentReference, DocumentData, serverTimestamp } from 'firebase/firestore'
 
 interface CreateWarningData {
   message: string
   idCourse: string
   idClass: string
   idSubject: string
-  authorId: string 
 }
 
-export function useCreateWarningMutation() {
+interface CreateWarningMutation {
+  onSuccess: () => void
+  onError: (error: Error) => void
+  authorProfileRef: DocumentReference<DocumentData, DocumentData> | undefined
+}
+
+export function useCreateWarningMutation({ onSuccess, onError, authorProfileRef }: CreateWarningMutation) {
   return useMutation({
     mutationFn: async (data: CreateWarningData) => {
-      try {
-        const warningsRef = collection(
-          firestore,
-          'courses',
-          data.idCourse,
-          'classes',
-          data.idClass,
-          'subjects',
-          data.idSubject,
-          'warnings',
-        )
+      const warningsRef = collection(
+        firestore,
+        'courses',
+        data.idCourse,
+        'classes',
+        data.idClass,
+        'subjects',
+        data.idSubject,
+        'warnings',
+      )
 
-        const authorRef = doc(firestore, 'profile', data.authorId)
+      const docRef = await addDoc(warningsRef, {
+        message: data.message,
+        sentByProfile: authorProfileRef, 
+        sentDate: serverTimestamp(),
+      })
 
-        const docRef = await addDoc(warningsRef, {
-          message: data.message,
-          sentByProfile: authorRef, 
-          sentDate: new Date(),
-        })
-
-        return docRef.id
-      } catch (error) {
-        throw new Error('Erro ao criar o aviso: ' + error)
-      }
+      return docRef.id
     },
-    onError: (error) => {
-      console.error(error)
-    },
+    onSuccess,
+    onError,
   })
 }

@@ -5,28 +5,35 @@ import { useGetProfileQuery } from '@/queries/use-get-profile-query'
 import { useGetSubjectByIdQuery } from '@/queries/use-get-subject-by-id-query'
 import { useGetWarningsQuery } from '@/queries/use-get-warnings-query'
 import { useSentByProfilesQueries } from '@/queries/use-sent-by-profiles-queries'
-import { useState } from 'react'
 
 interface DTO {
     idCourse: string
     idClass: string
     idSubject: string
+    onWarningCreationSuccess: () => void | undefined
 }
 
-export function useWarningController({ idCourse, idClass, idSubject }: DTO) {
-    const { data: warnings, isLoading: isLoadingWarnings, refetch: refetchWarnings } = useGetWarningsQuery(idCourse, idClass, idSubject)
-    const { data: subject, isLoading: isLoadingSubject } = useGetSubjectByIdQuery(idCourse, idClass, idSubject)
-    const { data: course, isLoading: isLoadingCourse } = useGetCourseById(idCourse)
-    
-    const sentByProfiles = useSentByProfilesQueries(warnings)
-
+export function useWarningController({ idCourse, idClass, idSubject, onWarningCreationSuccess }: DTO) {
     const fullUser = useGetFullUser()
 
-    const userPhoto = useGetProfileQuery(fullUser?.cpf);
+    const { data: warnings, isLoading: isLoadingWarnings } = useGetWarningsQuery(idCourse, idClass, idSubject)
+    const { data: subject, isLoading: isLoadingSubject } = useGetSubjectByIdQuery(idCourse, idClass, idSubject)
+    const { data: course, isLoading: isLoadingCourse } = useGetCourseById(idCourse)
+    const { data: profile } = useGetProfileQuery(fullUser?.profileRef);
+
+    const { mutateAsync: createWarning } = useCreateWarningMutation({
+        authorProfileRef: fullUser?.profileRef,
+        onSuccess: onWarningCreationSuccess,
+        onError: (error) => {
+            console.error(error)
+        }
+    })
+
+    const sentByProfiles = useSentByProfilesQueries(warnings)
 
     const isLoading = isLoadingWarnings || isLoadingSubject || isLoadingCourse
 
-     const hasPermissionToSendWarning = fullUser?.role === 'teacher' || fullUser?.role === 'admin'
+    const hasPermissionToSendWarning = fullUser?.role === 'teacher' || fullUser?.role === 'admin'
 
     const warningsWithSentByProfiles = warnings?.map(({ id, message, sentDate, sentByProfile }) => {
         const sentByProfileData = sentByProfiles.find(({ data: currentSentByProfile }) => {
@@ -51,30 +58,7 @@ export function useWarningController({ idCourse, idClass, idSubject }: DTO) {
             message: message,
             author: author,
         }
-    })
+    })   
 
-      const { mutate: createWarning } = useCreateWarningMutation()
-      
-      const [message, setMessage] = useState('') 
-    
-     
-    
-      const handleSendWarning = () => {
-        if (!message.trim())  return
-      
-        createWarning({
-          message,
-          idCourse,
-          idClass,
-          idSubject,
-          authorId: userPhoto.data?.id || ""
-    
-        })
-        refetchWarnings()
-        
-        setMessage('') 
-      }
-    
-
-    return { isLoading, subject, course, fullUser, warningsWithSentByProfiles, userPhoto, refetchWarnings, hasPermissionToSendWarning, handleSendWarning, message, setMessage }
+    return { isLoading, subject, course, fullUser, warningsWithSentByProfiles, profile, hasPermissionToSendWarning, createWarning }
 }

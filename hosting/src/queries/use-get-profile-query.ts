@@ -1,32 +1,20 @@
-import { profileSchema } from '@/models/profile-schema'
-import { firestore } from '@/services/firebase'
+import { Profile, profileSchema } from '@/models/profile-schema'
 import { useQuery } from '@tanstack/react-query'
-import { doc, getDoc } from 'firebase/firestore'
+import { DocumentData, DocumentReference, getDoc } from 'firebase/firestore'
 
-export function useGetProfileQuery(cpf: string) {
+export function useGetProfileQuery(profileRef: DocumentReference<DocumentData, DocumentData> | undefined) {
   return useQuery({
-    queryKey: ['get-profile', cpf],
+    queryKey: ['get-profile', profileRef],
     queryFn: async () => {
-      const userRef = doc(firestore, 'users', cpf)
-      const userSnapshot = await getDoc(userRef)
+      if (!profileRef) throw new Error('Referência de perfil não encontrada')
 
-      if (!userSnapshot.exists()) {
-        throw new Error('Usuário não encontrado')
-      }
+      const profileSnapshot = await getDoc(profileRef.withConverter({ 
+        fromFirestore: snapshot => profileSchema.parse({ id: snapshot.id, ...snapshot.data() }),
+        toFirestore: (profile: Profile) => profile
+      }))
 
-      const userData = userSnapshot.data()
-      const profileRef = userData?.profileRef
-
-      if (!profileRef) {
-        throw new Error('Referência de perfil não encontrada')
-      }
-
-      const profileSnapshot = await getDoc(profileRef)
-      if (!profileSnapshot.exists()) {
-        throw new Error('Perfil não encontrado')
-      }
-
-      return profileSchema.parse({ id: profileSnapshot.id, ...profileSnapshot.data() })
+      return profileSnapshot.data()
     },
+    enabled: !!profileRef,
   })
 }

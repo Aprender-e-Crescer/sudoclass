@@ -4,8 +4,21 @@ import { Warning } from '@/components/custom/warning'
 import { useWarningController } from '@/controllers/use-warnings-controller'
 import { createFileRoute } from '@tanstack/react-router'
 import avatarPlaceholder from '@/assets/user.png'
-import { SendHorizonal } from 'lucide-react'
-import { When } from 'react-if'
+import { Loader, SendHorizonal } from 'lucide-react'
+import { Else, If, Then, When } from 'react-if'
+import { useRef } from 'react'
+import { Field, FieldProps, Form, Formik, FormikProps } from 'formik'
+
+const MyInput = ({ field, form, ...props }: FieldProps) => {
+  return (
+    <input
+      disabled={form.isSubmitting}
+      {...field}
+      {...props}
+      className="flex-grow w-full p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
+    />
+  );
+};
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/warnings',
@@ -14,9 +27,37 @@ export const Route = createFileRoute(
 })
 
 export function WallSubjects() {
+  const initialValue = { message: '' }
+  const formikRef = useRef<FormikProps<typeof initialValue>>(null)
+
   const { idCourse, idClass, idSubject } = Route.useParams()
-  const { isLoading, subject, course, fullUser, warningsWithSentByProfiles, userPhoto, hasPermissionToSendWarning, handleSendWarning, message, setMessage  } = useWarningController({ idCourse, idClass, idSubject })
-  
+  const {
+    isLoading,
+    subject,
+    course,
+    fullUser,
+    warningsWithSentByProfiles,
+    profile,
+    hasPermissionToSendWarning,
+    createWarning
+  } = useWarningController({
+    idCourse,
+    idClass,
+    idSubject,
+    onWarningCreationSuccess: () => formikRef.current?.resetForm(),
+  })
+
+  const handleOnSendWarningSubmit = ({ message }: typeof initialValue) => {
+    if (!message.trim())  return
+
+    return createWarning({
+      message,
+      idCourse,
+      idClass,
+      idSubject,
+    })
+  }
+
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
@@ -37,18 +78,31 @@ export function WallSubjects() {
         <When condition={hasPermissionToSendWarning}>
           <div>
             <div className="flex items-center border-2 p-7 rounded-lg shadow-xl">
-             
-              <img src={userPhoto.data?.photoURL ?? avatarPlaceholder} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Escreva um aviso para sua turma"
-                className="flex-grow p-2 rounded-md mx-4 focus:ring-2 focus:ring-gray-200 focus:outline-none"
-              />
-              <button onClick={handleSendWarning}>
-                <SendHorizonal />
-              </button>
+              <img src={profile?.photoURL ?? avatarPlaceholder} alt="Icon" className="w-12 h-12 mr-2 rounded-full " />
+              <Formik innerRef={formikRef} initialValues={initialValue} onSubmit={handleOnSendWarningSubmit}>
+                <Form className='flex w-full'>
+                  <Field
+                    name="message"
+                    type="text"
+                    placeholder="Escreva um aviso para sua turma"
+                    component={MyInput}
+                  />
+                  <Field>
+                    {({ form }: FieldProps) => (
+                      <If condition={form.isSubmitting}>
+                        <Then>
+                          <Loader className="animate-spin" />
+                        </Then>
+                        <Else>
+                          <button type="submit">
+                            <SendHorizonal size={20} />
+                          </button>
+                        </Else>
+                      </If>
+                    )}
+                  </Field>
+                </Form>
+              </Formik>
             </div>
           </div>
         </When>
