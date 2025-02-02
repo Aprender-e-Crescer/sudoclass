@@ -65,7 +65,7 @@ export function StudentPoster({ students, currentIndex, setCurrentIndex, updateS
                 />
               </div>
 
-              <h2 className="text-xl font-bold text-[#333333]">{students[currentIndex].name}</h2>
+              <h2 className="text-xl font-bold text-[#333333]">{students[currentIndex].displayName}</h2>
 
               <div className="flex w-full justify-evenly flex-wrap mt-4">
                 <button
