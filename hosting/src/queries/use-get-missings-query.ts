@@ -3,9 +3,11 @@ import { firestore } from '@/services/firebase'
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs, getDoc } from 'firebase/firestore'
 
+export const MISSINGS_QUERY_KEY = ['get-missings']
+
 export function useGetMissingsQuery(courseId: string, classId: string, subjectId: string, lessonPlanId: string) {
   return useQuery({
-    queryKey: ['get-missings', courseId, classId, subjectId, lessonPlanId],
+    queryKey: [...MISSINGS_QUERY_KEY, courseId, classId, subjectId, lessonPlanId],
     queryFn: async () => {
       const missingRef = collection(
         firestore,

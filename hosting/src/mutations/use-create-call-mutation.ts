@@ -1,40 +1,40 @@
-import { useMutation } from '@tanstack/react-query'
-import { api } from '@/services/api'
+import { MISSINGS_QUERY_KEY } from '@/queries/use-get-missings-query'
+import { firestore } from '@/services/firebase'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { addDoc, collection, DocumentData, DocumentReference } from 'firebase/firestore'
 
-export function useCreateSchoolCallMutation() {
+interface CreateSchoolCallMutation {
+  studentProfileRef: DocumentReference<DocumentData, DocumentData> | undefined
+}
+
+export function useCreateSchoolCallMutation(
+  courseId: string,
+  classId: string,
+  subjectId: string,
+  lessonPlanId: string,
+) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationKey: ['createSchoolCall'],
-    mutationFn: async ({
-      id_chamada,
-      id_materia,
-      data,
-      id_aluno,
-      status,
-    }: {
-      id_chamada: number
-      id_materia: number
-      data: string
-      id_aluno: number
-      status: boolean
-    }) => {
-      if (!id_chamada || !id_materia || !data || !id_aluno || status === undefined) {
-        throw new Error('Todos os campos obrigatórios devem ser preenchidos.')
-      }
-
-      const requestBody = {
-        id_chamada,
-        id_materia,
-        data,
-        id_aluno,
-        status,
-      }
-
-      const { data: responseData } = await api.post('/schoolCall', requestBody)
-      return responseData
+    mutationFn: async (studentProfile: CreateSchoolCallMutation) => {
+      const missingRef = collection(
+        firestore,
+        'courses',
+        courseId,
+        'classes',
+        classId,
+        'subjects',
+        subjectId,
+        'lessonPlannings',
+        lessonPlanId,
+        'missings',
+      )
+      const newMissing = await addDoc(missingRef, { studentProfile: studentProfile.studentProfileRef })
+      return newMissing.id
     },
-
-    onError: (error: any) => {
-      console.error('Erro ao criar a chamada:', error)
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: MISSINGS_QUERY_KEY })
     },
   })
 }
