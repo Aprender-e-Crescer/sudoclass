@@ -2,91 +2,45 @@ import { useState } from 'react'
 import { Check, Undo2, X } from 'lucide-react'
 import TinderCard from 'react-tinder-card'
 import { useCreateSchoolCallMutation } from '@/mutations/use-create-call-mutation'
-import { format } from 'date-fns'
 import { createFileRoute } from '@tanstack/react-router'
-import { api } from '@/services/api'
 
 const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/school-matrice/subjects/$idSubject/_mural/call',
-)({})
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/call',
+)({
+  component: StudentPoster,
+})
 
-function useSubjectId() {
-  const { idSubject } = Route.useParams()
-  return Number(idSubject)
-}
-
-export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurrentIndex, date, imageUrl }) {
-  const subjectId = useSubjectId()
+export function StudentPoster({ students, currentIndex, setCurrentIndex, updateStudentStatus }) {
+  const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
   const [swipedIndices, setSwipedIndices] = useState([])
   const [callHistory, setCallHistory] = useState([])
-  const createSchoolCall = useCreateSchoolCallMutation()
+  const createSchoolCall = useCreateSchoolCallMutation(idCourse, idClass, idSubject, idLessonPlan)
 
-  function generateRandomCallId() {
-    return Math.floor(1000 + Math.random() * 9000)
-  }
-
-  const handleSwipe = async (direction, selectedDate) => {
+  const handleSwipe = async (direction: string) => {
     if (students && currentIndex >= 0 && currentIndex < students.length) {
-      const studentId = students[currentIndex].student_id
-      const status = direction === 'right'
-
-      const currentDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : new Date().toISOString().split('T')[0]
-
-      if (!subjectId) {
-        console.error('Erro: idSubject não está disponível.')
-        return
-      }
-
-      const currentCallId = generateRandomCallId()
+      const studentId = students[currentIndex].id
+      const profileRef = students[currentIndex].profileRef
 
       try {
-        await createSchoolCall.mutateAsync({
-          id_chamada: currentCallId,
-          id_materia: subjectId,
-          data: currentDate,
-          id_aluno: studentId,
-          status,
-        })
+        const status = direction === 'left' ? 'lack' : 'present'
+        updateStudentStatus(studentId, status)
 
         if (direction === 'left') {
-          onStudentUpdate(studentId, 'lack')
-        } else if (direction === 'right') {
-          onStudentUpdate(studentId, 'present')
+          await createSchoolCall.mutateAsync({ studentProfileRef: profileRef })
         }
 
-        setCallHistory((prev) => [...prev, { studentId, callId: currentCallId, direction, date: currentDate }])
-
+        setCallHistory((prev) => [...prev, { studentId, direction }])
         setSwipedIndices((prev) => [...prev, currentIndex])
 
-        setCurrentIndex((prevIndex) => {
-          const nextIndex = prevIndex + 1
-          return nextIndex < students.length ? nextIndex : prevIndex
-        })
+        setCurrentIndex((prevIndex) => (prevIndex + 1 < students.length ? prevIndex + 1 : prevIndex))
       } catch (error) {
         console.error('Erro ao criar a chamada:', error)
       }
     }
   }
 
-  const handleReject = () => handleSwipe('left', date)
-  const handleAccept = () => handleSwipe('right', date)
-
-  const handleUndo = async () => {
-    if (callHistory.length > 0) {
-      const lastCall = callHistory[callHistory.length - 1]
-      setCallHistory((prev) => prev.slice(0, -1))
-      setSwipedIndices((prev) => prev.slice(0, -1))
-
-      try {
-        await api.delete(`/schoolCall/delete/${lastCall.callId}`)
-        console.log(`Chamada ${lastCall.callId} excluída com sucesso!`)
-      } catch (error) {
-        console.error('Erro ao excluir a chamada:', error)
-      }
-
-      setCurrentIndex(students.findIndex((student) => student.student_id === lastCall.studentId))
-    }
-  }
+  const handleReject = () => handleSwipe('left')
+  const handleAccept = () => handleSwipe('right')
 
   if (!students || students.length === 0) {
     return <div>loading...</div>
@@ -98,16 +52,16 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
         {currentIndex >= 0 && currentIndex < students.length && (
           <TinderCard
             className="absolute w-full h-full"
-            key={students[currentIndex].student_id}
-            onSwipe={(dir) => handleSwipe(dir, date)}
+            key={students[currentIndex].id}
+            onSwipe={(dir) => handleSwipe(dir)}
             preventSwipe={['up', 'down']}
           >
             <div className="relative bg-white border-2 w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
               <div className="w-full h-[500px] bg-gray-200 rounded-md mb-4 flex items-center justify-center">
                 <img
-                  src={imageUrl || 'https://via.placeholder.com/150'}
+                  src={students[currentIndex].photoURL || 'https://via.placeholder.com/150'}
                   className="w-full h-full object-cover rounded-md"
-                  alt={`Foto de ${students[currentIndex].name}`}
+                  alt={`Foto de ${students[currentIndex].displayName}`}
                 />
               </div>
 
@@ -119,13 +73,6 @@ export function StudentPoster({ students, currentIndex, onStudentUpdate, setCurr
                   className="rounded-full bg-[#DF0404] w-14 h-14 flex items-center justify-center md:w-16 md:h-16"
                 >
                   <X color="white" size={30} />
-                </button>
-                <button
-                  onClick={handleUndo}
-                  disabled={callHistory.length === 0}
-                  className="rounded-full bg-[#0C408FCC] w-14 h-14 flex items-center justify-center md:w-16 md:h-16 disabled:bg-gray-400"
-                >
-                  <Undo2 color="white" size={30} />
                 </button>
                 <button
                   onClick={handleAccept}
