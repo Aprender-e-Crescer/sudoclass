@@ -20,7 +20,6 @@ export const Route = createRootRouteWithContext<{
   component: () => (
     <>
       <Toaster />
-
       <Outlet />
       {import.meta.env.MODE !== 'production' && <TanStackRouterDevtools />}
     </>

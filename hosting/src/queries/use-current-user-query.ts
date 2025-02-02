@@ -4,7 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 
 export const QUERY_KEY_CURRENT_USER = ['currentUser']
 const QUERY_KEY_CURRENT_USER_SUBSCRIPTION = ['currentUserSubscription']
-export const currentUserQueryOptions = (isAuthStateReady: boolean | undefined) => queryOptions({
+export const currentUserQueryOptions = (isAuthStateReady = true) => queryOptions({
   queryKey: QUERY_KEY_CURRENT_USER,
   queryFn: async () => auth.currentUser,
   enabled: isAuthStateReady,

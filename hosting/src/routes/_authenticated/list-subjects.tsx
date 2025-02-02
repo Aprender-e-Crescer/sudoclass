@@ -6,7 +6,6 @@ import { addDoc, collection } from 'firebase/firestore'
 import { firestore } from '@/services/firebase'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
-import { useGetSubjectsQuery } from '@/queries/use-get-subjects-query'
 
 export const Route = createFileRoute('/_authenticated/list-subjects')({
   component: ListSubjects,

@@ -1,37 +1,29 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { CustomLoading } from '@/components/custom/custom-loading'
-import { useGetSubjectsQuery } from '@/queries/use-get-subjects-query'
+import { getSubjectsFirestoreQuery, getSubjectsQueryOptions } from '@/queries/use-get-subjects-query'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
 
 export const Route = createFileRoute('/_authenticated/courses/$idCourse/classes/$idClass/subjects/')({
+  loader: ({ params: { idClass, idCourse }, context: { queryClient } }) =>
+    queryClient.ensureQueryData(getSubjectsQueryOptions(idCourse, idClass)),
   component: HomeListSubjects,
 })
 
 function HomeListSubjects() {
   const { idClass, idCourse } = Route.useParams()
 
-  const { data: subjects, isError, error, isLoading } = useGetSubjectsQuery(idCourse, idClass)
+  const subjectsQueryOptions = getSubjectsQueryOptions(idCourse, idClass)
 
-  if (isLoading) {
-    return (
-      <>
-        <div className="w-full h-full flex items-center justify-center">
-          <CustomLoading message="Carregando matérias" size={70} />
-        </div>
-      </>
-    )
-  }
+  const { data: subjects } = useSuspenseQuery(subjectsQueryOptions)
 
-  if (isError) {
-    console.error('Erro na consulta:', error)
-    return <p>Erro ao carregar matérias. Tente novamente mais tarde.</p>
-  }
+  useFirestoreRealtimeQuery(subjectsQueryOptions.queryKey, getSubjectsFirestoreQuery(idCourse, idClass))
 
   return (
     <div>
       <p className="w-full flex justify-center text-3xl font-bold mb-5 text-[#0B366F]">Materias</p>
       <div className="flex flex-wrap gap-5 justify-center items-center mt-6">
         {subjects?.map(({ id, name, color }) => (
-          <Link to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/warnings" params={{ idSubject: id }} key={id}>
+          <Link to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/warnings" params={{ idClass, idCourse, idSubject: id }} key={id}>
             <div
               className="w-[200px] md:w-[400px] h-[200px] rounded-lg shadow-lg flex flex-col justify-between"
               style={{ backgroundColor: color }}

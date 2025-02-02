@@ -1,20 +1,15 @@
 import { Profile, profileSchema } from '@/models/profile-schema'
-import { useQuery } from '@tanstack/react-query'
+import { queryOptions } from '@tanstack/react-query'
 import { DocumentData, DocumentReference, getDoc } from 'firebase/firestore'
 
-export function useGetProfileQuery(profileRef: DocumentReference<DocumentData, DocumentData> | undefined) {
-  return useQuery({
-    queryKey: ['get-profile', profileRef],
-    queryFn: async () => {
-      if (!profileRef) throw new Error('Referência de perfil não encontrada')
+export const getProfileFirestoreQuery = (profileRef: DocumentReference<DocumentData, DocumentData>) => profileRef.withConverter({ 
+  fromFirestore: snapshot => profileSchema.parse({ id: snapshot.id, ...snapshot.data() }),
+  toFirestore: (profile: Profile) => profile
+})
 
-      const profileSnapshot = await getDoc(profileRef.withConverter({ 
-        fromFirestore: snapshot => profileSchema.parse({ id: snapshot.id, ...snapshot.data() }),
-        toFirestore: (profile: Profile) => profile
-      }))
+export const getProfileQueryOptions = (profileRef: DocumentReference<DocumentData, DocumentData>) => queryOptions({
+  queryKey: ['get-profile', profileRef],
+  queryFn: () => getDoc(getProfileFirestoreQuery(profileRef)),
+  select: (snapshot) => snapshot.data()
+})
 
-      return profileSnapshot.data()
-    },
-    enabled: !!profileRef,
-  })
-}
