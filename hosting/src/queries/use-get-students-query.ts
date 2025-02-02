@@ -15,14 +15,15 @@ export const getStudentsQueryOptions = (idCourse: string, idClass: string) =>
 
       const studentSnapshots = await Promise.all(studentRefs.map((studentRef) => getDoc(studentRef)))
 
-      const students = studentSnapshots.map((snapshot) => ({
+      const students = studentSnapshots.map((snapshot, index) => ({
         ...snapshot.data(),
         id: snapshot.id,
+        profileRef: studentRefs[index],
       }))
 
       return students
     },
   })
-export function useGetStudentQuery(idCourse: string, idClass: string) {
+export function useGetStudentsQuery(idCourse: string, idClass: string) {
   return useQuery(getStudentsQueryOptions(idCourse, idClass))
 }

@@ -8,7 +8,7 @@ import { useProfileImage } from '@/hooks/use-profile-image'
 import { useAddProfileImage } from '@/mutations/use-add-profile-image-mutation'
 import { useDeleteProfileImage } from '@/mutations/use-delete-profile-image-mutation'
 import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
-import { useGetStudentQuery } from '@/queries/use-get-student-query'
+import { useGetStudentsQuery } from '@/queries/use-get-students-query'
 import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 
@@ -52,7 +52,7 @@ export function ProfileChanges() {
     data: studentData,
     isLoading: isLoadingStudent,
     error: isErrorStudent,
-  } = useGetStudentQuery(userData?.idStudent)
+  } = useGetStudentsQuery(userData?.idStudent)
 
   const {
     data: pedagogueData,
