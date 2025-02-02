@@ -3,6 +3,21 @@ import { Check, Undo2, X } from 'lucide-react'
 import TinderCard from 'react-tinder-card'
 import { useCreateSchoolCallMutation } from '@/mutations/use-create-call-mutation'
 import { createFileRoute } from '@tanstack/react-router'
+import { DocumentData, DocumentReference } from 'firebase/firestore'
+
+interface Student {
+  id: string
+  displayName: string
+  photoURL: string
+  profileRef: DocumentReference<DocumentData, DocumentData>
+}
+
+interface StudentPosterProps {
+  students: Student[]
+  currentIndex: number
+  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>
+  updateStudentStatus: (id: string, status: string) => void
+}
 
 const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/call',
@@ -10,10 +25,10 @@ const Route = createFileRoute(
   component: StudentPoster,
 })
 
-export function StudentPoster({ students, currentIndex, setCurrentIndex, updateStudentStatus }) {
+export function StudentPoster({ students, currentIndex, setCurrentIndex, updateStudentStatus }: StudentPosterProps) {
   const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
-  const [swipedIndices, setSwipedIndices] = useState([])
-  const [callHistory, setCallHistory] = useState([])
+  const [swipedIndices, setSwipedIndices] = useState<number[]>([])
+  const [callHistory, setCallHistory] = useState<{ studentId: string; direction: string }[]>([])
   const createSchoolCall = useCreateSchoolCallMutation(idCourse, idClass, idSubject, idLessonPlan)
 
   const handleSwipe = async (direction: string) => {
@@ -41,6 +56,27 @@ export function StudentPoster({ students, currentIndex, setCurrentIndex, updateS
 
   const handleReject = () => handleSwipe('left')
   const handleAccept = () => handleSwipe('right')
+
+  const handleUndo = async () => {
+    if (callHistory.length > 0) {
+      const lastCall = callHistory[callHistory.length - 1]
+      setCallHistory((prev) => prev.slice(0, -1))
+      setSwipedIndices((prev) => prev.slice(0, -1))
+
+      // try {
+      //   await api.delete(`/schoolCall/delete/${lastCall.callId}`)
+      //   console.log(`Chamada ${lastCall.callId} excluída com sucesso!`)
+      // } catch (error) {
+      //   console.error('Erro ao excluir a chamada:', error)
+      // }
+
+      setCurrentIndex(students.findIndex((student) => student.id === lastCall.studentId))
+    }
+  }
+
+  if (!students || students.length === 0) {
+    return <div>loading...</div>
+  }
 
   if (!students || students.length === 0) {
     return <div>loading...</div>
@@ -73,6 +109,13 @@ export function StudentPoster({ students, currentIndex, setCurrentIndex, updateS
                   className="rounded-full bg-[#DF0404] w-14 h-14 flex items-center justify-center md:w-16 md:h-16"
                 >
                   <X color="white" size={30} />
+                </button>
+                <button
+                  onClick={handleUndo}
+                  disabled={callHistory.length === 0}
+                  className="rounded-full bg-[#0C408FCC] w-14 h-14 flex items-center justify-center md:w-16 md:h-16 disabled:bg-gray-400"
+                >
+                  <Undo2 color="white" size={30} />
                 </button>
                 <button
                   onClick={handleAccept}

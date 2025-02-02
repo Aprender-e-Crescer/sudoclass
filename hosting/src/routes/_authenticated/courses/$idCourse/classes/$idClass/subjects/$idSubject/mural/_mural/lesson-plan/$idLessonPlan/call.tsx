@@ -30,7 +30,6 @@ export function Call() {
       prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
     )
   }
-  console.log(studentList)
 
   return (
     <div className="flex flex-1">
