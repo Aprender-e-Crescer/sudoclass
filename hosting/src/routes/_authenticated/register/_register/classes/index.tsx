@@ -11,7 +11,6 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { z } from 'zod'
 import { ArrowRightToLine, Loader2 } from 'lucide-react'
 import { SelectInput } from '@/components/custom/select-input'
-import { useGetCoursesQuery } from '@/queries/use-get-courses-query'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),

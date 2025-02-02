@@ -7,14 +7,22 @@ import './index.css'
 const queryClient = new QueryClient()
 
 import { routeTree } from './routeTree.gen'
+import { DefaultPendingComponent } from './components/custom/default-pending-component'
 
-const router = createRouter({ routeTree, context: { queryClient } })
+const router = createRouter({
+  routeTree,
+  context: { queryClient },
+  defaultPendingComponent: DefaultPendingComponent,
+  defaultPendingMinMs: 0,
+  defaultPendingMs: 0,
+})
 
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
+
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)

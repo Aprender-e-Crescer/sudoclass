@@ -1,23 +1,22 @@
 import { useAuthStateReady } from '@/queries/use-auth-state-ready-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
-import { getRoleFromRef } from '@/utils/getRoleFromRef'
 
 export function useGetFullUser() {
   const { data: isAuthStateReady } = useAuthStateReady()
   const { data: currentUser } = useCurrentUserQuery(isAuthStateReady)
   const { data: user } = useGetUserQuery(currentUser?.uid)
+  
+  if (!currentUser) throw new Error('User is not logged in')
 
-  const role = getRoleFromRef(user?.roleRef)
-
-  return currentUser ? {
+  return {
     displayName: currentUser.displayName,
     photoURL: currentUser.photoURL,
     email: currentUser.email,
     uid: currentUser.uid,
     cpf: currentUser.uid,
-    role,
-    roleRef: user?.roleRef,
-    profileRef: user?.profileRef,
-  } : null
+    role: user.role,
+    roleRef: user.roleRef,
+    profileRef: user.profileRef,
+  }
 }
