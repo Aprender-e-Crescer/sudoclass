@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react'
 import ListStudents from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { useGetStudentsQuery } from '@/queries/use-get-students-query'
+import { useCallController } from '@/controllers/use-call-controller'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/call',
@@ -12,24 +11,10 @@ export const Route = createFileRoute(
 })
 
 export function Call() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
 
-  const { idCourse, idClass } = Route.useParams()
-  const { data: students } = useGetStudentsQuery(idCourse, idClass)
-
-  const [studentList, setStudentList] = useState<any[]>([])
-
-  useEffect(() => {
-    if (students) {
-      setStudentList(students.map((student) => ({ ...student, variant: 'undefined' })))
-    }
-  }, [students])
-
-  const updateStudentStatus = (id: string, status: string) => {
-    setStudentList((prevList) =>
-      prevList.map((student) => (student.id === id ? { ...student, variant: status } : student)),
-    )
-  }
+  const { studentList, currentIndex, setCurrentIndex, updateStudentStatus, handleReject, handleAccept, handleUndo } =
+    useCallController({ idCourse, idClass, idSubject, idLessonPlan })
 
   return (
     <div className="flex flex-1">
@@ -51,6 +36,9 @@ export function Call() {
             currentIndex={currentIndex}
             setCurrentIndex={setCurrentIndex}
             updateStudentStatus={updateStudentStatus}
+            handleReject={handleReject}
+            handleAccept={handleAccept}
+            handleUndo={handleUndo}
           />
         )}
 
