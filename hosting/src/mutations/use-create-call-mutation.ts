@@ -36,5 +36,8 @@ export function useCreateSchoolCallMutation(
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: MISSINGS_QUERY_KEY })
     },
+    onSettled: () => {
+      
+    }
   })
 }

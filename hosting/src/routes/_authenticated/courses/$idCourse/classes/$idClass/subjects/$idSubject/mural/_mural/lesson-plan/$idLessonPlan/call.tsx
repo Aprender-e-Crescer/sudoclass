@@ -1,8 +1,14 @@
 import ListStudents from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
-import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { useCallController } from '@/controllers/use-call-controller'
+import { createFileRoute } from '@tanstack/react-router'
+import { useMemo, useState } from 'react'
+
+import { DocumentData, DocumentReference } from 'firebase/firestore'
+import { When } from 'react-if'
+
+export type StudentStatus = 'undefined' | 'present' | 'lack' | 'corrected' | 'notCorrected' | undefined
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/call',
@@ -11,37 +17,61 @@ export const Route = createFileRoute(
 })
 
 export function Call() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [callHistory, setCallHistory] = useState<{ studentId: string; direction: string }[]>([])
+
   const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
 
-  const { studentList, currentIndex, setCurrentIndex, updateStudentStatus, handleReject, handleAccept, handleUndo } =
+  const { students, createSchoolCall } =
     useCallController({ idCourse, idClass, idSubject, idLessonPlan })
+
+  const currentStudent = useMemo(() => students[currentIndex], [students, currentIndex])
+  
+  const handleUndo = async () => {
+    if (callHistory.length > 0) {
+      setCallHistory((prev) => prev.slice(0, -1))
+
+      setCurrentIndex((prev) => prev - 1)
+    }
+  }
+
+  const handleSwipe = async (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>, direction: string) => {
+    // createSchoolCall({ studentProfileRef: profileRef })
+    setCallHistory((prev) => [...prev, { studentId, direction }])
+    setCurrentIndex((prev) => prev + 1)
+  }
+
+  const handleReject = (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () => handleSwipe(studentId, profileRef, 'left')
+  const handleAccept = (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () => handleSwipe(studentId, profileRef, 'right')
 
   return (
     <div className="flex flex-1">
       <div className="flex-1">
-        {studentList.map((student) => (
-          <ListStudents
-            key={student.id}
-            name={student.displayName}
-            picture={student.photoURL}
-            variant={student.variant}
-          />
-        ))}
+        {students?.map((student) => {
+          if (student === undefined) return null
+
+          const currentCallHistory = callHistory.find(({ studentId }) => student.id === studentId)
+
+          return (
+            <ListStudents
+              key={student.id}
+              name={student.displayName}
+              picture={student.photoURL}
+              variant={currentCallHistory?.direction === undefined ? 'undefined' : currentCallHistory?.direction === 'left' ? 'lack' : 'present'}
+            />
+          )
+      })}
       </div>
 
       <div className="w-full pt-2">
-        {currentIndex < (studentList?.length ?? 0) && studentList[currentIndex] && (
+        <When condition={!!currentStudent}>
           <StudentPoster
-            students={studentList}
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
-            updateStudentStatus={updateStudentStatus}
+            student={currentStudent!}
             handleReject={handleReject}
             handleAccept={handleAccept}
             handleUndo={handleUndo}
           />
-        )}
-
+        </When>
         <div className="flex justify-around mt-10">
           <Button size="medium">Finalizar Chamada</Button>
         </div>
