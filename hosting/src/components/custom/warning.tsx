@@ -36,7 +36,7 @@ export function Warning(props: WarningProps) {
   if (isDeleted) return null
 
   return (
-    <div className="w-full max-w-[800px] px-4 py-4 bg-white shadow-lg rounded-lg flex flex-col">
+    <div className="w-full px-4 py-4 bg-white shadow-lg rounded-lg flex flex-col">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-x-3">
           <Avatar.Root className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">

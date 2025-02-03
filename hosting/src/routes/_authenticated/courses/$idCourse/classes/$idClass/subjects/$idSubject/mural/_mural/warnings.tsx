@@ -1,7 +1,6 @@
 import { CardComponent } from '@/components/custom/card-bolletin-board'
-import { CustomLoading } from '@/components/custom/custom-loading'
 import { Warning } from '@/components/custom/warning'
-import { useWarningController } from '@/controllers/use-warnings-controller'
+import { useWarningController, warningRouteLoader } from '@/controllers/use-warnings-controller'
 import { createFileRoute } from '@tanstack/react-router'
 import avatarPlaceholder from '@/assets/user.png'
 import { Loader, SendHorizonal } from 'lucide-react'
@@ -23,6 +22,7 @@ const MyInput = ({ field, form, ...props }: FieldProps) => {
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/warnings',
 )( {
+  loader: ({ params: { idClass, idCourse, idSubject }, context: { queryClient } }) => warningRouteLoader({ idClass, idCourse, idSubject, queryClient }),
   component: WallSubjects,
 })
 
@@ -32,10 +32,8 @@ export function WallSubjects() {
 
   const { idCourse, idClass, idSubject } = Route.useParams()
   const {
-    isLoading,
     subject,
     course,
-    fullUser,
     warningsWithSentByProfiles,
     profile,
     hasPermissionToSendWarning,
@@ -57,16 +55,6 @@ export function WallSubjects() {
       idSubject,
     })
   }
-
-  if (isLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <CustomLoading message="Carregando mural" size={70} />
-      </div>
-    )
-  }
-
-  if (!subject || !course || !fullUser) throw new Error('Unexpected error')
 
   return (
     <div className="bg-white w-full min-h-screen flex flex-col items-center justify-start">

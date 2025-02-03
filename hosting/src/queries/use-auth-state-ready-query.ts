@@ -1,5 +1,5 @@
 import { auth } from '@/services/firebase'
-import { queryOptions, useQuery } from '@tanstack/react-query'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 
 export const QUERY_KEY_AUTH_STATE_READY = ['authStateReady']
 
@@ -9,7 +9,7 @@ export const authStateReadyQueryOptions = queryOptions({
 })
 
 export function useAuthStateReady() {
-  const result = useQuery(authStateReadyQueryOptions)
+  const result = useSuspenseQuery(authStateReadyQueryOptions)
 
   return result
 }
