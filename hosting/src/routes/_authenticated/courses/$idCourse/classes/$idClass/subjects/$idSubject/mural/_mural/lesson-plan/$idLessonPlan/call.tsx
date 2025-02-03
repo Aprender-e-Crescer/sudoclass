@@ -79,7 +79,7 @@ export function Call() {
 
   return (
     <div className="flex flex-1">
-      <div className="flex-1">
+      <div className="hidden lg:flex flex-col flex-1">
         {students?.map((student) => {
           if (student === undefined) return null
 
