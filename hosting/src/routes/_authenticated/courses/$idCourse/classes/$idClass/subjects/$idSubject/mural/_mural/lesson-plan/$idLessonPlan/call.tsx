@@ -24,7 +24,12 @@ export function Call() {
 
   const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
 
-  const { students, createSchoolCall } = useCallController({ idCourse, idClass, idSubject, idLessonPlan })
+  const { students, createSchoolCall, error } = useCallController({
+    idCourse,
+    idClass,
+    idSubject,
+    idLessonPlan,
+  })
 
   const currentStudent = useMemo(() => {
     if (students.length === 0) return undefined
@@ -76,6 +81,7 @@ export function Call() {
       throw new Error('There was a failure to save the call')
     }
   }
+  if (error) throw new Error(error.message)
 
   return (
     <div className="flex flex-1">

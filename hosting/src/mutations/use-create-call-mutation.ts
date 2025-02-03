@@ -11,6 +11,8 @@ export function useCreateSchoolCallMutation() {
     mutationFn: async (batch: ReturnType<typeof writeBatch>) => {
       await batch.commit()
     },
-    onError: (error) => console.error(error),
+    onError: (error) => {
+      throw new Error(error.message)
+    },
   })
 }

@@ -18,10 +18,11 @@ export function useCallController({ idCourse, idClass }: CallControllerProps) {
     queries: classData?.studentsProfile.map((studentProfile) => getProfileQueryOptions(studentProfile)) ?? [],
     combine: (results) => results.map((result) => result.data),
   })
-  const { mutateAsync: createSchoolCall } = useCreateSchoolCallMutation()
+  const { mutateAsync: createSchoolCall, error } = useCreateSchoolCallMutation()
 
   return {
     students,
     createSchoolCall,
+    error,
   }
 }
