@@ -8,9 +8,9 @@ import { getProfileFirestoreQuery, getProfileQueryOptions } from '@/queries/use-
 import { getSubjectFirestoreQuery, getSubjectQueryOptions } from '@/queries/use-get-subject-by-id-query'
 import { getSubjectsQueryOptions } from '@/queries/use-get-subjects-query'
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
-import { getProfileQueriesOptions, useSentByProfilesQueries } from '@/queries/use-sent-by-profiles-queries'
+import { getProfileQueriesOptions } from '@/queries/use-sent-by-profiles-queries'
 import { getWarningsFirestoreQuery, getWarningsQueryOptions } from '@/queries/use-warnings-query'
-import { QueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { QueryClient, useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 interface DTO {
@@ -71,7 +71,9 @@ export function useWarningController({ idCourse, idClass, idSubject, onWarningCr
     })
 
     const sentByProfileIds = useMemo(() => getUniqueSentByProfileIds(warnings), [warnings])
-    const sentByProfiles = useSentByProfilesQueries(sentByProfileIds)
+    const sentByProfiles = useSuspenseQueries({
+        queries: getProfileQueriesOptions(sentByProfileIds)
+    })
 
     const hasPermissionToSendWarning = fullUser.role === 'teacher' || fullUser.role === 'admin'
 
