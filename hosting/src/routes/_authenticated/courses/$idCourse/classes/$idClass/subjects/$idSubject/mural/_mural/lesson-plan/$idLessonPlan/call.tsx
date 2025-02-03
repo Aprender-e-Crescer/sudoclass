@@ -24,9 +24,12 @@ export function Call() {
 
   const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
 
-  const { students } = useCallController({ idCourse, idClass, idSubject, idLessonPlan })
+  const { students, createSchoolCall } = useCallController({ idCourse, idClass, idSubject, idLessonPlan })
 
-  const currentStudent = useMemo(() => students[currentIndex], [students, currentIndex])
+  const currentStudent = useMemo(() => {
+    if (students.length === 0) return undefined
+    return students[Math.min(currentIndex, students.length - 1)]
+  }, [students, currentIndex])
 
   const handleUndo = async () => {
     if (callHistory.length > 0) {
@@ -68,10 +71,9 @@ export function Call() {
 
   const handleFinalizeCall = async () => {
     try {
-      await batch.commit()
-    } catch (err) {
-      console.error('Error committing batch:', err)
-      throw new Error('Error committing batch')
+      createSchoolCall(batch)
+    } catch (error) {
+      throw new Error('There was a failure to save the call')
     }
   }
 

@@ -1,43 +1,16 @@
-import { MISSINGS_QUERY_KEY } from '@/queries/use-get-missings-query'
-import { firestore } from '@/services/firebase'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { addDoc, collection, DocumentData, DocumentReference } from 'firebase/firestore'
+import { useMutation } from '@tanstack/react-query'
+import { writeBatch, DocumentData, DocumentReference } from 'firebase/firestore'
 
-interface CreateSchoolCallMutation {
+export interface CreateSchoolCallMutation {
   studentProfileRef: DocumentReference<DocumentData, DocumentData> | undefined
 }
 
-export function useCreateSchoolCallMutation(
-  courseId: string,
-  classId: string,
-  subjectId: string,
-  lessonPlanId: string,
-) {
-  const queryClient = useQueryClient()
-
+export function useCreateSchoolCallMutation() {
   return useMutation({
-    mutationKey: ['createSchoolCall'],
-    mutationFn: async (studentProfile: CreateSchoolCallMutation) => {
-      const missingRef = collection(
-        firestore,
-        'courses',
-        courseId,
-        'classes',
-        classId,
-        'subjects',
-        subjectId,
-        'lessonPlannings',
-        lessonPlanId,
-        'missings',
-      )
-      const newMissing = await addDoc(missingRef, { studentProfile: studentProfile.studentProfileRef })
-      return newMissing.id
+    mutationKey: ['create-school-call'],
+    mutationFn: async (batch: ReturnType<typeof writeBatch>) => {
+      await batch.commit()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: MISSINGS_QUERY_KEY })
-    },
-    onSettled: () => {
-      
-    }
+    onError: (error) => console.error(error),
   })
 }
