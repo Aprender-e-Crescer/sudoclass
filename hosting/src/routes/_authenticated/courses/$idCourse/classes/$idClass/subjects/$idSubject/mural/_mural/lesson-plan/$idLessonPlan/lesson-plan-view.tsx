@@ -1,101 +1,58 @@
-import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { GenericTableLessonPlanView } from '@/components/custom/generic-table-lesson-plan-view'
 import { createFileRoute } from '@tanstack/react-router'
-import { useListLessonPlan } from '@/queries/use-list-lesson-plan'
-import { LessonPlan } from '@/models/lesson-plan'
-import { LESSON_PLAN_QUERY_KEY } from '@/constants/queries'
+import { ClipboardListIcon } from 'lucide-react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
 )({
   component: LessonPlanView,
-  parseParams: (params: { idLessonPlan: string }) => {
-    return { idLessonPlan: String(params.idLessonPlan) }
-  },
 })
-
+const scheduleData = [
+  {
+    date: '15/09/24',
+    start: '18:30',
+    end: '22:30',
+    plan: '1 - Lógica em geral, introdução. Proposição Conectivos Lógicos Tabelas verdade 2 - Introdução à informática, hardware e software 1 - Lógica em geral, introdução. Proposição Conectivos Lógicos Tabelas verdade 2 - Introdução à informática, hardware e software',
+  },
+  ...Array(5).fill({
+    date: '15/09/24',
+    start: '18:30',
+    end: '22:30',
+    plan: '1 - Lógica em geral, introdução. Proposição Conectivos Lógicos Tabelas verdade 2 - Introdução à informática, hardware e software 1 - Lógica em geral, introdução. Proposição Conectivos Lógicos Tabelas verdade 2 - Introdução à informática, hardware e software',
+  }),
+]
 export function LessonPlanView() {
-  const [expandedRows, setExpandedRows] = useState<number[]>([])
-  const queryClient = useQueryClient() // React Query Client
-
-  const {
-    data: lessonPlans = [],
-    isLoading,
-    isError,
-    error,
-  } = useListLessonPlan()
-
-  if (isLoading) return <p>Carregando...</p>
-  if (isError) return <p>Erro ao carregar planos de aula</p>
-
-  const formattedData = lessonPlans.map((lessonPlan: LessonPlan) => ({
-    ...lessonPlan,
-    idProfessor: lessonPlan.id_professor,
-    idLessonPlan: lessonPlan.id_planoaula,
-    data_aula: new Date(lessonPlan.data_aula).toLocaleDateString('pt-BR'),
-    datainicio: [...lessonPlan.inicio_aula].join('').slice(0, -3),
-    datafim: [...lessonPlan.fim_aula].join('').slice(0, -3),
-    detalhes: (
-      <>
-        <p>
-          1. Conteúdo Formativo:{' '}
-          {lessonPlan.conteudoformativo || 'Não disponível'}
-        </p>
-        <p>2. Modo de Ensino: {lessonPlan.mododeensino || 'Não disponível'}</p>
-        <p>
-          3. Recursos Didáticos:{' '}
-          {lessonPlan.recursosdidaticos || 'Não disponível'}
-        </p>
-      </>
-    ),
-  }))
-
-  const toggleRow = (index: number) => {
-    setExpandedRows((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
-    )
-  }
-
-  const handleDelete = async (lessonPlanId: string) => {
-    try {
-      await deleteClass(lessonPlanId)
-
-      queryClient.invalidateQueries({ queryKey: LESSON_PLAN_QUERY_KEY })
-    } catch (error) {
-      console.error('Erro ao excluir o plano de aula:', error)
-    }
-  }
-
-  const columns = [
-    { header: 'Data da Aula', accessor: 'data_aula' },
-    { header: 'Início', accessor: 'datainicio' },
-    { header: 'Fim', accessor: 'datafim' },
-    { header: 'Detalhes do Plano', accessor: 'detalhes' },
-    {
-      accessor: 'actions',
-      cell: (row: any, rowIndex: number) => (
-        <div>
-          <button
-            onClick={() => handleDelete(row.idLessonPlan)}
-            className="text-red-500 hover:underline"
-          >
-            Excluir
-          </button>
-        </div>
-      ),
-    },
-  ]
-
   return (
-    <GenericTableLessonPlanView
-      data={formattedData}
-      columns={columns}
-      expandedRows={expandedRows}
-      toggleRow={toggleRow}
-    />
+    <div className="overflow-x-auto p-4">
+      <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <thead>
+          <tr className="bg-gray-200 text-gray-700">
+            <th className="py-4 px-6 border-b w-1/12">Data</th>
+            <th className="py-4 px-6 border-b w-1/12">Início</th>
+            <th className="py-4 px-6 border-b w-1/12">Fim</th>
+            <th className="py-4 px-6 border-b w-1/2">Plano de aula</th>
+            <th className="py-4 px-6 border-b">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {scheduleData.map((item, index) => (
+            <tr key={index} className="border-b-b hover:bg-gray-100">
+              <td className="py-4 px-6 border-b w-1/12">{item.date}</td>
+              <td className="py-4 px-6 border-b w-1/12">{item.start}</td>
+              <td className="py-4 px-6 border-b w-1/12">{item.end}</td>
+              <td className="py-4 px-6 border-b w-1/2 whitespace-normal break-words">{item.plan}</td>
+              <td className="py-4 px-6 border-b w-1/6">
+                <div className="flex justify-center items-center">
+                 
+                  <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none flex gap-2 ">
+                  <ClipboardListIcon />
+                   Chamada
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
-}
-function deleteClass(lessonPlanId: string) {
-  throw new Error('Function not implemented.')
 }
