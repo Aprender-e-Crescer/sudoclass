@@ -5,8 +5,9 @@ import { useCallController } from '@/controllers/use-call-controller'
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 
-import { DocumentData, DocumentReference } from 'firebase/firestore'
+import { doc, DocumentData, DocumentReference, writeBatch } from 'firebase/firestore'
 import { When } from 'react-if'
+import { firestore } from '@/services/firebase'
 
 export type StudentStatus = 'undefined' | 'present' | 'lack' | 'corrected' | 'notCorrected' | undefined
 
@@ -17,16 +18,16 @@ export const Route = createFileRoute(
 })
 
 export function Call() {
+  const batch = useMemo(() => writeBatch(firestore), [])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [callHistory, setCallHistory] = useState<{ studentId: string; direction: string }[]>([])
 
   const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
 
-  const { students, createSchoolCall } =
-    useCallController({ idCourse, idClass, idSubject, idLessonPlan })
+  const { students } = useCallController({ idCourse, idClass, idSubject, idLessonPlan })
 
   const currentStudent = useMemo(() => students[currentIndex], [students, currentIndex])
-  
+
   const handleUndo = async () => {
     if (callHistory.length > 0) {
       setCallHistory((prev) => prev.slice(0, -1))
@@ -35,14 +36,44 @@ export function Call() {
     }
   }
 
-  const handleSwipe = async (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>, direction: string) => {
-    // createSchoolCall({ studentProfileRef: profileRef })
+  const handleSwipe = async (
+    studentId: string,
+    profileRef: DocumentReference<DocumentData, DocumentData>,
+    direction: string,
+  ) => {
+    if (direction === 'left') {
+      const missingDocRef = doc(
+        firestore,
+        'courses',
+        idCourse,
+        'classes',
+        idClass,
+        'subjects',
+        idSubject,
+        'lessonPlannings',
+        idLessonPlan,
+        'missings',
+        studentId,
+      )
+      batch.set(missingDocRef, { studentProfile: profileRef })
+    }
     setCallHistory((prev) => [...prev, { studentId, direction }])
     setCurrentIndex((prev) => prev + 1)
   }
 
-  const handleReject = (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () => handleSwipe(studentId, profileRef, 'left')
-  const handleAccept = (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () => handleSwipe(studentId, profileRef, 'right')
+  const handleReject = (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
+    handleSwipe(studentId, profileRef, 'left')
+  const handleAccept = (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
+    handleSwipe(studentId, profileRef, 'right')
+
+  const handleFinalizeCall = async () => {
+    try {
+      await batch.commit()
+    } catch (err) {
+      console.error('Error committing batch:', err)
+      throw new Error('Error committing batch')
+    }
+  }
 
   return (
     <div className="flex flex-1">
@@ -57,10 +88,16 @@ export function Call() {
               key={student.id}
               name={student.displayName}
               picture={student.photoURL}
-              variant={currentCallHistory?.direction === undefined ? 'undefined' : currentCallHistory?.direction === 'left' ? 'lack' : 'present'}
+              variant={
+                currentCallHistory?.direction === undefined
+                  ? 'undefined'
+                  : currentCallHistory?.direction === 'left'
+                    ? 'lack'
+                    : 'present'
+              }
             />
           )
-      })}
+        })}
       </div>
 
       <div className="w-full pt-2">
@@ -73,7 +110,9 @@ export function Call() {
           />
         </When>
         <div className="flex justify-around mt-10">
-          <Button size="medium">Finalizar Chamada</Button>
+          <Button onClick={handleFinalizeCall} size="medium">
+            Finalizar Chamada
+          </Button>
         </div>
       </div>
     </div>
