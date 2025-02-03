@@ -11,19 +11,20 @@ interface Student {
 
 interface StudentPosterProps {
   student: Student
-  handleReject: (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () => void
-  handleAccept: (studentId: string, profileRef: DocumentReference<DocumentData, DocumentData>) => () => void
+  isButtonsDisabled: boolean
+  handleReject: (profileRef: DocumentReference<DocumentData, DocumentData>) => () => void
+  handleAccept: (profileRef: DocumentReference<DocumentData, DocumentData>) => () => void
   handleUndo: () => void
 }
 
-export function StudentPoster({ student: { displayName, id, photoURL, profileRef }, handleReject, handleAccept, handleUndo }: StudentPosterProps) {
+export function StudentPoster({ student: { displayName, id, photoURL, profileRef }, isButtonsDisabled, handleReject, handleAccept, handleUndo }: StudentPosterProps) {
   return (
     <div className="flex items-center justify-center">
       <div className="relative w-full max-w-[375px] h-[600px]">
         <TinderCard
           className="absolute w-full h-full"
           key={id}
-          onSwipe={(dir) => (dir === 'left' ? handleReject(id, profileRef) : handleAccept(id, profileRef))}
+          onSwipe={(dir) => (dir === 'left' ? handleReject(profileRef) : handleAccept(profileRef))}
           preventSwipe={['up', 'down']}
         >
           <div className="relative bg-white border-2 w-full h-full shadow-lg flex flex-col items-center justify-end p-6 rounded-md">
@@ -39,19 +40,22 @@ export function StudentPoster({ student: { displayName, id, photoURL, profileRef
 
             <div className="flex w-full justify-evenly flex-wrap mt-4">
               <button
-                onClick={handleReject(id, profileRef)}
+                disabled={isButtonsDisabled}
+                onClick={handleReject(profileRef)}
                 className="rounded-full bg-[#DF0404] w-14 h-14 flex items-center justify-center"
               >
                 <X color="white" size={30} />
               </button>
               <button
+                disabled={isButtonsDisabled}
                 onClick={handleUndo}
                 className="rounded-full bg-[#0C408FCC] w-14 h-14 flex items-center justify-center disabled:bg-gray-400"
               >
                 <Undo2 color="white" size={30} />
               </button>
               <button
-                onClick={handleAccept(id, profileRef)}
+                disabled={isButtonsDisabled}
+                onClick={handleAccept(profileRef)}
                 className="rounded-full bg-[#00B087] w-14 h-14 flex items-center justify-center"
               >
                 <Check color="white" size={30} />

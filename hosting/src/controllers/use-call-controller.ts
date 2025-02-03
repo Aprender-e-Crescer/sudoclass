@@ -3,8 +3,6 @@ import { getClassQueryOptions } from '@/queries/use-class-query'
 import { getProfileQueryOptions } from '@/queries/use-get-profile-query'
 import { useQueries, useQuery } from '@tanstack/react-query'
 
-export type StudentStatus = 'undefined' | 'present' | 'lack' | 'corrected' | 'notCorrected' | undefined
-
 interface CallControllerProps {
   idCourse: string
   idClass: string
@@ -16,13 +14,16 @@ export function useCallController({ idCourse, idClass }: CallControllerProps) {
   const { data: classData } = useQuery(getClassQueryOptions(idCourse, idClass))
   const students = useQueries({
     queries: classData?.studentsProfile.map((studentProfile) => getProfileQueryOptions(studentProfile)) ?? [],
-    combine: (results) => results.map((result) => result.data),
+    combine: (results) => results
+      .map((result) => result.data)
+      ?.filter((student) => student !== undefined),
   })
-  const { mutateAsync: createSchoolCall, error } = useCreateSchoolCallMutation()
+
+  const { mutateAsync: createSchoolCall, isPending: isCreateSchoolCallPending } = useCreateSchoolCallMutation()
 
   return {
     students,
     createSchoolCall,
-    error,
+    isCreateSchoolCallPending,
   }
 }
