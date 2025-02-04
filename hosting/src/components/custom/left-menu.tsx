@@ -94,9 +94,12 @@ function LeftMenu({ type, courses }: LeftMenuProps) {
                   initialValues={{ name: '', color: hex }}
                   validationSchema={toFormikValidationSchema(courseSchema)}
                   onSubmit={(values) => {
-                    createCourse(values)
-                    navigate({ to: '/courses-management' })
-                    setIsDialogOpen(false)
+                    createCourse(values, {
+                      onSuccess: (data) => {
+                        navigate({ to: `/${data.id}/courses-management` })
+                        setIsDialogOpen(false)
+                      },
+                    })
                   }}
                 >
                   {({ setFieldValue, touched, errors }) => (
