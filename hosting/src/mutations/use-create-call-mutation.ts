@@ -1,40 +1,45 @@
 import { useMutation } from '@tanstack/react-query'
-import { api } from '@/services/api'
+import { DocumentData, DocumentReference, writeBatch } from 'firebase/firestore'
+import { firestore } from '@/services/firebase'
+import { doc } from 'firebase/firestore'
+
+interface CreateSchoolCallMutationInput {
+  idCourse: string
+  idClass: string
+  idSubject: string
+  idLessonPlan: string
+  profileRefs: DocumentReference<DocumentData, DocumentData>[]
+}
 
 export function useCreateSchoolCallMutation() {
   return useMutation({
-    mutationKey: ['createSchoolCall'],
-    mutationFn: async ({
-      id_chamada,
-      id_materia,
-      data,
-      id_aluno,
-      status,
-    }: {
-      id_chamada: number
-      id_materia: number
-      data: string
-      id_aluno: number
-      status: boolean
-    }) => {
-      if (!id_chamada || !id_materia || !data || !id_aluno || status === undefined) {
-        throw new Error('Todos os campos obrigatórios devem ser preenchidos.')
-      }
+    mutationKey: ['create-school-call'],
+    mutationFn: async ({ idClass, idCourse, idLessonPlan, idSubject, profileRefs }: CreateSchoolCallMutationInput) => {
+      const batch = profileRefs.reduce((batch, profileRef) => {
+        const missingDocRef = doc(
+          firestore,
+          'courses',
+          idCourse,
+          'classes',
+          idClass,
+          'subjects',
+          idSubject,
+          'lessonPlannings',
+          idLessonPlan,
+          'missings',
+          profileRef.id,
+        )
+  
+        batch.set(missingDocRef, { studentProfile: profileRef })
+        
+        return batch
+      }, writeBatch(firestore))
+      
 
-      const requestBody = {
-        id_chamada,
-        id_materia,
-        data,
-        id_aluno,
-        status,
-      }
-
-      const { data: responseData } = await api.post('/schoolCall', requestBody)
-      return responseData
+      await batch.commit()
     },
-
-    onError: (error: any) => {
-      console.error('Erro ao criar a chamada:', error)
+    onError: (error) => {
+      throw new Error(error.message)
     },
   })
 }

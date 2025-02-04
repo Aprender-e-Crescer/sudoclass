@@ -29,13 +29,13 @@ const imageVariants = {
   notCorrected: notCorrectedIcon,
 }
 
-interface Props {
+export interface ListStudentsProps {
   name: string
   picture: string
   variant?: 'undefined' | 'present' | 'lack' | 'corrected' | 'notCorrected'
 }
 
-export default function ListStudents({ name, picture, variant, children }: PropsWithChildren<Props>) {
+export default function ListStudents({ name, picture, variant, children }: PropsWithChildren<ListStudentsProps>) {
   return (
     <div className="flex w-[370px]">
       <div className={cn(studentCardVariants({ variant }))}>
