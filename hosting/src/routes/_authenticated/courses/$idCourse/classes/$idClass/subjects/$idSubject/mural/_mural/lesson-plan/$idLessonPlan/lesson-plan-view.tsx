@@ -3,7 +3,9 @@ import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { createFileRoute } from '@tanstack/react-router'
 import { Check, ClipboardListIcon, X } from 'lucide-react'
 import { Else, If, Then } from 'react-if'
-import { useListLessonPlannings } from '@/queries/use-list-lesson-plan'
+import { getLessonPlansQueryOptions } from '@/queries/use-list-lesson-plan'
+import { useQuery } from '@tanstack/react-query'
+import { format } from 'date-fns'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
@@ -11,31 +13,21 @@ export const Route = createFileRoute(
   component: LessonPlanView,
 })
 
-const scheduleData = [
-  { id: 1, date: '15/09/24', start: '18:30', end: '22:30', plan: 'Introdução à lógica', isLack: false },
-  { id: 2, date: '16/09/24', start: '18:30', end: '22:30', plan: 'Introdução à programação', isLack: false },
-  { id: 3, date: '15/09/24', start: '18:30', end: '22:30', plan: 'Exercícios sobre lógica', isLack: false },
-  { id: 4, date: '17/09/24', start: '18:30', end: '22:30', plan: 'Estruturas condicionais', isLack: false },
-]
-
 export function LessonPlanView() {
-   const { idCourse, idClass, idSubject } = Route.useParams()
+  const { idCourse, idClass, idSubject } = Route.useParams()
 
-  const ListPlain = useListLessonPlannings( idCourse, idClass, idSubject )
-
-  console.log( ListPlain)
+  const { data: LessonPlanningsList } = useQuery(getLessonPlansQueryOptions(idCourse, idClass, idSubject))
 
   const fullUser = useGetFullUser()
   const hasPermissionToEditLessonPlan = fullUser.role === 'teacher' || fullUser.role === 'admin'
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
 
-  const handleCheckboxChange = (id: number, date: string) => {
+  const handleCheckboxChange = (id: string, date: Date) => {
     setSelectedIds((prev) => {
       const newSelected = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
 
-      // Atualiza a data selecionada se houver pelo menos um checkbox marcado
       const hasSelected = newSelected.length > 0
       setSelectedDate(hasSelected ? date : null)
 
@@ -60,13 +52,14 @@ export function LessonPlanView() {
             </th>
           </tr>
         </thead>
+
         <tbody>
-          {scheduleData.map((item) => (
+          {LessonPlanningsList?.map((item) => (
             <tr key={item.id} className="border-b hover:bg-gray-100">
-              <td className="py-4 px-6 border-b w-1/12">{item.date}</td>
-              <td className="py-4 px-6 border-b w-1/12">{item.start}</td>
-              <td className="py-4 px-6 border-b w-1/12">{item.end}</td>
-              <td className="py-4 px-6 border-b w-1/2 whitespace-normal break-words">{item.plan}</td>
+              <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.startDate), 'dd/MM/yyyy')}</td>
+              <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.startDate), 'HH:mm')}</td>
+              <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.endDate), 'HH:mm')}</td>
+              <td className="py-4 px-6 border-b w-1/2 whitespace-normal break-words">{item.teachingDetails.content}</td>
               <td className="py-4 px-6 border-b w-1/6 text-center">
                 <div className="flex justify-center items-center">
                   <If condition={hasPermissionToEditLessonPlan}>
@@ -75,12 +68,12 @@ export function LessonPlanView() {
                         type="checkbox"
                         className="w-6 h-6 accent-blue-600 cursor-pointer"
                         checked={selectedIds.includes(item.id)}
-                        onChange={() => handleCheckboxChange(item.id, item.date)}
-                        disabled={selectedDate !== null && selectedDate !== item.date}
+                        onChange={() => handleCheckboxChange(item.id, item.startDate)}
+                        disabled={selectedDate !== null && selectedDate !== item.startDate}
                       />
                     </Then>
                     <Else>
-                      <If condition={item.isLack}>
+                      <If condition={item.isCallMade}>
                         <Then>
                           <Check color="green" />
                         </Then>
@@ -96,11 +89,6 @@ export function LessonPlanView() {
           ))}
         </tbody>
       </table>
-
-      {/* Debug para mostrar os IDs selecionados */}
-      <div className="mt-4 p-2 bg-gray-100 rounded-md">
-        <strong>IDs Selecionados:</strong> {JSON.stringify(selectedIds)}
-      </div>
     </div>
   )
 }
