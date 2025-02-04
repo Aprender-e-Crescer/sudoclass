@@ -13,7 +13,7 @@ export const Route = createFileRoute(
 export function LessonPlanView() {
   const { idCourse, idClass, idSubject } = Route.useParams()
 
-  const { lessonPlanningsList, hasPermissionToEditLessonPlan, selectedDate, selectedIds, handleCheckboxChange } =
+  const { lessonPlanningsList, hasPermissionToEditLessonPlan, selectedDate, selectedIds, missings, handleCheckboxChange } =
     lessonPlanViewController(idCourse, idClass, idSubject)
 
   return (
@@ -37,6 +37,8 @@ export function LessonPlanView() {
         <tbody>
           {lessonPlanningsList?.map((item) => {
             const itemDate = format(new Date(item.startDate), 'dd/MM/yyyy')
+            const isMissed = missings.some((missing) => missing.idLessonPlan === item.id)
+
             return (
               <tr key={item.id} className="border-b hover:bg-gray-100">
                 <td className="py-4 px-6 border-b w-1/12">{itemDate}</td>
@@ -64,29 +66,23 @@ export function LessonPlanView() {
                           </Else>
                         </If>
                       </Then>
-                    </If>
-
-                    <If condition={!hasPermissionToEditLessonPlan}>
-                      <If condition={!hasPermissionToEditLessonPlan}>
-                        <Then>
-                          <If condition={item.isCallMade}>
-                            <Then>
-                              <If condition={item.isCallMade}>
-                                <Then>
-                                  <Check color="green" />
-                                </Then>
-                                <Else>
-                                  <X color="red" />
-                                </Else>
-                              </If>
-                            </Then>
-                            <Else>
-                              chamada não realizada
-                            </Else>
-                          </If>
-                        </Then>
-                      </If>
-                      <Then></Then>
+                      <Else>
+                        <If condition={item.isCallMade}>
+                          <Then>
+                            <If condition={isMissed}>
+                              <Then>
+                                <X color="red" />
+                              </Then>
+                              <Else>
+                                <Check color="green" />
+                              </Else>
+                            </If>
+                          </Then>
+                          <Else>
+                            <p>chamada não realizada</p>
+                          </Else>
+                        </If>
+                      </Else>
                     </If>
                   </div>
                 </td>

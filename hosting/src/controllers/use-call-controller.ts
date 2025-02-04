@@ -18,7 +18,7 @@ export function useCallController({ idCourse, idClass }: CallControllerProps) {
       .map((result) => result.data)
       ?.filter((student) => student !== undefined),
   })
-
+  
   const { mutateAsync: createSchoolCall, isPending: isCreateSchoolCallPending } = useCreateSchoolCallMutation()
 
   return {
