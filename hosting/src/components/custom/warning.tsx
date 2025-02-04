@@ -68,7 +68,7 @@ export function Warning(props: WarningProps) {
         </When>
       </div>
 
-      <div className="mt-2 w-full">
+      <div class="container-inline" className="mt-2 w-full">
         {isEditing ? (
           <div className="w-full">
             <textarea
