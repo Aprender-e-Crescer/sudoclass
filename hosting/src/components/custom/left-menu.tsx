@@ -50,9 +50,9 @@ const menuItemsTeacherClassroom = [
 function LeftMenu({ type, courses }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('')
   const [hex, setHex] = useState('#F44E3B')
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true)
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const { mutate: createCourse } = useCreateCourseMutation()
-  const navigate = useNavigate({ from: '/' })
+  const navigate = useNavigate()
 
   const renderMenuItems = (menuItems: typeof menuItemsStudentPortal) =>
     menuItems.map((item, index) => (
