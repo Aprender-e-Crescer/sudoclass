@@ -128,6 +128,13 @@ export function SubHeader() {
           >
             <p>Atividades</p>
           </Link>
+          <Link
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idLessonPlan/lesson-plan-view"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
+          >
+            <p>Plano de aula</p>
+          </Link>
         </div>
       </div>
     )
