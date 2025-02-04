@@ -1,12 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Check, ClipboardListIcon, X } from 'lucide-react'
 import { Else, If, Then } from 'react-if'
-
 import { format } from 'date-fns'
 import { lessonPlanViewController } from '@/controllers/lesson-plan-view-controller'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/lesson-plan-view',
 )({
   component: LessonPlanView,
 })
@@ -14,8 +13,13 @@ export const Route = createFileRoute(
 export function LessonPlanView() {
   const { idCourse, idClass, idSubject } = Route.useParams()
 
-  const { lessonPlanningsList, hasPermissionToEditLessonPlan, selectedDate, selectedIds, handleCheckboxChange } =
-    lessonPlanViewController(idCourse, idClass, idSubject)
+  const {
+    lessonPlanningsList,
+    hasPermissionToEditLessonPlan,
+    selectedDate,
+    selectedIds,
+    handleCheckboxChange,
+  } = lessonPlanViewController(idCourse, idClass, idSubject)
 
   return (
     <div className="overflow-x-auto p-4">
@@ -38,12 +42,15 @@ export function LessonPlanView() {
         <tbody>
           {lessonPlanningsList?.map((item) => {
             const itemDate = format(new Date(item.startDate), 'dd/MM/yyyy')
-
             return (
               <tr key={item.id} className="border-b hover:bg-gray-100">
                 <td className="py-4 px-6 border-b w-1/12">{itemDate}</td>
-                <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.startDate), 'HH:mm')}</td>
-                <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.endDate), 'HH:mm')}</td>
+                <td className="py-4 px-6 border-b w-1/12">
+                  {format(new Date(item.startDate), 'HH:mm')}
+                </td>
+                <td className="py-4 px-6 border-b w-1/12">
+                  {format(new Date(item.endDate), 'HH:mm')}
+                </td>
                 <td className="py-4 px-6 border-b w-1/2 whitespace-normal break-words">
                   {item.teachingDetails.content}
                 </td>
@@ -60,8 +67,13 @@ export function LessonPlanView() {
                               type="checkbox"
                               className="w-6 h-6 accent-blue-600 cursor-pointer"
                               checked={selectedIds.includes(item.id)}
-                              onChange={() => handleCheckboxChange(item.id, item.startDate)}
-                              disabled={selectedDate !== null && selectedDate !== itemDate}
+                              onChange={() =>
+                                handleCheckboxChange(item.id, item.startDate)
+                              }
+                              disabled={
+                                selectedDate !== null &&
+                                selectedDate !== itemDate
+                              }
                             />
                           </Else>
                         </If>
