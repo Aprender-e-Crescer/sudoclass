@@ -13,13 +13,8 @@ export const Route = createFileRoute(
 export function LessonPlanView() {
   const { idCourse, idClass, idSubject } = Route.useParams()
 
-  const {
-    lessonPlanningsList,
-    hasPermissionToEditLessonPlan,
-    selectedDate,
-    selectedIds,
-    handleCheckboxChange,
-  } = lessonPlanViewController(idCourse, idClass, idSubject)
+  const { lessonPlanningsList, hasPermissionToEditLessonPlan, selectedDate, selectedIds, handleCheckboxChange } =
+    lessonPlanViewController(idCourse, idClass, idSubject)
 
   return (
     <div className="overflow-x-auto p-4">
@@ -45,12 +40,8 @@ export function LessonPlanView() {
             return (
               <tr key={item.id} className="border-b hover:bg-gray-100">
                 <td className="py-4 px-6 border-b w-1/12">{itemDate}</td>
-                <td className="py-4 px-6 border-b w-1/12">
-                  {format(new Date(item.startDate), 'HH:mm')}
-                </td>
-                <td className="py-4 px-6 border-b w-1/12">
-                  {format(new Date(item.endDate), 'HH:mm')}
-                </td>
+                <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.startDate), 'HH:mm')}</td>
+                <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.endDate), 'HH:mm')}</td>
                 <td className="py-4 px-6 border-b w-1/2 whitespace-normal break-words">
                   {item.teachingDetails.content}
                 </td>
@@ -60,20 +51,15 @@ export function LessonPlanView() {
                       <Then>
                         <If condition={item.isCallMade}>
                           <Then>
-                            <Check color="green" />
+                            <p>chamada realizada</p>
                           </Then>
                           <Else>
                             <input
                               type="checkbox"
                               className="w-6 h-6 accent-blue-600 cursor-pointer"
                               checked={selectedIds.includes(item.id)}
-                              onChange={() =>
-                                handleCheckboxChange(item.id, item.startDate)
-                              }
-                              disabled={
-                                selectedDate !== null &&
-                                selectedDate !== itemDate
-                              }
+                              onChange={() => handleCheckboxChange(item.id, item.startDate)}
+                              disabled={selectedDate !== null && selectedDate !== itemDate}
                             />
                           </Else>
                         </If>
@@ -81,16 +67,26 @@ export function LessonPlanView() {
                     </If>
 
                     <If condition={!hasPermissionToEditLessonPlan}>
-                      <Then>
-                        <If condition={item.isCallMade}>
-                          <Then>
-                            <Check color="green" />
-                          </Then>
-                          <Else>
-                            <X color="red" />
-                          </Else>
-                        </If>
-                      </Then>
+                      <If condition={!hasPermissionToEditLessonPlan}>
+                        <Then>
+                          <If condition={item.isCallMade}>
+                            <Then>
+                              <If condition={item.isCallMade}>
+                                <Then>
+                                  <Check color="green" />
+                                </Then>
+                                <Else>
+                                  <X color="red" />
+                                </Else>
+                              </If>
+                            </Then>
+                            <Else>
+                              chamada não realizada
+                            </Else>
+                          </If>
+                        </Then>
+                      </If>
+                      <Then></Then>
                     </If>
                   </div>
                 </td>
