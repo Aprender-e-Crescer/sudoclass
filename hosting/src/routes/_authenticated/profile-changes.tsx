@@ -41,11 +41,11 @@ export function ProfileChanges() {
     }
   }
 
-  const {
-    data: teacherData,
-    isLoading: isLoadingTeacher,
-    error: isErrorTeacher,
-  } = useGetTeacherQuery(userData?.idTeacher)
+  // const {
+  //   data: teacherData,
+  //   isLoading: isLoadingTeacher,
+  //   error: isErrorTeacher,
+  // } = useGetTeacherQuery(userData?.idTeacher)
 
   const {
     data: studentData,
