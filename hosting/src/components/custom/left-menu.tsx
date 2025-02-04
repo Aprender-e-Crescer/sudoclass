@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { Course, courseSchema } from '@/models/course-schema'
 import { role } from '@/types/user'
 import { When } from 'react-if'
@@ -50,7 +50,9 @@ const menuItemsTeacherClassroom = [
 function LeftMenu({ type, courses }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('')
   const [hex, setHex] = useState('#F44E3B')
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true)
   const { mutate: createCourse } = useCreateCourseMutation()
+  const navigate = useNavigate({ from: '/' })
 
   const renderMenuItems = (menuItems: typeof menuItemsStudentPortal) =>
     menuItems.map((item, index) => (
@@ -79,7 +81,7 @@ function LeftMenu({ type, courses }: LeftMenuProps) {
             </Link>
           )}
           <When condition={type == 'teacher'}>
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <SquarePlus className="cursor-pointer" size={16} color="#787486" />
               </DialogTrigger>
@@ -92,8 +94,9 @@ function LeftMenu({ type, courses }: LeftMenuProps) {
                   initialValues={{ name: '', color: hex }}
                   validationSchema={toFormikValidationSchema(courseSchema)}
                   onSubmit={(values) => {
-                    console.log('Curso criado:', values)
                     createCourse(values)
+                    navigate({ to: '/courses-management' })
+                    setIsDialogOpen(false)
                   }}
                 >
                   {({ setFieldValue, touched, errors }) => (
