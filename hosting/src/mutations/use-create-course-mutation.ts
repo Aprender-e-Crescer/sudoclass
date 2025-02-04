@@ -1,23 +1,19 @@
-import { api } from '@/services/api'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { firestore } from '@/services/firebase'
+import { useMutation } from '@tanstack/react-query'
+import { addDoc, collection } from 'firebase/firestore'
 
-export function useCreateCourse() {
-  const queryClient = useQueryClient()
+interface CreateCourse {
+  name: string
+  color: string
+}
 
+export function useCreateCourseMutation() {
   return useMutation({
     mutationKey: ['createCourse'],
-    mutationFn: async (values: any) => {
-      await api.post('course', {
-        nome: values.name,
-        cargaHoraria: values.workload,
-        dataInicio: values.startDate,
-        dataFim: values.endDate,
-        dataInicioInscricoes: values.startOfRegistration,
-        dataFimInscricoes: values.endOfRegistration,
-        numeroVagas: values.numberOfVacancies,
-        ementa: values.ementa,
-      })
-
-      await queryClient.invalidateQueries({ queryKey: ['cursos'] })
+    mutationFn: ({ name, color }: CreateCourse) => {
+      const courseRef = collection(firestore, 'courses')
+      return addDoc(courseRef, { name, color })
     },
-  })}
+    onError: (err) => console.error(err),
+  })
+}

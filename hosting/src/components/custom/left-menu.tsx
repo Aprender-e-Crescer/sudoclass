@@ -1,12 +1,26 @@
 import { Home, Settings, SquarePen, SquarePlus } from 'lucide-react'
-
 import { MenuItem } from './menu-item'
 import { CourseItem } from './menu-item-courses'
 import { useState } from 'react'
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Link } from '@tanstack/react-router'
-import { Course } from '@/models/course-schema'
+import { Course, courseSchema } from '@/models/course-schema'
 import { role } from '@/types/user'
+import { When } from 'react-if'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import Circle from '@uiw/react-color-circle'
+import { Formik, Field, Form } from 'formik'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { useCreateCourseMutation } from '@/mutations/use-create-course-mutation'
 
 interface LeftMenuProps {
   type: role | undefined
@@ -35,6 +49,8 @@ const menuItemsTeacherClassroom = [
 
 function LeftMenu({ type, courses }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('')
+  const [hex, setHex] = useState('#F44E3B')
+  const { mutate: createCourse } = useCreateCourseMutation()
 
   const renderMenuItems = (menuItems: typeof menuItemsStudentPortal) =>
     menuItems.map((item, index) => (
@@ -62,7 +78,74 @@ function LeftMenu({ type, courses }: LeftMenuProps) {
               <SquarePen className="cursor-pointer" size={16} color="#787486" />
             </Link>
           )}
-          {type === 'teacher' && <SquarePlus className="cursor-pointer" size={16} color="#787486" />}
+          <When condition={type == 'teacher'}>
+            <Dialog>
+              <DialogTrigger asChild>
+                <SquarePlus className="cursor-pointer" size={16} color="#787486" />
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Novo Curso</DialogTitle>
+                  <DialogDescription>Cadastre seu novo curso.</DialogDescription>
+                </DialogHeader>
+                <Formik
+                  initialValues={{ name: '', color: hex }}
+                  validationSchema={toFormikValidationSchema(courseSchema)}
+                  onSubmit={(values) => {
+                    console.log('Curso criado:', values)
+                    createCourse(values)
+                  }}
+                >
+                  {({ setFieldValue, touched, errors }) => (
+                    <Form className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <label htmlFor="name" className="text-right">
+                          Nome
+                        </label>
+                        <Field id="name" name="name" className="col-span-3" as={Input} placeholder="Nome do curso" />
+                        {touched.name && errors.name && <div className="text-red-500 text-sm">{errors.name}</div>}
+                      </div>
+                      <div className="grid grid-cols-4 items-start gap-4">
+                        <label htmlFor="color" className="text-right">
+                          Cor
+                        </label>
+                        <div className="flex flex-wrap w-64 gap-2">
+                          {[
+                            '#FF0000',
+                            '#00FF00',
+                            '#0000FF',
+                            '#FFD700',
+                            '#4682B4',
+                            '#800000',
+                            '#FF6347',
+                            '#8A2BE2',
+                            '#FF1493',
+                            '#32CD32',
+                            '#D2691E',
+                            '#FF4500',
+                          ].map((color) => (
+                            <Circle
+                              key={color}
+                              colors={[color]}
+                              color={hex}
+                              onChange={(c) => {
+                                setHex(c.hex)
+                                setFieldValue('color', c.hex)
+                              }}
+                            />
+                          ))}
+                        </div>
+                        {touched.color && errors.color && <div className="text-red-500 text-sm">{errors.color}</div>}
+                      </div>
+                      <DialogFooter>
+                        <Button type="submit">Criar</Button>
+                      </DialogFooter>
+                    </Form>
+                  )}
+                </Formik>
+              </DialogContent>
+            </Dialog>
+          </When>
         </div>
         {courses?.map(({ id, name, color }) => (
           <Link key={id} to={`/courses/${id}/classes`} onClick={() => setActiveItem(name)} className="w-full">
