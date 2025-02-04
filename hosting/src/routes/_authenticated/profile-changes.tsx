@@ -7,7 +7,7 @@ import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { useProfileImage } from '@/hooks/use-profile-image'
 import { useAddProfileImage } from '@/mutations/use-add-profile-image-mutation'
 import { useDeleteProfileImage } from '@/mutations/use-delete-profile-image-mutation'
-import { useGetStudentQuery } from '@/queries/use-get-student-query'
+import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
 import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
 import { useGetUserQuery } from '@/queries/use-get-user-query'
 
@@ -41,17 +41,17 @@ export function ProfileChanges() {
     }
   }
 
-  const {
-    data: teacherData,
-    isLoading: isLoadingTeacher,
-    error: isErrorTeacher,
-  } = useGetTeacherQuery(userData?.idTeacher)
+  // const {
+  //   data: teacherData,
+  //   isLoading: isLoadingTeacher,
+  //   error: isErrorTeacher,
+  // } = useGetTeacherQuery(userData?.idTeacher)
 
   const {
     data: studentData,
     isLoading: isLoadingStudent,
     error: isErrorStudent,
-  } = useGetStudentQuery(userData?.idStudent)
+  } = useGetStudentsQuery(userData?.idStudent)
 
   const {
     data: pedagogueData,

@@ -5,7 +5,7 @@ export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural',
 )({
   component: () => (
-    <div className="mt-3 mb-2">
+    <div>
       <SubHeader />
       <Outlet />
     </div>
