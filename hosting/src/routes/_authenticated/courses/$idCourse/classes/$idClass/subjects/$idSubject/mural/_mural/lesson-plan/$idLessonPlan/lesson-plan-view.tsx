@@ -3,6 +3,7 @@ import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { createFileRoute } from '@tanstack/react-router'
 import { Check, ClipboardListIcon, X } from 'lucide-react'
 import { Else, If, Then } from 'react-if'
+import { useListLessonPlannings } from '@/queries/use-list-lesson-plan'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/lesson-plan-view',
@@ -18,6 +19,12 @@ const scheduleData = [
 ]
 
 export function LessonPlanView() {
+   const { idCourse, idClass, idSubject } = Route.useParams()
+
+  const ListPlain = useListLessonPlannings( idCourse, idClass, idSubject )
+
+  console.log( ListPlain)
+
   const fullUser = useGetFullUser()
   const hasPermissionToEditLessonPlan = fullUser.role === 'teacher' || fullUser.role === 'admin'
 
