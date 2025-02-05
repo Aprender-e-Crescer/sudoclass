@@ -34,13 +34,13 @@ export function LessonPlanView() {
             <th className="py-4 px-6 border-b text-center">
               <When condition={hasPermissionToEditLessonPlan}>
                 <Link
-                // /courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/call
+    
                   to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/call"
                   params={{
                     idCourse,
                     idClass,
                     idSubject,
-                    idsLessonPlan: ["DG13RrVh5NH9wLUIOK4U", "t9Bp4QpViWNsGXIvPx6e"],
+                    idsLessonPlan: selectedIds,
                   }}
                   className="text-lg transform hover:scale-110 transition-all"
                 >
