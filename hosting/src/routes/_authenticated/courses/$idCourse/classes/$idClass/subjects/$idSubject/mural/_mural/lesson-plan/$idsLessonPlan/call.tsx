@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button'
 import { useCallController } from '@/controllers/use-call-controller'
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
-
 import { DocumentData, DocumentReference } from 'firebase/firestore'
 import { When } from 'react-if'
 import { z } from 'zod'
+import { useNavigate } from '@tanstack/react-router'
 
 function getStudentVariant(direction: string | undefined): ListStudentsProps['variant'] {
   if (direction === undefined) return 'undefined'
@@ -58,6 +58,8 @@ export function Call() {
     return students[Math.min(currentIndex, students.length - 1)]
   }, [students, currentIndex])
 
+  const navigate = useNavigate()
+
   const handleUndo = async () => {
     if (callHistory.length === 0) return
 
@@ -76,7 +78,7 @@ export function Call() {
     handleSwipe(profileRef, 'right')
 
   const handleFinalizeCall = async () => {
-    createSchoolCall({
+    await createSchoolCall({
       idCourse,
       idClass,
       idSubject,
@@ -84,6 +86,11 @@ export function Call() {
       profileRefs: callHistory
         .filter(({ direction }) => direction === 'left')
         .map(({ profileRef: profileId }) => profileId),
+    })
+   
+    navigate({
+      to: `/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view`,
+      params: { idCourse, idClass, idSubject }
     })
   }
 
@@ -118,7 +125,7 @@ export function Call() {
         </When>
         <div className="flex justify-around mt-10">
           <Button onClick={handleFinalizeCall} size="medium" disabled={isCreateSchoolCallPending}>
-            {isCreateSchoolCallPending ? 'Criando...' : ' Finalizar Chamada'}
+            {isCreateSchoolCallPending ? 'Carregando...' : ' Finalizar Chamada'}
           </Button>
         </div>
       </div>
