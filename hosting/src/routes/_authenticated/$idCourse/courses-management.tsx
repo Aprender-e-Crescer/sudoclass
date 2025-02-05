@@ -27,11 +27,6 @@ function CoursesManagement() {
   const handleDelete = () => {
     console.log('apagando')
   }
-  classes.map((item) => {
-    if (!item?.id) {
-      console.log(`Item sem ID encontrado no índice:`, item)
-    }
-  })
 
   return (
     <>
