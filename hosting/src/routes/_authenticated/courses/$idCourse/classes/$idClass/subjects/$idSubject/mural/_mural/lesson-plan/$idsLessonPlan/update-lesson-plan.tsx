@@ -30,7 +30,7 @@ export const Route = createFileRoute(
 function UpdateLessonPlan() {
   return (
     <>
-      <p>pennis</p>
+      <p>Doesn't exist</p>
     </>
   )
 }
