@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Check, ClipboardListIcon, X } from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { format } from 'date-fns'
@@ -32,11 +32,16 @@ export function LessonPlanView() {
             <th className="py-4 px-6 border-b w-1/12">Fim</th>
             <th className="py-4 px-6 border-b w-1/2">Plano de aula</th>
             <th className="py-4 px-6 border-b text-center">
-              <When condition={hasPermissionToEditLessonPlan}>
-                <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all">
-                  <ClipboardListIcon className="w-5 h-5" />
-                  Realizar chamada
-                </button>
+            <When condition={hasPermissionToEditLessonPlan}>
+                <Link
+                  to={`/courses/${idCourse}/classes/${idClass}/subjects/${idSubject}/mural/call`}
+                  className="text-lg transform hover:scale-110 transition-all"
+                >
+                  <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all">
+                    <ClipboardListIcon className="w-5 h-5" />
+                    Realizar chamada
+                  </button>
+                </Link>
               </When>
             </th>
           </tr>

@@ -41,13 +41,7 @@ export function SubHeader() {
             <p>Plano de aula</p>
           </Link>
 
-          <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/call"
-            className="text-lg transform hover:scale-110 transition-all"
-            activeProps={{ className: 'font-bold' }}
-          >
-            <p>Chamada</p>
-          </Link>
+        
         </div>
       </div>
     )
