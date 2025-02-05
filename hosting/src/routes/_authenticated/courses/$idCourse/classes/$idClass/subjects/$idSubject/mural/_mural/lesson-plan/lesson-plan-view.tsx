@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Check, ClipboardListIcon, X } from 'lucide-react'
-import { Else, If, Then } from 'react-if'
+import { Else, If, Then, When } from 'react-if'
 import { format } from 'date-fns'
 import { lessonPlanViewController } from '@/controllers/lesson-plan-view-controller'
 
@@ -13,8 +13,14 @@ export const Route = createFileRoute(
 export function LessonPlanView() {
   const { idCourse, idClass, idSubject } = Route.useParams()
 
-  const { lessonPlanningsList, hasPermissionToEditLessonPlan, selectedDate, selectedIds, missings, handleCheckboxChange } =
-    lessonPlanViewController(idCourse, idClass, idSubject)
+  const {
+    lessonPlanningsList,
+    hasPermissionToEditLessonPlan,
+    selectedDate,
+    selectedIds,
+    missings,
+    handleCheckboxChange,
+  } = lessonPlanViewController(idCourse, idClass, idSubject)
 
   return (
     <div className="overflow-x-auto p-4">
@@ -26,10 +32,12 @@ export function LessonPlanView() {
             <th className="py-4 px-6 border-b w-1/12">Fim</th>
             <th className="py-4 px-6 border-b w-1/2">Plano de aula</th>
             <th className="py-4 px-6 border-b text-center">
-              <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all">
-                <ClipboardListIcon className="w-5 h-5" />
-                Realizar chamada
-              </button>
+              <When condition={hasPermissionToEditLessonPlan}>
+                <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all">
+                  <ClipboardListIcon className="w-5 h-5" />
+                  Realizar chamada
+                </button>
+              </When>
             </th>
           </tr>
         </thead>
