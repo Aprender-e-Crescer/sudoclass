@@ -1,17 +1,40 @@
-import { useQuery } from '@tanstack/react-query';
-import { lessonPlanSchema, LessonPlan } from '@/models/lesson-plan';
-import { api } from '@/services/api';
-import { z } from 'zod';
-import { LESSON_PLAN_QUERY_KEY } from '@/constants/queries';
-export function useListLessonPlan() {
-  return useQuery<LessonPlan[]>({
-    queryKey: LESSON_PLAN_QUERY_KEY,
+import { LessonPlan, lessonPlanSchema } from '@/models/lesson-plan-schema';
+import { firestore } from '@/services/firebase';
+import { queryOptions } from '@tanstack/react-query';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+
+export const getLessonPlansFirestoreQuery = (
+  idCourse: string,
+  idClass: string,
+  idSubject: string
+) =>
+  query(
+    collection(
+      firestore,
+      'courses',
+      idCourse,
+      'classes',
+      idClass,
+      'subjects',
+      idSubject,
+      'lessonPlannings'
+    ),
+    orderBy('startDate', 'desc')
+  ).withConverter({
+    fromFirestore: snapshot => lessonPlanSchema.parse({ id: snapshot.id, ...snapshot.data() }),
+    toFirestore: (lessonPlan: LessonPlan) => lessonPlan,
+  });
+
+export const getLessonPlansQueryOptions = (
+  idCourse: string,
+  idClass: string,
+  idSubject: string
+) =>
+  queryOptions({
+    queryKey: ['listLessonPlannings', idCourse, idClass, idSubject],
     queryFn: async () => {
-      const { data } = await api.get('/lessonPlans');
-      console.log(data);
-      return z.array(lessonPlanSchema).parse(data);
+      const lessonPlanningsRef = getLessonPlansFirestoreQuery(idCourse, idClass, idSubject);
+      const lessonPlansSnapshot = await getDocs(lessonPlanningsRef);
+      return lessonPlansSnapshot.docs.map(doc => doc.data());
     },
   });
-}
-export { LESSON_PLAN_QUERY_KEY };
-

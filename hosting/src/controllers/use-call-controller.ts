@@ -7,7 +7,6 @@ interface CallControllerProps {
   idCourse: string
   idClass: string
   idSubject: string
-  idLessonPlan: string
 }
 
 export function useCallController({ idCourse, idClass }: CallControllerProps) {
@@ -18,7 +17,7 @@ export function useCallController({ idCourse, idClass }: CallControllerProps) {
       .map((result) => result.data)
       ?.filter((student) => student !== undefined),
   })
-
+  
   const { mutateAsync: createSchoolCall, isPending: isCreateSchoolCallPending } = useCreateSchoolCallMutation()
 
   return {
