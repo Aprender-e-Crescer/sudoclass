@@ -1,6 +1,4 @@
-import ListStudents, {
-  ListStudentsProps,
-} from '@/components/custom/list-students'
+import ListStudents, { ListStudentsProps } from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { Button } from '@/components/ui/button'
 import { useCallController } from '@/controllers/use-call-controller'
@@ -11,9 +9,7 @@ import { DocumentData, DocumentReference } from 'firebase/firestore'
 import { When } from 'react-if'
 import { z } from 'zod'
 
-function getStudentVariant(
-  direction: string | undefined,
-): ListStudentsProps['variant'] {
+function getStudentVariant(direction: string | undefined): ListStudentsProps['variant'] {
   if (direction === undefined) return 'undefined'
   if (direction === 'left') return 'lack'
   if (direction === 'right') return 'present'
@@ -29,7 +25,7 @@ export const Route = createFileRoute(
       idCourse: z.string(),
       idClass: z.string(),
       idSubject: z.string(),
-      idsLessonPlan: z.preprocess(ids => {
+      idsLessonPlan: z.preprocess((ids) => {
         if (typeof ids !== 'string') return ids
 
         return ids.split(',')
@@ -50,12 +46,11 @@ export function Call() {
 
   const { idCourse, idClass, idSubject, idsLessonPlan } = Route.useParams()
 
-  const { students, createSchoolCall, isCreateSchoolCallPending } =
-    useCallController({
-      idCourse,
-      idClass,
-      idSubject,
-    })
+  const { students, createSchoolCall, isCreateSchoolCallPending } = useCallController({
+    idCourse,
+    idClass,
+    idSubject,
+  })
 
   const currentStudent = useMemo(() => {
     if (students.length === 0) return undefined
@@ -70,20 +65,15 @@ export function Call() {
     setCurrentIndex((prev) => prev - 1)
   }
 
-  const handleSwipe = async (
-    profileRef: DocumentReference<DocumentData, DocumentData>,
-    direction: string,
-  ) => {
+  const handleSwipe = async (profileRef: DocumentReference<DocumentData, DocumentData>, direction: string) => {
     setCallHistory((prev) => [...prev, { profileRef: profileRef, direction }])
     setCurrentIndex((prev) => prev + 1)
   }
 
-  const handleReject =
-    (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
-      handleSwipe(profileRef, 'left')
-  const handleAccept =
-    (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
-      handleSwipe(profileRef, 'right')
+  const handleReject = (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
+    handleSwipe(profileRef, 'left')
+  const handleAccept = (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
+    handleSwipe(profileRef, 'right')
 
   const handleFinalizeCall = async () => {
     createSchoolCall({
@@ -98,9 +88,7 @@ export function Call() {
   }
 
   const listStudentsProps = students?.map((student) => {
-    const currentCallHistory = callHistory.find(
-      ({ profileRef }) => student.profileRef.id === profileRef.id,
-    )
+    const currentCallHistory = callHistory.find(({ profileRef }) => student.profileRef.id === profileRef.id)
 
     return {
       key: student.id,
@@ -114,12 +102,7 @@ export function Call() {
     <div className="flex flex-1">
       <div className="hidden lg:flex flex-col flex-1">
         {listStudentsProps?.map(({ key, name, picture, variant }) => (
-          <ListStudents
-            key={key}
-            name={name}
-            picture={picture}
-            variant={variant}
-          />
+          <ListStudents key={key} name={name} picture={picture} variant={variant} />
         ))}
       </div>
 
@@ -134,12 +117,8 @@ export function Call() {
           />
         </When>
         <div className="flex justify-around mt-10">
-          <Button
-            onClick={handleFinalizeCall}
-            size="medium"
-            disabled={isCreateSchoolCallPending}
-          >
-            Finalizar Chamada
+          <Button onClick={handleFinalizeCall} size="medium" disabled={isCreateSchoolCallPending}>
+            {isCreateSchoolCallPending ? 'Criando...' : ' Finalizar Chamada'}
           </Button>
         </div>
       </div>
