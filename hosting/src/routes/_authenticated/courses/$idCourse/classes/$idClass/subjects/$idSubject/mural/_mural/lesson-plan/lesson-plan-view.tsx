@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { Check, ClipboardListIcon, X } from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { format } from 'date-fns'
-import { lessonPlanViewController } from '@/controllers/lesson-plan-view-controller'
+import { useLessonPlanViewController } from '@/controllers/use-lesson-plan-view-controller'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/lesson-plan-view',
@@ -20,7 +20,7 @@ export function LessonPlanView() {
     selectedIds,
     missings,
     handleCheckboxChange,
-  } = lessonPlanViewController(idCourse, idClass, idSubject)
+  } = useLessonPlanViewController(idCourse, idClass, idSubject)
 
   return (
     <div className="overflow-x-auto p-4">
@@ -32,9 +32,16 @@ export function LessonPlanView() {
             <th className="py-4 px-6 border-b w-1/12">Fim</th>
             <th className="py-4 px-6 border-b w-1/2">Plano de aula</th>
             <th className="py-4 px-6 border-b text-center">
-            <When condition={hasPermissionToEditLessonPlan}>
+              <When condition={hasPermissionToEditLessonPlan}>
                 <Link
-                  to={`/courses/${idCourse}/classes/${idClass}/subjects/${idSubject}/mural/call`}
+                // /courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/call
+                  to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/call"
+                  params={{
+                    idCourse,
+                    idClass,
+                    idSubject,
+                    idsLessonPlan: ["DG13RrVh5NH9wLUIOK4U", "t9Bp4QpViWNsGXIvPx6e"],
+                  }}
                   className="text-lg transform hover:scale-110 transition-all"
                 >
                   <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all">

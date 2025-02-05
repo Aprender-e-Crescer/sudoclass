@@ -7,7 +7,7 @@ import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { getStudentMissingsFirestoreQuery, getStudentMissingsQueryOptions } from '@/queries/use-get-student-missings-query'
 import { useFirestoreRealtimeQueries } from '@/hooks/use-firestore-realtime-queries'
 
-export function lessonPlanViewController(idCourse: string, idClass: string, idSubject: string) {
+export function useLessonPlanViewController(idCourse: string, idClass: string, idSubject: string) {
   const fullUser = useGetFullUser()
 
   const { data: lessonPlanningsList } = useQuery(

@@ -1,4 +1,6 @@
-import ListStudents, { ListStudentsProps } from '@/components/custom/list-students'
+import ListStudents, {
+  ListStudentsProps,
+} from '@/components/custom/list-students'
 import { StudentPoster } from '@/components/custom/student-poster'
 import { Button } from '@/components/ui/button'
 import { useCallController } from '@/controllers/use-call-controller'
@@ -7,8 +9,11 @@ import { useMemo, useState } from 'react'
 
 import { DocumentData, DocumentReference } from 'firebase/firestore'
 import { When } from 'react-if'
+import { z } from 'zod'
 
-function getStudentVariant(direction: string | undefined): ListStudentsProps['variant'] {
+function getStudentVariant(
+  direction: string | undefined,
+): ListStudentsProps['variant'] {
   if (direction === undefined) return 'undefined'
   if (direction === 'left') return 'lack'
   if (direction === 'right') return 'present'
@@ -17,28 +22,44 @@ function getStudentVariant(direction: string | undefined): ListStudentsProps['va
 }
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/call',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idsLessonPlan/call',
 )({
+  params: {
+    parse: z.object({
+      idCourse: z.string(),
+      idClass: z.string(),
+      idSubject: z.string(),
+      idsLessonPlan: z.preprocess(ids => {
+        if (typeof ids !== 'string') return ids
+
+        return ids.split(',')
+      }, z.array(z.string())),
+    }).parse,
+  },
   component: Call,
 })
 
-
 export function Call() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [callHistory, setCallHistory] = useState<{ profileRef: DocumentReference<DocumentData, DocumentData>; direction: string }[]>([])
+  const [callHistory, setCallHistory] = useState<
+    {
+      profileRef: DocumentReference<DocumentData, DocumentData>
+      direction: string
+    }[]
+  >([])
 
-  const { idCourse, idClass, idSubject, idLessonPlan } = Route.useParams()
+  const { idCourse, idClass, idSubject, idsLessonPlan } = Route.useParams()
 
-  const { students, createSchoolCall, isCreateSchoolCallPending } = useCallController({
-    idCourse,
-    idClass,
-    idSubject,
-    idLessonPlan,
-  })
+  const { students, createSchoolCall, isCreateSchoolCallPending } =
+    useCallController({
+      idCourse,
+      idClass,
+      idSubject,
+    })
 
   const currentStudent = useMemo(() => {
     if (students.length === 0) return undefined
-    
+
     return students[Math.min(currentIndex, students.length - 1)]
   }, [students, currentIndex])
 
@@ -57,34 +78,37 @@ export function Call() {
     setCurrentIndex((prev) => prev + 1)
   }
 
-  const handleReject = (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
-    handleSwipe(profileRef, 'left')
-  const handleAccept = (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
-    handleSwipe(profileRef, 'right')
+  const handleReject =
+    (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
+      handleSwipe(profileRef, 'left')
+  const handleAccept =
+    (profileRef: DocumentReference<DocumentData, DocumentData>) => () =>
+      handleSwipe(profileRef, 'right')
 
   const handleFinalizeCall = async () => {
     createSchoolCall({
       idCourse,
       idClass,
       idSubject,
-      idLessonPlan,
+      idsLessonPlan,
       profileRefs: callHistory
         .filter(({ direction }) => direction === 'left')
         .map(({ profileRef: profileId }) => profileId),
     })
   }
 
-  const listStudentsProps = students
-    ?.map((student) => {
-      const currentCallHistory = callHistory.find(({ profileRef }) => student.profileRef.id === profileRef.id)
+  const listStudentsProps = students?.map((student) => {
+    const currentCallHistory = callHistory.find(
+      ({ profileRef }) => student.profileRef.id === profileRef.id,
+    )
 
-      return {
-          key: student.id,
-          name: student.displayName,
-          picture: student.photoURL,
-          variant: getStudentVariant(currentCallHistory?.direction),
-      }
-    })
+    return {
+      key: student.id,
+      name: student.displayName,
+      picture: student.photoURL,
+      variant: getStudentVariant(currentCallHistory?.direction),
+    }
+  })
 
   return (
     <div className="flex flex-1">
@@ -110,7 +134,11 @@ export function Call() {
           />
         </When>
         <div className="flex justify-around mt-10">
-          <Button onClick={handleFinalizeCall} size="medium" disabled={isCreateSchoolCallPending}>
+          <Button
+            onClick={handleFinalizeCall}
+            size="medium"
+            disabled={isCreateSchoolCallPending}
+          >
             Finalizar Chamada
           </Button>
         </div>

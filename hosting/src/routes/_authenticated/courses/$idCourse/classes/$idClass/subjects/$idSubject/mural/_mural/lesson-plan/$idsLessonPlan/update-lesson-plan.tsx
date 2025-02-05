@@ -21,22 +21,21 @@ import { createFileRoute } from '@tanstack/react-router'
 //   recursosdidaticos: z.string().min(1, 'Recursos didáticos são obrigatórios'),
 // })
 
- export const Route = createFileRoute(
-   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idLessonPlan/update-lesson-plan',
- )({
-   component: UpdateLessonPlan,
- })
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idsLessonPlan/update-lesson-plan',
+)({
+  component: UpdateLessonPlan,
+})
 
- function UpdateLessonPlan() {
+function UpdateLessonPlan() {
   return (
     <>
-    <p>pennis</p>
+      <p>pennis</p>
     </>
   )
- }
+}
 //   const navigate = useNavigate()
 //   const { idLessonPlan, idClass, idSubject, idCourse } = Route.useParams()
-
 
 //   const lessonPlan = lessonPlans.find(
 //     (lessonlan) => lessonPlan.id_planoaula === Number(idLessonPlan),

@@ -7,7 +7,6 @@ interface CallControllerProps {
   idCourse: string
   idClass: string
   idSubject: string
-  idLessonPlan: string
 }
 
 export function useCallController({ idCourse, idClass }: CallControllerProps) {
