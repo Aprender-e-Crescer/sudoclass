@@ -1,12 +1,13 @@
 import { Link } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 import notFoundImage from '@/assets/not-found.png'
+import { When } from 'react-if'
 
 interface notFoundComponent {
   title: string
   description: string
-  whiteButtonText: string
-  blueButtonText: string
+  whiteButtonText?: string
+  blueButtonText?: string
   linkToWhiteButton?: string
   linkToBlueButton?: string
 }
@@ -28,16 +29,20 @@ export default function NotFound({
           <p className="text-gray-400 text-xl">{description}</p>
         </div>
         <div className="flex gap-x-3">
-          <Link to={linkToWhiteButton}>
-            <Button variant="cancelButton" size="large" className="font-medium text-black">
-              {whiteButtonText}
-            </Button>
-          </Link>
-          <Link to={linkToBlueButton}>
-            <Button variant="blueButton" size="large" className="font-normal">
-              {blueButtonText}
-            </Button>
-          </Link>
+          <When condition={whiteButtonText}>
+            <Link to={linkToWhiteButton}>
+              <Button variant="cancelButton" size="large" className="font-medium text-black">
+                {whiteButtonText}
+              </Button>
+            </Link>
+          </When>
+          <When condition={blueButtonText}>
+            <Link to={linkToBlueButton}>
+              <Button variant="blueButton" size="large" className="font-normal">
+                {blueButtonText}
+              </Button>
+            </Link>
+          </When>
         </div>
       </div>
     </div>

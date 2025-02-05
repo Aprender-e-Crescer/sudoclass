@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { CardComponent } from '@/components/custom/card-bolletin-board'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'
@@ -11,7 +10,7 @@ import { getStudentPersonalClassesQueryOptions } from '@/queries/use-student-per
 import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
 import { getRoleFromRef } from '@/utils/getRoleFromRef'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
 export const Route = createFileRoute('/_authenticated/$idCourse/courses-management')({
@@ -36,33 +35,21 @@ function CoursesManagement() {
   const classesQueryOptions = getClassesQueryOptions(idCourse, fullUser.role, student?.classes, teacher?.subjects)
   const courseQueryOptions = getCourseQueryOptions(idCourse)
 
-  const { data: course } = useQuery(courseQueryOptions)
+  const { data: course } = useSuspenseQuery(courseQueryOptions)
   const { data: classes } = useSuspenseQuery(classesQueryOptions)
-
-  const [isSelecting, setIsSelecting] = useState(false)
-  const [selectedClass, setSelectedClass] = useState<string | null>(null)
-  const [operationType, setOperationType] = useState<'edit' | 'delete' | null>(null)
-
-  if (!course) return
+  console.log(classes)
 
   const handleEdit = () => {
-    setIsSelecting(true)
-    setOperationType('edit')
+    console.log('editando')
   }
-
   const handleDelete = () => {
-    setIsSelecting(true)
-    setOperationType('delete')
+    console.log('apagando')
   }
-
-  const toggleSelectClass = (id: string) => {
-    setSelectedClass((prev) => (prev === id ? null : id))
-  }
-
-  const handleConfirmation = () => {
-    if (operationType === 'edit' && selectedClass) return 'mutation p/editar'
-    if (operationType === 'delete' && selectedClass) return 'mutation p/deletar'
-  }
+  classes.map((item) => {
+    if (!item?.id) {
+      console.log(`Item sem ID encontrado no índice:`, item)
+    }
+  })
 
   return (
     <>
@@ -77,27 +64,24 @@ function CoursesManagement() {
         />
       </When>
       <When condition={classes?.length > 0}>
-        <ManagementHeader title={course.name} buttonText="+ Nova turma" onEdit={handleEdit} onDelete={handleDelete} />
+        <div className="mb-5">
+          <ManagementHeader
+            title={course.name}
+            Subtitle="Turmas"
+            buttonText="+ Nova turma"
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
         <div className="flex flex-col gap-y-5 px-6">
-          {classes?.map(({ id, color, name }) => (
-            <div key={id} className="flex items-center justify-center w-full">
-              {isSelecting && (
-                <input
-                  type="checkbox"
-                  checked={selectedClass === id}
-                  onChange={() => toggleSelectClass(id)}
-                  className="w-5 h-5 mr-4"
-                />
-              )}
-              <CardComponent color={color} name={name} courseName={course?.name} />
+          {classes.map(({ id, color, name }) => (
+            <div key={id} className="w-full">
+              <Link to={`/${idCourse}/${id}/classes-management`} className="block">
+                <CardComponent color={color} name={name} courseName={course.name} />
+              </Link>
             </div>
           ))}
         </div>
-        {isSelecting && (
-          <button onClick={handleConfirmation} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md">
-            Confirmar seleção
-          </button>
-        )}
       </When>
     </>
   )
