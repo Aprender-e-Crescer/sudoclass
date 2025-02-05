@@ -5,7 +5,7 @@ export const profileSchema = z.object({
     id: z.string(),
     displayName: z.string(),
     photoURL: z.string(),
-    profileRef: docRefSchema,
+    profileRef: docRefSchema.optional().nullable(),
 })
 
 export type Profile = z.infer<typeof profileSchema>
