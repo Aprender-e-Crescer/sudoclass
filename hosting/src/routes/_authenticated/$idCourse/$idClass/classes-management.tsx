@@ -43,6 +43,7 @@ function ClassesManagement() {
           <ManagementHeader
             title={course.name}
             Subtitle="Matérias"
+            dialogTitle="Deseja excluir a turma?"
             buttonText="+ Nova matéria"
             onEdit={handleEdit}
             onDelete={handleDelete}
