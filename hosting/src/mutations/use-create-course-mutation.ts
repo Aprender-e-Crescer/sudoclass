@@ -10,9 +10,10 @@ interface CreateCourse {
 export function useCreateCourseMutation() {
   return useMutation({
     mutationKey: ['createCourse'],
-    mutationFn: ({ name, color }: CreateCourse) => {
+    mutationFn: async ({ name, color }: CreateCourse) => {
       const courseRef = collection(firestore, 'courses')
-      return addDoc(courseRef, { name, color })
+      const docRef = await addDoc(courseRef, { name, color })
+      return { id: docRef.id }
     },
     onError: (err) => console.error(err),
   })
