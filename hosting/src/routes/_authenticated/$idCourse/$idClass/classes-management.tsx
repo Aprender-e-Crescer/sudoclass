@@ -13,6 +13,7 @@ export const Route = createFileRoute('/_authenticated/$idCourse/$idClass/classes
 
 function ClassesManagement() {
   const { idCourse, idClass } = Route.useParams()
+
   const courseQueryOptions = getCourseQueryOptions(idCourse)
   const subjectsQueryOptions = getSubjectsQueryOptions(idCourse, idClass)
 
@@ -41,9 +42,10 @@ function ClassesManagement() {
       <When condition={subjects.length > 0}>
         <div className="mb-5">
           <ManagementHeader
+            type="with edits"
             title={course.name}
             Subtitle="Matérias"
-            dialogTitle="Deseja excluir a turma?"
+            confirmationTitle="Deseja excluir a turma?"
             buttonText="+ Nova matéria"
             onEdit={handleEdit}
             onDelete={handleDelete}

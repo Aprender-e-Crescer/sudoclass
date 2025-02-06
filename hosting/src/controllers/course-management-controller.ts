@@ -5,7 +5,7 @@ import { getStudentPersonalClassesQueryOptions } from '@/queries/use-student-per
 import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 
-export function useCoursesManagementController(idCourse: string) {
+export function useCourseManagementController(idCourse: string) {
   const fullUser = useGetFullUser()
   const studentPersonalClassesQueryOptions = getStudentPersonalClassesQueryOptions(fullUser.role, fullUser.roleRef)
   const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(fullUser.role, fullUser.roleRef)
