@@ -20,21 +20,28 @@ export function LessonPlanView() {
     hasPermissionToEditLessonPlan,
     selectedDate,
     selectedIds,
+    setSelectedIds,
     missings,
     handleCheckboxChange,
   } = useLessonPlanViewController(idCourse, idClass, idSubject)
 
-  const [open, setOpen] = useState(false) // Controla se o modal está aberto ou fechado
-  const [modalStep, setModalStep] = useState<'default' | 'selectLessons'>('default') // Controla a etapa do modal
+  const [open, setOpen] = useState(false)
+  const [modalStep, setModalStep] = useState<'default' | 'selectLessons'>('default')
 
   const handleOpen = () => {
-    setModalStep('default') // Garante que o modal começa na etapa default
-    setOpen(true) // Abre o modal
+    setModalStep('default')
+    setOpen(true)
   }
-  // Função para abrir o modal
-  const handleClose = () => setOpen(false) // Função para fechar o modal
 
-  const handleMultipleClick = () => setModalStep('selectLessons') // Passa para a etapa de seleção de aulas
+  const handleClose = () => {
+    setSelectedIds([])
+    setOpen(false)
+  }
+
+  const handleMultipleClick = () => {
+    setModalStep('selectLessons')
+    setSelectedIds([])
+  }
 
   const style = {
     position: 'absolute' as 'absolute',
@@ -82,7 +89,7 @@ export function LessonPlanView() {
                           <Then>
                             <button
                               disabled={true}
-                              className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-black font-semibold rounded-lg shadow-md hover:bg-gray-300 transition-all"
+                              className="flex items-center gap-2 px-4 py-2 bg-gray-300 text-black font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-all"
                             >
                               <ClipboardListIcon className="w-5 h-5" color="black" />
                               Chamada
@@ -90,7 +97,10 @@ export function LessonPlanView() {
                           </Then>
                           <Else>
                             <button
-                              onClick={handleOpen}
+                              onClick={() => {
+                                handleOpen()
+                                selectedIds.push(item.id)
+                              }}
                               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all"
                             >
                               <ClipboardListIcon className="w-5 h-5" />
@@ -134,13 +144,24 @@ export function LessonPlanView() {
                 <p className="text-gray-500">Escolha o tipo de chamada que deseja realizar</p>
               </div>
               <div className="flex flex-col gap-3">
-                <Button
-                  onClick={handleClose}
-                  variant="contained"
-                  className="w-full py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+                <Link
+                  to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/call"
+                  params={{
+                    idCourse,
+                    idClass,
+                    idSubject,
+                    idsLessonPlan: selectedIds,
+                  }}
+                  className="w-full"
                 >
-                  Chamada simples
-                </Button>
+                  <Button
+                    onClick={handleClose}
+                    variant="contained"
+                    className="w-full py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+                  >
+                    Chamada simples
+                  </Button>
+                </Link>
                 <Button
                   onClick={handleMultipleClick}
                   variant="contained"
@@ -160,30 +181,30 @@ export function LessonPlanView() {
 
                   return (
                     <When condition={!item.isCallMade}>
-
-                   
-                    <div key={item.id} className="flex flex-1">
-                      <div className="px-6 text-center">
-                        <input
-                          type="checkbox"
-                          className="w-6 h-6 accent-blue-600 cursor-pointer"
-                          checked={selectedIds.includes(item.id)}
-                          onChange={() => handleCheckboxChange(item.id, item.startDate)}
-                          disabled={selectedDate !== null && selectedDate !== itemDate}
-                        />
+                      <div key={item.id} className="flex flex-1">
+                        <div className="px-6 text-center">
+                          <input
+                            type="checkbox"
+                            className="w-6 h-6 accent-blue-600 cursor-pointer"
+                            checked={selectedIds.includes(item.id)}
+                            onChange={() => handleCheckboxChange(item.id, item.startDate)}
+                            disabled={selectedDate !== null && selectedDate !== itemDate}
+                          />
+                        </div>
+                        <div className="px-6">{format(new Date(item.startDate), 'dd/MM/yyyy')}</div>
+                        <div className="px-6">
+                          {format(new Date(item.startDate), 'HH:mm')} às {format(new Date(item.endDate), 'HH:mm')}
+                        </div>
                       </div>
-                      <div className="px-6">{format(new Date(item.startDate), 'dd/MM/yyyy')}</div>
-                      <div className="px-6">
-                        {format(new Date(item.startDate), 'HH:mm')} às {format(new Date(item.endDate), 'HH:mm')}
-                      </div>
-                    </div>
                     </When>
                   )
                 })}
               </div>
               <div className="flex my-4 gap-3">
                 <button
-                  onClick={handleClose}
+                  onClick={() => {
+                    handleClose()
+                  }}
                   className="p-2 font-semibold w-1/2 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 transition"
                 >
                   Cancelar

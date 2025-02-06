@@ -49,6 +49,7 @@ export function useLessonPlanViewController(idCourse: string, idClass: string, i
     hasPermissionToEditLessonPlan,
     selectedDate,
     selectedIds,
+    setSelectedIds,
     handleCheckboxChange,
     missings,
   }
