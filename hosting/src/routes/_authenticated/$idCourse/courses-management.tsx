@@ -1,6 +1,7 @@
 import { CardComponent } from '@/components/custom/card-bolletin-board'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'
+import { AlertDialog } from '@/components/ui/alert-dialog'
 import { useCoursesManagementController } from '@/controllers/courses-management-controller'
 import { currentUserQueryOptions } from '@/queries/use-current-user-query'
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
@@ -45,6 +46,7 @@ function CoursesManagement() {
           <ManagementHeader
             title={course.name}
             Subtitle="Turmas"
+            dialogTitle="Deseja excluir o curso?"
             buttonText="+ Nova turma"
             onEdit={handleEdit}
             onDelete={handleDelete}
