@@ -1,9 +1,7 @@
 import { CardComponent } from '@/components/custom/card-bolletin-board'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'
-import { getCourseQueryOptions } from '@/queries/use-get-course-by-id'
-import { getSubjectsQueryOptions } from '@/queries/use-get-subjects-query'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useClassesManagementController } from '@/controllers/classes-management-controller'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
@@ -14,11 +12,7 @@ export const Route = createFileRoute('/_authenticated/$idCourse/$idClass/classes
 function ClassesManagement() {
   const { idCourse, idClass } = Route.useParams()
 
-  const courseQueryOptions = getCourseQueryOptions(idCourse)
-  const subjectsQueryOptions = getSubjectsQueryOptions(idCourse, idClass)
-
-  const { data: course } = useSuspenseQuery(courseQueryOptions)
-  const { data: subjects } = useSuspenseQuery(subjectsQueryOptions)
+  const { course, subjects } = useClassesManagementController(idCourse, idClass)
 
   return (
     <>

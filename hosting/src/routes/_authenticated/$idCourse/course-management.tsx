@@ -1,4 +1,3 @@
-import { CardComponent } from '@/components/custom/card-bolletin-board'
 import CardManagement from '@/components/custom/card-management'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'

@@ -2,15 +2,10 @@ import CardManagement from '@/components/custom/card-management'
 import CourseDialog from '@/components/custom/course-dialog'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'
-import { useGetFullUser } from '@/hooks/use-get-full-user'
-import { useCreateCourseMutation } from '@/mutations/use-create-course-mutation'
+import { useCoursesManagementController } from '@/controllers/courses-management-controller'
 import { currentUserQueryOptions } from '@/queries/use-current-user-query'
-import { getCoursesQueryOptions } from '@/queries/use-get-courses-query'
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
-import { getStudentPersonalClassesQueryOptions } from '@/queries/use-student-personal-classes-query'
-import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
 import { getRoleFromRef } from '@/utils/getRoleFromRef'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { When } from 'react-if'
@@ -25,17 +20,7 @@ export const Route = createFileRoute('/_authenticated/courses-management')({
 })
 
 function CoursesManagement() {
-  const fullUser = useGetFullUser()
-  const studentPersonalClassesQueryOptions = getStudentPersonalClassesQueryOptions(fullUser.role, fullUser.roleRef)
-  const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(fullUser.role, fullUser.roleRef)
-
-  const { data: student } = useQuery(studentPersonalClassesQueryOptions)
-  const { data: teacher } = useQuery(teacherPersonalSubjectsQueryOptions)
-
-  const coursesQueryOptions = getCoursesQueryOptions(fullUser.role, student?.classes, teacher?.subjects)
-  const { data: courses } = useSuspenseQuery(coursesQueryOptions)
-
-  const { mutate: createCourse } = useCreateCourseMutation()
+  const { courses, createCourse } = useCoursesManagementController()
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
