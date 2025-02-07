@@ -49,7 +49,7 @@ function CoursesManagement() {
         createCourse={createCourse}
       />
 
-      <div className="flex flex-col gap-y-5 px-6">
+      <div className="flex flex-col gap-y-5 px-6 mx-16">
         {courses.map(({ id, name }) => (
           <div key={id} className="w-full">
             <Link to={`/${id}/course-management`} className="block">

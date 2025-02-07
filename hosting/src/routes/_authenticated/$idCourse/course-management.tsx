@@ -44,7 +44,7 @@ function CourseManagement() {
         <div className="mb-5">
           <ManagementHeader title={course.name} Subtitle="Turmas" buttonText="+ Nova turma" />
         </div>
-        <div className="flex flex-col gap-y-5 px-6">
+        <div className="flex flex-col gap-y-5 px-6 mx-16">
           {classes.map(({ id, name, endDate, startDate, shift }) => (
             <div key={id} className="w-full">
               <Link to={`/${idCourse}/${id}/classes-management`} className="block">
