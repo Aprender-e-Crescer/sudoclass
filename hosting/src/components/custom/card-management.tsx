@@ -10,6 +10,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { PencilLine, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { When } from 'react-if'
 
 interface CardManagementProps {
@@ -33,18 +34,30 @@ export default function CardManagement({
   onEdit,
   onDelete,
 }: CardManagementProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
   return (
     <div className="border-2 rounded-lg">
       <div className="flex justify-between m-10">
         <h1 className="text-2xl sm:text-4xl text-[#0D062D] font-semibold">{name}</h1>
         <div className="flex gap-x-5">
-          <button onClick={onEdit}>
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              onEdit?.()
+            }}
+          >
             <div className="flex items-center justify-center border border-gray-300 rounded-md p-2">
               <PencilLine className="text-[#0D062D]" />
             </div>
           </button>
-          <AlertDialog>
-            <AlertDialogTrigger>
+          <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+            <AlertDialogTrigger
+              onClick={(e) => {
+                e.preventDefault()
+                setIsOpen(true)
+              }}
+            >
               <button>
                 <div className="flex items-center justify-center border border-gray-300 rounded-md p-2">
                   <Trash2 className="text-[#0D062D]" />
@@ -57,9 +70,26 @@ export default function CardManagement({
                 <AlertDialogDescription>Essa ação não pode ser desfeita.</AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogCancel>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsOpen(false)
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                </AlertDialogCancel>
                 <AlertDialogAction>
-                  <button onClick={onDelete}>Confirmar</button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsOpen(false)
+                      onDelete?.()
+                    }}
+                  >
+                    Confirmar
+                  </button>
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

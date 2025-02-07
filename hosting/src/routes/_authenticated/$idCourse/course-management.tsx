@@ -21,6 +21,7 @@ function CourseManagement() {
       day: 'numeric',
     })
   }
+
   function shiftTranslate(shift: string) {
     if (shift === 'morning') return 'Matutino'
     if (shift === 'afternoon') return 'Vespertino'
@@ -53,6 +54,7 @@ function CourseManagement() {
                   startDate={dateConverter(startDate)}
                   endDate={dateConverter(endDate)}
                   shift={shiftTranslate(shift)}
+                  onEdit={() => console.log('edit')}
                   confirmationTitle="Deseja excluir esse curso?"
                 />
               </Link>
