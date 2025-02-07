@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Formik, Form, Field } from 'formik'
 import { courseSchema } from '@/models/course-schema'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import Circle from '@uiw/react-color-circle'
 
@@ -19,11 +19,23 @@ interface CourseDialogProps {
   subTitle: string
   isOpen: boolean
   onClose: () => void
-  createCourse: (values: { name: string; color: string }) => void
+  mutation: (values: { id?: string; name: string; color: string }) => void
+  initialValues?: { id?: string; name: string; color: string }
 }
 
-export default function CourseDialog({ title, subTitle, isOpen, onClose, createCourse }: CourseDialogProps) {
-  const [hex, setHex] = useState('#F44E3B')
+export default function CourseDialog({
+  title,
+  subTitle,
+  isOpen,
+  onClose,
+  mutation,
+  initialValues = { name: '', color: '#F44E3B' },
+}: CourseDialogProps) {
+  const [hex, setHex] = useState(initialValues.color)
+
+  useEffect(() => {
+    setHex(initialValues.color)
+  }, [initialValues.color])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -33,12 +45,13 @@ export default function CourseDialog({ title, subTitle, isOpen, onClose, createC
           <DialogDescription>{subTitle}</DialogDescription>
         </DialogHeader>
         <Formik
-          initialValues={{ name: '', color: hex }}
+          initialValues={initialValues}
           validationSchema={toFormikValidationSchema(courseSchema)}
           onSubmit={(values) => {
-            createCourse(values)
+            mutation(values)
             onClose()
           }}
+          enableReinitialize
         >
           {({ setFieldValue, touched, errors }) => (
             <Form className="grid gap-4 py-4">
@@ -82,7 +95,7 @@ export default function CourseDialog({ title, subTitle, isOpen, onClose, createC
                 {touched.color && errors.color && <div className="text-red-500 text-sm">{errors.color}</div>}
               </div>
               <DialogFooter>
-                <Button type="submit">Criar</Button>
+                <Button type="submit">{initialValues.id ? 'Salvar' : 'Criar'}</Button>
               </DialogFooter>
             </Form>
           )}

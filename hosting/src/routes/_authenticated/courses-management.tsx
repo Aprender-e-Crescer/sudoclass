@@ -20,9 +20,18 @@ export const Route = createFileRoute('/_authenticated/courses-management')({
 })
 
 function CoursesManagement() {
-  const { courses, createCourse } = useCoursesManagementController()
-
+  const { courses, createCourse, editCourse, deleteCourse } = useCoursesManagementController()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null)
+
+  const handleEdit = (id: string) => {
+    setEditingCourseId(id)
+    setIsDialogOpen(true)
+  }
+
+  const handleDelete = (id: string) => {
+    deleteCourse(id)
+  }
 
   return (
     <>
@@ -38,25 +47,40 @@ function CoursesManagement() {
       </When>
 
       <div className="mb-5">
-        <ManagementHeader title="Cursos" buttonText="+ Novo curso" onCreate={() => setIsDialogOpen(true)} />
+        <ManagementHeader
+          title="Cursos"
+          buttonText="+ Novo curso"
+          onCreate={() => {
+            setEditingCourseId(null)
+            setIsDialogOpen(true)
+          }}
+        />
       </div>
 
       <CourseDialog
-        title="Novo curso"
-        subTitle="Cadastre seu novo curso."
+        title={editingCourseId ? 'Editar curso' : 'Novo curso'}
+        subTitle={editingCourseId ? 'Edite seu curso.' : 'Cadastre seu novo curso.'}
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        createCourse={createCourse}
+        mutation={editingCourseId ? (data) => editCourse({ id: editingCourseId, ...data }) : createCourse}
       />
 
       <div className="flex flex-col gap-y-5 px-6 mx-16">
-        {courses.map(({ id, name }) => (
-          <div key={id} className="w-full">
-            <Link to={`/${id}/course-management`} className="block">
-              <CardManagement name={name} type="course" confirmationTitle="Deseja excluir esse curso?" />
-            </Link>
-          </div>
-        ))}
+        {courses
+          .filter((course) => course.id != undefined)
+          .map(({ id, name }) => (
+            <div key={id} className="w-full">
+              <Link to={`/${id}/course-management`} className="block">
+                <CardManagement
+                  name={name}
+                  type="course"
+                  confirmationTitle="Deseja excluir esse curso?"
+                  onEdit={() => handleEdit(id!)}
+                  onDelete={() => handleDelete(id!)}
+                />
+              </Link>
+            </div>
+          ))}
       </div>
     </>
   )
