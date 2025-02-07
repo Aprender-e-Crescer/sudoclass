@@ -69,13 +69,13 @@ export default function CardManagement({
       <When condition={type === 'class'}>
         <div className="flex gap-x-5 m-10 text-lg text-[#71747B] font-medium">
           <p>
-            Início: <span className="font-normal">{startDate}</span>
+            Início: <span className="font-normal text-gray-600">{startDate}</span>
           </p>
           <p>
-            Conclusão: <span className="font-normal">{endDate}</span>
+            Conclusão: <span className="font-normal text-gray-600">{endDate}</span>
           </p>
           <p>
-            Turno: <span className="font-normal">{shift}</span>
+            Turno: <span className="font-normal text-gray-600">{shift}</span>
           </p>
         </div>
       </When>

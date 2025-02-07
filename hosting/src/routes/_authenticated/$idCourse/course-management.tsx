@@ -13,6 +13,20 @@ function CourseManagement() {
   const { idCourse } = Route.useParams()
   const { course, classes } = useCourseManagementController(idCourse)
 
+  function dateConverter(date: Date) {
+    const newDate = new Date(date)
+    return newDate.toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
+  function shiftTranslate(shift: string) {
+    if (shift === 'morning') return 'Matutino'
+    if (shift === 'afternoon') return 'Vespertino'
+    if (shift === 'night') return 'Noturno'
+  }
+
   return (
     <>
       <When condition={classes?.length === 0}>
@@ -30,10 +44,17 @@ function CourseManagement() {
           <ManagementHeader title={course.name} Subtitle="Turmas" buttonText="+ Nova turma" />
         </div>
         <div className="flex flex-col gap-y-5 px-6">
-          {classes.map(({ id, name }) => (
+          {classes.map(({ id, name, endDate, startDate, shift }) => (
             <div key={id} className="w-full">
               <Link to={`/${idCourse}/${id}/classes-management`} className="block">
-                <CardManagement name={name} type="class" confirmationTitle="Deseja excluir esse curso?" />
+                <CardManagement
+                  name={name}
+                  type="class"
+                  startDate={dateConverter(startDate)}
+                  endDate={dateConverter(endDate)}
+                  shift={shiftTranslate(shift)}
+                  confirmationTitle="Deseja excluir esse curso?"
+                />
               </Link>
             </div>
           ))}
