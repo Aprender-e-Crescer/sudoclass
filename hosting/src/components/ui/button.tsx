@@ -14,6 +14,7 @@ const buttonVariants = cva(
         lightTextBlack: "bg-[#F8FAFC] text-[#0F172A] hover:bg-[#F1F5F9]",
         lightTextRed: "bg-[#F8FAFC] text-[#B3261E] hover:bg-[#F1F5F9]",
         whiteButtom: "bg-[#F8FAFC] text-[#1A73E8] border-[#1A73E8] border-[1.5px]  hover: bg-[#1A73E8] text-[#1A73E8]",
+        outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
       },
       size: {
         Login: "flex-1 w-full h-[36px]",

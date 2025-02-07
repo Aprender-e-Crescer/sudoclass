@@ -29,6 +29,7 @@ const menuItemsStudentPortal = [
 
 const menuItemsAdminPortal = [
     { title: 'Início', icon: Home, to: '/' },
+    { title: 'Usuários', icon: Home, to: '/users' },
     { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
     { title: 'Documentos', icon: Home, to: '/documents' },
     { title: 'Criações', icon: Home, to: '/creations' },

@@ -72,7 +72,7 @@ export function Authenticated() {
   return (
     <SidebarProvider>
       <AppSidebar role={fullUser.role} coursesWithClasses={coursesWithClasses} />
-      <main>
+      <main className="flex flex-col w-full h-full">
         <SidebarTrigger />
         <Outlet />
       </main>
