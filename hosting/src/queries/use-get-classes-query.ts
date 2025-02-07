@@ -5,6 +5,7 @@ import { role } from '@/types/user'
 import { queryOptions } from '@tanstack/react-query'
 import { collection, query, where, getDocs, documentId } from 'firebase/firestore'
 import { Class, classSchema } from '@/models/class-schema'
+import { Course } from '@/models/course-schema'
 
 function getClassRefs(role: role, studentClasses: Student['classes'] | undefined, teacherSubjects: Teacher['subjects'] | undefined) {
   if (role === 'teacher') {
@@ -19,7 +20,7 @@ function getClassRefs(role: role, studentClasses: Student['classes'] | undefined
   }
 }
 
-export function getClassessFirestoreQuery(
+export function getClassesFirestoreQuery(
   courseId: string,
   role: role,
   studentClasses: Student['classes'] | undefined,
@@ -32,7 +33,7 @@ export function getClassessFirestoreQuery(
     fromFirestore: (snapshot, options) => {
       const data = snapshot.data(options)
 
-      return classSchema.parse({ ...data, id: snapshot.id })
+      return classSchema.parse({ ...data, idCourse: courseId, id: snapshot.id })
     },
   })
 
@@ -49,6 +50,20 @@ export const getClassesQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ['getClasses', courseId, role, studentClasses, teacherSubjects],
-    queryFn: () => getDocs(getClassessFirestoreQuery(courseId, role, studentClasses, teacherSubjects)),
+    queryFn: () => getDocs(getClassesFirestoreQuery(courseId, role, studentClasses, teacherSubjects)),
     select: (snapshot) => snapshot.docs.map((doc) => doc.data()),
   })
+
+export function getClassesQueriesOptions(
+  courses: Course[],
+  role: role,
+  studentClasses: Student['classes'] | undefined,
+  teacherSubjects: Teacher['subjects'] | undefined
+) {
+  const classesQueriesOptions = courses.map(({ id }) => getClassesQueryOptions(id, role, studentClasses, teacherSubjects))
+
+  return classesQueriesOptions.map((queryOptions) => ({
+    classesQueryOptions: queryOptions,
+    classesFirestoreQuery: getClassesFirestoreQuery(queryOptions.queryKey[1] as string, role, studentClasses, teacherSubjects),
+  }))
+}

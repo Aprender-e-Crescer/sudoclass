@@ -21,7 +21,7 @@ const weekDays = [
   { value: 'Sexta-feira', label: 'friday' },
 ]
 
-const registerClassesSchema = z.object({
+const registerClasseschema = z.object({
   days: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday']),
 })
 
@@ -38,7 +38,7 @@ export function RegisterClassesLessonPlan() {
   return (
     <div>
       <Formik
-        validationSchema={toFormikValidationSchema(registerClassesSchema)}
+        validationSchema={toFormikValidationSchema(registerClasseschema)}
         initialValues={initialValues}
         onSubmit={() => {}}
       >

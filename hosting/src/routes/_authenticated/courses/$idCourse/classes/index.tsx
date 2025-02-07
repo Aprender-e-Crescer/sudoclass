@@ -1,7 +1,7 @@
 import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { currentUserQueryOptions } from '@/queries/use-current-user-query'
-import { getClassesQueryOptions, getClassessFirestoreQuery } from '@/queries/use-get-classes-query'
+import { getClassesQueryOptions, getClassesFirestoreQuery } from '@/queries/use-get-classes-query'
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
 import { getStudentPersonalClassesFirestoreQuery, getStudentPersonalClassesQueryOptions } from '@/queries/use-student-personal-classes-query'
 import { getTeacherPersonalSubjectsFirestoreQuery, getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
@@ -46,7 +46,7 @@ function RouteComponent() {
 
   useFirestoreRealtimeQuery(studentPersonalClassesQueryOptions.queryKey, getStudentPersonalClassesFirestoreQuery(fullUser.roleRef))
   useFirestoreRealtimeQuery(teacherPersonalSubjectsQueryOptions.queryKey, getTeacherPersonalSubjectsFirestoreQuery(fullUser.roleRef))
-  useFirestoreRealtimeQuery(classesQueryOptions.queryKey, getClassessFirestoreQuery(idCourse, fullUser.role, student?.classes, teacher?.subjects))
+  useFirestoreRealtimeQuery(classesQueryOptions.queryKey, getClassesFirestoreQuery(idCourse, fullUser.role, student?.classes, teacher?.subjects))
 
   return (
     <>

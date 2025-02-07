@@ -35,19 +35,13 @@ export function SubHeader() {
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idLessonPlan/lesson-plan-view"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
             className="text-lg transform hover:scale-110 transition-all"
           >
             <p>Plano de aula</p>
           </Link>
 
-          <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/call"
-            className="text-lg transform hover:scale-110 transition-all"
-            activeProps={{ className: 'font-bold' }}
-          >
-            <p>Chamada</p>
-          </Link>
+        
         </div>
       </div>
     )
@@ -98,7 +92,7 @@ export function SubHeader() {
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idLessonPlan/lesson-plan-view"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >
@@ -127,6 +121,13 @@ export function SubHeader() {
             activeProps={{ className: 'font-bold' }}
           >
             <p>Atividades</p>
+          </Link>
+          <Link
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
+          >
+            <p>Plano de aula</p>
           </Link>
         </div>
       </div>
