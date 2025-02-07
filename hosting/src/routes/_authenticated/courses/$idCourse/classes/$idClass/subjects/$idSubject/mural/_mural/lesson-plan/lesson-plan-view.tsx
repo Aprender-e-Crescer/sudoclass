@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Check, ClipboardListIcon, X } from 'lucide-react'
-import { Else, If, Then, When } from 'react-if'
+import { Check, ClipboardListIcon, EllipsisVertical, Pencil, Trash, X } from 'lucide-react'
+import { Case, Else, If, Switch, Then, When } from 'react-if'
 import { format } from 'date-fns'
 import { useLessonPlanViewController } from '@/controllers/use-lesson-plan-view-controller'
 import { Box, Button, Modal } from '@mui/material'
 import { useState } from 'react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/lesson-plan-view',
@@ -17,12 +18,15 @@ export function LessonPlanView() {
 
   const {
     lessonPlanningsList,
-    hasPermissionToEditLessonPlan,
+    teacherPermission,
+    adminPermission,
+    teacherAndAdmin,
     selectedDate,
     selectedIds,
     setSelectedIds,
     missings,
     handleCheckboxChange,
+    handleDeleteLesson,
   } = useLessonPlanViewController(idCourse, idClass, idSubject)
 
   const [open, setOpen] = useState(false)
@@ -70,6 +74,8 @@ export function LessonPlanView() {
 
         <tbody>
           {lessonPlanningsList?.map((item) => {
+            console.log('Lesson Plannings:', lessonPlanningsList)
+
             const itemDate = format(new Date(item.startDate), 'dd/MM/yyyy')
             const isMissed = missings.some((missing) => missing.idLessonPlan === item.id)
 
@@ -83,29 +89,114 @@ export function LessonPlanView() {
                 </td>
                 <td className="py-4 px-6 border-b w-1/6 text-center">
                   <div className="flex justify-center items-center">
-                    <If condition={hasPermissionToEditLessonPlan}>
+                    <If condition={teacherAndAdmin}>
                       <Then>
                         <If condition={item.isCallMade}>
                           <Then>
-                            <button
-                              disabled={true}
-                              className="flex items-center gap-2 px-4 py-2 bg-gray-300 text-black font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-all"
-                            >
-                              <ClipboardListIcon className="w-5 h-5" color="black" />
-                              Chamada
-                            </button>
+                            <Switch>
+                              <Case condition={adminPermission}>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger>
+                                    <EllipsisVertical className="cursor-pointer" />
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent>
+                                    <DropdownMenuItem className="flex gap-2">
+                                      <ClipboardListIcon className="w-4 h-4" />
+                                      <p className="line-through">Chamada</p>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                      <Link
+                                        to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/update-lesson-plan"
+                                        params={{
+                                          idCourse,
+                                          idClass,
+                                          idSubject,
+                                          idsLessonPlan: item.id,
+                                        }}
+                                        className="flex gap-2 items-center w-full"
+                                      >
+                                        <Pencil className="w-4 h-4" />
+                                        Editar
+                                      </Link>
+                                    </DropdownMenuItem>
+
+                                    <DropdownMenuItem
+                                      onClick={() => handleDeleteLesson(item.id)}
+                                      className="flex gap-2"
+                                    >
+                                      <Trash className="text-red-600 w-4 h-4" />
+                                      <p className="text-red-600">Excluir</p>
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </Case>
+                              <Case condition={teacherPermission}>
+                                <button
+                                  disabled={true}
+                                  className="flex items-center gap-2 px-4 py-2 bg-gray-300 text-black font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-all"
+                                >
+                                  <ClipboardListIcon className="w-5 h-5" color="black" />
+                                  Chamada
+                                </button>
+                              </Case>
+                            </Switch>
                           </Then>
                           <Else>
-                            <button
-                              onClick={() => {
-                                handleOpen()
-                                selectedIds.push(item.id)
-                              }}
-                              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all"
-                            >
-                              <ClipboardListIcon className="w-5 h-5" />
-                              Chamada
-                            </button>
+                            <Switch>
+                              <Case condition={adminPermission}>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger>
+                                    <EllipsisVertical className="cursor-pointer" />
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent>
+                                    <DropdownMenuItem
+                                      className="flex gap-2"
+                                      onClick={() => {
+                                        handleOpen()
+                                        selectedIds.push(item.id)
+                                      }}
+                                    >
+                                      <ClipboardListIcon className="w-4 h-4" />
+                                      Chamada
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                      <Link
+                                        to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/update-lesson-plan"
+                                        params={{
+                                          idCourse,
+                                          idClass,
+                                          idSubject,
+                                          idsLessonPlan: item.id,
+                                        }}
+                                        className="flex gap-2 items-center w-full"
+                                      >
+                                        <Pencil className="w-4 h-4" />
+                                        Editar
+                                      </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => handleDeleteLesson(item.id)}
+                                      className="flex gap-2"
+                                    >
+                                      <Trash className="text-red-600 w-4 h-4" />
+                                      <p className="text-red-600">Excluir</p>
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </Case>
+                              <Case condition={teacherPermission}>
+                                <button
+                                  onClick={() => {
+                                    handleOpen()
+                                    selectedIds.push(item.id)
+                                  }}
+                                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all"
+                                >
+                                  <ClipboardListIcon className="w-5 h-5" />
+                                  Chamada
+                                </button>
+                              </Case>
+                            </Switch>
                           </Else>
                         </If>
                       </Then>
