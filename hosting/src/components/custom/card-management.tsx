@@ -10,15 +10,29 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { PencilLine, Trash2 } from 'lucide-react'
+import { When } from 'react-if'
 
 interface CardManagementProps {
   name: string
   confirmationTitle: string
+  type: 'course' | 'class'
+  startDate?: string
+  endDate?: string
+  shift?: string
   onEdit?: () => void
   onDelete?: () => void
 }
 
-export default function CardManagement({ name, confirmationTitle, onEdit, onDelete }: CardManagementProps) {
+export default function CardManagement({
+  name,
+  confirmationTitle,
+  type,
+  startDate,
+  endDate,
+  shift,
+  onEdit,
+  onDelete,
+}: CardManagementProps) {
   return (
     <div className="border-2 rounded-lg">
       <div className="flex justify-between m-10">
@@ -52,6 +66,19 @@ export default function CardManagement({ name, confirmationTitle, onEdit, onDele
           </AlertDialog>
         </div>
       </div>
+      <When condition={type === 'class'}>
+        <div className="flex gap-x-5 m-10 text-lg text-[#71747B] font-medium">
+          <p>
+            Início: <span className="font-normal">{startDate}</span>
+          </p>
+          <p>
+            Conclusão: <span className="font-normal">{endDate}</span>
+          </p>
+          <p>
+            Turno: <span className="font-normal">{shift}</span>
+          </p>
+        </div>
+      </When>
     </div>
   )
 }

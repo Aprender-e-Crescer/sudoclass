@@ -14,21 +14,23 @@ import { useState } from 'react'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import Circle from '@uiw/react-color-circle'
 
-interface CreateCourseDialogProps {
+interface CourseDialogProps {
+  title: string
+  subTitle: string
   isOpen: boolean
   onClose: () => void
   createCourse: (values: { name: string; color: string }) => void
 }
 
-export default function CreateCourseDialog({ isOpen, onClose, createCourse }: CreateCourseDialogProps) {
+export default function CourseDialog({ title, subTitle, isOpen, onClose, createCourse }: CourseDialogProps) {
   const [hex, setHex] = useState('#F44E3B')
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Novo Curso</DialogTitle>
-          <DialogDescription>Cadastre seu novo curso.</DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{subTitle}</DialogDescription>
         </DialogHeader>
         <Formik
           initialValues={{ name: '', color: hex }}

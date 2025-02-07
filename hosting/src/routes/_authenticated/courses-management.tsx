@@ -1,5 +1,5 @@
 import CardManagement from '@/components/custom/card-management'
-import CreateCourseDialog from '@/components/custom/create-course-dialog'
+import CourseDialog from '@/components/custom/course-dialog'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
@@ -56,13 +56,19 @@ function CoursesManagement() {
         <ManagementHeader title="Cursos" buttonText="+ Novo curso" onCreate={() => setIsDialogOpen(true)} />
       </div>
 
-      <CreateCourseDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} createCourse={createCourse} />
+      <CourseDialog
+        title="Novo curso"
+        subTitle="Cadastre seu novo curso."
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        createCourse={createCourse}
+      />
 
       <div className="flex flex-col gap-y-5 px-6">
         {courses.map(({ id, name }) => (
           <div key={id} className="w-full">
             <Link to={`/${id}/course-management`} className="block">
-              <CardManagement name={name} confirmationTitle="Deseja excluir esse curso?" />
+              <CardManagement name={name} type="course" confirmationTitle="Deseja excluir esse curso?" />
             </Link>
           </div>
         ))}
