@@ -1,4 +1,4 @@
-import { CardComponent } from '@/components/custom/card-bolletin-board'
+import CardManagement from '@/components/custom/card-management'
 import CreateCourseDialog from '@/components/custom/create-course-dialog'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'
@@ -53,22 +53,16 @@ function CoursesManagement() {
       </When>
 
       <div className="mb-5">
-        <ManagementHeader
-          type="normal"
-          title="Cursos"
-          confirmationTitle="Deseja excluir esse curso?"
-          buttonText="+ Novo curso"
-          onCreate={() => setIsDialogOpen(true)}
-        />
+        <ManagementHeader title="Cursos" buttonText="+ Novo curso" onCreate={() => setIsDialogOpen(true)} />
       </div>
 
       <CreateCourseDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} createCourse={createCourse} />
 
       <div className="flex flex-col gap-y-5 px-6">
-        {courses.map(({ id, color, name }) => (
+        {courses.map(({ id, name }) => (
           <div key={id} className="w-full">
             <Link to={`/${id}/course-management`} className="block">
-              <CardComponent color={color} name={name} courseName="a" />
+              <CardManagement name={name} confirmationTitle="Deseja excluir esse curso?" />
             </Link>
           </div>
         ))}

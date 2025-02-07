@@ -13,13 +13,6 @@ function CourseManagement() {
   const { idCourse } = Route.useParams()
   const { course, classes } = useCourseManagementController(idCourse)
 
-  const handleEdit = () => {
-    console.log('editando')
-  }
-  const handleDelete = () => {
-    console.log('apagando')
-  }
-
   return (
     <>
       <When condition={classes?.length === 0}>
@@ -34,15 +27,7 @@ function CourseManagement() {
       </When>
       <When condition={classes?.length > 0}>
         <div className="mb-5">
-          <ManagementHeader
-            type="with edits"
-            title={course.name}
-            Subtitle="Turmas"
-            confirmationTitle="Deseja excluir o curso?"
-            buttonText="+ Nova turma"
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <ManagementHeader title={course.name} Subtitle="Turmas" buttonText="+ Nova turma" />
         </div>
         <div className="flex flex-col gap-y-5 px-6">
           {classes.map(({ id, color, name }) => (

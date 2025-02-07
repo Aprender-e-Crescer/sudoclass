@@ -20,13 +20,6 @@ function ClassesManagement() {
   const { data: course } = useSuspenseQuery(courseQueryOptions)
   const { data: subjects } = useSuspenseQuery(subjectsQueryOptions)
 
-  const handleEdit = () => {
-    console.log('editando')
-  }
-  const handleDelete = () => {
-    console.log('apagando')
-  }
-
   return (
     <>
       <When condition={subjects.length === 0}>
@@ -41,15 +34,7 @@ function ClassesManagement() {
       </When>
       <When condition={subjects.length > 0}>
         <div className="mb-5">
-          <ManagementHeader
-            type="with edits"
-            title={course.name}
-            Subtitle="Matérias"
-            confirmationTitle="Deseja excluir a turma?"
-            buttonText="+ Nova matéria"
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <ManagementHeader title={course.name} Subtitle="Matérias" buttonText="+ Nova matéria" />
         </div>
         <div className="flex flex-col gap-y-5 px-6">
           {subjects.map(({ id, color, name }) => (
