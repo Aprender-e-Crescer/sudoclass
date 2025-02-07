@@ -58,11 +58,9 @@ export default function CardManagement({
                 setIsOpen(true)
               }}
             >
-              <button>
-                <div className="flex items-center justify-center border border-gray-300 rounded-md p-2">
-                  <Trash2 className="text-[#0D062D]" />
-                </div>
-              </button>
+              <div className="flex items-center justify-center border border-gray-300 rounded-md p-2">
+                <Trash2 className="text-[#0D062D]" />
+              </div>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -70,26 +68,22 @@ export default function CardManagement({
                 <AlertDialogDescription>Essa ação não pode ser desfeita.</AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsOpen(false)
-                    }}
-                  >
-                    Cancelar
-                  </button>
+                <AlertDialogCancel
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setIsOpen(false)
+                  }}
+                >
+                  Cancelar
                 </AlertDialogCancel>
-                <AlertDialogAction>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsOpen(false)
-                      onDelete?.()
-                    }}
-                  >
-                    Confirmar
-                  </button>
+                <AlertDialogAction
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setIsOpen(false)
+                    onDelete?.()
+                  }}
+                >
+                  Confirmar
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
