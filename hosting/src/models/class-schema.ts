@@ -17,16 +17,15 @@ export const classSchema = z.object({
 })
 
 export const classRegisterSchema = z.object({
-  idClass: z.string().optional(),
   name: z.string(),
-  color: z.string(),
+  color: z.string().optional(),
   shift: z.enum(['morning', 'afternoon', 'night']),
   startDate: z.preprocess((val) => (typeof val === 'string' ? new Date(val) : val), z.date()),
   endDate: z.preprocess((val) => (typeof val === 'string' ? new Date(val) : val), z.date()),
   subscriptionEndDate: z.preprocess((val) => (typeof val === 'string' ? new Date(val) : val), z.date()),
-  workload: z.number(),
-  availableVacancies: z.number(),
-  studentsProfile: z.array(z.any()),
+  workload: z.preprocess((val) => (typeof val === 'string' ? Number(val) : val), z.number()),
+  availableVacancies: z.preprocess((val) => (typeof val === 'string' ? Number(val) : val), z.number()),
+  studentsProfile: z.array(docRefSchema).optional(),
 })
 
 export type Class = z.infer<typeof classSchema>

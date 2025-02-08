@@ -64,7 +64,6 @@ function RegisterClass() {
         <FormBody cancelTo="/">
           <Input name="name" label="Nome da turma" type="text" placeholder="Aprender & Crescer 2025" />
           <Input name="workload" label="Carga horária" type="number" placeholder="500" />
-          <Input name="workload" label="Carga aaaaaa" type="Select" placeholder="500" />
           <div className="flex gap-x-10 justify-start items-center">
             <Input name="startDate" label="Data de início" type="date" placeholder="01/01/2025" />
             <Input name="endDate" label="Data de término" type="date" placeholder="01/12/2025" />

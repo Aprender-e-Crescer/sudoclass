@@ -1,4 +1,4 @@
-import { classSchemaToFirestore } from '@/models/class-schema'
+import { classRegisterSchema, classSchemaToFirestore } from '@/models/class-schema'
 import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
 import { addDoc, collection, doc, DocumentData, DocumentReference, writeBatch } from 'firebase/firestore'
@@ -36,7 +36,7 @@ export function useCreateClassMutation({ idCourse, onError, onSuccess }: CreateC
     }: CreateClassMutationData) => {
       const batch = writeBatch(firestore)
 
-      const classData = classSchemaToFirestore.parse({
+      const classData = classRegisterSchema.parse({
         name,
         color,
         shift,
