@@ -23,9 +23,9 @@ function CourseManagement() {
   }
 
   const shiftDictionary: Record<string, string> = {
-    morning: 'Matutino',
+    morning: 'Manhã',
     afternoon: 'Tarde',
-    night: 'Noturno',
+    night: 'Noite',
   }
 
   function shiftTranslate(shift: string) {
