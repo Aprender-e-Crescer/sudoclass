@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Check, ClipboardListIcon, EllipsisVertical, Pencil, Trash, X } from 'lucide-react'
-import { Case, Else, If, Switch, Then, When } from 'react-if'
+import { Check, CirclePlus, ClipboardListIcon, EllipsisVertical, Pencil, Trash, X } from 'lucide-react'
+import { Else, If, Switch, Then, When } from 'react-if'
 import { format } from 'date-fns'
 import { useLessonPlanViewController } from '@/controllers/use-lesson-plan-view-controller'
 import { Box, Button, Modal } from '@mui/material'
@@ -18,7 +18,6 @@ export function LessonPlanView() {
 
   const {
     lessonPlanningsList,
-    teacherPermission,
     adminPermission,
     teacherAndAdmin,
     selectedDate,
@@ -61,6 +60,22 @@ export function LessonPlanView() {
 
   return (
     <div className="overflow-x-auto p-4">
+      <When condition={adminPermission}>
+        <Link
+          to="/courses/$idCourse/classes/$idClass/subjects/calendar"
+          params={{
+            idCourse,
+            idClass,
+          }}
+          className="w-full"
+        >
+          <div className="flex border-2 border-dashed border-gray-300 rounded-lg mb-4 p-6 text-center gap-2 text-gray-700 justify-center items-center">
+            <CirclePlus />
+            <p className="font-semibold">Adicionar novo plano de aula</p>
+          </div>
+        </Link>
+      </When>
+
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
         <thead>
           <tr className="bg-gray-200 text-gray-700">
@@ -91,114 +106,57 @@ export function LessonPlanView() {
                   <div className="flex justify-center items-center">
                     <If condition={teacherAndAdmin}>
                       <Then>
-                        <If condition={item.isCallMade}>
-                          <Then>
-                            <Switch>
-                              <Case condition={adminPermission}>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger>
-                                    <EllipsisVertical className="cursor-pointer" />
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent>
-                                    <DropdownMenuItem className="flex gap-2">
-                                      <ClipboardListIcon className="w-4 h-4" />
-                                      <p className="line-through">Chamada</p>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                      <Link
-                                        to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/update-lesson-plan"
-                                        params={{
-                                          idCourse,
-                                          idClass,
-                                          idSubject,
-                                          idsLessonPlan: item.id,
-                                        }}
-                                        className="flex gap-2 items-center w-full"
-                                      >
-                                        <Pencil className="w-4 h-4" />
-                                        Editar
-                                      </Link>
-                                    </DropdownMenuItem>
-
-                                    <DropdownMenuItem
-                                      onClick={() => handleDeleteLesson(item.id)}
-                                      className="flex gap-2"
-                                    >
-                                      <Trash className="text-red-600 w-4 h-4" />
-                                      <p className="text-red-600">Excluir</p>
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </Case>
-                              <Case condition={teacherPermission}>
-                                <button
-                                  disabled={true}
-                                  className="flex items-center gap-2 px-4 py-2 bg-gray-300 text-black font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-all"
-                                >
-                                  <ClipboardListIcon className="w-5 h-5" color="black" />
-                                  Chamada
-                                </button>
-                              </Case>
-                            </Switch>
-                          </Then>
-                          <Else>
-                            <Switch>
-                              <Case condition={adminPermission}>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger>
-                                    <EllipsisVertical className="cursor-pointer" />
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent>
-                                    <DropdownMenuItem
-                                      className="flex gap-2"
-                                      onClick={() => {
-                                        handleOpen()
-                                        selectedIds.push(item.id)
-                                      }}
-                                    >
-                                      <ClipboardListIcon className="w-4 h-4" />
-                                      Chamada
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                      <Link
-                                        to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/update-lesson-plan"
-                                        params={{
-                                          idCourse,
-                                          idClass,
-                                          idSubject,
-                                          idsLessonPlan: item.id,
-                                        }}
-                                        className="flex gap-2 items-center w-full"
-                                      >
-                                        <Pencil className="w-4 h-4" />
-                                        Editar
-                                      </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleDeleteLesson(item.id)}
-                                      className="flex gap-2"
-                                    >
-                                      <Trash className="text-red-600 w-4 h-4" />
-                                      <p className="text-red-600">Excluir</p>
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </Case>
-                              <Case condition={teacherPermission}>
-                                <button
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            <EllipsisVertical className="cursor-pointer" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <If condition={item.isCallMade}>
+                              <Then>
+                                <DropdownMenuItem className="flex gap-2">
+                                  <ClipboardListIcon className="w-4 h-4" />
+                                  <p className="line-through">Chamada</p>
+                                </DropdownMenuItem>
+                              </Then>
+                              <Else>
+                                <DropdownMenuItem
+                                  className="flex gap-2"
                                   onClick={() => {
                                     handleOpen()
-                                    selectedIds.push(item.id)
+                                    setSelectedIds([item.id])
                                   }}
-                                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all"
                                 >
-                                  <ClipboardListIcon className="w-5 h-5" />
-                                  Chamada
-                                </button>
-                              </Case>
-                            </Switch>
-                          </Else>
-                        </If>
+                                  <ClipboardListIcon className="w-4 h-4" />
+                                  <p>Chamada</p>
+                                </DropdownMenuItem>
+                              </Else>
+                            </If>
+
+                            <DropdownMenuItem asChild>
+                              <Link
+                                to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/$idsLessonPlan/update-lesson-plan"
+                                params={{
+                                  idCourse,
+                                  idClass,
+                                  idSubject,
+                                  idsLessonPlan: item.id,
+                                }}
+                                className="flex gap-2 items-center w-full"
+                              >
+                                <Pencil className="w-4 h-4" />
+                                Editar
+                              </Link>
+                            </DropdownMenuItem>
+                            <If condition={adminPermission}>
+                              <Then>
+                                <DropdownMenuItem onClick={() => handleDeleteLesson(item.id)} className="flex gap-2">
+                                  <Trash className="text-red-600 w-4 h-4" />
+                                  <p className="text-red-600">Excluir</p>
+                                </DropdownMenuItem>
+                              </Then>
+                            </If>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </Then>
                       <Else>
                         <If condition={item.isCallMade}>
@@ -241,7 +199,7 @@ export function LessonPlanView() {
                     idCourse,
                     idClass,
                     idSubject,
-                    idsLessonPlan: selectedIds,
+                    idsLessonPlan: Array.isArray(selectedIds) ? selectedIds.join(',') : selectedIds,
                   }}
                   className="w-full"
                 >
