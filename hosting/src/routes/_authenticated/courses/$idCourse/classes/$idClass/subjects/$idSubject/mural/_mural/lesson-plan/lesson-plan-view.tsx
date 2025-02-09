@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Check, CirclePlus, ClipboardListIcon, EllipsisVertical, Pencil, Trash, X } from 'lucide-react'
-import { Else, If, Switch, Then, When } from 'react-if'
+import { Else, If, Then, When } from 'react-if'
 import { format } from 'date-fns'
 import { useLessonPlanViewController } from '@/controllers/use-lesson-plan-view-controller'
 import { Box, Button, Modal } from '@mui/material'
