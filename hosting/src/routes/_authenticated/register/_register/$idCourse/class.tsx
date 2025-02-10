@@ -3,7 +3,6 @@ import { Input } from '@/components/custom/form/input'
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useClassRegisterController } from '@/controllers/use-class-register-controller'
 import { classRegisterSchema } from '@/models/class-schema'
-import { UpdateClassMutationData } from '@/mutations/use-update-class-mutation'
 import { Select } from '@radix-ui/react-select'
 import { createFileRoute } from '@tanstack/react-router'
 import { Formik } from 'formik'
@@ -12,7 +11,7 @@ import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 const validateSearch = z.object({
-  // action: z.enum(['create', 'edit']),
+  action: z.enum(['create', 'edit']),
   idClass: z.string().optional(),
 })
 
@@ -23,7 +22,7 @@ export const Route = createFileRoute('/_authenticated/register/_register/$idCour
 
 function RegisterClass() {
   const { idCourse } = Route.useParams()
-  const { idClass } = Route.useSearch()
+  const { idClass, action } = Route.useSearch()
   const { createClass, updateClass } = useClassRegisterController(idCourse)
 
   const initialValues = {
@@ -48,11 +47,11 @@ function RegisterClass() {
       endDate: new Date(data.endDate),
       subscriptionEndDate: new Date(data.subscriptionEndDate),
     }
-    // if (action === 'edit') {
-    //   if (!idClass) throw new Error('Missing id')
+    if (action === 'edit') {
+      if (!idClass) throw new Error('Missing id')
 
-    //   return updateClass({ ...transformedData, idClass })
-    // }
+      return updateClass({ ...transformedData, idClass })
+    }
 
     return createClass(transformedData)
   }

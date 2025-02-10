@@ -17,7 +17,11 @@ export function useClassRegisterController(idCourse: string) {
       })
     },
     onSuccess: () => {
-      navigate({ to: '/' })
+      toast({
+        title: 'Turma criada com sucesso',
+        variant: 'sucesss',
+      })
+      navigate({ to: `/${idCourse}/course-management` })
     },
   })
 
