@@ -14,7 +14,7 @@ interface UpdateAdminData {
     cpf: string
 }
 
-export function useUpdateAdmin({ onError, onSuccess }: UpdateAdminInput) {
+export function useUpdateAdminMutation({ onError, onSuccess }: UpdateAdminInput) {
     return useMutation({
         mutationKey: ['updateAdmin'],
         mutationFn: ({ cpf, fullName, id }: UpdateAdminData) => runTransaction(firestore, async (transaction) => {

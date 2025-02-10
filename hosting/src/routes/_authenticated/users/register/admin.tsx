@@ -71,8 +71,8 @@ function RouteComponent() {
     <>
       <Formik enableReinitialize onSubmit={handleAdminOnSubmit} initialValues={initialValues} validationSchema={toFormikValidationSchema(adminSchema)}>
         <FormBody cancelTo='/users'>
-          <Input name='fullName' label='Nome completo' type='text' placeholder='Nome completo' />
           <Input name='cpf' label='CPF' type='text' placeholder='000.000.000-00' mask={masks.BRL_CPF} />
+          <Input name='fullName' label='Nome completo' type='text' placeholder='Nome completo' />
         </FormBody>
       </Formik>
     </>

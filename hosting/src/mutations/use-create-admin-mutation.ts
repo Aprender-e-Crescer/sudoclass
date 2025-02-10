@@ -15,7 +15,7 @@ interface CreateAdminData {
     cpf: string
 }
 
-export function useCreateAdmin({ onSuccess, onError }: CreateAdminInput) {
+export function useCreateAdminMutation({ onSuccess, onError }: CreateAdminInput) {
     return useMutation({
         mutationKey: ['createAdmin'],
         mutationFn: async ({ cpf, fullName }: CreateAdminData) => runTransaction(firestore, async (transaction) => { 
@@ -36,26 +36,33 @@ export function useCreateAdmin({ onSuccess, onError }: CreateAdminInput) {
             const roleRef = doc(collection(firestore, "admins"))
                 
             transaction.set(userRef, {
-                fullName,
                 profileRef,
                 roleRef,
+                fullName,
                 requireNewPassword: true,
-                dateOfBirth: null,
-                email: null,
-                rgNumber: null,
-                rgDispatchDate: null,
-                rgDispatchStatus: null,
-                birthStatus: null,
-                birthCity: null,
+                contact: {
+                    email: null,
+                    telephone: null,
+                },
                 address: {
                     state: null,
-                    municipality: null,
-                    road: null,
+                    city: null,
+                    street: null,
                     neighborhood: null,
                     number: null,
+                },
+                birth: {
+                    date: null,
+                    state: null,
                     city: null,
-                    streetNumber: null,
-                }
+                },
+                generalRegistration: {
+                    number: null,
+                    dispatch: {
+                        date: null,
+                        state: null,
+                    },
+                },
             })
         
             transaction.set(doc(collection(firestore, userRef.path, "credentials")), { password })

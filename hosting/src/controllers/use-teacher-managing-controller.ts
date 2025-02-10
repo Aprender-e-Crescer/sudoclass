@@ -1,18 +1,18 @@
 import { useToast } from "@/hooks/use-toast"
-import { useCreateAdminMutation } from "@/mutations/use-create-admin-mutation"
-import { useUpdateAdminMutation } from "@/mutations/use-update-admin-mutation"
+import { useCreateTeacherMutation } from "@/mutations/use-create-teacher-mutation"
+import { useUpdateTeacherMutation } from "@/mutations/use-update-teacher-mutation"
 import { getUserQueryOptions } from "@/queries/use-get-user-query"
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 
-export function useAdminManagingController(id: string | undefined) {
+export function useTeacherManagingController(id: string | undefined) {
     const navigate = useNavigate()
 
     const { data: user } = useQuery(getUserQueryOptions(id))
 
     const { toast } = useToast()
 
-    const { mutateAsync: createAdmin } = useCreateAdminMutation({
+    const { mutateAsync: createTeacher } = useCreateTeacherMutation({
         onError: (error) => {
             toast({
                 variant: "destructive",
@@ -27,7 +27,7 @@ export function useAdminManagingController(id: string | undefined) {
         }
     })
 
-    const { mutateAsync: updateAdmin } = useUpdateAdminMutation({
+    const { mutateAsync: updateTeacher } = useUpdateTeacherMutation({
         onError: (error) => {
             toast({
                 variant: "destructive",
@@ -43,8 +43,8 @@ export function useAdminManagingController(id: string | undefined) {
     })
 
     return {
-        updateAdmin,
-        createAdmin,
+        updateTeacher,
+        createTeacher,
         user,
     }
 }

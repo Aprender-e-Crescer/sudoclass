@@ -1,9 +1,6 @@
-import { formatWithMask } from "@/utils/formatWithMask";
-import { Mask } from "@/utils/formatWithMask.types";
-import { QueryFilters, useIsFetching } from "@tanstack/react-query";
+import { QueryFilters } from "@tanstack/react-query";
 import { ErrorMessage, Field, useFormikContext } from "formik";
-import { Loader2 } from "lucide-react";
-import { HTMLInputTypeAttribute, useEffect } from "react";
+import { HTMLInputTypeAttribute } from "react";
 
 interface Props {
     name: string
@@ -11,20 +8,12 @@ interface Props {
     placeholder?: string
     type?: HTMLInputTypeAttribute
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-    mask?: Mask
     filtersQueryToShowLoading?: QueryFilters
+    multiple?: boolean
 }
 
-const defaultFilter: QueryFilters = {
-  predicate: () => false,
-}
-
-export function Input({ name, label, placeholder, type, mask, onChange, filtersQueryToShowLoading = defaultFilter }: Props) {
-  const { setFieldValue, errors, touched, values } = useFormikContext()
-
-  const isLoading = useIsFetching(filtersQueryToShowLoading)
-
-  const currentValue = (values as Record<string, string>)[name]
+export function InputFile({ name, label, placeholder, type, onChange, multiple }: Props) {
+  const { setFieldValue, errors, touched } = useFormikContext()
 
   // @ts-expect-error
   const isTouched = !!touched[name]
@@ -35,17 +24,8 @@ export function Input({ name, label, placeholder, type, mask, onChange, filtersQ
   const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(event)
     
-    setFieldValue(name, event.currentTarget.value)
+    setFieldValue(name, event.currentTarget.files)
   }
-
-  useEffect(() => {
-    const { masked } = formatWithMask({
-      text: currentValue,
-      mask: mask,
-    });
-
-    setFieldValue(name, masked)
-  }, [name, mask, currentValue])
 
   return (
     <div className='flex flex-col gap-y-1'>
@@ -55,12 +35,13 @@ export function Input({ name, label, placeholder, type, mask, onChange, filtersQ
             id={name}
             name={name}
             type={type}
+            value={undefined}
             placeholder={placeholder}
             onChange={handleOnInputChange}
+            multiple={multiple}
             data-show-error={shouldShowError}
             className="rounded-md border border-gray-300 px-3 py-2 data-[show-error=true]:border-red-300 data-[show-error=true]:bg-red-50 flex-1"
           />
-          <Loader2 className='hidden data-[is-loading=true]:block w-6 h-6 -ml-8 mr-2 animate-spin text-blue-500' data-is-loading={isLoading} />
         </div>
         <p className='text-red-500 text-xs'>
             <ErrorMessage name={name} />
