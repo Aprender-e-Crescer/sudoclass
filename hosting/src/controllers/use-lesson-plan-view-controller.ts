@@ -47,7 +47,7 @@ export function useLessonPlanViewController(idCourse: string, idClass: string, i
 
 
   const teacherAndAdmin = fullUser.role === 'admin' || fullUser.role === 'teacher'
-  const adminPermission = fullUser.role === 'teacher'
+  const adminPermission = fullUser.role === 'admin'
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
