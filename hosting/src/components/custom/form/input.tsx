@@ -3,6 +3,7 @@ import { Mask } from "@/utils/formatWithMask.types";
 import { QueryFilters, useIsFetching } from "@tanstack/react-query";
 import { ErrorMessage, Field, useFormikContext } from "formik";
 import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 interface Props {
     name: string
@@ -14,10 +15,16 @@ interface Props {
     filtersQueryToShowLoading?: QueryFilters
 }
 
-export function Input({ name, label, placeholder, type, mask, onChange, filtersQueryToShowLoading }: Props) {
-  const { setFieldValue, errors, touched } = useFormikContext()
+const defaultFilter: QueryFilters = {
+  predicate: () => false,
+}
 
-  const isLoading = useIsFetching(filtersQueryToShowLoading) > 0
+export function Input({ name, label, placeholder, type, mask, onChange, filtersQueryToShowLoading = defaultFilter }: Props) {
+  const { setFieldValue, errors, touched, values } = useFormikContext()
+
+  const isLoading = useIsFetching(filtersQueryToShowLoading)
+
+  const currentValue = (values as Record<string, string>)[name]
 
   // @ts-expect-error
   const isTouched = !!touched[name]
@@ -27,14 +34,18 @@ export function Input({ name, label, placeholder, type, mask, onChange, filtersQ
 
   const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(event)
-      
+    
+    setFieldValue(name, event.currentTarget.value)
+  }
+
+  useEffect(() => {
     const { masked } = formatWithMask({
-      text: event.target.value,
+      text: currentValue,
       mask: mask,
     });
 
     setFieldValue(name, masked)
-  }
+  }, [name, mask, currentValue])
 
   return (
     <div className='flex flex-col gap-y-1'>
