@@ -19,7 +19,7 @@ export interface UpdateClassMutationData {
 interface UpdateClassMutationInput {
   idCourse: string
   onError: (error: Error) => void
-  onSuccess: () => void
+  onSuccess: (idClass: string) => void
 }
 
 export function useUpdateClassMutation({ idCourse, onError, onSuccess }: UpdateClassMutationInput) {
@@ -52,6 +52,7 @@ export function useUpdateClassMutation({ idCourse, onError, onSuccess }: UpdateC
       })
 
       await updateDoc(classRef, classData)
+      return idClass
     },
     onError,
     onSuccess,

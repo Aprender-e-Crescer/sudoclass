@@ -5,13 +5,11 @@ import { useClassesManagementController } from '@/controllers/classes-management
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
-export const Route = createFileRoute(
-  '/_authenticated/courses-management/course/$idCourse/class/$idClass/classes-management',
-)({
-  component: ClassesManagement,
+export const Route = createFileRoute('/_authenticated/courses-management/course/$idCourse/class/$idClass/')({
+  component: Index,
 })
 
-function ClassesManagement() {
+function Index() {
   const { idCourse, idClass } = Route.useParams()
 
   const { course, subjects } = useClassesManagementController(idCourse, idClass)
@@ -25,7 +23,7 @@ function ClassesManagement() {
           blueButtonText="Criar matéria"
           whiteButtonText="Cancelar"
           linkToBlueButton="/"
-          linkToWhiteButton="/"
+          linkToWhiteButton={`/courses-management/course/${idCourse}`}
         />
       </When>
       <When condition={subjects.length > 0}>

@@ -1,6 +1,11 @@
 import { FormBody } from '@/components/custom/form/body'
 import { Input } from '@/components/custom/form/input'
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useClassRegisterController } from '@/controllers/use-class-register-controller'
 import { classRegisterSchema } from '@/models/class-schema'
 import { Select } from '@radix-ui/react-select'
@@ -15,7 +20,9 @@ const validateSearch = z.object({
   idClass: z.string().optional(),
 })
 
-export const Route = createFileRoute('/_authenticated/register/_register/$idCourse/class')({
+export const Route = createFileRoute(
+  '/_authenticated/register/_register/$idCourse/new-class',
+)({
   component: RegisterClass,
   validateSearch,
 })
@@ -64,12 +71,37 @@ function RegisterClass() {
       >
         {({ values, setFieldValue }) => (
           <FormBody cancelTo="/">
-            <Input name="name" label="Nome da turma" type="text" placeholder="Aprender & Crescer 2025" />
-            <Input name="workload" label="Carga horária" type="number" placeholder="500" />
-            <Input name="availableVacancies" label="Número de vagas" type="number" placeholder="Número de vagas" />
+            <Input
+              name="name"
+              label="Nome da turma"
+              type="text"
+              placeholder="Aprender & Crescer 2025"
+            />
+            <Input
+              name="workload"
+              label="Carga horária"
+              type="number"
+              placeholder="500"
+            />
+            <Input
+              name="availableVacancies"
+              label="Número de vagas"
+              type="number"
+              placeholder="Número de vagas"
+            />
             <div className="flex-col items-center">
-              <Input name="startDate" label="Data de início" type="date" placeholder="01/01/2025" />
-              <Input name="endDate" label="Data de término" type="date" placeholder="01/12/2025" />
+              <Input
+                name="startDate"
+                label="Data de início"
+                type="date"
+                placeholder="01/01/2025"
+              />
+              <Input
+                name="endDate"
+                label="Data de término"
+                type="date"
+                placeholder="01/12/2025"
+              />
               <Input
                 name="subscriptionEndDate"
                 label="Data de término das inscrições"
@@ -79,7 +111,11 @@ function RegisterClass() {
               <div className="flex items-start gap-x-10">
                 <div className="flex flex-col mb-4">
                   <p>Turnos</p>
-                  <Select name="shift" value={values.shift} onValueChange={(value) => setFieldValue('shift', value)}>
+                  <Select
+                    name="shift"
+                    value={values.shift}
+                    onValueChange={(value) => setFieldValue('shift', value)}
+                  >
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Turno" />
                     </SelectTrigger>

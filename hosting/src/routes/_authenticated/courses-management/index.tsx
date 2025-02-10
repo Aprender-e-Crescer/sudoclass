@@ -35,17 +35,6 @@ function Index() {
 
   return (
     <>
-      <When condition={courses?.length === 0}>
-        <NotFound
-          title="Ops! Nada por aqui..."
-          description="Nenhum curso por aqui. Que tal criar o primeiro?"
-          blueButtonText="Criar curso"
-          whiteButtonText="Cancelar"
-          linkToBlueButton="/"
-          linkToWhiteButton="/"
-        />
-      </When>
-
       <div className="mb-5">
         <ManagementHeader
           title="Cursos"
@@ -65,24 +54,30 @@ function Index() {
         mutation={editingCourseId ? (data) => editCourse({ id: editingCourseId, ...data }) : createCourse}
       />
 
-      <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
-        {courses
-          .filter((course) => course.id != undefined)
-          .map(({ id, color, name }) => (
-            <div key={id} className="w-full">
-              <Link to={`course/${id}`} className="block">
-                <CardManagement
-                  name={name}
-                  type="course"
-                  color={color}
-                  confirmationTitle="Deseja excluir esse curso?"
-                  onEdit={() => handleEdit(id!)}
-                  onDelete={() => handleDelete(id!)}
-                />
-              </Link>
-            </div>
-          ))}
-      </div>
+      <When condition={courses?.length === 0}>
+        <NotFound title="Ops! Nada por aqui..." description="Nenhum curso por aqui. Que tal criar o primeiro?" />
+      </When>
+
+      <When condition={courses.length > 0}>
+        <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
+          {courses
+            .filter((course) => course.id != undefined)
+            .map(({ id, color, name }) => (
+              <div key={id} className="w-full">
+                <Link to={`course/${id}`} className="block">
+                  <CardManagement
+                    name={name}
+                    type="course"
+                    color={color}
+                    confirmationTitle="Deseja excluir esse curso?"
+                    onEdit={() => handleEdit(id!)}
+                    onDelete={() => handleDelete(id!)}
+                  />
+                </Link>
+              </div>
+            ))}
+        </div>
+      </When>
     </>
   )
 }

@@ -16,12 +16,12 @@ export function useClassRegisterController(idCourse: string) {
         variant: 'destructive',
       })
     },
-    onSuccess: (classId) => {
+    onSuccess: (idClass) => {
       toast({
         title: 'Turma criada com sucesso',
         variant: 'sucesss',
       })
-      navigate({ to: `/courses-management/course/${idCourse}/class/${classId}/classes-management` })
+      navigate({ to: `/courses-management/course/${idCourse}/class/${idClass}` })
     },
   })
 
@@ -34,12 +34,12 @@ export function useClassRegisterController(idCourse: string) {
         variant: 'destructive',
       })
     },
-    onSuccess: () => {
+    onSuccess: (idClass) => {
       toast({
         title: 'Turma editada com sucesso',
         variant: 'sucesss',
       })
-      navigate({ to: `/course/${idCourse}/course-management` })
+      navigate({ to: `/courses-management/course/${idCourse}/class/${idClass}` })
     },
   })
 

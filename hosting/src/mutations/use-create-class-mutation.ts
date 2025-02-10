@@ -18,7 +18,7 @@ interface CreateClassMutationData {
 interface CreateClassMutationInput {
   idCourse: string
   onError: (err: Error) => void
-  onSuccess: (classId: string) => void
+  onSuccess: (idClass: string) => void
 }
 export function useCreateClassMutation({ idCourse, onError, onSuccess }: CreateClassMutationInput) {
   return useMutation({
@@ -49,13 +49,13 @@ export function useCreateClassMutation({ idCourse, onError, onSuccess }: CreateC
       })
 
       const classesRef = collection(firestore, 'courses', idCourse, 'classes')
-      const classId = (await addDoc(classesRef, {})).id
-      const newClassRef = doc(firestore, 'courses', idCourse, 'classes', classId)
+      const idClass = (await addDoc(classesRef, {})).id
+      const newClassRef = doc(firestore, 'courses', idCourse, 'classes', idClass)
 
       batch.set(newClassRef, classData)
 
       await batch.commit()
-      return classId
+      return idClass
     },
     onError,
     onSuccess,

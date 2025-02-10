@@ -76,7 +76,7 @@ function Index() {
         <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
           {classes.map(({ id, name, color, endDate, startDate, shift }) => (
             <div key={id} className="w-full">
-              <Link to={`class/${id}/classes-management`} className="block">
+              <Link to={`class/${id}`} className="block">
                 <CardManagement
                   name={name}
                   type="class"
