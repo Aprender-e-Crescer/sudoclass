@@ -13,9 +13,9 @@ interface UpdateLessonPlanProps {
 }
 
 export function useUpdateLessonPlanController({ idCourse, idClass, idSubject, idsLessonPlan }: UpdateLessonPlanProps) {
-  const navigate = useNavigate()  // Usando o hook para navegação do Tanstack React Router
+  const navigate = useNavigate() 
   
-  const { data: lessonPlan, refetch: lessonPlanRefetch } = useQuery({
+  const { data: lessonPlan, refetch: lessonPlanRefetch, isLoading: loadingLessonPlannings } = useQuery({
     queryKey: ['lessonPlan', idCourse, idClass, idSubject, idsLessonPlan],
     queryFn: getLessonPlanByIdQueryOptions(idCourse, idClass, idSubject, idsLessonPlan),
   })
@@ -86,5 +86,6 @@ export function useUpdateLessonPlanController({ idCourse, idClass, idSubject, id
     initialValues,
     handleSubmit,
     isUpdating,
+    loadingLessonPlannings,
   }
 }

@@ -31,21 +31,25 @@ export function LessonPlanView() {
   const [open, setOpen] = useState(false)
   const [modalStep, setModalStep] = useState<'default' | 'selectLessons'>('default')
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [oneLessonId, setOneLessonId] = useState('')
 
   const handleOpen = () => {
     setModalStep('default')
     setOpen(true)
+    setOneLessonId('')
   }
 
   const handleClose = () => {
     setSelectedIds([])
     setOpen(false)
     setConfirmDelete(false)
+    setOneLessonId('')
   }
 
   const handleMultipleClick = () => {
     setModalStep('selectLessons')
     setSelectedIds([])
+    setOneLessonId('')
   }
 
   const style = {
@@ -151,7 +155,13 @@ export function LessonPlanView() {
                             </DropdownMenuItem>
                             <If condition={adminPermission}>
                               <Then>
-                                <DropdownMenuItem onClick={() => setConfirmDelete(true)} className="flex gap-2">
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    setConfirmDelete(true)
+                                    setOneLessonId(item.id)
+                                  }}
+                                  className="flex gap-2"
+                                >
                                   <Trash className="text-red-600 w-4 h-4" />
                                   <p className="text-red-600">Excluir</p>
                                 </DropdownMenuItem>
@@ -201,7 +211,7 @@ export function LessonPlanView() {
                     idCourse,
                     idClass,
                     idSubject,
-                    idsLessonPlan: Array.isArray(selectedIds) ? selectedIds.join(',') : selectedIds,
+                    idsLessonPlan: selectedIds,
                   }}
                   className="w-full"
                 >
@@ -284,26 +294,28 @@ export function LessonPlanView() {
         </Box>
       </Modal>
 
-
       <Modal open={confirmDelete} onClose={handleClose}>
-      <Box sx={style}>
-        <h1 className="text-lg font-semibold">Excluir chamada</h1>
-        <p className="text-gray-500">Tem certeza que deseja excluir a chamada?</p>
-        <div className="flex gap-3">
-          <button
-            onClick={() => handleClose()}
-            className="p-2 font-semibold w-1/2 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 transition"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={() => handleDeleteLesson(selectedIds[0])}
-            className="p-2 font-semibold w-1/2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
-          >
-            Excluir
-          </button>
-        </div>
-      </Box>
+        <Box sx={style}>
+          <h1 className="text-lg font-semibold">Excluir chamada</h1>
+          <p className="text-gray-500">Tem certeza que deseja excluir a chamada?</p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleClose()}
+              className="p-2 font-semibold w-1/2 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 transition"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={() => {
+                handleDeleteLesson(oneLessonId)
+                handleClose()
+              }}
+              className="p-2 font-semibold w-1/2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+            >
+              Excluir
+            </button>
+          </div>
+        </Box>
       </Modal>
     </div>
   )

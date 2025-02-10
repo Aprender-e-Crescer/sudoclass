@@ -12,13 +12,17 @@ export const Route = createFileRoute(
 function UpdateLessonPlan() {
   const { idCourse, idClass, idSubject, idsLessonPlan } = Route.useParams()
 
-  const { formattedStartDate, formattedStartDateInicio, formattedEndDate, initialValues, handleSubmit, isUpdating } =
+  const { formattedStartDate, formattedStartDateInicio, formattedEndDate, initialValues, handleSubmit, isUpdating,loadingLessonPlannings } =
     useUpdateLessonPlanController({
       idCourse,
       idClass,
       idSubject,
       idsLessonPlan,
     })
+
+    if (loadingLessonPlannings) {
+      return <p>Carregando...</p>
+    }
 
   return (
     <div className="border p-4 mx-4 my-4 rounded-md flex flex-col justify-center items-center">
@@ -69,7 +73,7 @@ function UpdateLessonPlan() {
                   idClass,
                   idSubject,
                 }}
-                className='w-1/2'
+                className="w-1/2"
               >
                 <button type="reset" className="mt-4 flex-1 rounded-md bg-gray-300 text-gray-700 p-2 w-full">
                   Cancelar

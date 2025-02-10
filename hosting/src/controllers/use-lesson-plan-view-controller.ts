@@ -14,7 +14,7 @@ import { useDeleteLessonPlanMutation } from '@/mutations/use-delete-lessonplan-m
 export function useLessonPlanViewController(idCourse: string, idClass: string, idSubject: string) {
   const fullUser = useGetFullUser()
 
-  const { data: lessonPlanningsList } = useQuery(getLessonPlansQueryOptions(idCourse, idClass, idSubject))
+  const { data: lessonPlanningsList, refetch: lessonPlanningsListRefetch  } = useQuery(getLessonPlansQueryOptions(idCourse, idClass, idSubject))
 
   const missingsQueriesOptions =
     lessonPlanningsList?.map(({ id }) => ({
@@ -41,12 +41,13 @@ export function useLessonPlanViewController(idCourse: string, idClass: string, i
       idClass,
       idSubject,
       idLessonPlan,
-    })
+    }),
+    lessonPlanningsListRefetch()
   }
 
 
   const teacherAndAdmin = fullUser.role === 'admin' || fullUser.role === 'teacher'
-  const adminPermission = fullUser.role === 'admin'
+  const adminPermission = fullUser.role === 'teacher'
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
