@@ -5,11 +5,11 @@ import { useCourseManagementController } from '@/controllers/course-management-c
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
-export const Route = createFileRoute('/_authenticated/$idCourse/course-management')({
-  component: CourseManagement,
+export const Route = createFileRoute('/_authenticated/courses-management/course/$idCourse/')({
+  component: Index,
 })
 
-function CourseManagement() {
+function Index() {
   const { idCourse } = Route.useParams()
   const { course, classes, deleteClass } = useCourseManagementController(idCourse)
   const navigate = Route.useNavigate()
@@ -34,11 +34,17 @@ function CourseManagement() {
   }
 
   const handleCreate = () => {
-    navigate({ to: `/register/${idCourse}/class`, search: { action: 'create' } })
+    navigate({
+      to: `/register/${idCourse}/class`,
+      search: { action: 'create' },
+    })
   }
 
   const handleEdit = (idClass: string) => {
-    navigate({ to: `/register/${idCourse}/class`, search: { idClass, action: 'edit' } })
+    navigate({
+      to: `/register/${idCourse}/class`,
+      search: { idClass, action: 'edit' },
+    })
   }
 
   const handleDelete = (idClass: string) => {
@@ -70,7 +76,7 @@ function CourseManagement() {
         <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
           {classes.map(({ id, name, color, endDate, startDate, shift }) => (
             <div key={id} className="w-full">
-              <Link to={`/${idCourse}/${id}/classes-management`} className="block">
+              <Link to={`class/${id}/classes-management`} className="block">
                 <CardManagement
                   name={name}
                   type="class"

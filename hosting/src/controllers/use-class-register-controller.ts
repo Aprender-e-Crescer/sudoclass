@@ -4,7 +4,7 @@ import { useUpdateClassMutation } from '@/mutations/use-update-class-mutation'
 import { useNavigate } from '@tanstack/react-router'
 
 export function useClassRegisterController(idCourse: string) {
-  const navigate = useNavigate()
+  const navigate = useNavigate({ from: '/courses-management' })
   const { toast } = useToast()
 
   const { mutate: createClass } = useCreateClassMutation({
@@ -16,12 +16,12 @@ export function useClassRegisterController(idCourse: string) {
         variant: 'destructive',
       })
     },
-    onSuccess: () => {
+    onSuccess: (classId) => {
       toast({
         title: 'Turma criada com sucesso',
         variant: 'sucesss',
       })
-      navigate({ to: `/${idCourse}/course-management` })
+      navigate({ to: `/courses-management/course/${idCourse}/class/${classId}/classes-management` })
     },
   })
 
@@ -39,7 +39,7 @@ export function useClassRegisterController(idCourse: string) {
         title: 'Turma editada com sucesso',
         variant: 'sucesss',
       })
-      navigate({ to: `/${idCourse}/course-management` })
+      navigate({ to: `/course/${idCourse}/course-management` })
     },
   })
 

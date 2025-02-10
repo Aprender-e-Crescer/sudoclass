@@ -7,7 +7,12 @@ interface CreateCourse {
   color: string
 }
 
-export function useCreateCourseMutation() {
+interface CreateCourseInput {
+  onError: (error: Error) => void
+  onSuccess: (data: { id: string }) => void
+}
+
+export function useCreateCourseMutation({ onError, onSuccess }: CreateCourseInput) {
   return useMutation({
     mutationKey: ['createCourse'],
     mutationFn: async ({ name, color }: CreateCourse) => {
@@ -15,6 +20,9 @@ export function useCreateCourseMutation() {
       const docRef = await addDoc(courseRef, { name, color })
       return { id: docRef.id }
     },
-    onError: (err) => console.error(err),
+    onError,
+    onSuccess: (data) => {
+      onSuccess(data)
+    },
   })
 }

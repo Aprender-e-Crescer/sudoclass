@@ -5,7 +5,9 @@ import { useClassesManagementController } from '@/controllers/classes-management
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
-export const Route = createFileRoute('/_authenticated/$idCourse/$idClass/classes-management')({
+export const Route = createFileRoute(
+  '/_authenticated/courses-management/course/$idCourse/class/$idClass/classes-management',
+)({
   component: ClassesManagement,
 })
 
@@ -33,7 +35,7 @@ function ClassesManagement() {
         <div className="flex flex-col gap-y-5 px-6">
           {subjects.map(({ id, color, name }) => (
             <div key={id} className="w-full">
-              <Link to={`/${idCourse}/${id}/classes-management`} className="block">
+              <Link to={`/courses/${idCourse}/classes/${idClass}/subjects/${id}/mural/warnings`} className="block">
                 <CardComponent color={color} name={name} courseName={course.name} />
               </Link>
             </div>

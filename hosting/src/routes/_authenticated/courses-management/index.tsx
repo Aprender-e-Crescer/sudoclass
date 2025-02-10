@@ -10,16 +10,16 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { When } from 'react-if'
 
-export const Route = createFileRoute('/_authenticated/courses-management')({
+export const Route = createFileRoute('/_authenticated/courses-management/')({
   beforeLoad: async ({ context: { queryClient } }) => {
     const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
     const user = await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
     const role = getRoleFromRef(user?.roleRef)
   },
-  component: CoursesManagement,
+  component: Index,
 })
 
-function CoursesManagement() {
+function Index() {
   const { courses, createCourse, editCourse, deleteCourse } = useCoursesManagementController()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null)
@@ -70,7 +70,7 @@ function CoursesManagement() {
           .filter((course) => course.id != undefined)
           .map(({ id, color, name }) => (
             <div key={id} className="w-full">
-              <Link to={`/${id}/course-management`} className="block">
+              <Link to={`course/${id}`} className="block">
                 <CardManagement
                   name={name}
                   type="course"
