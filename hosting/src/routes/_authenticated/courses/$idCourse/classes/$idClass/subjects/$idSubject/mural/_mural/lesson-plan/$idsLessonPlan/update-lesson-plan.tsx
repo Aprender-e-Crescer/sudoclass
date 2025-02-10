@@ -1,9 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
+import { useUpdateLessonPlanController } from '@/controllers/use-update-lesson-plan-controller'
+import { Link } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
-import { format } from 'date-fns'
-import { Timestamp } from 'firebase/firestore'
-import { getLessonPlanByIdQueryOptions } from '@/queries/use-get-lesson-plan-by-id'
-import { useUpdateLessonPlanMutation } from '@/mutations/use-update-lesson-plan'
+import { Field, Form, Formik } from 'formik'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/$idsLessonPlan/update-lesson-plan',
@@ -14,69 +12,81 @@ export const Route = createFileRoute(
 function UpdateLessonPlan() {
   const { idCourse, idClass, idSubject, idsLessonPlan } = Route.useParams()
 
-  const { data: lessonPlan } = useQuery({
-    queryKey: ['lessonPlan', idCourse, idClass, idSubject, idsLessonPlan],
-    queryFn: getLessonPlanByIdQueryOptions(idCourse, idClass, idSubject, idsLessonPlan),
-  })
-
-  const parsedStartDate =
-    lessonPlan?.startDate instanceof Timestamp ? lessonPlan.startDate.toDate() : lessonPlan?.startDate
-
-  const parsedEndDate = lessonPlan?.endDate instanceof Timestamp ? lessonPlan.endDate.toDate() : lessonPlan?.endDate
-
-  const formattedStartDate =
-    parsedStartDate && !isNaN(parsedStartDate.getTime()) ? format(parsedStartDate, 'dd/MM/yyyy') : 'Invalid date'
-
-  const formattedStartDateInicio =
-    parsedStartDate && !isNaN(parsedStartDate.getTime()) ? format(parsedStartDate, 'HH:mm') : 'Invalid date'
-
-  const formattedEndDate =
-    parsedEndDate && !isNaN(parsedEndDate.getTime()) ? format(parsedEndDate, 'HH:mm') : 'Invalid date'
+  const { formattedStartDate, formattedStartDateInicio, formattedEndDate, initialValues, handleSubmit, isUpdating } =
+    useUpdateLessonPlanController({
+      idCourse,
+      idClass,
+      idSubject,
+      idsLessonPlan,
+    })
 
   return (
-    <>
-      <div className="border p-4 mx-4 my-4 rounded-md flex flex-col justify-center items-center">
-        <div className="flex w-full justify-around border-b mb-4 items-center">
-          <p>Data: {formattedStartDate}</p>
-          <p>Início: {formattedStartDateInicio}</p>
-          <p>Fim: {formattedEndDate}</p>
-        </div>
-
-        <div className="w-full  flex flex-col gap-2">
-          <p>Conteúdo formativo</p>
-          <input
-            id="content"
-            type="text"
-            className="border rounded-md p-2"
-            placeholder={lessonPlan?.teachingDetails?.content || ''}
-          />
-        </div>
-
-        <div className="w-full  flex flex-col gap-2">
-          <p>Modo de ensino</p>
-          <input
-            id="methodology"
-            type="text"
-            className="border rounded-md p-2"
-            placeholder={lessonPlan?.teachingDetails?.methodology || ''}
-          />
-        </div>
-
-        <div className="w-full  flex flex-col gap-2">
-          <p>Recursos Didáticos</p>
-          <input
-            id="resources"
-            type="text"
-            className="border rounded-md p-2"
-            placeholder={lessonPlan?.teachingDetails?.resources || ''}
-          />
-        </div>
-
-        <div className="flex w-1/3 justify-center gap-4 items-center">
-          <button className="mt-4 w-full rounded-md bg-gray-300 text-gray-700 p-1">Cancelar</button>
-          <button className="mt-4 w-full rounded-md bg-blue-500 text-white p-1">Atualizar</button>
-        </div>
+    <div className="border p-4 mx-4 my-4 rounded-md flex flex-col justify-center items-center">
+      <div className="flex w-full justify-around border-b mb-4 items-center">
+        <p>Data: {formattedStartDate}</p>
+        <p>Início: {formattedStartDateInicio}</p>
+        <p>Fim: {formattedEndDate}</p>
       </div>
-    </>
+
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {({ values, isSubmitting }) => (
+          <Form className="flex flex-col gap-4 w-full">
+            <div>
+              <label className="block text-sm font-medium w-full">Conteúdo</label>
+              <Field
+                type="text"
+                name="content"
+                placeholder={values.content || 'Digite o conteúdo'}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium w-full">Metodologia</label>
+              <Field
+                type="text"
+                name="methodology"
+                placeholder={values.methodology || 'Digite a metodologia'}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium w-full">Recursos usados</label>
+              <Field
+                type="text"
+                name="resources"
+                placeholder={values.resources || 'Digite os recursos'}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+
+            <div className="flex gap-2 justify-center w-1/2">
+              <Link
+                to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
+                params={{
+                  idCourse,
+                  idClass,
+                  idSubject,
+                }}
+                className='w-1/2'
+              >
+                <button type="reset" className="mt-4 flex-1 rounded-md bg-gray-300 text-gray-700 p-2 w-full">
+                  Cancelar
+                </button>
+              </Link>
+
+              <button
+                type="submit"
+                disabled={isSubmitting || isUpdating}
+                className="mt-4 flex-1 bg-blue-500 text-white p-2 rounded"
+              >
+                {isSubmitting || isUpdating ? 'Salvando...' : 'Salvar'}
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </div>
   )
 }

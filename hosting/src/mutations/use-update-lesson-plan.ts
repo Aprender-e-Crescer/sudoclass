@@ -16,51 +16,34 @@ interface UpdateLessonPlanData {
 
 export function useUpdateLessonPlanMutation() {
   return useMutation({
-      mutationFn: async (data: UpdateLessonPlanData) => {
-        try {
-          const lessonPlanRef = doc(firestore, 'courses', data.idCourse, 'classes', data.idClass, 'subjects', data.idSubject, 'lessonPlans', data.id);
-          await updateDoc(lessonPlanRef, { teachingDetails: data.teachingDetails });
-          console.log('Aula atualizada com sucesso')
-          } catch (error) {
-            throw new Error('Erro ao atualizar a aula: ' + error)
-          }
-          },
-        onError: (error) => {
-          console.error(error)
-        },
-        onSuccess: () => {
-          console.log('Aula atualizada com sucesso')
-        },
-      })
-    }
+    mutationFn: async (data: UpdateLessonPlanData) => {
+      const lessonPlanRef = doc(
+        firestore, 
+        'courses', 
+        data.idCourse, 
+        'classes', 
+        data.idClass, 
+        'subjects', 
+        data.idSubject, 
+        'lessonPlannings', 
+        data.id
+      )
 
-        // export function useUpdateWarningMutation() {
-        //   return useMutation({
-        //     mutationFn: async (data: UpdateWarningData) => {
-        //       try {
-        //         const warningRef = doc(
-        //           firestore,
-        //           'courses',
-        //           data.idCourse,
-        //           'classes',
-        //           data.idClass,
-        //           'subjects',
-        //           data.idSubject,
-        //           'warnings',
-        //           data.id
-        //         )
-        
-        //         await updateDoc(warningRef, { message: data.message })
-        //       } catch (error) {
-        //         throw new Error('Erro ao atualizar o aviso: ' + error)
-        //       }
-        //     },
-        //     onError: (error) => {
-        //       console.error(error)
-        //     },
-        //     onSuccess: () => {
-        //       console.log('Aviso atualizado com sucesso')
-        //     },
-        //   })
-        // }
-        
+      try {
+        await updateDoc(lessonPlanRef, {
+          'teachingDetails.content': data.teachingDetails.content,
+          'teachingDetails.methodology': data.teachingDetails.methodology,
+          'teachingDetails.resources': data.teachingDetails.resources,
+        })
+      } catch (error) {
+        throw new Error(`Erro ao atualizar a aula: ${error instanceof Error ? error.message : error}`);
+      }
+    },
+    onError: (error) => {
+      console.error('Falha ao atualizar a aula:', error);
+    },
+    onSuccess: () => {
+      console.log('Aula atualizada com sucesso');
+    },
+  })
+}
