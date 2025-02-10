@@ -1,16 +1,26 @@
-import { api } from '@/services/api'
 import { useMutation } from '@tanstack/react-query'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { firestore } from '@/services/firebase'
 
-interface Results {
-  onSuccess: () => void
-  onError: () => void
+interface DeleteLessonPlanMutationInput {
+  idCourse: string
+  idClass: string
+  idSubject: string
+  idLessonPlan: string
 }
 
-export function useDeleteLessonPlanMutation({ onSuccess, onError }: Results) {
-  return useMutation<void, Error, number>({
+export function useDeleteLessonPlanMutation() {
+  return useMutation({
     mutationKey: ['delete-lesson-plan'],
-    mutationFn: (id: number) => api.delete(`/lessonPlan/${id}`),
-    onSuccess,
-    onError,
+    mutationFn: async ({ idClass, idCourse, idLessonPlan, idSubject }: DeleteLessonPlanMutationInput) => {
+      const lessonPlanRef = doc(
+        firestore,
+        'courses', idCourse,
+        'classes', idClass,
+        'subjects', idSubject,
+        'lessonPlannings', idLessonPlan
+      )
+      await deleteDoc(lessonPlanRef) 
+    },
   })
 }
