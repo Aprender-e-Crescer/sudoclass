@@ -4,31 +4,50 @@ import { format } from 'date-fns'
 
 import { getLessonPlansQueryOptions } from '@/queries/use-list-lesson-plan'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
-import { getStudentMissingsFirestoreQuery, getStudentMissingsQueryOptions } from '@/queries/use-get-student-missings-query'
+import {
+  getStudentMissingsFirestoreQuery,
+  getStudentMissingsQueryOptions,
+} from '@/queries/use-get-student-missings-query'
 import { useFirestoreRealtimeQueries } from '@/hooks/use-firestore-realtime-queries'
+import { useDeleteLessonPlanMutation } from '@/mutations/use-delete-lessonplan-mutations'
 
 export function useLessonPlanViewController(idCourse: string, idClass: string, idSubject: string) {
   const fullUser = useGetFullUser()
 
-  const { data: lessonPlanningsList } = useQuery(
-    getLessonPlansQueryOptions(idCourse, idClass, idSubject)
-  )
+  const { data: lessonPlanningsList, refetch: lessonPlanningsListRefetch  } = useQuery(getLessonPlansQueryOptions(idCourse, idClass, idSubject))
 
-  const missingsQueriesOptions = lessonPlanningsList?.map(({ id }) => ({
-    ...getStudentMissingsQueryOptions(idCourse, idClass, idSubject, id, fullUser.profileRef),
-  })) ?? []
+  const missingsQueriesOptions =
+    lessonPlanningsList?.map(({ id }) => ({
+      ...getStudentMissingsQueryOptions(idCourse, idClass, idSubject, id, fullUser.profileRef),
+    })) ?? []
 
   const missings = useQueries({
     queries: missingsQueriesOptions,
     combine: (results) => results.flatMap((result) => result.data ?? []),
   })
 
-  useFirestoreRealtimeQueries(missingsQueriesOptions.map(({ queryKey }) => ({
-    queryKey: queryKey,
-    q: getStudentMissingsFirestoreQuery(idCourse, idClass, idSubject, queryKey[1], fullUser.profileRef)
-  })))
+  useFirestoreRealtimeQueries(
+    missingsQueriesOptions.map(({ queryKey }) => ({
+      queryKey: queryKey,
+      q: getStudentMissingsFirestoreQuery(idCourse, idClass, idSubject, queryKey[1], fullUser.profileRef),
+    })),
+  )
 
-  const hasPermissionToEditLessonPlan = fullUser.role === 'teacher' || fullUser.role === 'admin'
+  const { mutate: deleteLessonPlan } = useDeleteLessonPlanMutation()
+
+  const handleDeleteLesson = (idLessonPlan: string) => {
+    deleteLessonPlan({
+      idCourse,
+      idClass,
+      idSubject,
+      idLessonPlan,
+    }),
+    lessonPlanningsListRefetch()
+  }
+
+
+  const teacherAndAdmin = fullUser.role === 'admin' || fullUser.role === 'teacher'
+  const adminPermission = fullUser.role === 'admin'
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -46,10 +65,13 @@ export function useLessonPlanViewController(idCourse: string, idClass: string, i
 
   return {
     lessonPlanningsList,
-    hasPermissionToEditLessonPlan,
+    adminPermission,
+    teacherAndAdmin,
     selectedDate,
     selectedIds,
+    setSelectedIds,
     handleCheckboxChange,
     missings,
+    handleDeleteLesson,
   }
 }

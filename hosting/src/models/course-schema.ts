@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const courseSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    color: z.string(),
+  id: z.string().optional(),
+  name: z.string(),
+  color: z.string(),
 })
 
 export type Course = z.infer<typeof courseSchema>

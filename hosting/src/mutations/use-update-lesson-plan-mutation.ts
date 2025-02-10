@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { firestore } from '@/services/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
-import { updateLessonPlanSchema } from '@/models/update-lesson-plan-schema';
+
 
 interface MutationResults {
   onSuccess: () => void;
