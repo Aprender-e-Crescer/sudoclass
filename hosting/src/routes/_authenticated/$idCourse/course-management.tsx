@@ -67,13 +67,14 @@ function CourseManagement() {
             onCreate={() => handleCreate()}
           />
         </div>
-        <div className="flex flex-col gap-y-5 px-6 mx-16">
-          {classes.map(({ id, name, endDate, startDate, shift }) => (
+        <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
+          {classes.map(({ id, name, color, endDate, startDate, shift }) => (
             <div key={id} className="w-full">
               <Link to={`/${idCourse}/${id}/classes-management`} className="block">
                 <CardManagement
                   name={name}
                   type="class"
+                  color={color}
                   startDate={dateConverter(startDate)}
                   endDate={dateConverter(endDate)}
                   shift={shiftTranslate(shift)}

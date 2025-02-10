@@ -65,15 +65,16 @@ function CoursesManagement() {
         mutation={editingCourseId ? (data) => editCourse({ id: editingCourseId, ...data }) : createCourse}
       />
 
-      <div className="flex flex-col gap-y-5 px-6 mx-16">
+      <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
         {courses
           .filter((course) => course.id != undefined)
-          .map(({ id, name }) => (
+          .map(({ id, color, name }) => (
             <div key={id} className="w-full">
               <Link to={`/${id}/course-management`} className="block">
                 <CardManagement
                   name={name}
                   type="course"
+                  color={color}
                   confirmationTitle="Deseja excluir esse curso?"
                   onEdit={() => handleEdit(id!)}
                   onDelete={() => handleDelete(id!)}
