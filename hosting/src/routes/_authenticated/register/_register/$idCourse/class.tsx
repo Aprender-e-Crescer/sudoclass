@@ -76,18 +76,31 @@ function RegisterClass() {
                 type="date"
                 placeholder="01/12/2025"
               />
-              <div className="flex flex-col mb-4">
-                <p>Turnos</p>
-                <Select name="shift" value={values.shift} onValueChange={(value) => setFieldValue('shift', value)}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Turno" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="morning">Manhã</SelectItem>
-                    <SelectItem value="afternoon">Tarde</SelectItem>
-                    <SelectItem value="night">Noite</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-start gap-x-10">
+                <div className="flex flex-col mb-4">
+                  <p>Turnos</p>
+                  <Select name="shift" value={values.shift} onValueChange={(value) => setFieldValue('shift', value)}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Turno" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="morning">Manhã</SelectItem>
+                      <SelectItem value="afternoon">Tarde</SelectItem>
+                      <SelectItem value="night">Noite</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col mt-1">
+                  <label htmlFor="color">Cores</label>
+                  <input
+                    className="h-10"
+                    type="color"
+                    id="color"
+                    name="color"
+                    value={values.color}
+                    onChange={(e) => setFieldValue('color', e.target.value)}
+                  />
+                </div>
               </div>
             </div>
           </FormBody>
