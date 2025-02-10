@@ -1,18 +1,17 @@
-import { Header } from '@/components/custom/header'
-import LeftMenu from '@/components/custom/left-menu'
-import { auth } from '@/services/firebase'
-import { createFileRoute, Outlet, redirect, useRouter } from '@tanstack/react-router'
-import { useGetFullUser } from '@/hooks/use-get-full-user'
-import { signOut } from 'firebase/auth'
-import { getUserQueryOptions } from '@/queries/use-get-user-query'
-import { currentUserQueryOptions } from '@/queries/use-current-user-query'
-import { useEffect } from 'react'
-import { getCoursesFirestoreQuery, getCoursesQueryOptions } from '@/queries/use-get-courses-query'
-import { getStudentPersonalClassesQueryOptions, getStudentPersonalClassesFirestoreQuery } from '@/queries/use-student-personal-classes-query'
-import { getTeacherPersonalSubjectsQueryOptions, getTeacherPersonalSubjectsFirestoreQuery } from '@/queries/use-teacher-personal-subjects-query'
-import { getRoleFromRef } from '@/utils/getRoleFromRef'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { AppSidebar } from "@/components/custom/app-sidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { useFirestoreRealtimeQueries } from '@/hooks/use-firestore-realtime-queries'
 import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
+import { useGetFullUser } from '@/hooks/use-get-full-user'
+import { currentUserQueryOptions } from '@/queries/use-current-user-query'
+import { getClassesQueriesOptions } from '@/queries/use-get-classes-query'
+import { getCoursesFirestoreQuery, getCoursesQueryOptions } from '@/queries/use-get-courses-query'
+import { getUserQueryOptions } from '@/queries/use-get-user-query'
+import { getStudentPersonalClassesFirestoreQuery, getStudentPersonalClassesQueryOptions } from '@/queries/use-student-personal-classes-query'
+import { getTeacherPersonalSubjectsFirestoreQuery, getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
+import { getRoleFromRef } from '@/utils/getRoleFromRef'
+import { useQuery, useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ matches, context: { queryClient } }) => {
@@ -33,7 +32,11 @@ export const Route = createFileRoute('/_authenticated')({
       await queryClient.ensureQueryData(getTeacherPersonalSubjectsQueryOptions(role, user?.roleRef)) :
       undefined
     
-    return queryClient.ensureQueryData(getCoursesQueryOptions(role, student?.data()?.classes, teacher?.data()?.subjects))
+    const courses = await queryClient.ensureQueryData(getCoursesQueryOptions(role, student?.data()?.classes, teacher?.data()?.subjects))
+
+    const classesQueriesOptions = getClassesQueriesOptions(courses.docs.map(course => course.data()), role, student?.data()?.classes, teacher?.data()?.subjects)
+
+    await Promise.all(classesQueriesOptions.map(({ classesQueryOptions }) => queryClient.ensureQueryData(classesQueryOptions)))
   },
   component: Authenticated,
 })
@@ -54,30 +57,25 @@ export function Authenticated() {
   useFirestoreRealtimeQuery(studentPersonalClassesQueryOptions.queryKey, getStudentPersonalClassesFirestoreQuery(fullUser.roleRef))
   useFirestoreRealtimeQuery(teacherPersonalSubjectsQueryOptions.queryKey, getTeacherPersonalSubjectsFirestoreQuery(fullUser.roleRef))
   useFirestoreRealtimeQuery(coursesQueryOptions.queryKey, getCoursesFirestoreQuery(fullUser.role, student?.classes, teacher?.subjects))
+  
+  const classesQueriesOptions = getClassesQueriesOptions(courses, fullUser.role, student?.classes, teacher?.subjects)
 
-  const router = useRouter()
+  useFirestoreRealtimeQueries(classesQueriesOptions.map(({ classesQueryOptions, classesFirestoreQuery }) => ({ queryKey: classesQueryOptions.queryKey, q: classesFirestoreQuery})))
 
-  useEffect(() => {
-    if (fullUser) return
+  const allClasses = useSuspenseQueries({ queries: classesQueriesOptions.map(({ classesQueryOptions }) => classesQueryOptions) })
 
-    router.invalidate()
-  }, [fullUser])
-
-  const logout = () => {
-    signOut(auth)
-  }
-
+  const coursesWithClasses = courses.map(course => ({
+    ...course,
+    classes: allClasses.find(({ data }) => data.some(({ idCourse }) => idCourse === course.id))?.data,
+  }))
+  
   return (
-    <div className="flex h-full">
-      <div className="flex-col flex w-full">
-        <Header avatarFallBack="" avatarImage={fullUser.photoURL} logout={logout} />
-        <div className="flex  h-full">
-          <LeftMenu type={fullUser.role} courses={courses} />
-          <div className="flex-1">
-            <Outlet />
-          </div>
-        </div>
-      </div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar role={fullUser.role} coursesWithClasses={coursesWithClasses} />
+      <main className="flex flex-col w-full h-full">
+        <SidebarTrigger />
+        <Outlet />
+      </main>
+    </SidebarProvider>
   )
 }
