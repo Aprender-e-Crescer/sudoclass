@@ -1,4 +1,4 @@
-import { classRegisterSchema, classSchemaToFirestore } from '@/models/class-schema'
+import { classRegisterSchema } from '@/models/class-schema'
 import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
 import { addDoc, collection, doc, DocumentData, DocumentReference, writeBatch } from 'firebase/firestore'

@@ -1,4 +1,4 @@
-import { classSchemaToFirestore } from '@/models/class-schema'
+import { classRegisterSchema } from '@/models/class-schema'
 import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
 import { doc, DocumentData, DocumentReference, updateDoc } from 'firebase/firestore'
@@ -39,7 +39,7 @@ export function useUpdateClassMutation({ idCourse, onError, onSuccess }: UpdateC
     }: UpdateClassMutationData) => {
       const classRef = doc(firestore, 'courses', idCourse, 'classes', idClass)
 
-      const classData = classSchemaToFirestore.parse({
+      const classData = classRegisterSchema.parse({
         name,
         color,
         shift,

@@ -29,10 +29,3 @@ export const classRegisterSchema = z.object({
 })
 
 export type Class = z.infer<typeof classSchema>
-
-export const classSchemaToFirestore = classSchema.transform((data) => ({
-  ...data,
-  startDate: Timestamp.fromDate(data.startDate),
-  endDate: Timestamp.fromDate(data.endDate),
-  subscriptionEndDate: Timestamp.fromDate(data.subscriptionEndDate),
-}))
