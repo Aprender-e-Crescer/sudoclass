@@ -21,7 +21,12 @@ export function useUpdateSubjectMutation({ idCourse, idClass, onSuccess, onError
     mutationKey: ['update-subject'],
     mutationFn: async ({ id, name, color, workload }: UpdateSubjectData) => {
       const subjectRef = doc(firestore, 'courses', idCourse, 'classes', idClass, 'subjects', id)
-      return await updateDoc(subjectRef, { name, color, workload })
+      const convertedData = {
+        name,
+        color,
+        workload: Number(workload),
+      }
+      return await updateDoc(subjectRef, convertedData)
     },
     onSuccess,
     onError,
