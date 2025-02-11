@@ -33,13 +33,6 @@ function Index() {
     return shiftDictionary[shift]
   }
 
-  const handleCreate = () => {
-    navigate({
-      to: `/register/${idCourse}/class`,
-      search: { action: 'create' },
-    })
-  }
-
   const handleEdit = (idClass: string) => {
     navigate({
       to: `/register/${idCourse}/class`,
@@ -69,8 +62,7 @@ function Index() {
             title={course.name}
             Subtitle="Turmas"
             buttonText="+ Nova turma"
-            buttonRedirection={`/register/${idCourse}/class?action=create`}
-            onCreate={() => handleCreate()}
+            buttonRedirection={`/register/${idCourse}/new-class?action=create`}
           />
         </div>
         <div className="flex flex-col gap-y-5 px-6 sm:mx-16">

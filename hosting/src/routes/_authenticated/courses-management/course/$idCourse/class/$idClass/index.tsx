@@ -1,7 +1,8 @@
-import { CardComponent } from '@/components/custom/card-bolletin-board'
+import CardManagement from '@/components/custom/card-management'
 import ManagementHeader from '@/components/custom/management-header'
 import NotFound from '@/components/custom/not-found'
 import { useClassesManagementController } from '@/controllers/classes-management-controller'
+import { useSubjectRegisterController } from '@/controllers/use-subject-register-controller'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
@@ -11,8 +12,19 @@ export const Route = createFileRoute('/_authenticated/courses-management/course/
 
 function Index() {
   const { idCourse, idClass } = Route.useParams()
-
   const { course, subjects } = useClassesManagementController(idCourse, idClass)
+  const { deleteSubject } = useSubjectRegisterController(idCourse, idClass)
+  const navigate = Route.useNavigate()
+
+  const handleEdit = (idSubject: string) => {
+    navigate({
+      to: `/register/${idCourse}/${idClass}/new-subject`,
+      search: { idSubject, action: 'edit' },
+    })
+  }
+  const handleDelete = (idSubject: string) => {
+    deleteSubject(idSubject)
+  }
 
   return (
     <>
@@ -28,13 +40,25 @@ function Index() {
       </When>
       <When condition={subjects.length > 0}>
         <div className="mb-5">
-          <ManagementHeader title={course.name} Subtitle="Matérias" buttonText="+ Nova matéria" />
+          <ManagementHeader
+            title={course.name}
+            Subtitle="Matérias"
+            buttonText="+ Nova matéria"
+            buttonRedirection={`/register/${idCourse}/${idClass}/new-subject?action=create`}
+          />
         </div>
         <div className="flex flex-col gap-y-5 px-6">
           {subjects.map(({ id, color, name }) => (
             <div key={id} className="w-full">
               <Link to={`/courses/${idCourse}/classes/${idClass}/subjects/${id}/mural/warnings`} className="block">
-                <CardComponent color={color} name={name} courseName={course.name} />
+                <CardManagement
+                  color={color}
+                  name={name}
+                  type="course"
+                  confirmationTitle="Deseja excluir essa matéria?"
+                  onEdit={() => handleEdit(id)}
+                  onDelete={() => handleDelete(id)}
+                />
               </Link>
             </div>
           ))}
