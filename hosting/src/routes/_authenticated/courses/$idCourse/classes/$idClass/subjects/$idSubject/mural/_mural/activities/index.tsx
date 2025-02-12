@@ -1,12 +1,13 @@
 import { CustomLoading } from '@/components/custom/custom-loading'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { getActivitiesQueryOptions } from '@/queries/use-list-activities-query'
+import { getActivitiesFirestoreQuery, getActivitiesQueryOptions } from '@/queries/use-list-activities-query'
 import ActivitiesMaterials from '@/components/custom/activities-materials'
 import { ClipboardList, PlusIcon } from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
+import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/',
@@ -21,9 +22,13 @@ export function ListActivity() {
 
   const teacherAndAdmin = fullUser.role === 'teacher' || fullUser.role === 'admin'
 
+  const activityListQueryOptions = getActivitiesQueryOptions(idCourse, idClass, idSubject)
+
   const { data: activityList, isLoading: activityListLoading } = useQuery(
-    getActivitiesQueryOptions(idCourse, idClass, idSubject),
+    activityListQueryOptions,
   )
+
+  useFirestoreRealtimeQuery(activityListQueryOptions.queryKey, getActivitiesFirestoreQuery(idCourse, idClass, idSubject))
 
   if (activityListLoading) {
     return (

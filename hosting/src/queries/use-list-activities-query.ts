@@ -14,10 +14,7 @@ export const getActivitiesFirestoreQuery = (idCourse: string, idClass: string, i
 
 export const getActivitiesQueryOptions = (idCourse: string, idClass: string, idSubject: string) =>
   queryOptions({
-    queryKey: ['get-activities'],
-    queryFn: async () => {
-      const querySnapshot = await getDocs(getActivitiesFirestoreQuery(idCourse, idClass, idSubject))
-      return querySnapshot
-    },
+    queryKey: ['get-activities', idCourse, idClass, idSubject],
+    queryFn: () => getDocs(getActivitiesFirestoreQuery(idCourse, idClass, idSubject)),
     select: (snapshot) => snapshot.docs.map((doc) => doc.data()),
   })

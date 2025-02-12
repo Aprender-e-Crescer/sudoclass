@@ -1,16 +1,13 @@
 import { CustomLoading } from '@/components/custom/custom-loading'
 import { Activity } from '@/models/activity-schema'
 import { useUpdateActivityMutation } from '@/mutations/use-update-activity-mutation'
-import { getActivityByIdFirestoreQuery, getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id'
+import { getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id'
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
+import * as Switch from '@radix-ui/react-switch'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Field, Form, Formik } from 'formik'
 import { ClipboardList, SquareArrowOutUpRight, Trash } from 'lucide-react'
-import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
-import * as Switch from '@radix-ui/react-switch'
-import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 export const Route = createFileRoute(
@@ -24,10 +21,6 @@ function RouteComponent() {
   const { idClass, idCourse, idSubject, idActivity } = Route.useParams()
 
   const activityByIdQueryOptions = getActivityByIdQueryOptions(idCourse, idClass, idSubject, idActivity)
-  useFirestoreRealtimeQuery(
-    activityByIdQueryOptions.queryKey,
-    getActivityByIdFirestoreQuery(idCourse, idClass, idSubject, idActivity),
-  )
 
   const { data: dataActivity, isLoading } = useSuspenseQuery(activityByIdQueryOptions)
 
