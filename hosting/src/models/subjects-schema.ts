@@ -6,7 +6,14 @@ export const subjectsSchema = z.object({
   name: z.string(),
   color: z.string(),
   workload: z.number(),
-  teacher: z.array(docRefSchema),
+  teacher: z.array(docRefSchema).optional(),
+})
+
+export const subjectsRegisterSchema = z.object({
+  name: z.string(),
+  color: z.string(),
+  workload: z.preprocess((val) => (typeof 'string' ? Number(val) : z.number()), z.number()),
+  teacher: z.array(docRefSchema).optional(),
 })
 
 export type Subject = z.infer<typeof subjectsSchema>

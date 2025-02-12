@@ -10,16 +10,16 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { When } from 'react-if'
 
-export const Route = createFileRoute('/_authenticated/courses-management')({
+export const Route = createFileRoute('/_authenticated/courses-management/')({
   beforeLoad: async ({ context: { queryClient } }) => {
     const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
     const user = await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
     const role = getRoleFromRef(user?.roleRef)
   },
-  component: CoursesManagement,
+  component: Index,
 })
 
-function CoursesManagement() {
+function Index() {
   const { courses, createCourse, editCourse, deleteCourse } = useCoursesManagementController()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null)
@@ -35,17 +35,6 @@ function CoursesManagement() {
 
   return (
     <>
-      <When condition={courses?.length === 0}>
-        <NotFound
-          title="Ops! Nada por aqui..."
-          description="Nenhum curso por aqui. Que tal criar o primeiro?"
-          blueButtonText="Criar curso"
-          whiteButtonText="Cancelar"
-          linkToBlueButton="/"
-          linkToWhiteButton="/"
-        />
-      </When>
-
       <div className="mb-5">
         <ManagementHeader
           title="Cursos"
@@ -65,23 +54,30 @@ function CoursesManagement() {
         mutation={editingCourseId ? (data) => editCourse({ id: editingCourseId, ...data }) : createCourse}
       />
 
-      <div className="flex flex-col gap-y-5 px-6 mx-16">
-        {courses
-          .filter((course) => course.id != undefined)
-          .map(({ id, name }) => (
-            <div key={id} className="w-full">
-              <Link to={`/${id}/course-management`} className="block">
-                <CardManagement
-                  name={name}
-                  type="course"
-                  confirmationTitle="Deseja excluir esse curso?"
-                  onEdit={() => handleEdit(id!)}
-                  onDelete={() => handleDelete(id!)}
-                />
-              </Link>
-            </div>
-          ))}
-      </div>
+      <When condition={courses?.length === 0}>
+        <NotFound title="Ops! Nada por aqui..." description="Nenhum curso por aqui. Que tal criar o primeiro?" />
+      </When>
+
+      <When condition={courses.length > 0}>
+        <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
+          {courses
+            .filter((course) => course.id != undefined)
+            .map(({ id, color, name }) => (
+              <div key={id} className="w-full">
+                <Link to={`course/${id}`} className="block">
+                  <CardManagement
+                    name={name}
+                    type="course"
+                    color={color}
+                    confirmationTitle="Deseja excluir esse curso?"
+                    onEdit={() => handleEdit(id!)}
+                    onDelete={() => handleDelete(id!)}
+                  />
+                </Link>
+              </div>
+            ))}
+        </div>
+      </When>
     </>
   )
 }
