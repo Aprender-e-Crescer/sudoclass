@@ -79,8 +79,8 @@ export default function ActivitiesMaterials({
                       className="w-full"
                     >
                       <DropdownMenuItem className="flex gap-2">
-                      <Pencil className="w-4 h-4" />
-                      Editar
+                        <Pencil className="w-4 h-4" />
+                        Editar
                       </DropdownMenuItem>
                     </Link>
                     <DropdownMenuItem onSelect={handleDelete} className="flex gap-2 text-red-600">
@@ -95,9 +95,24 @@ export default function ActivitiesMaterials({
         </Accordion.Header>
 
         <Accordion.Content className="p-4 bg-white">
-          <div className="mb-4">
-            <h4 className="text-gray-600 font-semibold">Instruções:</h4>
-            <p>{description}</p>
+          <div className="flex justify-between">
+            <div className="mb-4">
+              <h4 className="text-gray-600 font-semibold">Instruções:</h4>
+              <p>{description}</p>
+            </div>
+            <div className="flex items-center gap-4 p-4 bg-white rounded-lg">
+              <div className="flex flex-col items-center">
+                <p className="text-sm text-gray-600 font-medium">Entregues</p>
+                <p className="text-2xl font-bold text-green-600">0</p>
+              </div>
+
+              <div className="h-10 w-px bg-gray-300"></div>
+
+              <div className="flex flex-col items-center">
+                <p className="text-sm text-gray-600 font-medium">Pendentes</p>
+                <p className="text-2xl font-bold text-red-600">0</p>
+              </div>
+            </div>
           </div>
 
           <div className="border-t">
