@@ -1,5 +1,4 @@
 import { CustomLoading } from '@/components/custom/custom-loading'
-import { toast } from 'react-toastify'
 import { Activity } from '@/models/activity-schema'
 import { useUpdateActivityMutation } from '@/mutations/use-update-activity-mutation'
 import { getActivityByIdFirestoreQuery, getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id'
