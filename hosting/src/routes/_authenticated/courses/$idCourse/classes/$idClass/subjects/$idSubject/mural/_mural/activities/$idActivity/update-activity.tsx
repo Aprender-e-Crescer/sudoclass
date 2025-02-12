@@ -11,6 +11,7 @@ import { ClipboardList } from 'lucide-react'
 import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
 import * as Switch from '@radix-ui/react-switch'
 import { useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/update-activity',
@@ -32,17 +33,33 @@ function RouteComponent() {
 
   const { mutate: mutateActivity, isPending } = useUpdateActivityMutation()
 
-  const initialValues: Activity =
-     {
-        id: dataActivity.id,
-        title: dataActivity.title,
-        description: dataActivity.description,
-        deliveryDate: dataActivity.deliveryDate,
-        postingDate: dataActivity.postingDate,
-        attachments: dataActivity.attachments,
-        isAcceptingSubmits: dataActivity.isAcceptingSubmits,
-      }
-    
+  const [attachments, setAttachments] = useState<string[]>(dataActivity.attachments || [])
+  const [attachmentInput, setAttachmentInput] = useState('')
+
+  const handleAddAttachment = (setFieldValue: (field: string, value: any) => void) => {
+    if (attachmentInput) {
+      const newAttachments = [...attachments, attachmentInput]
+      setAttachments(newAttachments)
+      setFieldValue('attachments', newAttachments)
+      setAttachmentInput('')
+    }
+  }
+
+  const handleRemoveAttachment = (index: number, setFieldValue: (field: string, value: any) => void) => {
+    const updatedAttachments = attachments.filter((_, i) => i !== index)
+    setAttachments(updatedAttachments)
+    setFieldValue('attachments', updatedAttachments) 
+  }
+
+  const initialValues: Activity = {
+    id: dataActivity.id,
+    title: dataActivity.title,
+    description: dataActivity.description,
+    deliveryDate: dataActivity.deliveryDate,
+    postingDate: dataActivity.postingDate,
+    attachments: dataActivity.attachments,
+    isAcceptingSubmits: dataActivity.isAcceptingSubmits,
+  }
 
   if (isLoading || !initialValues) {
     return (
@@ -63,6 +80,7 @@ function RouteComponent() {
         description: values.description,
         deliveryDate: values.deliveryDate,
         isAcceptingSubmits: values.isAcceptingSubmits,
+        attachments: values.attachments,
       },
       {
         onSuccess: () => {
@@ -114,6 +132,40 @@ function RouteComponent() {
                       placeholder="Digite as instruções"
                       className="w-full p-2 border rounded"
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium">Anexos</label>
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="text"
+                        value={attachmentInput}
+                        onChange={(e) => setAttachmentInput(e.target.value)}
+                        placeholder="Digite a URL do anexo"
+                        className="w-full p-2 border rounded"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleAddAttachment(setFieldValue)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Adicionar anexo
+                      </button>
+                      <div className="mt-2">
+                        {attachments.map((attachment, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <span>{attachment}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveAttachment(index, setFieldValue)}
+                              className="text-red-500"
+                            >
+                              Remover
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex gap-2">

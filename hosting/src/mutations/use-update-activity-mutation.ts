@@ -11,6 +11,7 @@ interface UpdateActivityData {
   description: string
   deliveryDate: Date
   isAcceptingSubmits: boolean
+  attachments: string[]
 }
 
 export function useUpdateActivityMutation() {
@@ -33,6 +34,7 @@ export function useUpdateActivityMutation() {
         description: data.description,
         deliveryDate: data.deliveryDate,
         isAcceptingSubmits: data.isAcceptingSubmits,
+        attachments: data.attachments,
       }
 
       await updateDoc(activityRef, updatedActivity)

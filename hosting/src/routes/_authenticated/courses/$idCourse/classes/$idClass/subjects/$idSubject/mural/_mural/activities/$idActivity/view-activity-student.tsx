@@ -1,137 +1,88 @@
 import { createFileRoute } from '@tanstack/react-router'
-import NoteValue from '@/components/custom/note-value'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { ArrowLeft, ChevronUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useGetActivityQuery } from '@/queries/use-get-activity-query'
-import { format } from 'date-fns'
-// import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query'
-import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
-import { useUpdateLinkActivityMutation } from '@/mutations/use-update-link-activity-mutation'
+import { getActivityByIdFirestoreQuery, getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id'
+import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
+import NoteValue from '@/components/custom/note-value'
+import { ArrowLeft, ClipboardList, SquareArrowOutUpRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
+import { Link } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/view-activity-student',
-)({
-  component: ViewActivityStudent,
-})
+)({ component: ViewActivityStudent })
 
 export function ViewActivityStudent() {
-  const { idActivity } = Route.useParams()
-  const { data: activity } = useGetActivityQuery(Number(idActivity))
-  const currentUser = useCurrentUserQuery()
-  const { data: user } = useGetUserQuery(currentUser?.data?.uid)
-  const { data: notes } = useGetNoteByActivity(Number(idActivity), Number(user?.idStudent))
-  const [savedLink, setSavedLink] = useState<string | null>(null)
+  const { idCourse, idClass, idSubject, idActivity } = Route.useParams()
+
+  const activityByIdQueryOptions = getActivityByIdQueryOptions(idCourse, idClass, idSubject, idActivity)
+  useFirestoreRealtimeQuery(
+    activityByIdQueryOptions.queryKey,
+    getActivityByIdFirestoreQuery(idCourse, idClass, idSubject, idActivity),
+  )
+
+  const { data: dataActivity, isLoading } = useSuspenseQuery(activityByIdQueryOptions)
+
+  if (isLoading) return <div>Loading...</div>
 
   return (
     <>
-      <div className="flex flex-col md:hidden">
-        <div className="flex flex-col mx-5 gap-3">
-          <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-gray-500 text-xs">
-            Prazo: {activity?.deliveryDate ? format(activity.deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
-          </p>
-          <p className="text-blue-600 text-2xl font-semibold">{activity?.title}</p>
-          <div className="flex text-gray-500">
-            <NoteValue note={notes?.nota} maxGrade={Number(activity?.value)} />
-          </div>
-          <div className="w-full h-0.5 bg-gray-400"></div>
-          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
-          <div>
-            <a href={activity?.attachment || undefined}>
-              <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{activity?.attachment}</h1>
-            </a>
-          </div>
+      <Link
+        to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities"
+        params={{
+          idCourse,
+          idClass,
+          idSubject,
+        }}
+      >
+        <ArrowLeft className="mt-4 ml-4 text-gray-400" />
+      </Link>
 
-          <div className="w-full h-0.5 bg-gray-400"></div>
-          <Accordion type="single" collapsible>
-            <AccordionItem value="item-1">
-              <div className="w-full">
-                <AccordionTrigger>
-                  <div className="flex flex-col w-full gap-4">
-                    <div className="flex justify-center items-center">
-                      <ChevronUp />
-                    </div>
-                    <h1 className="flex text-lg font-bold text-gray-600">Seus trabalhos</h1>
-                  </div>
-                </AccordionTrigger>
-              </div>
-              <div className="w-full h-full">
-                <AccordionContent>
-                  <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus Anexos</h1>
-                  <div>
-                    {savedLink ? (
-                      <a href={savedLink} target="_blank" rel="noopener noreferrer">
-                        <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{savedLink}</h1>
-                      </a>
-                    ) : (
-                      <p className="text-gray-500">Nenhum anexo adicionado.</p>
-                    )}
-                  </div>
+      <div className="flex flex-col w-full overflow-hidden">
+        <div className="flex border mx-4 my-4 p-5 rounded-xl items-center gap-4">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-yellow-400 h-10 w-10 rounded-full flex items-center justify-center">
+              <ClipboardList className="h-5 w-5 text-gray-700" color="white" />
+            </AvatarFallback>
+          </Avatar>
 
-                  <div className="flex flex-col gap-5 mt-5">
-                    <Button variant="lightTextBlack" className="w-full">
-                      <AddWorkPopover
-                        setSavedLink={setSavedLink}
-                        activityId={Number(idActivity)}
-                        studentId={Number(user?.idStudent)}
-                      />
-                    </Button>
-                    <Button variant="blueButton" className="w-full">
-                      Enviar
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </div>
-            </AccordionItem>
-          </Accordion>
+          <div className="flex flex-col items-start">
+            <h1 className="text-lg font-semibold">{dataActivity?.title}</h1>
+            <p className="text-gray-500 text-sm">
+              Data para entrega:{' '}
+              {dataActivity?.deliveryDate ? new Date(dataActivity.deliveryDate).toLocaleDateString() : 'Sem data'}
+            </p>
+            <NoteValue note={0} maxGrade={100} />
+          </div>
         </div>
-      </div>
-
-      <div className="hidden md:flex w-full">
-        <div className="flex flex-col mx-5 gap-3 w-full">
-          <ArrowLeft className="mt-4 text-gray-400" />
-          <p className="text-blue-600 text-4xl font-semibold">{activity?.title}</p>
-          <p className="text-gray-500 text-base">
-            Prazo: {activity?.deliveryDate ? format(activity.deliveryDate, 'dd/MM/yyyy') : 'Sem prazo'}
-          </p>
-
-          <div className="flex text-gray-500">
-            <NoteValue note={notes?.nota} maxGrade={Number(activity?.value)} />
-          </div>
-          <div className="w-full h-0.5 bg-gray-300"></div>
-          <div className="flex flex-col gap-4">
-            <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos</h1>
-            <div>
-              <a href={activity?.attachment || undefined}>
-                <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{activity?.attachment}</h1>
-              </a>
+        <div className="flex w-full">
+          <div className="flex w-3/4 px-4">
+            <div className="flex flex-col gap-3 w-full">
+              <h1 className="text-gray-600 font-semibold text-2xl mt-2">Instruções:</h1>
+              <p className="text-gray-500 text-sm">{dataActivity?.description}</p>
+              <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos do Professor:</h1>
+              {dataActivity?.attachments && dataActivity.attachments.length > 0 ? (
+                dataActivity.attachments.map((attachment) => (
+                  <div className="border p-2 rounded-lg flex gap-2" key={attachment}>
+                    <SquareArrowOutUpRight className="text-gray-600" />
+                    <a href={attachment} target="_blank" rel="noopener noreferrer">
+                      <p className="text-gray-600">{attachment}</p>
+                    </a>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">Nenhum anexo disponível.</p>
+              )}
             </div>
-            <div className="w-full h-0.5 bg-gray-300"></div>
           </div>
-        </div>
-        <div className="flex flex-col w-1/3 border mx-10 p-5 rounded-lg">
-          <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus Anexos</h1>
-          <div>
-            {savedLink ? (
-              <a href={savedLink} target="_blank" rel="noopener noreferrer">
-                <h1 className="text-blue-600 block h-6 overflow-hidden text-ellipsis">{savedLink}</h1>
-              </a>
-            ) : (
-              <p className="text-gray-500">Nenhum anexo adicionado.</p>
-            )}
-          </div>
-          <div className="flex flex-col mt-6">
-            <div className="flex flex-col gap-5">
-              <AddWorkPopover
-                setSavedLink={setSavedLink}
-                activityId={Number(idActivity)}
-                studentId={Number(user?.idStudent)}
-              />
 
+          <div className="flex w-1/4 border flex-col p-2 rounded-lg mr-4">
+            <h1 className="text-gray-600 font-semibold text-2xl mt-9">Seus Anexos</h1>
+            <div className="flex flex-col gap-5 mt-5">
+              <Button variant="blueButton" className="w-full">
+                Adicionar ou criar
+              </Button>
               <Button variant="blueButton" className="w-full">
                 Enviar
               </Button>
@@ -140,62 +91,5 @@ export function ViewActivityStudent() {
         </div>
       </div>
     </>
-  )
-}
-
-function AddWorkPopover({
-  setSavedLink,
-  activityId,
-  studentId,
-}: {
-  setSavedLink: React.Dispatch<React.SetStateAction<string | null>>
-  activityId: number
-  studentId: number
-}) {
-  const [tempLink, setTempLink] = useState('')
-  const { mutateAsync } = useUpdateLinkActivityMutation()
-
-  const handleSaveLink = async () => {
-    try {
-      await mutateAsync({
-        activityId,
-        studentId,
-        attachment: tempLink,
-      })
-      setSavedLink(tempLink)
-      setTempLink('')
-    } catch (error) {
-      console.error('Erro ao salvar link:', error)
-      alert('Erro ao salvar o link.')
-    }
-  }
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="lightTextBlack" className="w-full">
-          + Adicionar trabalho
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-96">
-        <div className="grid gap-4">
-          <div className="space-y-2">
-            <h1 className="font-medium leading-none">Insira um link abaixo</h1>
-          </div>
-          <div className="grid gap-2">
-            <input
-              type="text"
-              placeholder="Digite um link"
-              className="border rounded-sm w-full p-2"
-              value={tempLink}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTempLink(e.target.value)}
-            />
-            <Button size="medium" onClick={handleSaveLink}>
-              Salvar
-            </Button>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
   )
 }
