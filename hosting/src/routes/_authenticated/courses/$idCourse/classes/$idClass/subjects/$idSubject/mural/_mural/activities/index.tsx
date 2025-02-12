@@ -86,16 +86,14 @@ export function ListActivity() {
                           <ClipboardList className="h-5 w-5 text-gray-700" color="white" />
                         </AvatarFallback>
                       </Avatar>
-                      <h1 className="ml-3">{title}</h1>
+                      <h1 className="ml-3 font-semibold">{title}</h1>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 font-semibold">
                       <div className="flex flex-col">
                         <p>{postingDate.toLocaleDateString()}</p>
                         <div className={`${isAcceptingSubmits ? 'text-green-700' : 'text-red-700'}`}>
-                          <p className="font-semibold">
-                            {isAcceptingSubmits ? 'Aceitando envios' : 'Recusando envios'}
-                          </p>
+                          <p>{isAcceptingSubmits ? 'Aceitando envios' : 'Recusando envios'}</p>
                         </div>
                       </div>
                     </div>

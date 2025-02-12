@@ -5,6 +5,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 interface CreateActivityData {
   title: string;
   description: string;
+  attachments: string[];
   deliveryDate: Date;
   idCourse: string;
   idClass: string;
@@ -29,7 +30,7 @@ export function useCreateActivityMutation() {
         title: data.title,
         description: data.description,
         deliveryDate: data.deliveryDate,
-        attachments: [],
+        attachments: data.attachments,
         postingDate: serverTimestamp(),
         isAcceptingSubmits: true,
       };

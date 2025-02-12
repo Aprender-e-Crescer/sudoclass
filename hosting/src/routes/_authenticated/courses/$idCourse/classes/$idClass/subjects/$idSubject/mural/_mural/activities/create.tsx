@@ -5,6 +5,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { Field, Form, Formik } from 'formik'
 import { ClipboardList } from 'lucide-react'
+import { useState } from 'react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/create',
@@ -17,17 +18,31 @@ function RouteComponent() {
   const { idCourse, idClass, idSubject } = Route.useParams()
   const { mutate, isPending } = useCreateActivityMutation()
 
+  const [attachments, setAttachments] = useState<string[]>([])
+  const [attachmentInput, setAttachmentInput] = useState('')
+
+  const handleAddAttachment = () => {
+    if (attachmentInput) {
+      setAttachments([...attachments, attachmentInput])
+      setAttachmentInput('')
+    }
+  }
+
+  const handleRemoveAttachment = (index: number) => {
+    const updatedAttachments = attachments.filter((_, i) => i !== index)
+    setAttachments(updatedAttachments)
+  }
+
   const initialValues: Activity = {
     id: '',
     title: '',
     description: '',
     deliveryDate: new Date(),
     postingDate: new Date(),
-    attachments: [],
+    attachments,
     isAcceptingSubmits: true,
   }
-  
-  
+
   async function handleSubmit(values: Activity) {
     mutate(
       {
@@ -37,6 +52,7 @@ function RouteComponent() {
         idCourse,
         idClass,
         idSubject,
+        attachments,
       },
       {
         onSuccess: () => {
@@ -81,6 +97,36 @@ function RouteComponent() {
                   placeholder="Digite as instruções"
                   className="w-full p-2 border rounded"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">Anexos</label>
+                <div className="flex flex-col gap-2">
+                  <input
+                    type="text"
+                    value={attachmentInput}
+                    onChange={(e) => setAttachmentInput(e.target.value)}
+                    placeholder="Digite a URL do anexo"
+                    className="w-full p-2 border rounded"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleAddAttachment()}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    Adicionar anexo
+                  </button>
+                  <div className="mt-2">
+                    {attachments.map((attachment, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <span>{attachment}</span>
+                        <button type="button" onClick={() => handleRemoveAttachment(index)} className="text-red-500">
+                          Remover
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
