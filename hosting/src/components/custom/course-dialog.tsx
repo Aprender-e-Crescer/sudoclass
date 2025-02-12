@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,12 +8,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Formik, Form, Field } from 'formik'
 import { courseSchema } from '@/models/course-schema'
+import Circle from '@uiw/react-color-circle'
+import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { useEffect, useState } from 'react'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import Circle from '@uiw/react-color-circle'
 
 interface CourseDialogProps {
   title: string
@@ -53,14 +53,19 @@ export default function CourseDialog({
           }}
           enableReinitialize
         >
-          {({ setFieldValue, touched, errors }) => (
+          {({ setFieldValue }) => (
             <Form className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="name" className="text-right">
+              <div className="grid grid-cols-4 gap-4">
+                <label htmlFor="name" className="text-right mt-2">
                   Nome
                 </label>
-                <Field id="name" name="name" className="col-span-3" as={Input} placeholder="Nome do curso" />
-                {touched.name && errors.name && <div className="text-red-500 text-sm">{errors.name}</div>}
+                <div className="flex flex-col min-w-60 gap-y-1">
+                  <Field id="name" name="name" className="col-span-3" as={Input} placeholder="Nome do curso" />
+                  <p className="text-red-500 text-xs">
+                    <ErrorMessage name="name" />
+                    &#8203;
+                  </p>
+                </div>
               </div>
               <div className="grid grid-cols-4 items-start gap-4">
                 <label htmlFor="color" className="text-right">
@@ -92,7 +97,6 @@ export default function CourseDialog({
                     />
                   ))}
                 </div>
-                {touched.color && errors.color && <div className="text-red-500 text-sm">{errors.color}</div>}
               </div>
               <DialogFooter>
                 <Button type="submit">{initialValues.id ? 'Salvar' : 'Criar'}</Button>
