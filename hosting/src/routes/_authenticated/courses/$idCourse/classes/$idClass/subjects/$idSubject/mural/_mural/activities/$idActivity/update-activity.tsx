@@ -7,7 +7,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { Field, Form, Formik } from 'formik'
-import { ClipboardList } from 'lucide-react'
+import { ClipboardList, SquareArrowOutUpRight, Trash } from 'lucide-react'
 import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
 import * as Switch from '@radix-ui/react-switch'
 import { useNavigate } from '@tanstack/react-router'
@@ -48,7 +48,7 @@ function RouteComponent() {
   const handleRemoveAttachment = (index: number, setFieldValue: (field: string, value: any) => void) => {
     const updatedAttachments = attachments.filter((_, i) => i !== index)
     setAttachments(updatedAttachments)
-    setFieldValue('attachments', updatedAttachments) 
+    setFieldValue('attachments', updatedAttachments)
   }
 
   const initialValues: Activity = {
@@ -85,7 +85,7 @@ function RouteComponent() {
       {
         onSuccess: () => {
           navigate({
-            to: "/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities",
+            to: '/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities',
             params: {
               idCourse,
               idClass,
@@ -153,14 +153,17 @@ function RouteComponent() {
                       </button>
                       <div className="mt-2">
                         {attachments.map((attachment, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <span>{attachment}</span>
+                          <div className="border p-2 rounded-lg flex gap-2 justify-between" key={attachment}>
+                            <a href={attachment} target="_blank" rel="noopener noreferrer">
+                              <SquareArrowOutUpRight className="text-gray-600" />
+                            </a>
+                            <p className="text-gray-600">{attachment}</p>
                             <button
                               type="button"
                               onClick={() => handleRemoveAttachment(index, setFieldValue)}
                               className="text-red-500"
                             >
-                              Remover
+                              <Trash />
                             </button>
                           </div>
                         ))}
