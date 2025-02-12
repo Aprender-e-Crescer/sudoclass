@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getActivitiesQueryOptions } from '@/queries/use-list-activities-query'
 import ActivitiesMaterials from '@/components/custom/activities-materials'
 import { ClipboardList, PlusIcon } from 'lucide-react'
-import { Else, If, Then } from 'react-if'
+import { Else, If, Then, When } from 'react-if'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
 
@@ -19,7 +19,7 @@ export function ListActivity() {
 
   const fullUser = useGetFullUser()
 
-  const teacherAndAdmin = fullUser.role === 'student' || fullUser.role === 'student'
+  const teacherAndAdmin = fullUser.role === 'teacher' || fullUser.role === 'admin'
 
   const { data: activityList, isLoading: activityListLoading } = useQuery(
     getActivitiesQueryOptions(idCourse, idClass, idSubject),
@@ -37,19 +37,21 @@ export function ListActivity() {
     <>
       <div className=" flex flex-col mx-8 gap-2 mt-4">
         <div>
-          <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities/create"
-            params={{
-              idCourse,
-              idClass,
-              idSubject,
-            }}
-          >
-            <button className="flex bg-blue-600 text-white p-2 rounded-3xl hover:bg-blue-700 transition-all">
-              <PlusIcon />
-              Criar
-            </button>
-          </Link>
+          <When condition={teacherAndAdmin}>
+            <Link
+              to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities/create"
+              params={{
+                idCourse,
+                idClass,
+                idSubject,
+              }}
+            >
+              <button className="flex bg-blue-600 text-white p-2 rounded-3xl hover:bg-blue-700 transition-all">
+                <PlusIcon />
+                Criar
+              </button>
+            </Link>
+          </When>
         </div>
         <div className="flex flex-col gap-1">
           <If condition={teacherAndAdmin}>
