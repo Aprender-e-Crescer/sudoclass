@@ -1,48 +1,42 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { api } from '@/services/api'
-import { LIST_ACTIVITIES_QUERY } from '@/queries/use-list-activities-query'
+import { useMutation } from '@tanstack/react-query';
+import { firestore } from '@/services/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+interface CreateActivityData {
+  title: string;
+  description: string;
+  deliveryDate: Date;
+  idCourse: string;
+  idClass: string;
+  idSubject: string;
+}
 
 export function useCreateActivityMutation() {
-  const queryClient = useQueryClient()
-
   return useMutation({
-    mutationKey: ['createActivity'],
-    mutationFn: async ({
-      title,
-      instruction,
-      deliveryDate,
-      value,
-      subjectId,
-      attachment,
-    }: {
-      title: string
-      instruction: string
-      deliveryDate: string
-      value: number
-      subjectId: number
-      attachment: string | null
-    }) => {
-      const requestBody = {
-        title,
-        description: instruction,
-        value,
-        deliveryDate,
-        attachment,
-      }
+    mutationFn: async (data: CreateActivityData) => {
+      const activitiesRef = collection(
+        firestore,
+        'courses',
+        data.idCourse,
+        'classes',
+        data.idClass,
+        'subjects',
+        data.idSubject,
+        'activities',
+      );
 
-      try {
-        await api.post(`/subjects/${subjectId}/activity`, requestBody)
+      const newActivity = {
+        title: data.title,
+        description: data.description,
+        deliveryDate: data.deliveryDate,
+        attachments: [],
+        postingDate: serverTimestamp(),
+        isAcceptingSubmits: true,
+      };
 
-        return 'Atividade criada com sucesso'
-      } catch (error) {
-        console.error('Erro ao criar atividade:', error)
-      }
+      const docRef = await addDoc(activitiesRef, newActivity);
+
+      return docRef.id;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: LIST_ACTIVITIES_QUERY })
-    },
-    onError: (error: any) => {
-      console.error('Erro ao criar atividade:', error.message)
-    },
-  })
+  });
 }

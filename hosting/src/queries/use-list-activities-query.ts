@@ -1,18 +1,23 @@
-import { activitySchema } from '@/models/activity-schema'
-import { api } from '@/services/api'
-import { useQuery } from '@tanstack/react-query'
-import { z } from 'zod'
+import { Activity, activitySchema } from '@/models/activity-schema'
+import { firestore } from '@/services/firebase'
+import { queryOptions } from '@tanstack/react-query'
+import { collection, getDocs, orderBy, query } from 'firebase/firestore'
 
-export const LIST_ACTIVITIES_QUERY = ['getActivies']
-export function useListActivitiesQuery(subjectId: number) {
-  return useQuery({
-    queryKey: [...LIST_ACTIVITIES_QUERY, subjectId],
+export const getActivitiesFirestoreQuery = (idCourse: string, idClass: string, idSubject: string) =>
+  query(
+    collection(firestore, 'courses', idCourse, 'classes', idClass, 'subjects', idSubject, 'activities').withConverter({
+      fromFirestore: (snapshot) => activitySchema.parse({ id: snapshot.id, ...snapshot.data() }),
+      toFirestore: (activities: Activity) => activities,
+    }),
+    orderBy('postingDate', 'desc')
+  )
+
+export const getActivitiesQueryOptions = (idCourse: string, idClass: string, idSubject: string) =>
+  queryOptions({
+    queryKey: ['get-activities'],
     queryFn: async () => {
-      const { data } = await api.get(`/activities/${subjectId}`)
-      const activities = z.array(activitySchema).parse(data)
-      console.log('atividades:', activities)
-
-      return activities
+      const querySnapshot = await getDocs(getActivitiesFirestoreQuery(idCourse, idClass, idSubject))
+      return querySnapshot
     },
+    select: (snapshot) => snapshot.docs.map((doc) => doc.data()),
   })
-}

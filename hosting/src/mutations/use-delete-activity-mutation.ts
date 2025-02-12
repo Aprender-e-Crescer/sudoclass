@@ -1,21 +1,30 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { api } from '@/services/api'
-import { LIST_ACTIVITIES_QUERY } from '@/queries/use-list-activities-query'
+import { useMutation } from '@tanstack/react-query';
+import { firestore } from '@/services/firebase';
+import { doc, deleteDoc } from 'firebase/firestore';
+
+interface DeleteActivityData {
+  idCourse: string;
+  idClass: string;
+  idSubject: string;
+  idActivity: string;
+}
 
 export function useDeleteActivityMutation() {
-  const queryClient = useQueryClient()
-
   return useMutation({
-    mutationKey: ['deleteActivity'],
-    mutationFn: async (activityId: number) => {
-      console.log(activityId)
-      await api.delete(`/activity`, { data: activityId })
+    mutationFn: async (data: DeleteActivityData) => {
+      const activityRef = doc(
+        firestore,
+        'courses',
+        data.idCourse,
+        'classes',
+        data.idClass,
+        'subjects',
+        data.idSubject,
+        'activities',
+        data.idActivity
+      );
+
+      await deleteDoc(activityRef);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: LIST_ACTIVITIES_QUERY })
-    },
-    onError: (error) => {
-      console.error('Erro ao excluir a atividade:', error)
-    },
-  })
+  });
 }
