@@ -14,6 +14,8 @@ import { masks } from '@/utils/masks'
 import { formatWithMask } from '@/utils/formatWithMask'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { browserLocalPersistence, browserSessionPersistence, inMemoryPersistence, setPersistence } from 'firebase/auth'
+import { auth } from '@/services/firebase'
 
 export const Route = createFileRoute('/login')({
   component: Login,
@@ -29,13 +31,22 @@ const checkboxOptions = [
 const initialValues = {
   cpf: '',
   password: '',
+  rememberMe: false,
 }
 
 function Login() {
   const { login, isUserLoggedIn } = useLoginController()
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleOnLoginFormSubmit = async ({ cpf, password }: { cpf: string; password: string }) => {
+  const handleOnLoginFormSubmit = async ({
+    cpf,
+    password,
+    rememberMe,
+  }: {
+    cpf: string
+    password: string
+    rememberMe: boolean
+  }) => {
     setIsLoading(true)
 
     try {
@@ -43,6 +54,10 @@ function Login() {
         text: cpf,
         mask: masks.BRL_CPF,
       })
+
+      console.log(rememberMe)
+
+      setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence)
 
       await login({
         cpf: unmasked,
@@ -119,7 +134,7 @@ function Login() {
                     </div>
 
                     <div className="text-blue-600 flex justify-between items-center gap-4 -mt-6 mr-5 ml-4">
-                      <InputCheckbox fieldName="remember-me" checkboxValues={checkboxOptions} />
+                      <InputCheckbox fieldName="rememberMe" checkboxValues={checkboxOptions} />
                       <Link to="/" className="text-blue-600 underline text-sm">
                         Esqueceu sua Senha?
                       </Link>
