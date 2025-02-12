@@ -34,7 +34,7 @@ function Index() {
           description="Esta turma ainda não tem matérias. Que tal criar a primeira?"
           blueButtonText="Criar matéria"
           whiteButtonText="Cancelar"
-          linkToBlueButton="/"
+          linkToBlueButton={`/register/${idCourse}/${idClass}/new-subject?action=create`}
           linkToWhiteButton={`/courses-management/course/${idCourse}`}
         />
       </When>
