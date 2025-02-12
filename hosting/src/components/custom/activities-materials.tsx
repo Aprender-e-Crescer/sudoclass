@@ -5,6 +5,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useDeleteActivityMutation } from '@/mutations/use-delete-activity-mutation'
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { getProfileQueryOptions } from '@/queries/use-get-profile-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
+import { getClassQueryOptions } from '@/queries/use-class-query'
 
 interface ActivitiesMaterialsProps {
   id: string
@@ -28,7 +31,15 @@ export default function ActivitiesMaterials({
   isAcceptingSubmits,
 }: ActivitiesMaterialsProps) {
   const [confirmDelete, setConfirmDelete] = useState(false)
+
   const { mutate: deleteActivity } = useDeleteActivityMutation()
+
+  const { data: classData } = useQuery(getClassQueryOptions(idCourse, idClass))
+
+  const students = useQueries({
+    queries: classData?.studentsProfile.map((studentProfile) => getProfileQueryOptions(studentProfile)) ?? [],
+    combine: (results) => results.map((result) => result.data)?.filter((student) => student !== undefined),
+  })
 
   function handleDelete() {
     if (!confirmDelete) {
@@ -110,7 +121,7 @@ export default function ActivitiesMaterials({
 
               <div className="flex flex-col items-center">
                 <p className="text-sm text-gray-600 font-medium">Pendentes</p>
-                <p className="text-2xl font-bold text-red-600">0</p>
+                <p className="text-2xl font-bold text-red-600">{students.length}</p>
               </div>
             </div>
           </div>
