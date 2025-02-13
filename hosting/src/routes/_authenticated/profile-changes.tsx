@@ -9,7 +9,7 @@ import { useAddProfileImage } from '@/mutations/use-add-profile-image-mutation'
 import { useDeleteProfileImage } from '@/mutations/use-delete-profile-image-mutation'
 import { useGetTeacherQuery } from '@/queries/use-get-teacher-query'
 import { useGetPedagogueQuery } from '@/queries/use-get-pedagogue-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
+// import { useGetUserQuery } from '@/queries/use-get-user-query'
 
 export const Route = createFileRoute('/_authenticated/profile-changes')({
   component: ProfileChanges,

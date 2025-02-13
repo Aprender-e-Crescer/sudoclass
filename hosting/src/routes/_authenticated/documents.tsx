@@ -7,7 +7,7 @@ import { Download, Loader2, Search } from 'lucide-react'
 import { Form, Formik } from 'formik'
 import { GenericTable } from '@/components/custom/generic-table'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
+// import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { useListStudentDocumentsQuery } from '@/queries/use-list-student-documents'
 
 export const Route = createFileRoute('/_authenticated/documents')({

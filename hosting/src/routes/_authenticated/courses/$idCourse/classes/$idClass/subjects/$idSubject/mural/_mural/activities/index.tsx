@@ -5,7 +5,7 @@ import { useListActivitiesQuery } from '@/queries/use-list-activities-query'
 import { Plus } from 'lucide-react'
 import { CustomLoading } from '@/components/custom/custom-loading'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
+// import { useGetUserQuery } from '@/queries/use-get-user-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/',

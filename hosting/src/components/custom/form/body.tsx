@@ -18,9 +18,9 @@ export function FormBody({ cancelTo, children }: PropsWithChildren<Props>) {
             </div>
             <div className="flex flex-1 gap-x-3 justify-center">
                 <Link to={cancelTo}>
-                    <Button variant="outline" className="px-20" type="button">Cancelar</Button>
+                    <Button variant="outline" className="px-[72px] sm:px-[108px]" type="button">Cancelar</Button>
                 </Link>
-                <button className="pl-12 pr-20 flex gap-1 items-center rounded bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-gray-400 text-sm font-bold text-white" type='submit' disabled={isSubmitting}>
+                <button className="pl-4 pr-10 sm:pl-12 sm:pr-20 flex gap-1 items-center rounded bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-gray-400 text-sm font-bold text-white" type='submit' disabled={isSubmitting}>
                     <Loader2 className='invisible data-[is-submitting=true]:visible w-6 h-6 animate-spin text-gray-200' data-is-submitting={isSubmitting} />
                     Cadastrar
                 </button>

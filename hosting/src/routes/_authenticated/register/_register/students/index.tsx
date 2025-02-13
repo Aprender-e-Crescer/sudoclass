@@ -1,18 +1,16 @@
+import avatar from '@/assets/avatar.png'
 import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { useRegisterStudentController } from '@/controllers/student-register-controller'
-import { studentSchema } from '@/models/student-schema'
+import { useRegisterStudentController } from '@/controllers/use-student-register-controller'
 import { STUDENTS_QUERY_KEY, useStudentsListQuery } from '@/queries/use-students-list-query'
+import { AddStudentToClassButton } from '@/routes/_authenticated/add-student-in-class'
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { When } from 'react-if'
 import { z } from 'zod'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import avatar from '@/assets/avatar.png'
-import { useQueryClient } from '@tanstack/react-query'
-import { AddStudentToClassButton } from '@/routes/_authenticated/add-student-in-class'
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).optional(),
