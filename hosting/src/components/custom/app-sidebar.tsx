@@ -1,4 +1,4 @@
-import { Home, Settings } from "lucide-react"
+import { Home, Settings, Users } from "lucide-react"
 import sudotecLogo from '@/assets/sudotecLogo.svg'
 
 import {
@@ -29,7 +29,7 @@ const menuItemsStudentPortal = [
 
 const menuItemsAdminPortal = [
     { title: 'Início', icon: Home, to: '/' },
-    { title: 'Usuários', icon: Home, to: '/users' },
+    { title: 'Usuários', icon: Users, to: '/users' },
     { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
     { title: 'Documentos', icon: Home, to: '/documents' },
     { title: 'Criações', icon: Home, to: '/creations' },
@@ -120,24 +120,26 @@ export function AppSidebar({ role, coursesWithClasses }: Props) {
             <Collapsible defaultOpen className="group/collapsible">
                 {coursesWithClasses.map(({ color, id, name, classes }) => (
                     <SidebarMenuItem key={id} className="list-none">
-                        <If condition={classes.length > 1}>
-                            <Then>
+                        <Switch>
+                            <Case condition={classes.length > 1}>
                                 <SidebarMenuButton className="flex items-center" asChild>
                                     <Link to="/courses/$idCourse/classes" params={{ idCourse: id }}>
                                         <span className="rounded h-2 w-2" style={{ backgroundColor: color }} />
                                         {name}
                                     </Link>
                                 </SidebarMenuButton>
-                            </Then>
-                            <Else>
-                                <SidebarMenuButton className="flex items-center" asChild>
-                                    <Link to="/courses/$idCourse/classes/$idClass/subjects" params={{ idCourse: id, idClass: classes[0].id }}>
-                                        <span className="rounded h-2 w-2" style={{ backgroundColor: color }} />
-                                        {name}
-                                    </Link>
-                                </SidebarMenuButton>
-                            </Else>
-                        </If>
+                            </Case>
+                            <Case condition={classes.length === 1}>
+                                {() => 
+                                    <SidebarMenuButton className="flex items-center" asChild>
+                                        <Link to="/courses/$idCourse/classes/$idClass/subjects" params={{ idCourse: id, idClass: classes[0].id }}>
+                                            <span className="rounded h-2 w-2" style={{ backgroundColor: color }} />
+                                            {name}
+                                        </Link>
+                                    </SidebarMenuButton>
+                                }
+                            </Case>
+                        </Switch>
                         <When condition={classes.length > 1}>
                             <CollapsibleContent>
                                 <SidebarMenuSub>

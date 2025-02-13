@@ -1,7 +1,7 @@
 import { GenericTable } from '@/components/custom/generic-table'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
 import { useGetSubjectsByStudentQuery } from '@/queries/use-get-subjects-by-student-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
+// import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Eye, Loader2 } from 'lucide-react'
 

@@ -1,15 +1,24 @@
-import { api } from '@/services/api'
+import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
+import { deleteDoc, doc } from 'firebase/firestore'
 
-interface Results {
+interface DeleteClassInput {
   onSuccess: () => void
-  onError: () => void
+  onError: (error: Error) => void
 }
 
-export function useDeleteClassMutation({ onSuccess, onError }: Results) {
+interface DeleteClassData {
+  idCourse: string
+  idClass: string
+}
+
+export function useDeleteClassMutation({ onSuccess, onError }: DeleteClassInput) {
   return useMutation({
     mutationKey: ['delete-class'],
-    mutationFn: (id: number) => api.delete(`/turmas/${id}`),
+    mutationFn: ({ idCourse, idClass }: DeleteClassData) => {
+      const classRef = doc(firestore, 'courses', idCourse, 'classes', idClass)
+      return deleteDoc(classRef)
+    },
     onSuccess,
     onError,
   })

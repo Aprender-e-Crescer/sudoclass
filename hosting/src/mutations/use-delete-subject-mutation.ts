@@ -1,15 +1,20 @@
-import { api } from '@/services/api'
+import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
+import { deleteDoc, doc } from 'firebase/firestore'
 
-interface Results {
+interface DeleteSubjectInput {
+  idCourse: string
+  idClass: string
   onSuccess: () => void
-  onError: () => void
+  onError: (error: Error) => void
 }
-
-export function useDeleteSubjectMutation({ onSuccess, onError }: Results) {
+export function useDeleteSubjectMutation({ idCourse, idClass, onSuccess, onError }: DeleteSubjectInput) {
   return useMutation({
     mutationKey: ['delete-subject'],
-    mutationFn: (id: number) => api.delete(`/subject/${id}`),
+    mutationFn: async (id: string) => {
+      const subjectRef = doc(firestore, 'courses', idCourse, 'classes', idClass, 'subjects', id)
+      return await deleteDoc(subjectRef)
+    },
     onSuccess,
     onError,
   })

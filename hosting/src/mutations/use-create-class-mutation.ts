@@ -1,10 +1,9 @@
 import { classRegisterSchema } from '@/models/class-schema'
 import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
-import { doc, DocumentData, DocumentReference, updateDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, DocumentData, DocumentReference, writeBatch } from 'firebase/firestore'
 
-export interface UpdateClassMutationData {
-  idClass: string
+interface CreateClassMutationData {
   name: string
   color: string
   shift: 'morning' | 'afternoon' | 'night'
@@ -16,17 +15,15 @@ export interface UpdateClassMutationData {
   studentsProfile: DocumentReference<DocumentData, DocumentData>[]
 }
 
-interface UpdateClassMutationInput {
+interface CreateClassMutationInput {
   idCourse: string
-  onError: (error: Error) => void
+  onError: (err: Error) => void
   onSuccess: (idClass: string) => void
 }
-
-export function useUpdateClassMutation({ idCourse, onError, onSuccess }: UpdateClassMutationInput) {
+export function useCreateClassMutation({ idCourse, onError, onSuccess }: CreateClassMutationInput) {
   return useMutation({
-    mutationKey: ['update-class'],
+    mutationKey: ['create-class'],
     mutationFn: async ({
-      idClass,
       name,
       color,
       shift,
@@ -36,8 +33,8 @@ export function useUpdateClassMutation({ idCourse, onError, onSuccess }: UpdateC
       workload,
       availableVacancies,
       studentsProfile,
-    }: UpdateClassMutationData) => {
-      const classRef = doc(firestore, 'courses', idCourse, 'classes', idClass)
+    }: CreateClassMutationData) => {
+      const batch = writeBatch(firestore)
 
       const classData = classRegisterSchema.parse({
         name,
@@ -51,7 +48,13 @@ export function useUpdateClassMutation({ idCourse, onError, onSuccess }: UpdateC
         studentsProfile,
       })
 
-      await updateDoc(classRef, classData)
+      const classesRef = collection(firestore, 'courses', idCourse, 'classes')
+      const idClass = (await addDoc(classesRef, {})).id
+      const newClassRef = doc(firestore, 'courses', idCourse, 'classes', idClass)
+
+      batch.set(newClassRef, classData)
+
+      await batch.commit()
       return idClass
     },
     onError,

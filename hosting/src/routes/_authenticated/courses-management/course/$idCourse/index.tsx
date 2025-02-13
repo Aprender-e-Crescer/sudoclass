@@ -5,13 +5,14 @@ import { useCourseManagementController } from '@/controllers/course-management-c
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
-export const Route = createFileRoute('/_authenticated/$idCourse/course-management')({
-  component: CourseManagement,
+export const Route = createFileRoute('/_authenticated/courses-management/course/$idCourse/')({
+  component: Index,
 })
 
-function CourseManagement() {
+function Index() {
   const { idCourse } = Route.useParams()
-  const { course, classes } = useCourseManagementController(idCourse)
+  const { course, classes, deleteClass } = useCourseManagementController(idCourse)
+  const navigate = Route.useNavigate()
 
   function dateConverter(date: Date) {
     const newDate = new Date(date)
@@ -32,6 +33,17 @@ function CourseManagement() {
     return shiftDictionary[shift]
   }
 
+  const handleEdit = (idClass: string) => {
+    navigate({
+      to: `/register/${idCourse}/class`,
+      search: { idClass, action: 'edit' },
+    })
+  }
+
+  const handleDelete = (idClass: string) => {
+    deleteClass({ idCourse, idClass })
+  }
+
   return (
     <>
       <When condition={classes?.length === 0}>
@@ -40,25 +52,32 @@ function CourseManagement() {
           description="Este curso ainda não tem turmas. Que tal criar a primeira?"
           blueButtonText="Criar turma"
           whiteButtonText="Cancelar"
-          linkToBlueButton="/"
-          linkToWhiteButton="/"
+          linkToBlueButton={`/register/${idCourse}/class?action=create`}
+          linkToWhiteButton="/courses-management"
         />
       </When>
       <When condition={classes?.length > 0}>
         <div className="mb-5">
-          <ManagementHeader title={course.name} Subtitle="Turmas" buttonText="+ Nova turma" />
+          <ManagementHeader
+            title={course.name}
+            Subtitle="Turmas"
+            buttonText="+ Nova turma"
+            buttonRedirection={`/register/${idCourse}/new-class?action=create`}
+          />
         </div>
-        <div className="flex flex-col gap-y-5 px-6 mx-16">
-          {classes.map(({ id, name, endDate, startDate, shift }) => (
+        <div className="flex flex-col gap-y-5 px-6 sm:mx-16">
+          {classes.map(({ id, name, color, endDate, startDate, shift }) => (
             <div key={id} className="w-full">
-              <Link to={`/${idCourse}/${id}/classes-management`} className="block">
+              <Link to={`class/${id}`} className="block">
                 <CardManagement
                   name={name}
                   type="class"
+                  color={color}
                   startDate={dateConverter(startDate)}
                   endDate={dateConverter(endDate)}
                   shift={shiftTranslate(shift)}
-                  onEdit={() => console.log('edit')}
+                  onEdit={() => handleEdit(id)}
+                  onDelete={() => handleDelete(id)}
                   confirmationTitle="Deseja excluir esse curso?"
                 />
               </Link>
