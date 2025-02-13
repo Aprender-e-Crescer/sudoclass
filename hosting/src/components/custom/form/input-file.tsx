@@ -19,7 +19,7 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple }
   const { setFieldValue, errors, touched, values } = useFormikContext()
 
   // @ts-expect-error
-  const value = values[name]
+  const value = Array.isArray(values[name]) ? values[name] : []
   // @ts-expect-error
   const isTouched = !!touched[name]
   // @ts-expect-error
@@ -30,7 +30,7 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple }
     onChange?.(event)
 
     const currentFiles = Array.from(event.currentTarget.files ?? [])
-    const files = Array.from(value).concat(currentFiles).filter((file, index, array) => array.findIndex((f) => (f as File).name === (file as File).name) === index)
+    const files = currentFiles.concat(Array.from(value)).filter((file, index, array) => array.findIndex((f) => (f as File).name === (file as File).name) === index)
 
     setFieldValue(name, files)
   }
@@ -59,7 +59,7 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple }
           multiple={multiple}
           className="hidden"
         />
-        {value && Array.from(value).map((file: File) => (
+        {value.map((file: File) => (
           <div key={file.name} data-show-error={shouldShowError} className="rounded-md border border-gray-300 px-3 py-2 flex flex-1 items-center gap-3">
             <p className="flex-1">{file.name}</p>
             <p>{prettyBytes(file.size)}</p>
