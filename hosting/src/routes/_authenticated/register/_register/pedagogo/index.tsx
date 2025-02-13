@@ -1,7 +1,7 @@
 import { InputFile } from '@/components/custom/file-input'
 import { InputForm } from '@/components/custom/text-input'
 import { Button } from '@/components/ui/button'
-import { useRegisterAdminController } from '@/controllers/admin-register-controller'
+import { useRegisterAdminController } from '@/controllers/use-admin-register-controller'
 import { RegistrationAdminSchema } from '@/models/admin-registration-schema'
 import { PEDAGOGUES_QUERY_KEY, usePedagogueListQuery } from '@/queries/use-list-admin-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
