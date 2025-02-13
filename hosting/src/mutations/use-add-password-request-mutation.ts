@@ -15,7 +15,8 @@ export function useAddPasswordRequestMutation({ onError, onSuccess }: AddPasswor
     mutationKey: ['addPasswordRequest'],
     mutationFn: async ({ profileRef, password }: AddPasswordRequestData) => {
       const passwordRequestRef = collection(firestore, 'requestsChangePassword')
-      const passwordRequestId = (await addDoc(passwordRequestRef, { profileRef: profileRef })).id
+      const passwordRequestId = (await addDoc(passwordRequestRef, { profileRef: profileRef, requestStatus: 'pending' }))
+        .id
       const credentialRef = collection(firestore, 'requestsChangePassword', passwordRequestId, 'credential')
       const credentialId = (await addDoc(credentialRef, { password })).id
       return { id: credentialId }
