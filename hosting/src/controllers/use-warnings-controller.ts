@@ -30,7 +30,7 @@ export const warningRouteLoader = async ({ idClass, idCourse, idSubject, queryCl
     const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
     const user = await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
     
-    const profilePromise = queryClient.ensureQueryData(getProfileQueryOptions(user.profileRef))
+    const profilePromise = queryClient.ensureQueryData(getProfileQueryOptions(user.ref))
 
     const warnings = await warningsPromise;
 
