@@ -4,10 +4,11 @@ import { useState } from 'react'
 import { getActivityByIdFirestoreQuery, getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id'
 import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
 import NoteValue from '@/components/custom/note-value'
-import { ArrowLeft, ClipboardList, SquareArrowOutUpRight } from 'lucide-react'
+import { ArrowLeft, ClipboardList } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
 import { Link } from '@tanstack/react-router'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/view-activity-student',
@@ -15,6 +16,7 @@ export const Route = createFileRoute(
 
 export function ViewActivityStudent() {
   const { idCourse, idClass, idSubject, idActivity } = Route.useParams()
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const activityByIdQueryOptions = getActivityByIdQueryOptions(idCourse, idClass, idSubject, idActivity)
   useFirestoreRealtimeQuery(
@@ -62,17 +64,23 @@ export function ViewActivityStudent() {
               <h1 className="text-gray-600 font-semibold text-2xl mt-2">Instruções:</h1>
               <p className="text-gray-500 text-sm">{dataActivity?.description}</p>
               <h1 className="text-gray-600 font-semibold text-2xl mt-9">Anexos do Professor:</h1>
-              {dataActivity?.attachments && dataActivity.attachments.length > 0 ? (
-                dataActivity.attachments.map((attachment) => (
-                  <div className="border p-2 rounded-lg flex gap-2" key={attachment}>
-                    <SquareArrowOutUpRight className="text-gray-600" />
-                    <a href={attachment} target="_blank" rel="noopener noreferrer">
-                      <p className="text-gray-600">{attachment}</p>
-                    </a>
-                  </div>
-                ))
+              {dataActivity?.attachmentUrls?.length > 0 ? (
+                <div className="flex flex-wrap gap-4">
+                  {dataActivity.attachmentUrls.map((url, index) => (
+                    <div
+                      key={index}
+                      className="rounded-lg border border-gray-300 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col max-w-40 cursor-pointer"
+                      onClick={() => setSelectedImage(url)}
+                    >
+                      <img src={url} alt={`Anexo ${index + 1}`} className="w-full h-24 object-cover" />
+                      <div className="p-2 bg-gray-50 border-t border-gray-200">
+                        <p className="text-xs text-gray-600">Anexo {index + 1}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <p className="text-gray-500">Nenhum anexo disponível.</p>
+                <p className="text-gray-500 text-sm">Nenhum anexo disponível.</p>
               )}
             </div>
           </div>
@@ -90,6 +98,15 @@ export function ViewActivityStudent() {
           </div>
         </div>
       </div>
+
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Visualizar Anexo</DialogTitle>
+          </DialogHeader>
+          {selectedImage && <img src={selectedImage} alt="Anexo selecionado" className="w-full h-auto rounded-lg" />}
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

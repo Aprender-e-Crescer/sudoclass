@@ -1,11 +1,13 @@
+import { InputFile } from '@/components/custom/form/input-file'
 import { Activity } from '@/models/activity-schema'
 import { useCreateActivityMutation } from '@/mutations/use-create-activity-mutation'
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
-import { Field, Form, Formik } from 'formik'
-import { ClipboardList, SquareArrowOutUpRight, Trash } from 'lucide-react'
-import { useState } from 'react'
+import { Formik } from 'formik'
+import { ClipboardList } from 'lucide-react'
+import { FormBody } from '@/components/custom/form/body'
+import { Input } from '@/components/custom/form/input'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/create',
@@ -16,22 +18,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const navigate = useNavigate()
   const { idCourse, idClass, idSubject } = Route.useParams()
-  const { mutate, isPending } = useCreateActivityMutation()
-
-  const [attachments, setAttachments] = useState<string[]>([])
-  const [attachmentInput, setAttachmentInput] = useState('')
-
-  const handleAddAttachment = () => {
-    if (attachmentInput) {
-      setAttachments([...attachments, attachmentInput])
-      setAttachmentInput('')
-    }
-  }
-
-  const handleRemoveAttachment = (index: number) => {
-    const updatedAttachments = attachments.filter((_, i) => i !== index)
-    setAttachments(updatedAttachments)
-  }
+  const { mutate } = useCreateActivityMutation()
 
   const initialValues: Activity = {
     id: '',
@@ -39,30 +26,28 @@ function RouteComponent() {
     description: '',
     deliveryDate: new Date(),
     postingDate: new Date(),
-    attachments,
+    attachments: [],
     isAcceptingSubmits: true,
   }
 
   async function handleSubmit(values: Activity) {
+    const deliveryDate = new Date(values.deliveryDate)
+
     mutate(
       {
         title: values.title,
         description: values.description,
-        deliveryDate: new Date(values.deliveryDate),
+        deliveryDate,
         idCourse,
         idClass,
         idSubject,
-        attachments,
+        attachments: values.attachments, 
       },
       {
         onSuccess: () => {
           navigate({
-            to: `/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities`,
-            params: {
-              idCourse,
-              idClass,
-              idSubject,
-            },
+            to: '/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities',
+            params: { idCourse, idClass, idSubject },
           })
         },
       },
@@ -82,77 +67,12 @@ function RouteComponent() {
         </div>
 
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          <Form className="flex mx-4 my-4 p-5 rounded-xl">
-            <div className="flex flex-col border p-3 rounded-lg w-3/4">
-              <div>
-                <label className="block text-sm font-medium">Título</label>
-                <Field type="text" name="title" placeholder="Digite o título" className="w-full p-2 border rounded" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium">Instruções</label>
-                <Field
-                  as="textarea"
-                  name="description"
-                  placeholder="Digite as instruções"
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium">Anexos</label>
-                <div className="flex flex-col gap-2">
-                  <input
-                    type="text"
-                    value={attachmentInput}
-                    onChange={(e) => setAttachmentInput(e.target.value)}
-                    placeholder="Digite a URL do anexo"
-                    className="w-full p-2 border rounded"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleAddAttachment()}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
-                    Adicionar anexo
-                  </button>
-                  <div className="mt-2">
-                    {attachments.map((attachment, index) => (
-                      <div className="border p-2 rounded-lg flex gap-2 justify-between" key={attachment}>
-                        <a href={attachment} target="_blank" rel="noopener noreferrer">
-                          <SquareArrowOutUpRight className="text-gray-600" />
-                        </a>
-                        <p className="text-gray-600">{attachment}</p>
-                        <button type="button" onClick={() => handleRemoveAttachment(index)} className="text-red-500">
-                          <Trash />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col w-1/4 border mx-4 p-5 gap-2 rounded-lg">
-              <label className="block text-sm font-medium">Data de entrega</label>
-              <Field type="date" name="deliveryDate" className="rounded-xl bg-gray-200 p-1" />
-
-              <div className="flex flex-col gap-2 justify-center">
-                <Link
-                  to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities"
-                  params={{ idCourse, idClass, idSubject }}
-                >
-                  <button type="reset" className="mt-4 flex-1 rounded-md bg-gray-300 text-gray-700 p-2 w-full">
-                    Cancelar
-                  </button>
-                </Link>
-
-                <button type="submit" disabled={isPending} className="flex-1 bg-blue-500 text-white p-2 rounded">
-                  {isPending ? 'Criando...' : 'Criar atividade'}
-                </button>
-              </div>
-            </div>
-          </Form>
+          <FormBody cancelTo="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities">
+            <Input name="title" label="Título" type="text" placeholder="Digite o título" />
+            <Input name="description" label="Instruções" type="text" placeholder="Digite as instruções" />
+            <Input name="deliveryDate" label="Data de entrega" type="date" placeholder="Data de entrega" />
+            <InputFile name="attachments" label="Anexar documentos" type="file" multiple />
+          </FormBody>
         </Formik>
       </div>
     </div>
