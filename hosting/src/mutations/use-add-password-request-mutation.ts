@@ -8,13 +8,17 @@ interface AddPasswordRequestInput {
 }
 interface AddPasswordRequestData {
   profileRef: DocumentReference<DocumentData, DocumentData>
+  password: string
 }
 export function useAddPasswordRequestMutation({ onError, onSuccess }: AddPasswordRequestInput) {
   return useMutation({
     mutationKey: ['addPasswordRequest'],
-    mutationFn: ({ profileRef }: AddPasswordRequestData) => {
+    mutationFn: async ({ profileRef, password }: AddPasswordRequestData) => {
       const passwordRequestRef = collection(firestore, 'requestsChangePassword')
-      return addDoc(passwordRequestRef, { profileRef: profileRef })
+      const passwordRequestId = (await addDoc(passwordRequestRef, { profileRef: profileRef })).id
+      const credentialRef = collection(firestore, 'requestsChangePassword', passwordRequestId, 'credential')
+      const credentialId = (await addDoc(credentialRef, { password })).id
+      return { id: credentialId }
     },
     onError,
     onSuccess,

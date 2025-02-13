@@ -13,6 +13,7 @@ import { AiOutlineIdcard } from 'react-icons/ai'
 import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { isValidCPF } from '../../../functions/src/utils/isValidCPF'
+import { FaKey } from 'react-icons/fa6'
 
 export const Route = createFileRoute('/password-reset')({
   component: PasswordReset,
@@ -20,10 +21,12 @@ export const Route = createFileRoute('/password-reset')({
 
 const validationSchema = z.object({
   cpf: z.string().refine(isValidCPF, 'Inválido'),
+  password: z.string().min(8),
 })
 
 function PasswordReset() {
   const [cpf, setCpf] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
   const [hasRequested, setRequested] = useState<boolean>(false)
 
   const { addPasswordRequest } = usePasswordRequestController()
@@ -31,30 +34,31 @@ function PasswordReset() {
   const userQueryOptions = getUserQueryOptions(cpf)
   const { data: user } = useQuery({ ...userQueryOptions, enabled: !!cpf })
 
-  const handleSubmit = async ({ cpf }: { cpf: string }) => {
+  const handleSubmit = async ({ cpf, password }: { cpf: string; password: string }) => {
     try {
       const { unmasked } = formatWithMask({
         text: cpf,
         mask: masks.BRL_CPF,
       })
       setCpf(unmasked)
+      setPassword(password)
     } catch (error) {
       console.error(error)
     }
   }
 
   useEffect(() => {
-    if (user?.profileRef && !hasRequested) {
+    if (user?.profileRef && !hasRequested && password) {
       const profileRef = user.profileRef
 
-      addPasswordRequest({ profileRef })
+      addPasswordRequest({ profileRef, password })
       setRequested(true)
     }
-  }, [user?.profileRef, hasRequested])
+  }, [user?.profileRef, hasRequested, password])
 
   return (
     <Formik
-      initialValues={{ cpf: '' }}
+      initialValues={{ cpf: '', password: '' }}
       validationSchema={toFormikValidationSchema(validationSchema)}
       onSubmit={handleSubmit}
     >
@@ -78,14 +82,28 @@ function PasswordReset() {
               </p>
 
               <Form className="w-full px-4">
-                <div className="mb-4">
-                  <InputAuth
-                    icon={<AiOutlineIdcard />}
-                    placeholder="000.000.000-00"
-                    id="cpf"
-                    name="cpf"
-                    mask={masks.BRL_CPF}
-                  />
+                <div className="w-full flex flex-col items-start mb-2 text-blue-600 px-4 space-y-1">
+                  <p>CPF</p>
+                  <div className="w-full">
+                    <InputAuth
+                      icon={<AiOutlineIdcard />}
+                      mask={masks.BRL_CPF}
+                      placeholder="000.000.000-00"
+                      id="cpf"
+                      name="cpf"
+                    />
+                  </div>
+
+                  <p>Nova senha</p>
+                  <div className="w-full">
+                    <InputAuth
+                      icon={<FaKey />}
+                      placeholder="**********"
+                      id="password"
+                      name="password"
+                      isPasswordInput={true}
+                    />
+                  </div>
                 </div>
 
                 <div className="w-full space-y-2">
