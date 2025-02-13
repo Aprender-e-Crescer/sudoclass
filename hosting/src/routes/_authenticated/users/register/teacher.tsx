@@ -11,13 +11,14 @@ import { getUserProfileQueryOptions } from '@/queries/use-get-user-profile-query
 import { formatWithMask } from '@/utils/formatWithMask'
 import { useTeacherManagingController } from '@/controllers/use-teacher-managing-controller'
 import { InputFile } from '@/components/custom/form/input-file'
+import { getStringInputValueFromDate } from '@/utils/dateToStringInputValueFormatter'
 
 const teacherSchema = z.object({
   fullName: z.string(),
   cpf: z.string().refine(isValidCPF, "Inválido"),
   email: z.string().email(),
   telephone: z.preprocess((value) => {
-    if (!value) return undefined
+    if (typeof value !== 'string') return undefined
 
     return formatWithMask({
       text: value,
@@ -35,7 +36,7 @@ const teacherSchema = z.object({
   grNumber: z.string(),
   grDispatchDate: z.string(),
   grDispatchState: z.string(),
-  documents: z.preprocess((value) => value?.length ? Array.from(value) : undefined, z.array(z.instanceof(File))),
+  documents: z.array(z.instanceof(File)),
 })
 
 const validateSearch = z.object({
@@ -67,25 +68,25 @@ export const Route = createFileRoute('/_authenticated/users/register/teacher')({
 function RouteComponent() {
   const { action, id } = Route.useSearch()
 
-  const { createTeacher, updateTeacher, user } = useTeacherManagingController(id)
+  const { createTeacher, updateTeacher, user, documents } = useTeacherManagingController(id)
 
   const initialValues = {
     fullName: user?.fullName ?? '',
     cpf: user?.id ?? '',
-    email: user?.contact.email ?? '',
-    telephone: user?.contact.telephone ?? '',
-    state: user?.address.state ?? '',
-    city: user?.address.city ?? '',
-    street: user?.address.street ?? '',
-    neighborhood: user?.address.neighborhood ?? '',
-    number: user?.address.number ?? '',
-    birthDate: user?.birth.date ?? '',
-    birthState: user?.birth.state ?? '',
-    birthCity: user?.birth.city ?? '',
-    grNumber: user?.generalRegistration.number ?? '',
-    grDispatchDate: user?.generalRegistration.dispatch.date ?? '',
-    grDispatchState: user?.generalRegistration.dispatch.state ?? '',
-    documents: undefined as FileList | undefined,
+    email: user?.contact?.email ?? '',
+    telephone: user?.contact?.telephone ?? '',
+    state: user?.address?.state ?? '',
+    city: user?.address?.city ?? '',
+    street: user?.address?.street ?? '',
+    neighborhood: user?.address?.neighborhood ?? '',
+    number: user?.address?.number ?? '',
+    birthDate: getStringInputValueFromDate(user?.birth?.date),
+    birthState: user?.birth?.state ?? '',
+    birthCity: user?.birth?.city ?? '',
+    grNumber: user?.generalRegistration?.number ?? '',
+    grDispatchDate: getStringInputValueFromDate(user?.generalRegistration?.dispatch.date),
+    grDispatchState: user?.generalRegistration?.dispatch.state ?? '',
+    documents: documents ?? [],
   }
 
   const handleOnSubmit = ({ cpf, ...data }: z.infer<typeof teacherSchema>) => {

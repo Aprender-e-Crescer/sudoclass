@@ -11,20 +11,26 @@ import {
 import { Button } from "@/components/ui/button"
 import { useFirestoreRealtimeQueries } from "@/hooks/use-firestore-realtime-queries"
 import { useFirestoreRealtimeQuery } from "@/hooks/use-firestore-realtime-query"
+import { useGetFullUser } from "@/hooks/use-get-full-user"
+import { currentUserQueryOptions } from "@/queries/use-current-user-query"
 import { getUserProfileFirestoreQuery, getUserProfileQueryOptions } from "@/queries/use-get-user-profile-query"
 import { getUsersFirestoreQuery, getUsersQueryOptions } from "@/queries/use-get-users-query"
 import { getRoleTranslation } from "@/utils/getRoleFromRef"
 import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { GraduationCap, Plus, Shield, Users2, X } from 'lucide-react'
+import { GraduationCap, Plus, Shield, Users2, X, GraduationCapIcon } from 'lucide-react'
 import { Fragment } from "react/jsx-runtime"
 
 export const Route = createFileRoute('/_authenticated/users/')({
-    loader: async ({ context }) => {
-        const users = await context.queryClient.ensureQueryData(getUsersQueryOptions)
+    loader: async ({ context: { queryClient } }) => {
+        const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
+
+        if (!currentUser) throw new Error('User not found')
+
+        const users = await queryClient.ensureQueryData(getUsersQueryOptions(currentUser.uid))
         
         return Promise.all(
-            users.docs.map((snapshot) => context.queryClient.ensureQueryData(
+            users.docs.map((snapshot) => queryClient.ensureQueryData(
                 getUserProfileQueryOptions(
                     snapshot.data().profileRef.id
                 )
@@ -48,15 +54,23 @@ const roles = [
       to: "./register/teacher",
     },
     {
-      icon: Shield,
+      icon: GraduationCapIcon,
       title: "Administrador",
       description: "Cadastrar novo administrador no sistema",
       to: "./register/admin",
     },
+    {
+        icon: Shield,
+        title: "Responsável",
+        description: "Cadastrar novo administrador no sistema",
+        to: "./register/responsible",
+    },
 ]
 
 function RouteComponent() {
-    const { data: users } = useSuspenseQuery(getUsersQueryOptions)
+    const { uid } = useGetFullUser()
+    const usersQueryOptions = getUsersQueryOptions(uid)
+    const { data: users } = useSuspenseQuery(usersQueryOptions)
 
     const usersProfileQueriesOptions = users.map(({ profileRef }) => getUserProfileQueryOptions(profileRef.id))
 
@@ -71,7 +85,7 @@ function RouteComponent() {
         }),
     })
 
-    useFirestoreRealtimeQuery(getUsersQueryOptions.queryKey, getUsersFirestoreQuery)
+    useFirestoreRealtimeQuery(usersQueryOptions.queryKey, getUsersFirestoreQuery(uid))
     useFirestoreRealtimeQueries(usersProfileQueriesOptions.map(({ queryKey }) => ({ queryKey, q: getUserProfileFirestoreQuery(queryKey[1]) })))
 
     return (
@@ -80,7 +94,7 @@ function RouteComponent() {
                 <input type="text" placeholder='Usuários cadastrados' className='py-4 px-2 text-sm rounded-lg flex-1' />
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button size="medium" icon={<Plus size={16} />} type="button" variant="blueButton" className='flex items-center gap-3'>
+                        <Button size="medium" icon={<Plus size={16} />} type="button" variant="blueButton" className='flex items-center md:gap-3 px-2 md:px-0'>
                             Novo usuário
                         </Button>
                     </AlertDialogTrigger>
@@ -102,7 +116,7 @@ function RouteComponent() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <div className="container mx-auto px-0 md:px-4">
-                                <div className="grid gap-2 md:gap-6 md:grid-cols-3 justify-center overflow-y-auto">
+                                <div className="gap-2 md:grid md:gap-6 md:grid-cols-2 justify-center overflow-y-auto">
                                     {roles.map(({ title, description, to, icon: Icon}) => (
                                         <div
                                             key={title}
@@ -112,7 +126,7 @@ function RouteComponent() {
                                                 <Icon className="w-4 h-4 md:w-6 md:h-6 text-gray-600" />
                                             </div>
                                             <h2 className="text:lg md:text-xl font-semibold text-left">{title}</h2>
-                                            <p className="text-sm md:text-md text-muted-foreground text-left">{description}</p>
+                                            <p className="text-sm md:text-md text-muted-foreground text-left hidden md:block">{description}</p>
                                             <Link to={to} search={{ action: 'create' }} className="mt-auto w-full">
                                                 <Button className="w-full" variant="outline">
                                                     Selecionar

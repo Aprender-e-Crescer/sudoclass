@@ -1,7 +1,8 @@
 import { credentialSchema } from "@/models/credentialSchema";
-import { firestore } from "@/services/firebase";
+import { firestore, storage } from "@/services/firebase";
 import { useMutation } from "@tanstack/react-query";
 import { collection, doc, getDocs, limit, query, runTransaction } from "firebase/firestore";
+import { deleteObject, listAll, ref, uploadBytes } from "firebase/storage";
 
 interface UpdateTeacherInput {
     onSuccess: () => void
@@ -12,12 +13,13 @@ interface UpdateTeacherData {
     id: string
     fullName: string
     cpf: string
+    documents: File[]
 }
 
 export function useUpdateTeacherMutation({ onError, onSuccess }: UpdateTeacherInput) {
     return useMutation({
         mutationKey: ['updateTeacher'],
-        mutationFn: ({ cpf, fullName, id }: UpdateTeacherData) => runTransaction(firestore, async (transaction) => {
+        mutationFn: ({ cpf, fullName, id, documents }: UpdateTeacherData) => runTransaction(firestore, async (transaction) => {
             const userRef = doc(firestore, "users", id)
         
             const userSnapshot = await transaction.get(userRef)
@@ -44,6 +46,20 @@ export function useUpdateTeacherMutation({ onError, onSuccess }: UpdateTeacherIn
             transaction.delete(credentialSnapshot.ref)
             transaction.set(newUserRef, { ...userData, fullName })
             transaction.set(doc(collection(firestore, newUserRef.path, "credentials")), credential)
+        })
+        .then(() => listAll(ref(storage, `users/${cpf}/documents`)))
+        .then(({ items }) => {
+            const { itemsToDelete, itemsToUpload } = {
+                itemsToDelete: items.filter((item) => documents.find(document => item.name !== document.name)),
+                itemsToUpload: documents.filter((document) => items.find(item => item.name !== document.name))
+            }
+
+            return Promise.all([
+                ...itemsToDelete.map((item) => deleteObject(item)),
+                ...itemsToUpload.map((document) => uploadBytes(
+                    ref(storage, `users/${cpf}/documents/${document.name}`), document)
+                )
+            ])
         }),
         onSuccess,
         onError,
