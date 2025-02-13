@@ -18,7 +18,7 @@ import { getUsersFirestoreQuery, getUsersQueryOptions } from "@/queries/use-get-
 import { getRoleTranslation } from "@/utils/getRoleFromRef"
 import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { GraduationCap, Plus, Shield, Users2, X, GraduationCapIcon } from 'lucide-react'
+import { GraduationCap, Plus, ShieldCheck, User, Users2, X } from 'lucide-react'
 import { Fragment } from "react/jsx-runtime"
 
 export const Route = createFileRoute('/_authenticated/users/')({
@@ -42,7 +42,7 @@ export const Route = createFileRoute('/_authenticated/users/')({
 
 const roles = [
     {
-      icon: Users2,
+      icon: User,
       title: "Aluno",
       description: "Cadastrar novo aluno no sistema",
       to: "./register/student",
@@ -54,13 +54,13 @@ const roles = [
       to: "./register/teacher",
     },
     {
-      icon: GraduationCapIcon,
+      icon: ShieldCheck,
       title: "Administrador",
       description: "Cadastrar novo administrador no sistema",
       to: "./register/admin",
     },
     {
-        icon: Shield,
+        icon: Users2,
         title: "Responsável",
         description: "Cadastrar novo administrador no sistema",
         to: "./register/responsible",
