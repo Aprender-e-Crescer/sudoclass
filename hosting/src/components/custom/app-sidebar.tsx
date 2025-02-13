@@ -1,4 +1,4 @@
-import { Home, Settings } from "lucide-react"
+import { Home, Settings, Users } from "lucide-react"
 import sudotecLogo from '@/assets/sudotecLogo.svg'
 
 import {
@@ -29,7 +29,7 @@ const menuItemsStudentPortal = [
 
 const menuItemsAdminPortal = [
     { title: 'Início', icon: Home, to: '/' },
-    { title: 'Usuários', icon: Home, to: '/users' },
+    { title: 'Usuários', icon: Users, to: '/users' },
     { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
     { title: 'Documentos', icon: Home, to: '/documents' },
     { title: 'Criações', icon: Home, to: '/creations' },

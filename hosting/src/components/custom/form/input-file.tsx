@@ -31,6 +31,9 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple, 
     onChange?.(event)
 
     const currentFiles = Array.from(event.currentTarget.files ?? [])
+
+    if (!multiple) return setFieldValue(name, [currentFiles[0]])
+
     const files = currentFiles.concat(Array.from(value)).filter((file, index, array) => array.findIndex((f) => (f as File).name === (file as File).name) === index)
 
     setFieldValue(name, files)

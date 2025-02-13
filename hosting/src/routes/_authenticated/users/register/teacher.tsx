@@ -102,7 +102,6 @@ function RouteComponent() {
         text: cpf,
         mask: masks.BRL_CPF,
       }).unmasked,
-      documents: Array.from(data.documents),
     };
 
     if (action === 'edit') {
