@@ -4,7 +4,7 @@ import { useUpdateTeacherMutation } from "@/mutations/use-update-teacher-mutatio
 import { getUserDocumentsQueryOptions } from "@/queries/use-get-user-documents-query"
 import { getUserDocumentsReferencesQueryOptions } from "@/queries/use-get-user-documents-references-query"
 import { getUserQueryOptions } from "@/queries/use-get-user-query"
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { QueryFilters, useQueries, useQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 
 export function useTeacherManagingController(id: string | undefined) {
@@ -12,12 +12,18 @@ export function useTeacherManagingController(id: string | undefined) {
 
     const { data: user } = useQuery(getUserQueryOptions(id))
 
-    const { data: documentsReferences } = useQuery(getUserDocumentsReferencesQueryOptions(id))
+    const documentsReferencesQueryOptions = getUserDocumentsReferencesQueryOptions(id)
+
+    const { data: documentsReferences } = useQuery(documentsReferencesQueryOptions)
 
     const documents = useQueries({
         queries: documentsReferences?.map(getUserDocumentsQueryOptions) ?? [],
         combine: (data) => data.map(({ data }) => data).filter(data => data !== undefined)
     })
+
+    const documentsQueryFilters: QueryFilters = {
+        predicate: ({ queryKey }) => documentsReferencesQueryOptions.queryKey[0] === queryKey[0] && documentsReferencesQueryOptions.queryKey[1] === queryKey[1]     
+    }
 
     const { toast } = useToast()
 
@@ -56,5 +62,6 @@ export function useTeacherManagingController(id: string | undefined) {
         createTeacher,
         user,
         documents,
+        documentsQueryFilters,
     }
 }

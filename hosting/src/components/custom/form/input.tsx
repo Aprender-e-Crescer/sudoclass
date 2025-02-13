@@ -22,7 +22,7 @@ const defaultFilter: QueryFilters = {
 export function Input({ name, label, placeholder, type, mask, onChange, filtersQueryToShowLoading = defaultFilter }: Props) {
   const { setFieldValue, errors, touched, values } = useFormikContext()
 
-  const isLoading = useIsFetching(filtersQueryToShowLoading)
+  const isLoading = useIsFetching(filtersQueryToShowLoading) > 0
 
   const currentValue = (values as Record<string, string>)[name]
 

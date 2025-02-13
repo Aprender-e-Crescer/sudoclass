@@ -3,7 +3,7 @@ import { queryOptions } from "@tanstack/react-query"
 import { listAll, ref } from "firebase/storage"
 
 export const getUserDocumentsReferencesQueryOptions = (id: string | undefined) => queryOptions({
-    queryKey: ["getDocumentsReferences", id],
+    queryKey: ["users", "documents", "references", id],
     queryFn: async () => {
         if (!id) return []
 

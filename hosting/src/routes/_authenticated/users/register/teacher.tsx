@@ -68,7 +68,7 @@ export const Route = createFileRoute('/_authenticated/users/register/teacher')({
 function RouteComponent() {
   const { action, id } = Route.useSearch()
 
-  const { createTeacher, updateTeacher, user, documents } = useTeacherManagingController(id)
+  const { createTeacher, updateTeacher, user, documents, documentsQueryFilters } = useTeacherManagingController(id)
 
   const initialValues = {
     fullName: user?.fullName ?? '',
@@ -138,7 +138,7 @@ function RouteComponent() {
           <Input name='grDispatchDate' label='Data de expedição RG' type='date' placeholder='Data de expedição RG' />
           <Input name='grDispatchState' label='Estado de expedição RG' type='text' placeholder='Estado de expedição RG' />
           
-          <InputFile name='documents' label='Anexar documentos' type='file' multiple />
+          <InputFile name='documents' label='Anexar documentos' type='file' multiple filtersQueryToShowLoading={documentsQueryFilters} />
         </FormBody>
       </Formik>
     </>

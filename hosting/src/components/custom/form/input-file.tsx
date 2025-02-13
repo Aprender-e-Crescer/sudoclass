@@ -1,9 +1,8 @@
-import { QueryFilters } from "@tanstack/react-query";
+import { QueryFilters, useIsFetching } from "@tanstack/react-query";
 import { ErrorMessage, Field, useFormikContext } from "formik";
-import { CircleXIcon, PlusIcon } from "lucide-react";
+import { CircleXIcon, Download, Loader2, PlusIcon } from "lucide-react";
 import { HTMLInputTypeAttribute } from "react";
 import prettyBytes from 'pretty-bytes';
-import { z } from "zod";
 
 interface Props {
     name: string
@@ -15,8 +14,10 @@ interface Props {
     multiple?: boolean
 }
 
-export function InputFile({ name, label, placeholder, type, onChange, multiple }: Props) {
+export function InputFile({ name, label, placeholder, type, onChange, multiple, filtersQueryToShowLoading }: Props) {
   const { setFieldValue, errors, touched, values } = useFormikContext()
+
+  const isLoading = useIsFetching(filtersQueryToShowLoading) > 0
 
   // @ts-expect-error
   const value = Array.isArray(values[name]) ? values[name] : []
@@ -42,7 +43,7 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple }
   }
 
   return (
-    <div className='flex flex-col gap-y-1'>
+    <div className='flex flex-col gap-y-2'>
         <label htmlFor={name} className="text-md flex items-center">
           <p className="flex-1">
             {label}
@@ -64,8 +65,14 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple }
             <p className="flex-1">{file.name}</p>
             <p>{prettyBytes(file.size)}</p>
             <CircleXIcon size={18} className="cursor-pointer" onClick={handleOnRemoveFileClick(file.name)} />
+            <a title="Fazer download do arquivo" download={file.name} href={URL.createObjectURL(file)}>
+              <Download size={18} className="cursor-pointer" />
+            </a>
           </div>
         ))}
+        <div className="flex flex-1 justify-center">
+          <Loader2 className='hidden data-[is-loading=true]:block w-6 h-6 animate-spin text-blue-500' data-is-loading={isLoading} />
+        </div>
         <p className='text-red-500 text-xs'>
             <ErrorMessage name={name} />
             &#8203;
