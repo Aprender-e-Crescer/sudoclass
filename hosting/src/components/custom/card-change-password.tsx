@@ -1,7 +1,16 @@
-'use client'
-
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Check, X } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 interface CardChangePasswordProps {
   name: string
@@ -35,11 +44,27 @@ export default function CardChangePassword({
             <Check className="w-5 h-5 text-green-600" />
           </button>
         </div>
-        <div className="p-2 flex items-center justify-center rounded-full bg-red-50">
-          <button onClick={handleReject}>
-            <X className="w-5 h-5 text-red-600" />
-          </button>
-        </div>
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <div className="p-2 flex items-center justify-center rounded-full bg-red-50">
+              <button onClick={handleReject}>
+                <X className="w-5 h-5 text-red-600" />
+              </button>
+            </div>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Deseja rejeitar a troca de senha?</AlertDialogTitle>
+              <AlertDialogDescription>
+                A solicitação será descartada e o aluno não poderá acessar a conta.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction>Confirmar</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   )

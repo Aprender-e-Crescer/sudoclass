@@ -1,10 +1,38 @@
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { Link } from '@tanstack/react-router'
+import { When } from 'react-if'
 
-export function SubHeader() {
+interface SubHeaderProps {
+  type?: 'requests' | undefined
+}
+
+export function SubHeader({ type }: SubHeaderProps) {
   const fullUser = useGetFullUser()
 
   const role = fullUser?.role
+
+  if (type === 'requests') {
+    return (
+      <div className="flex w-full justify-center p-4 border-b-2">
+        <div className="flex gap-5">
+          <Link
+            to="/password-change-request"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
+          >
+            <p>Senhas</p>
+          </Link>
+          <Link
+            to="/justifications"
+            className="text-lg transform hover:scale-110 transition-all"
+            activeProps={{ className: 'font-bold' }}
+          >
+            <p>Justificativas</p>
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   if (role === 'teacher') {
     return (
@@ -40,8 +68,6 @@ export function SubHeader() {
           >
             <p>Plano de aula</p>
           </Link>
-
-        
         </div>
       </div>
     )
@@ -102,7 +128,7 @@ export function SubHeader() {
       </div>
     )
   }
-  
+
   if (role === 'student') {
     return (
       <div className="flex w-full justify-center p-4 border-b-2">
