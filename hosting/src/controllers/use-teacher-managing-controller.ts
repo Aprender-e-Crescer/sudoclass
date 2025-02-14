@@ -1,4 +1,3 @@
-import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { useToast } from "@/hooks/use-toast"
 import { useCreateTeacherMutation } from "@/mutations/use-create-teacher-mutation"
 import { useUpdateTeacherMutation } from "@/mutations/use-update-teacher-mutation"
@@ -8,27 +7,25 @@ import { getSubjectsQueryOptions } from '@/queries/use-get-subjects-query'
 import { getUserDocumentsQueryOptions } from "@/queries/use-get-user-documents-query"
 import { getUserDocumentsReferencesQueryOptions } from "@/queries/use-get-user-documents-references-query"
 import { getUserQueryOptions } from "@/queries/use-get-user-query"
-import { getStudentPersonalClassesQueryOptions } from '@/queries/use-student-personal-classes-query'
 import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
-import { QueryFilters, useQueries, useQuery, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import { QueryFilters, useQueries, useQuery, useQueryClient, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 
 export function useTeacherManagingController(id: string | undefined) {
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
-    const fullUser = useGetFullUser()
+    const { data: user } = useSuspenseQuery(getUserQueryOptions(id))
   
-    const studentPersonalClassesQueryOptions = getStudentPersonalClassesQueryOptions(fullUser.role, fullUser.roleRef)
-    const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(fullUser.role, fullUser.roleRef)
+    const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(user.role, user.roleRef)
     
-    const { data: student } = useQuery(studentPersonalClassesQueryOptions)
     const { data: teacher } = useQuery(teacherPersonalSubjectsQueryOptions)
-  
-    const coursesQueryOptions = getCoursesQueryOptions(fullUser.role, student?.classes, teacher?.subjects)
+
+    const coursesQueryOptions = getCoursesQueryOptions(user.role, undefined, teacher?.subjects)
   
     const { data: courses } = useSuspenseQuery(coursesQueryOptions)
   
-    const classesQueriesOptions = getClassesQueriesOptions(courses, fullUser.role, student?.classes, teacher?.subjects)
+    const classesQueriesOptions = getClassesQueriesOptions(courses, user.role, undefined, teacher?.subjects)
     
     const allClasses = useSuspenseQueries({
         queries: classesQueriesOptions.map(({ classesQueryOptions }) => classesQueryOptions),
@@ -65,14 +62,15 @@ export function useTeacherManagingController(id: string | undefined) {
         }).filter(value => value !== undefined)
     })
 
-    const { data: user } = useQuery(getUserQueryOptions(id))
-
     const documentsReferencesQueryOptions = getUserDocumentsReferencesQueryOptions(id)
 
-    const { data: documentsReferences } = useQuery(documentsReferencesQueryOptions)
+    const { data: documentsReferences, isFetching } = useQuery(documentsReferencesQueryOptions)
 
     const documents = useQueries({
-        queries: documentsReferences?.map(getUserDocumentsQueryOptions) ?? [],
+        queries: documentsReferences?.map((documentReference) => ({
+            ...getUserDocumentsQueryOptions(documentReference),
+            enabled: !isFetching,
+        })) ?? [],
         combine: (data) => data.map(({ data }) => data).filter(data => data !== undefined)
     })
 
@@ -99,6 +97,10 @@ export function useTeacherManagingController(id: string | undefined) {
 
     const { mutateAsync: updateTeacher } = useUpdateTeacherMutation({
         onError: (error) => {
+            queryClient.invalidateQueries({
+                queryKey: documentsReferencesQueryOptions,
+            })
+            
             toast({
                 variant: "destructive",
                 title: "Erro ao atualizar admin",
@@ -116,6 +118,7 @@ export function useTeacherManagingController(id: string | undefined) {
         updateTeacher,
         createTeacher,
         user,
+        teacher,
         documents,
         documentsQueryFilters,
         subjectsWithClassesAndCourses,

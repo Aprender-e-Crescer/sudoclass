@@ -5,10 +5,15 @@ import { InputFile } from '@/components/custom/form/input-file'
 import { Select } from '@/components/custom/form/select'
 import { citiesAndStates } from '@/constants/citiesAndStates'
 import { useTeacherManagingController } from '@/controllers/use-teacher-managing-controller'
+import { getClassesQueriesOptions } from '@/queries/use-get-classes-query'
+import { getCoursesQueryOptions } from '@/queries/use-get-courses-query'
 import { getUserProfileQueryOptions } from '@/queries/use-get-user-profile-query'
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
+import { getStudentPersonalClassesQueryOptions } from '@/queries/use-student-personal-classes-query'
+import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
 import { getStringInputValueFromDate } from '@/utils/dateToStringInputValueFormatter'
 import { formatWithMask } from '@/utils/formatWithMask'
+import { getRoleFromRef } from '@/utils/getRoleFromRef'
 import { masks } from '@/utils/masks'
 import { ensureCPFUniqueSchema, telephoneSchema } from '@/utils/schema'
 import { useQueryClient } from '@tanstack/react-query'
@@ -35,7 +40,19 @@ export const Route = createFileRoute('/_authenticated/users/register/teacher')({
 
       if (!userData) throw new Error('User not found')
 
-      return queryClient.ensureQueryData(getUserProfileQueryOptions(userData.profileRef.id))
+      await queryClient.ensureQueryData(getUserProfileQueryOptions(userData.profileRef.id))
+
+      const role = getRoleFromRef(userData?.roleRef)
+
+      const teacher = getTeacherPersonalSubjectsQueryOptions(role, userData?.roleRef).enabled ?
+        await queryClient.ensureQueryData(getTeacherPersonalSubjectsQueryOptions(role, userData?.roleRef)) :
+        undefined
+      
+      const courses = await queryClient.ensureQueryData(getCoursesQueryOptions(role, undefined, teacher?.data()?.subjects))
+
+      const classesQueriesOptions = getClassesQueriesOptions(courses.docs.map(course => course.data()), role, undefined, teacher?.data()?.subjects)
+
+      await Promise.all(classesQueriesOptions.map(({ classesQueryOptions }) => queryClient.ensureQueryData(classesQueryOptions)))
     } catch {
       return;
     }
@@ -49,7 +66,7 @@ function RouteComponent() {
 
   const formikRef = useRef<FormikProps<typeof initialValues>>(null)
 
-  const { createTeacher, updateTeacher, user, documents, documentsQueryFilters, subjectsWithClassesAndCourses } = useTeacherManagingController(id)
+  const { createTeacher, updateTeacher, user, teacher, documents, documentsQueryFilters, subjectsWithClassesAndCourses } = useTeacherManagingController(id)
 
   const queryClient = useQueryClient()
 
@@ -90,7 +107,7 @@ function RouteComponent() {
     grDispatchDate: getStringInputValueFromDate(user?.generalRegistration?.dispatch.date),
     grDispatchState: user?.generalRegistration?.dispatch.state ?? '',
     documents: documents ?? [],
-    subjects: [],
+    subjects: teacher?.subjects.map((subjectRef) => subjectRef.path) ?? [],
   }
 
   const handleOnSubmit = ({ cpf, ...data }: z.infer<typeof teacherSchema>) => {
@@ -143,6 +160,7 @@ function RouteComponent() {
             label='Máterias'
             notFoundItemsMessage="Nenhuma máteria encontrada"
             options={subjectsWithClassesAndCourses.map(({ id, name, courseName, className, ref }) => ({
+              key: id,
               label: `${courseName} - ${className} - ${name}`,
               value: ref.path,
             }))}
@@ -157,7 +175,6 @@ function RouteComponent() {
             <Select
               name='state'
               label='Estado'
-              type='text'
               onChange={() => formikRef.current?.setFieldValue('city', '')}
               options={() => (
                 <>
@@ -169,7 +186,6 @@ function RouteComponent() {
             <Select
               name='city'
               label='Cidade'
-              type='text'
               disabled={(_, values) => !values['state']}
               options={({ values }) => 
                 <>
@@ -193,7 +209,6 @@ function RouteComponent() {
             <Select
               name='birthState'
               label='Estado de nascimento'
-              type='text'
               onChange={() => formikRef.current?.setFieldValue('birthCity', '')}
               options={() => (
                 <>
@@ -205,7 +220,6 @@ function RouteComponent() {
             <Select
               name='birthCity'
               label='Cidade de nascimento'
-              type='text'
               disabled={(_, values) => !values['birthState']}
               options={({ values }) => 
                 <>
@@ -222,7 +236,16 @@ function RouteComponent() {
             <Input name='grNumber' label='RG' type='text' placeholder='RG' />
             <Input name='grDispatchDate' label='Data de expedição RG' type='date' placeholder='Data de expedição RG' />
           </div>
-          <Input name='grDispatchState' label='Estado de expedição RG' type='text' placeholder='Estado de expedição RG' />
+          <Select
+              name='grDispatchState'
+              label='Estado de expedição RG'
+              options={() => (
+                <>
+                  <option disabled value="">Selecione uma opção</option>
+                  {citiesAndStates.states.map(({ uf, name }) => <option value={uf} key={uf}>{name}</option>)}
+                </>
+              )}
+            />
           
           <InputFile name='documents' label='Anexar documentos' type='file' multiple filtersQueryToShowLoading={documentsQueryFilters} />
         </FormBody>

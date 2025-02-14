@@ -1,9 +1,8 @@
 import { QueryFilters, useIsFetching } from "@tanstack/react-query";
 import { ErrorMessage, useFormikContext } from "formik";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import { HTMLInputTypeAttribute, useState } from "react";
+import { useState } from "react";
  
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -18,29 +17,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
- 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
 
 interface Props {
     name: string
@@ -50,6 +26,7 @@ interface Props {
     filtersQueryToShowLoading?: QueryFilters | ((value: string[], values: Record<string, string>) => QueryFilters)
     disabled?: boolean
     options: {
+      key: string
       value: string
       label: string
     }[]
@@ -109,7 +86,7 @@ export function ComboBox({ name, label, placeholder, options, disabled, onChange
                     <CommandGroup>
                       {options.map((option) => (
                         <CommandItem
-                          key={option.value}
+                          key={option.key}
                           value={option.label}
                           onSelect={handleOnSelect(option.value)}
                           className="py-4"

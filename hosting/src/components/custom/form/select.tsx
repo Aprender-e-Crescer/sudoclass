@@ -1,7 +1,7 @@
 import { QueryFilters, useIsFetching } from "@tanstack/react-query";
 import { ErrorMessage, Field, useFormikContext } from "formik";
 import { Loader2 } from "lucide-react";
-import { ClassAttributes, FC, HTMLInputTypeAttribute, SelectHTMLAttributes } from "react";
+import { ClassAttributes, FC, SelectHTMLAttributes } from "react";
 import { JSX } from "react/jsx-runtime";
 
 interface OptionsProps {
@@ -11,7 +11,6 @@ interface OptionsProps {
 interface Props {
     name: string
     label: string
-    type?: HTMLInputTypeAttribute
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
     filtersQueryToShowLoading?: QueryFilters | ((value: string, values: Record<string, string>) => QueryFilters)
     disabled?: boolean | ((value: string, values: Record<string, string>) => boolean)
@@ -22,7 +21,7 @@ const defaultFilter: QueryFilters = {
   predicate: () => false,
 }
 
-export function Select({ name, label, type, options: Options, disabled, onChange, filtersQueryToShowLoading = defaultFilter }: Props) {
+export function Select({ name, label, options: Options, disabled, onChange, filtersQueryToShowLoading = defaultFilter }: Props) {
   const { setFieldValue, errors, touched, values } = useFormikContext<Record<string, string>>()
 
   const currentValue = (values as Record<string, string>)[name]
@@ -46,7 +45,6 @@ export function Select({ name, label, type, options: Options, disabled, onChange
           <Field
             id={name}
             name={name}
-            type={type}
             value={currentValue}
             onChange={handleOnInputChange}
             data-show-error={shouldShowError}

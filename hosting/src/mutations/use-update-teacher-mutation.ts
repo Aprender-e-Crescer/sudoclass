@@ -65,8 +65,6 @@ export function useUpdateTeacherMutation({ onError, onSuccess }: UpdateTeacherIn
             const newUserRef = doc(firestore, "users", cpf)
         
             if (userRef.id === newUserRef.id) {
-                transaction.set(userData?.roleRef, { subjects: subjects.map((subjectPath) => doc(firestore, subjectPath)) })
-
                 transaction.update(userRef, {
                     fullName,
                     requireNewPassword: true,
@@ -75,6 +73,8 @@ export function useUpdateTeacherMutation({ onError, onSuccess }: UpdateTeacherIn
                     birth: { date: birthDate, state: birthState, city: birthCity },
                     generalRegistration: { number: grNumber, dispatch: { date: grDispatchDate, state: grDispatchState } },                
                 })
+                
+                transaction.set(userData?.roleRef, { subjects: subjects.map((subjectPath) => doc(firestore, subjectPath)) })
 
                 return
             }
