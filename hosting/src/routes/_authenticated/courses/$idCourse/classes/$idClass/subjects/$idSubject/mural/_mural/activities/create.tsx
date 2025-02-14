@@ -20,7 +20,7 @@ function RouteComponent() {
   const { idCourse, idClass, idSubject } = Route.useParams()
   const { mutate } = useCreateActivityMutation()
 
-  const initialValues: Activity = {
+  const initialValues = {
     id: '',
     title: '',
     description: '',
@@ -30,7 +30,7 @@ function RouteComponent() {
     isAcceptingSubmits: true,
   }
 
-  async function handleSubmit(values: Activity) {
+  async function handleSubmit(values: typeof initialValues) {
     const deliveryDate = new Date(values.deliveryDate)
 
     mutate(
@@ -41,7 +41,7 @@ function RouteComponent() {
         idCourse,
         idClass,
         idSubject,
-        attachments: values.attachments, 
+        attachments: values.attachments,
       },
       {
         onSuccess: () => {
