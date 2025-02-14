@@ -21,8 +21,7 @@ export function useUpdateAdminMutation({ onError, onSuccess }: UpdateAdminInput)
             const userRef = doc(firestore, "users", id)
         
             const userSnapshot = await transaction.get(userRef)
-            const userDontExists = !userSnapshot.exists
-            const userData = userSnapshot.data()
+            const userDontExists = !userSnapshot.exists()
         
             if (userDontExists) throw new Error("User not found")
 
@@ -42,7 +41,7 @@ export function useUpdateAdminMutation({ onError, onSuccess }: UpdateAdminInput)
 
             transaction.delete(userRef)
             transaction.delete(credentialSnapshot.ref)
-            transaction.set(newUserRef, { ...userData, fullName })
+            transaction.update(newUserRef, { fullName })
             transaction.set(doc(collection(firestore, newUserRef.path, "credentials")), credential)
         }),
         onSuccess,

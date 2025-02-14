@@ -1,43 +1,22 @@
 import { FormBody } from '@/components/custom/form/body'
+import { ComboBox } from '@/components/custom/form/combo-box'
 import { Input } from '@/components/custom/form/input'
+import { InputFile } from '@/components/custom/form/input-file'
+import { Select } from '@/components/custom/form/select'
+import { citiesAndStates } from '@/constants/citiesAndStates'
+import { useTeacherManagingController } from '@/controllers/use-teacher-managing-controller'
+import { getUserProfileQueryOptions } from '@/queries/use-get-user-profile-query'
+import { getUserQueryOptions } from '@/queries/use-get-user-query'
+import { getStringInputValueFromDate } from '@/utils/dateToStringInputValueFormatter'
+import { formatWithMask } from '@/utils/formatWithMask'
 import { masks } from '@/utils/masks'
+import { ensureCPFUniqueSchema, telephoneSchema } from '@/utils/schema'
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { Formik } from 'formik'
+import { Formik, FormikProps } from 'formik'
+import { useRef } from 'react'
 import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { isValidCPF } from '../../../../../../functions/src/utils/isValidCPF'
-import { getUserQueryOptions } from '@/queries/use-get-user-query'
-import { getUserProfileQueryOptions } from '@/queries/use-get-user-profile-query'
-import { formatWithMask } from '@/utils/formatWithMask'
-import { useTeacherManagingController } from '@/controllers/use-teacher-managing-controller'
-import { InputFile } from '@/components/custom/form/input-file'
-import { getStringInputValueFromDate } from '@/utils/dateToStringInputValueFormatter'
-
-const teacherSchema = z.object({
-  fullName: z.string(),
-  cpf: z.string().refine(isValidCPF, "Inválido"),
-  email: z.string().email(),
-  telephone: z.preprocess((value) => {
-    if (typeof value !== 'string') return undefined
-
-    return formatWithMask({
-      text: value,
-      mask: masks.BRL_PHONE,
-    }).unmasked
-  }, z.string().refine((value) => value.length === 11, "Inválido")),
-  state: z.string(),
-  city: z.string(),
-  street: z.string(),
-  neighborhood: z.string(),
-  number: z.string(),
-  birthDate: z.string(),
-  birthState: z.string(),
-  birthCity: z.string(),
-  grNumber: z.string(),
-  grDispatchDate: z.string(),
-  grDispatchState: z.string(),
-  documents: z.array(z.instanceof(File)),
-})
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']).default('create'),
@@ -68,7 +47,31 @@ export const Route = createFileRoute('/_authenticated/users/register/teacher')({
 function RouteComponent() {
   const { action, id } = Route.useSearch()
 
-  const { createTeacher, updateTeacher, user, documents, documentsQueryFilters } = useTeacherManagingController(id)
+  const formikRef = useRef<FormikProps<typeof initialValues>>(null)
+
+  const { createTeacher, updateTeacher, user, documents, documentsQueryFilters, subjectsWithClassesAndCourses } = useTeacherManagingController(id)
+
+  const queryClient = useQueryClient()
+
+  const teacherSchema = z.object({
+    fullName: z.string(),
+    cpf: ensureCPFUniqueSchema(action, queryClient),
+    email: z.string().email(),
+    telephone: telephoneSchema,
+    state: z.string(),
+    city: z.string(),
+    street: z.string(),
+    neighborhood: z.string(),
+    number: z.string(),
+    birthDate: z.string(),
+    birthState: z.string(),
+    birthCity: z.string(),
+    grNumber: z.string(),
+    grDispatchDate: z.string(),
+    grDispatchState: z.string(),
+    documents: z.array(z.instanceof(File)).min(1),
+    subjects: z.array(z.string()).min(1)
+  })
 
   const initialValues = {
     fullName: user?.fullName ?? '',
@@ -87,6 +90,7 @@ function RouteComponent() {
     grDispatchDate: getStringInputValueFromDate(user?.generalRegistration?.dispatch.date),
     grDispatchState: user?.generalRegistration?.dispatch.state ?? '',
     documents: documents ?? [],
+    subjects: [],
   }
 
   const handleOnSubmit = ({ cpf, ...data }: z.infer<typeof teacherSchema>) => {
@@ -115,26 +119,109 @@ function RouteComponent() {
 
   return (
     <>
-      <Formik enableReinitialize onSubmit={handleOnSubmit} initialValues={initialValues} validationSchema={toFormikValidationSchema(teacherSchema)}>
-        <FormBody cancelTo='/users'>
-          <Input name='cpf' label='CPF' type='text' placeholder='000.000.000-00' mask={masks.BRL_CPF} />
+      <Formik innerRef={formikRef} enableReinitialize onSubmit={handleOnSubmit} initialValues={initialValues} validationSchema={toFormikValidationSchema(teacherSchema)}>
+        <FormBody title='Professor' action={action} cancelTo='/users'>
+          <Input
+            name='cpf'
+            label='CPF'
+            type='text'
+            placeholder='000.000.000-00'
+            mask={masks.BRL_CPF}
+            filtersQueryToShowLoading={(cpf) => ({
+              queryKey: getUserQueryOptions(
+                formatWithMask({
+                  text: cpf,
+                  mask: masks.BRL_CPF,
+                }).unmasked
+              ).queryKey
+            })}
+          />
           <Input name='fullName' label='Nome completo' type='text' placeholder='Nome completo' />
+
+          <ComboBox
+            name='subjects'
+            label='Máterias'
+            notFoundItemsMessage="Nenhuma máteria encontrada"
+            options={subjectsWithClassesAndCourses.map(({ id, name, courseName, className, ref }) => ({
+              label: `${courseName} - ${className} - ${name}`,
+              value: ref.path,
+            }))}
+          />
           
-          <Input name='email' label='E-mail' type='email' placeholder='E-mail' />
-          <Input name='telephone' label='Telefone' type='text' placeholder='Telefone' mask={masks.BRL_PHONE} />
-
-          <Input name='state' label='Estado' type='text' placeholder='Estado' />
-          <Input name='city' label='Cidade' type='text' placeholder='Cidade' />
+          <div className='sm:flex gap-x-4 flex-1'>
+            <Input name='email' label='E-mail' type='email' placeholder='E-mail' />
+            <Input name='telephone' label='Telefone' type='text' placeholder='Telefone' mask={masks.BRL_PHONE} />
+          </div>
+          
+          <div className='sm:flex gap-x-4 flex-1'>
+            <Select
+              name='state'
+              label='Estado'
+              type='text'
+              onChange={() => formikRef.current?.setFieldValue('city', '')}
+              options={() => (
+                <>
+                  <option disabled value="">Selecione uma opção</option>
+                  {citiesAndStates.states.map(({ uf, name }) => <option value={uf} key={uf}>{name}</option>)}
+                </>
+              )}
+            />
+            <Select
+              name='city'
+              label='Cidade'
+              type='text'
+              disabled={(_, values) => !values['state']}
+              options={({ values }) => 
+                <>
+                  <option disabled value="">Selecione uma opção</option>
+                  {citiesAndStates.states
+                      .find(({ uf }) => uf === values['state'])?.cities
+                      .map((city) => <option value={city} key={city}>{city}</option>)}
+                </>
+              }
+            />
+          </div>
+          
           <Input name='street' label='Rua' type='text' placeholder='Rua' />
-          <Input name='neighborhood' label='Bairro' type='text' placeholder='Bairro' />
-          <Input name='number' label='Número' type='text' placeholder='Número' />
-
+          <div className='sm:flex gap-x-4 flex-1'>
+            <Input name='neighborhood' label='Bairro' type='text' placeholder='Bairro' />
+            <Input name='number' label='Número' type='text' placeholder='Número' />
+          </div>
+          
           <Input name='birthDate' label='Data de nascimento' type='date' placeholder='Data de nascimento' />
-          <Input name='birthState' label='Estado de nascimento' type='text' placeholder='Estado de nascimento' />
-          <Input name='birthCity' label='Cidade de nascimento' type='text' placeholder='Cidade de nascimento' />
+          <div className='sm:flex gap-x-4 flex-1'>
+            <Select
+              name='birthState'
+              label='Estado de nascimento'
+              type='text'
+              onChange={() => formikRef.current?.setFieldValue('birthCity', '')}
+              options={() => (
+                <>
+                  <option disabled value="">Selecione uma opção</option>
+                  {citiesAndStates.states.map(({ uf, name }) => <option value={uf} key={uf}>{name}</option>)}
+                </>
+              )}
+            />
+            <Select
+              name='birthCity'
+              label='Cidade de nascimento'
+              type='text'
+              disabled={(_, values) => !values['birthState']}
+              options={({ values }) => 
+                <>
+                  <option disabled value="">Selecione uma opção</option>
+                  {citiesAndStates.states
+                      .find(({ uf }) => uf === values['birthState'])?.cities
+                      .map((city) => <option value={city} key={city}>{city}</option>)}
+                </>
+              }
+            />
+          </div>
 
-          <Input name='grNumber' label='RG' type='text' placeholder='RG' />
-          <Input name='grDispatchDate' label='Data de expedição RG' type='date' placeholder='Data de expedição RG' />
+          <div className='sm:flex gap-x-4 flex-1'>
+            <Input name='grNumber' label='RG' type='text' placeholder='RG' />
+            <Input name='grDispatchDate' label='Data de expedição RG' type='date' placeholder='Data de expedição RG' />
+          </div>
           <Input name='grDispatchState' label='Estado de expedição RG' type='text' placeholder='Estado de expedição RG' />
           
           <InputFile name='documents' label='Anexar documentos' type='file' multiple filtersQueryToShowLoading={documentsQueryFilters} />
