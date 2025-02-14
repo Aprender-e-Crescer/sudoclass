@@ -1,174 +1,152 @@
-import { useState, useEffect } from 'react'
-import ListStudents from '@/components/custom/list-students'
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
+import { getSubmitsFirestoreQuery, getSubmitsQueryOptions } from '@/queries/use-get-submits-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Form, Formik } from 'formik'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { InputNoteSchema } from '@/models/input-note-schema'
-import { InputForm } from '@/components/custom/text-input'
-import { z } from 'zod'
-import { useGetLinkFromActivity } from '@/queries/use-get-link-from-activity-query'
-import { useListNotesQuery } from '@/queries/use-list-notes-query'
-
-const validateSearch = z.object({
-  idStudent: z.string().optional(),
-})
+import { doc, updateDoc, DocumentReference, DocumentData } from 'firebase/firestore'
+import { firestore } from '@/services/firebase'
+import { getProfileQueryOptions } from '@/queries/use-get-profile-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/correction',
 )({
   component: Correction,
-  validateSearch,
 })
 
-const initialValues = {
-  value: '',
-  comment: '',
-}
-
-interface Student {
-  id: string
-  name: string
-  picture: string
-  variant: 'undefined' | 'corrected'
-}
-
 function Correction() {
-  const { idActivity, idSubject } = Route.useParams()
-  const { data: studentsData, isLoading, isError } = useListNotesQuery(Number(idSubject))
-  console.log(studentsData)
-  const [students, setStudents] = useState<Student[]>([])
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-  const [successMessage, setSuccessMessage] = useState('')
-  const [formKey, setFormKey] = useState(0)
+  const { idClass, idCourse, idSubject, idActivity } = Route.useParams()
+  const [selectedSubmit, setSelectedSubmit] = useState(null) 
+  const [note, setNote] = useState('') 
 
-  useEffect(() => {
-    if (studentsData) {
-      const updatedStudents = studentsData.map((student: any) => ({
-        id: student.idAluno,
-        name: student.nomeAluno,
-        picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(student.nomeAluno)}&background=random`,
-        variant: 'undefined',
-      }))
-      setStudents(updatedStudents)
-    }
-  }, [studentsData])
+  const submitsQueryOptions = getSubmitsQueryOptions({ idCourse, idClass, idSubject, idActivity })
+  const { data: submits, isLoading: submitsLoading } = useQuery(submitsQueryOptions)
 
-  const handleStudentClick = (student: Student) => {
-    setSelectedStudent((prev) => (prev?.id === student.id ? null : student))
-    setSuccessMessage('')
-    setFormKey((prevKey) => prevKey + 1)
+  useFirestoreRealtimeQuery(
+    submitsQueryOptions.queryKey,
+    getSubmitsFirestoreQuery({ idCourse, idClass, idSubject, idActivity }),
+  )
+
+  const studentsSubmits = useQueries({
+    queries: submits?.map((submit) => getProfileQueryOptions(submit.studentProfile)) ?? [],
+    combine: (results) =>
+      results.map((result) => result.data)?.filter((student) => student !== undefined) as {
+        id: string
+        profileRef: DocumentReference<DocumentData, DocumentData>
+        displayName: string
+        photoURL: string | null
+      }[],
+  })
+
+  const handleSelectSubmit = (submit) => {
+    setSelectedSubmit(submit)
+    setNote(submit.note || '') 
   }
 
-  const { data: link } = useGetLinkFromActivity(Number(idActivity), Number(selectedStudent?.id))
+  const handleSaveNote = async () => {
+    if (!selectedSubmit) return
 
-  const handleSubmitNote = async (values: any, { resetForm }: { resetForm: () => void }) => {
-    const grade = parseFloat(values.value)
-    if (selectedStudent?.id && idActivity) {
-      const studentId = parseInt(selectedStudent.id, 10)
-      const activityId = parseInt(idActivity, 10)
-
-      setStudents((prev) =>
-        prev.map((student) => (student.id === selectedStudent.id ? { ...student, variant: 'corrected' } : student)),
+    try {
+      const submitRef = doc(
+        firestore,
+        'courses',
+        idCourse,
+        'classes',
+        idClass,
+        'subjects',
+        idSubject,
+        'activities',
+        idActivity,
+        'submits',
+        selectedSubmit.id,
       )
-      setSuccessMessage('Nota atribuída com sucesso!')
-      resetForm()
+
+      await updateDoc(submitRef, { note: parseFloat(note) })
+      alert('Nota salva com sucesso!')
+    } catch (error) {
+      console.error('Erro ao salvar a nota:', error)
+      alert('Erro ao salvar a nota.')
     }
   }
 
-  if (isLoading) return <div>Carregando alunos...</div>
-  if (isError) return <div>Erro ao carregar alunos.</div>
+  if (submitsLoading) {
+    return <div>Carregando...</div>
+  }
+
+  if (!submits || submits.length === 0) {
+    return <div>Nenhum envio encontrado.</div>
+  }
 
   return (
-    <>
-      <div className="hidden md:flex w-full justify-between">
-        <div>
-          {students.map((student) => (
-            <div key={student.id} onClick={() => handleStudentClick(student)} className="cursor-pointer">
-              <ListStudents name={student.name} picture={student.picture} variant={student.variant} />
-            </div>
-          ))}
-          <div className="w-full border border-gray-300"></div>
-        </div>
+    <div className="flex h-screen">
+      <div className="w-1/4 bg-gray-100 p-4 overflow-y-auto">
+        <h2 className="text-lg font-semibold mb-4">Submissões</h2>
+        <ul>
+          {submits.map((submit) => {
+            const student = studentsSubmits.find((student) => student.profileRef.id === submit.studentProfile.id)
 
-        {selectedStudent && (
-          <div className="hidden md:flex flex-col justify-center items-center gap-y-10 mt-5 border-2 shadow-md p-5 rounded-lg">
-            <h2 className="text-xl font-semibold">Aluno sendo avaliado: {selectedStudent.name}</h2>
-            <div className="border p-5 rounded-lg">
-              <p className="font-semibold">Anexo do Aluno:</p>
-              <a href={link}>
-                <p className="text-blue-600 block w-32 h-6 overflow-hidden text-ellipsis">{link}</p>
-              </a>
+            return (
+              <li
+                key={submit.id}
+                className={`p-2 hover:bg-gray-200 cursor-pointer ${
+                  selectedSubmit?.id === submit.id ? 'bg-blue-100' : ''
+                }`}
+                onClick={() => handleSelectSubmit(submit)}
+              >
+                <div className="flex items-center gap-2">
+                  {student?.photoURL ? (
+                    <img
+                      src={student.photoURL}
+                      alt={`Foto de ${student.displayName}`}
+                      className="w-8 h-8 rounded-full"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                      <span className="text-sm text-gray-600">?</span>
+                    </div>
+                  )}
+
+                  <p className="text-sm text-gray-600">{student ? student.displayName : 'N/A'}</p>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+
+      <div className="flex-1 p-4">
+        {selectedSubmit ? (
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Atribuir Nota</h2>
+            <p className="mb-2">
+              <strong>Envio:</strong> #{selectedSubmit.id}
+            </p>
+            <p className="mb-4">
+              <strong>Estudante:</strong>{' '}
+              {studentsSubmits.find((student) => student.profileRef.id === selectedSubmit.studentProfile.id)
+                ?.displayName || 'N/A'}
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Nota:</label>
+              <input
+                type="number"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="w-full p-2 border rounded"
+                min="0"
+                max="100"
+                step="0.1"
+              />
             </div>
-            <Formik
-              key={formKey}
-              initialValues={initialValues}
-              validationSchema={toFormikValidationSchema(InputNoteSchema)}
-              onSubmit={handleSubmitNote}
-            >
-              {({ handleSubmit, setFieldValue }) => (
-                <Form onSubmit={handleSubmit} className="flex flex-col items-center gap-y-4">
-                  <InputForm
-                    name="value"
-                    id="value"
-                    label="Nota"
-                    placeholder="Insira a nota"
-                    onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
-                  />
-                  <Button type="submit" variant="blueButton" size="manage">
-                    Devolver
-                  </Button>
-                </Form>
-              )}
-            </Formik>
-            {successMessage && <p className="text-green-500">{successMessage}</p>}
+
+            <button onClick={handleSaveNote} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+              Salvar Nota
+            </button>
           </div>
+        ) : (
+          <div className="text-center text-gray-500">Selecione um envio para atribuir uma nota.</div>
         )}
       </div>
-
-      {/* Mobile accordion */}
-      <div className="flex flex-col md:hidden">
-        <Accordion type="single" collapsible>
-          {students.map((student) => (
-            <AccordionItem key={student.id} value={String(student.id)}>
-              <AccordionTrigger onClick={() => handleStudentClick(student)}>
-                <ListStudents name={student.name} picture={student.picture} variant={student.variant} />
-              </AccordionTrigger>
-              <AccordionContent>
-                {selectedStudent?.id === student.id && (
-                  <div className="p-4 border rounded-lg">
-                    <h2 className="text-lg font-semibold">Aluno sendo avaliado: {student.name}</h2>
-                    <a href={link}>
-                      <p className="text-blue-600">{link}</p>
-                    </a>
-                    <Formik
-                      key={formKey}
-                      initialValues={initialValues}
-                      validationSchema={toFormikValidationSchema(InputNoteSchema)}
-                      onSubmit={handleSubmitNote}
-                    >
-                      {({ handleSubmit, setFieldValue }) => (
-                        <Form onSubmit={handleSubmit}>
-                          <InputForm
-                            name="value"
-                            placeholder="Insira a nota"
-                            onChange={(e) => setFieldValue('value', e.target.value.replace(/\D/g, ''))}
-                          />
-                          <Button type="submit">Devolver</Button>
-                        </Form>
-                      )}
-                    </Formik>
-                    {successMessage && <p>{successMessage}</p>}
-                  </div>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
-    </>
+    </div>
   )
 }
-
-export default Correction

@@ -127,7 +127,17 @@ export default function ActivitiesMaterials({
           </div>
 
           <div className="border-t">
-            <p className="text-blue-500 mt-2 cursor-pointer">Visualizar entregues</p>
+            <Link
+              to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities/$idActivity/correction"
+              params={{
+                idCourse,
+                idClass,
+                idSubject,
+                idActivity: id,
+              }}
+            >
+              <p className="text-blue-500 mt-2 cursor-pointer">Visualizar entregues</p>
+            </Link>
           </div>
         </Accordion.Content>
       </Accordion.Item>
