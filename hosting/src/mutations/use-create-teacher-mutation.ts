@@ -28,6 +28,7 @@ interface CreateTeacherData {
     grDispatchDate: Date
     grDispatchState: string
     documents: File[]
+    subjects: string[]
 }
 
 export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherInput) {
@@ -50,6 +51,7 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
             state,
             street,
             telephone,
+            subjects,
         }: CreateTeacherData) => runTransaction(firestore, async (transaction) => { 
             const { unmasked: cpfCleaned } = formatWithMask({
                 text: cpf,
@@ -80,7 +82,7 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
         
             transaction.set(doc(collection(firestore, userRef.path, "credentials")), { password })
             transaction.set(profileRef, { displayName: fullName, photoURL: null })
-            transaction.set(roleRef, { subjects: [] })
+            transaction.set(roleRef, { subjects: subjects.map((subjectPath) => doc(firestore, subjectPath)) })
         }).then(() => 
             Promise.all(
                 documents.map((document) => uploadBytes(
