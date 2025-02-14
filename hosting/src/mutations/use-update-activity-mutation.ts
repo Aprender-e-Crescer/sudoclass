@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { firestore, storage } from '@/services/firebase'
 import { doc, updateDoc } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { ref, uploadBytes, deleteObject } from 'firebase/storage'
 
 interface UpdateActivityData {
   idCourse: string
@@ -12,8 +12,8 @@ interface UpdateActivityData {
   description: string
   deliveryDate: Date
   isAcceptingSubmits: boolean
-  attachments: File[] 
-  existingAttachments?: string[] 
+  attachments: File[]
+  oldAttachments: File[]
 }
 
 export function useUpdateActivityMutation() {
@@ -31,30 +31,36 @@ export function useUpdateActivityMutation() {
         data.idActivity,
       )
 
-      const newAttachmentUrls = await Promise.all(
-        data.attachments.map(async (file) => {
-          try {
-            const fileRef = ref(
-              storage,
-              `courses/${data.idCourse}/classes/${data.idClass}/subjects/${data.idSubject}/activities/${data.idActivity}/${file.name}`,
-            )
-            await uploadBytes(fileRef, file)
-            return await getDownloadURL(fileRef)
-          } catch (error) {
-            console.error('Erro no upload do arquivo:', file.name, error)
-            throw error
-          }
-        }),
+      const attachmentsToCreate = data.attachments.filter((file) => !data.oldAttachments.some((oldFile) => oldFile.name === file.name))
+      const attachmentsToDelete = data.oldAttachments.filter((oldFile) => !data.attachments.some((file) => file.name === oldFile.name))
+
+      await Promise.all(
+        attachmentsToCreate.map((file) => {
+          const fileRef = ref(
+            storage,
+            `courses/${data.idCourse}/classes/${data.idClass}/subjects/${data.idSubject}/activities/${data.idActivity}/${file.name}`,
+          )
+
+          return uploadBytes(fileRef, file)
+        })
       )
 
-      const updatedAttachments = [...(data.existingAttachments || []), ...newAttachmentUrls]
+      await Promise.all(
+        attachmentsToDelete.map((file) => {
+          const fileRef = ref(
+            storage,
+            `courses/${data.idCourse}/classes/${data.idClass}/subjects/${data.idSubject}/activities/${data.idActivity}/${file.name}`,
+          )
+
+          return deleteObject(fileRef)
+        })
+      )
 
       const updatedActivity = {
         title: data.title,
         description: data.description,
         deliveryDate: data.deliveryDate,
         isAcceptingSubmits: data.isAcceptingSubmits,
-        attachments: updatedAttachments, 
       }
 
       await updateDoc(activityRef, updatedActivity)

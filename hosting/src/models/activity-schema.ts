@@ -7,7 +7,6 @@ export const activitySchema = z.object({
   description: z.string(),
   deliveryDate: datePreprocessedSchema,
   postingDate: datePreprocessedSchema,
-  attachments: z.array(z.string()),
   isAcceptingSubmits: z.boolean(),
 });
 

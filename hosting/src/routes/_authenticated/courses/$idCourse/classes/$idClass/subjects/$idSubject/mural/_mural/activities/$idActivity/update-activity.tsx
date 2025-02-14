@@ -1,18 +1,27 @@
 import { CustomLoading } from '@/components/custom/custom-loading';
-import { Activity } from '@/models/activity-schema';
 import { useUpdateActivityMutation } from '@/mutations/use-update-activity-mutation';
-import { getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id';
+import { getActivityByIdFirestoreQuery, getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id';
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar';
 import * as Switch from '@radix-ui/react-switch';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Field, Formik } from 'formik';
 import { ClipboardList } from 'lucide-react';
-import { useState } from 'react';
 
 import { FormBody } from '@/components/custom/form/body';
 import { Input } from '@/components/custom/form/input';
 import { InputFile } from '@/components/custom/form/input-file';
+import { z } from 'zod';
+import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query';
+
+const updateActivitySchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  deliveryDate: z.date(),
+  isAcceptingSubmits: z.boolean(),
+  attachments: z.array(z.instanceof(File)),
+});
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/update-activity',
@@ -23,13 +32,15 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const navigate = useNavigate();
   const { idClass, idCourse, idSubject, idActivity } = Route.useParams();
-  const [files, setFiles] = useState<File[]>([]);
 
+  const activityByIdFirestoreQuery = getActivityByIdFirestoreQuery(idCourse, idClass, idSubject, idActivity);
   const activityByIdQueryOptions = getActivityByIdQueryOptions(idCourse, idClass, idSubject, idActivity);
   const { data: dataActivity, isLoading } = useSuspenseQuery(activityByIdQueryOptions);
   const { mutate: mutateActivity, isPending } = useUpdateActivityMutation();
 
-  const initialValues: Activity = {
+  useFirestoreRealtimeQuery(activityByIdQueryOptions.queryKey, activityByIdFirestoreQuery)
+
+  const initialValues = {
     id: dataActivity.id || '',
     title: dataActivity.title || '',
     description: dataActivity.description || '',
@@ -47,7 +58,7 @@ function RouteComponent() {
     );
   }
 
-  async function handleSubmit(values: Activity) {
+  async function handleSubmit(values: typeof initialValues) {
     mutateActivity(
       {
         idCourse,
@@ -58,8 +69,8 @@ function RouteComponent() {
         description: values.description,
         deliveryDate: values.deliveryDate,
         isAcceptingSubmits: values.isAcceptingSubmits,
-        attachments: files,
-        existingAttachments: values.attachments || [],
+        attachments: values.attachments,
+        oldAttachments: dataActivity.attachments,
       },
       {
         onSuccess: () => {
@@ -84,7 +95,7 @@ function RouteComponent() {
           Atividade
         </div>
 
-        <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
+        <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize validationSchema={toFormikValidationSchema(updateActivitySchema)}>
           <FormBody cancelTo="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities">
             <Input name="title" label="Título" type="text" placeholder="Digite o título" />
             <Input name="description" label="Instruções" type="text" placeholder="Digite as instruções" />
@@ -96,11 +107,6 @@ function RouteComponent() {
                 label="Anexar documentos"
                 type="file"
                 multiple
-                onChange={(event) => {
-                  if (event.target.files) {
-                    setFiles(Array.from(event.target.files));
-                  }
-                }}
               />
             </div>
 

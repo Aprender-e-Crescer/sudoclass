@@ -2,7 +2,7 @@ import { Activity, activitySchema } from '@/models/activity-schema'
 import { firestore, storage } from '@/services/firebase'
 import { queryOptions } from '@tanstack/react-query'
 import { doc, getDoc } from 'firebase/firestore'
-import { getDownloadURL, ref } from 'firebase/storage'
+import { getBytes, listAll, ref } from 'firebase/storage'
 
 export const getActivityByIdFirestoreQuery = (
   idCourse: string,
@@ -37,21 +37,20 @@ export const getActivityByIdQueryOptions = (idCourse: string, idClass: string, i
 
       const activityData = docSnapshot.data() as Activity
 
-      const attachmentUrls = await Promise.all(
-        (activityData.attachments || []).map(async (filePath) => {
-          try {
-            const fileRef = ref(storage, filePath)
-            return await getDownloadURL(fileRef)
-          } catch (error) {
-            console.error('Erro ao buscar imagem:', filePath, error)
-            return null
-          }
+      const attachmentsRefs = await listAll(ref(storage, `courses/${idCourse}/classes/${idClass}/subjects/${idSubject}/activities/${idActivity}`))
+
+      const attachments = await Promise.all(
+        attachmentsRefs.items.map(async (fileRef) => {
+          const fileArrayBuffer = await getBytes(fileRef)
+
+          return new File([fileArrayBuffer], fileRef.name)
         }),
       )
 
       return {
         ...activityData,
-        attachmentUrls: attachmentUrls.filter(Boolean),
+        attachments: attachments
+          .filter((file) => file !== null),
       }
     },
     select: (data) => data,
