@@ -3,9 +3,10 @@ import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
 import { getSubmitsFirestoreQuery, getSubmitsQueryOptions } from '@/queries/use-get-submits-query'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { doc, updateDoc, DocumentReference, DocumentData } from 'firebase/firestore'
-import { firestore } from '@/services/firebase'
+import { DocumentReference, DocumentData } from 'firebase/firestore'
 import { getProfileQueryOptions } from '@/queries/use-get-profile-query'
+import { getFilesOfSubmit } from '@/queries/use-get-files-submit'
+import { File, FileText, FolderArchive } from 'lucide-react'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/correction',
@@ -13,10 +14,23 @@ export const Route = createFileRoute(
   component: Correction,
 })
 
+const getFileType = (fileName: string) => {
+  const extension = fileName.split('.').pop()?.toLowerCase()
+  if (['jpg', 'jpeg', 'png', 'gif'].includes(extension!)) {
+    return 'image'
+  } else if (extension === 'pdf') {
+    return 'pdf'
+  } else if (extension === 'zip') {
+    return 'zip'
+  }
+  return 'other'
+}
+
 function Correction() {
   const { idClass, idCourse, idSubject, idActivity } = Route.useParams()
-  const [selectedSubmit, setSelectedSubmit] = useState(null) 
-  const [note, setNote] = useState('') 
+  const [selectedSubmit, setSelectedSubmit] = useState(null)
+  const [note, setNote] = useState('')
+  const [submitFiles, setSubmitFiles] = useState<{ [submitId: string]: { name: string; url: string }[] }>({})
 
   const submitsQueryOptions = getSubmitsQueryOptions({ idCourse, idClass, idSubject, idActivity })
   const { data: submits, isLoading: submitsLoading } = useQuery(submitsQueryOptions)
@@ -37,36 +51,21 @@ function Correction() {
       }[],
   })
 
+  // Função para carregar os arquivos de um submit
+  const loadSubmitFiles = async (submitId: string) => {
+    const files = await getFilesOfSubmit({ idCourse, idClass, idSubject, idActivity, idSubmit: submitId })
+    setSubmitFiles((prev) => ({ ...prev, [submitId]: files }))
+  }
+
+  // Função para lidar com a seleção de um submit
   const handleSelectSubmit = (submit) => {
     setSelectedSubmit(submit)
-    setNote(submit.note || '') 
+    setNote(submit.note || '')
+    loadSubmitFiles(submit.id) // Carrega os arquivos do submit selecionado
   }
 
-  const handleSaveNote = async () => {
-    if (!selectedSubmit) return
-
-    try {
-      const submitRef = doc(
-        firestore,
-        'courses',
-        idCourse,
-        'classes',
-        idClass,
-        'subjects',
-        idSubject,
-        'activities',
-        idActivity,
-        'submits',
-        selectedSubmit.id,
-      )
-
-      await updateDoc(submitRef, { note: parseFloat(note) })
-      alert('Nota salva com sucesso!')
-    } catch (error) {
-      console.error('Erro ao salvar a nota:', error)
-      alert('Erro ao salvar a nota.')
-    }
-  }
+  // Função para salvar a nota no Firestore
+  const handleSaveNote = async () => {}
 
   if (submitsLoading) {
     return <div>Carregando...</div>
@@ -78,6 +77,7 @@ function Correction() {
 
   return (
     <div className="flex h-screen">
+      {/* Lista de Submits à Esquerda */}
       <div className="w-1/4 bg-gray-100 p-4 overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Submissões</h2>
         <ul>
@@ -113,6 +113,7 @@ function Correction() {
         </ul>
       </div>
 
+      {/* Painel à Direita */}
       <div className="flex-1 p-4">
         {selectedSubmit ? (
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -126,6 +127,67 @@ function Correction() {
                 ?.displayName || 'N/A'}
             </p>
 
+            {/* Exibição dos arquivos do submit */}
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">Arquivos do Estudante:</h3>
+              {submitFiles[selectedSubmit.id]?.length > 0 ? (
+                <div className="flex flex-wrap gap-4">
+                  {submitFiles[selectedSubmit.id].map((file, index) => {
+                    const fileType = getFileType(file.name)
+
+                    return (
+                      <div
+                        key={index}
+                        className="rounded-lg border border-gray-300 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col w-40 h-40"
+                      >
+                        {fileType === 'image' ? (
+                          <a href={file.url} target="_blank" rel="noopener noreferrer" className="flex-1">
+                            <img src={file.url} alt={`Anexo ${index + 1}`} className="w-full h-full object-cover" />
+                          </a>
+                        ) : fileType === 'pdf' ? (
+                          <a
+                            href={file.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 flex items-center justify-center bg-gray-100"
+                          >
+                            <FileText className="h-12 w-12 text-gray-500" />
+                          </a>
+                        ) : fileType === 'zip' ? (
+                          <a
+                            href={file.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 flex items-center justify-center bg-gray-100"
+                          >
+                            <FolderArchive className="h-12 w-12 text-gray-500" />
+                          </a>
+                        ) : (
+                          <a
+                            href={file.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 flex items-center justify-center bg-gray-100"
+                          >
+                            <File className="h-12 w-12 text-gray-500" />
+                          </a>
+                        )}
+
+                        <div className="p-2 bg-gray-50 border-t border-gray-200">
+                          <p className="text-xs text-gray-600">
+                            Anexo {index + 1} ({fileType})
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm">Nenhum arquivo enviado.</p>
+              )}
+            </div>
+
+            {/* Campo para atribuir nota */}
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Nota:</label>
               <input
