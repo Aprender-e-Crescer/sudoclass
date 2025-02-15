@@ -1,19 +1,19 @@
-import { useMutation } from '@tanstack/react-query';
-import { firestore, storage } from '@/services/firebase';
-import { doc, getDoc, deleteDoc } from 'firebase/firestore';
-import { ref, deleteObject } from 'firebase/storage';
+import { useMutation } from '@tanstack/react-query'
+import { firestore, storage } from '@/services/firebase'
+import { doc, deleteDoc } from 'firebase/firestore'
+import { ref, listAll, deleteObject } from 'firebase/storage'
 
 interface DeleteActivityData {
-  idCourse: string;
-  idClass: string;
-  idSubject: string;
-  idActivity: string;
+  idCourse: string
+  idClass: string
+  idSubject: string
+  idActivity: string
 }
 
 export function useDeleteActivityMutation() {
   return useMutation({
     mutationFn: async (data: DeleteActivityData) => {
-      const { idCourse, idClass, idSubject, idActivity } = data;
+      const { idCourse, idClass, idSubject, idActivity } = data
 
       const activityRef = doc(
         firestore,
@@ -25,29 +25,30 @@ export function useDeleteActivityMutation() {
         idSubject,
         'activities',
         idActivity,
-      );
+      )
 
-      const activityDoc = await getDoc(activityRef);
+      const storagePath = `courses/${idCourse}/classes/${idClass}/subjects/${idSubject}/activities/${idActivity}`
+      const storageRef = ref(storage, storagePath)
 
-      if (!activityDoc.exists()) {
-        throw new Error('Atividade não encontrada');
-      }
+      try {
+        const listResult = await listAll(storageRef)
 
-      const activityData = activityDoc.data();
+        await Promise.all(listResult.items.map((item) => deleteObject(item)))
 
-      if (activityData.attachments && activityData.attachments.length > 0) {
         await Promise.all(
-          activityData.attachments.map(async (attachmentUrl: string) => {
-            const filePath = decodeURIComponent(attachmentUrl.split('/o/')[1].split('?')[0]);
+          listResult.prefixes.map((prefix) =>
+            listAll(prefix).then((subList) => Promise.all(subList.items.map((item) => deleteObject(item)))),
+          ),
+        )
 
-            const fileRef = ref(storage, filePath);
-
-            await deleteObject(fileRef);
-          }),
-        );
+        await deleteDoc(activityRef)
+      } catch (error) {
+        console.error('Erro ao deletar atividade:', error)
+        throw new Error('Falha ao deletar atividade')
       }
-
-      await deleteDoc(activityRef);
     },
-  });
+    onError: (error) => {
+      console.error('Erro na mutação:', error)
+    },
+  })
 }

@@ -51,20 +51,17 @@ function Correction() {
       }[],
   })
 
-  // Função para carregar os arquivos de um submit
   const loadSubmitFiles = async (submitId: string) => {
     const files = await getFilesOfSubmit({ idCourse, idClass, idSubject, idActivity, idSubmit: submitId })
     setSubmitFiles((prev) => ({ ...prev, [submitId]: files }))
   }
 
-  // Função para lidar com a seleção de um submit
   const handleSelectSubmit = (submit) => {
     setSelectedSubmit(submit)
     setNote(submit.note || '')
-    loadSubmitFiles(submit.id) // Carrega os arquivos do submit selecionado
+    loadSubmitFiles(submit.id)
   }
 
-  // Função para salvar a nota no Firestore
   const handleSaveNote = async () => {}
 
   if (submitsLoading) {
@@ -77,7 +74,6 @@ function Correction() {
 
   return (
     <div className="flex h-screen">
-      {/* Lista de Submits à Esquerda */}
       <div className="w-1/4 bg-gray-100 p-4 overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Submissões</h2>
         <ul>
@@ -113,7 +109,6 @@ function Correction() {
         </ul>
       </div>
 
-      {/* Painel à Direita */}
       <div className="flex-1 p-4">
         {selectedSubmit ? (
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -127,7 +122,6 @@ function Correction() {
                 ?.displayName || 'N/A'}
             </p>
 
-            {/* Exibição dos arquivos do submit */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Arquivos do Estudante:</h3>
               {submitFiles[selectedSubmit.id]?.length > 0 ? (
@@ -187,7 +181,6 @@ function Correction() {
               )}
             </div>
 
-            {/* Campo para atribuir nota */}
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Nota:</label>
               <input
