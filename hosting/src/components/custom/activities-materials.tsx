@@ -1,23 +1,20 @@
-import * as Accordion from '@radix-ui/react-accordion'
-import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
-import { MoreVertical, ClipboardList, Trash, Pencil } from 'lucide-react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { useDeleteActivityMutation } from '@/mutations/use-delete-activity-mutation'
-import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
-import { getProfileQueryOptions } from '@/queries/use-get-profile-query'
-import { useQueries, useQuery } from '@tanstack/react-query'
-import { getClassQueryOptions } from '@/queries/use-class-query'
+import * as Accordion from '@radix-ui/react-accordion';
+import { Avatar, AvatarFallback } from '@radix-ui/react-avatar';
+import { MoreVertical, ClipboardList, Trash, Pencil } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Link } from '@tanstack/react-router';
+import { useActivitiesMaterialsController } from '@/controllers/use-activity-materials-controller';
+
 
 interface ActivitiesMaterialsProps {
-  id: string
-  idCourse: string
-  idClass: string
-  idSubject: string
-  title: string
-  postingDate: Date
-  description: string
-  isAcceptingSubmits: boolean
+  id: string;
+  idCourse: string;
+  idClass: string;
+  idSubject: string;
+  title: string;
+  postingDate: Date;
+  description: string;
+  isAcceptingSubmits: boolean;
 }
 
 export default function ActivitiesMaterials({
@@ -30,26 +27,12 @@ export default function ActivitiesMaterials({
   description,
   isAcceptingSubmits,
 }: ActivitiesMaterialsProps) {
-  const [confirmDelete, setConfirmDelete] = useState(false)
-
-  const { mutate: deleteActivity } = useDeleteActivityMutation()
-
-  const { data: classData } = useQuery(getClassQueryOptions(idCourse, idClass))
-
-  const students = useQueries({
-    queries: classData?.studentsProfile.map((studentProfile) => getProfileQueryOptions(studentProfile)) ?? [],
-    combine: (results) => results.map((result) => result.data)?.filter((student) => student !== undefined),
-  })
-
-  function handleDelete() {
-    if (!confirmDelete) {
-      setConfirmDelete(true)
-      return
-    }
-
-    deleteActivity({ idCourse, idClass, idSubject, idActivity: id })
-    setConfirmDelete(false)
-  }
+  const {
+    confirmDelete,
+    handleDelete,
+    submittedStudents,
+    pendingStudents,
+  } = useActivitiesMaterialsController({ id, idCourse, idClass, idSubject });
 
   return (
     <Accordion.Root type="single" collapsible className="w-full">
@@ -114,14 +97,14 @@ export default function ActivitiesMaterials({
             <div className="flex items-center gap-4 p-4 bg-white rounded-lg">
               <div className="flex flex-col items-center">
                 <p className="text-sm text-gray-600 font-medium">Entregues</p>
-                <p className="text-2xl font-bold text-green-600">0</p>
+                <p className="text-2xl font-bold text-green-600">{submittedStudents}</p>
               </div>
 
               <div className="h-10 w-px bg-gray-300"></div>
 
               <div className="flex flex-col items-center">
                 <p className="text-sm text-gray-600 font-medium">Pendentes</p>
-                <p className="text-2xl font-bold text-red-600">{students.length}</p>
+                <p className="text-2xl font-bold text-red-600">{pendingStudents}</p>
               </div>
             </div>
           </div>
@@ -142,5 +125,5 @@ export default function ActivitiesMaterials({
         </Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
-  )
+  );
 }
