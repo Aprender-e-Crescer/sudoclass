@@ -9,7 +9,6 @@ import { getClassesQueriesOptions } from '@/queries/use-get-classes-query'
 import { getCoursesQueryOptions } from '@/queries/use-get-courses-query'
 import { getUserProfileQueryOptions } from '@/queries/use-get-user-profile-query'
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
-import { getStudentPersonalClassesQueryOptions } from '@/queries/use-student-personal-classes-query'
 import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
 import { getStringInputValueFromDate } from '@/utils/dateToStringInputValueFormatter'
 import { formatWithMask } from '@/utils/formatWithMask'
@@ -159,6 +158,7 @@ function RouteComponent() {
             name='subjects'
             label='Máterias'
             notFoundItemsMessage="Nenhuma máteria encontrada"
+            placeholder='Selecionar turmas'
             options={subjectsWithClassesAndCourses.map(({ id, name, courseName, className, ref }) => ({
               key: id,
               label: `${courseName} - ${className} - ${name}`,
