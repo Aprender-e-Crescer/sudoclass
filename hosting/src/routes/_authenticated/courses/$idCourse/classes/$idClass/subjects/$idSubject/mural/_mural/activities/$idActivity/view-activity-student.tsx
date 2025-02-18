@@ -3,7 +3,7 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { getActivityByIdFirestoreQuery, getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id'
 import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
-import { ArrowLeft, ClipboardList, FileText, File, FolderArchive } from 'lucide-react'
+import { ArrowLeft, ClipboardList, FileText, FileIcon, FolderArchive } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
 import { Link } from '@tanstack/react-router'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -13,6 +13,8 @@ import { Formik } from 'formik'
 import { useCreateSubmitMutation } from '@/mutations/use-create-submit-mutation'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { getSubmitsFirestoreQuery, getSubmitsQueryOptions } from '@/queries/use-get-submits-query'
+import { getBytes, listAll, ref } from 'firebase/storage'
+import { storage } from '@/services/firebase'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/view-activity-student',
@@ -40,19 +42,55 @@ export function ViewActivityStudent() {
   const submitsQueryOptions = getSubmitsQueryOptions({ idCourse, idClass, idSubject, idActivity, profileRef })
   const { data: submitStudent, isLoading: submitStudentLoading } = useQuery(submitsQueryOptions)
 
-  if (submitStudentLoading) {
-    return <div>Loading...</div>
-  }
-
   const firstSubmit = Array.isArray(submitStudent) ? submitStudent[0] : submitStudent
+
+  const { data: files, error } = useQuery({
+    queryKey: ['filesOfSubmit', { idCourse, idClass, idSubject, idActivity, idSubmit: firstSubmit?.id }],
+    queryFn: async () => {     
+      const storageRef = ref(
+        storage,
+        `courses/${idCourse}/classes/${idClass}/subjects/${idSubject}/activities/${idActivity}/submits/${firstSubmit?.id}/`,
+      )
+    
+      try {
+        const result = await listAll(storageRef)
+    
+        const files = await Promise.all(
+          result.items.map(async (item) => {
+            const bytes = await getBytes(item)
+            return {
+              name: item.name,
+              bytes,
+            }
+          }),
+        )
+    
+        return files
+      } catch (error) {
+        console.error('Erro ao buscar arquivos:', error)
+        throw new Error('Erro ao buscar arquivos no Storage.')
+      }
+    },
+    select: (files) => files.map((file) => new File([file.bytes], file.name)),
+  })
+
+  console.log(error)
 
   useFirestoreRealtimeQuery(
     submitsQueryOptions.queryKey,
     getSubmitsFirestoreQuery({ idCourse, idClass, idSubject, idActivity, profileRef }),
   )
 
+  const activityByIdQueryOptions = getActivityByIdQueryOptions(idCourse, idClass, idSubject, idActivity)
+  useFirestoreRealtimeQuery(
+    activityByIdQueryOptions.queryKey,
+    getActivityByIdFirestoreQuery(idCourse, idClass, idSubject, idActivity),
+  )
+
+  const { data: dataActivity, isLoading } = useSuspenseQuery(activityByIdQueryOptions)
+
   const initialValues = {
-    studentAttachments: [],
+    studentAttachments: files ?? [],
   }
 
   async function handleSubmit(values: typeof initialValues) {
@@ -75,13 +113,9 @@ export function ViewActivityStudent() {
     })
   }
 
-  const activityByIdQueryOptions = getActivityByIdQueryOptions(idCourse, idClass, idSubject, idActivity)
-  useFirestoreRealtimeQuery(
-    activityByIdQueryOptions.queryKey,
-    getActivityByIdFirestoreQuery(idCourse, idClass, idSubject, idActivity),
-  )
-
-  const { data: dataActivity, isLoading } = useSuspenseQuery(activityByIdQueryOptions)
+  if (submitStudentLoading) {
+    return <div>Loading...</div>
+  }
 
   if (isLoading) return <div>Loading...</div>
 
@@ -159,7 +193,7 @@ export function ViewActivityStudent() {
                           download={attachment.name}
                           className="flex-1 flex items-center justify-center bg-gray-100"
                         >
-                          <File className="h-12 w-12 text-gray-500" />
+                          <FileIcon className="h-12 w-12 text-gray-500" />
                         </a>
                       )}
 
@@ -180,7 +214,7 @@ export function ViewActivityStudent() {
           <div className="border flex flex-col gap-3 w-full md:w-1/4 mt-8 md:mt-0 md:pl-8">
             <h1 className="text-gray-600 font-semibold text-2xl">Seus Anexos</h1>
             <div className="flex flex-col gap-5 mt-5">
-              <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+              <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
                 <FormBody
                   buttonsNextTo={true}
                   cancelTo="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities"
