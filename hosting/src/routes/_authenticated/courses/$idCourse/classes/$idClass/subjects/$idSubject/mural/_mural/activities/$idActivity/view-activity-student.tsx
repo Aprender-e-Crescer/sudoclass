@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { getActivityByIdFirestoreQuery, getActivityByIdQueryOptions } from '@/queries/use-get-activity-by-id'
 import { useFirestoreRealtimeQuery } from '@/hooks/use-firestore-realtime-query'
-import NoteValue from '@/components/custom/note-value'
 import { ArrowLeft, ClipboardList, FileText, File, FolderArchive } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar'
 import { Link } from '@tanstack/react-router'
@@ -13,6 +12,7 @@ import { FormBody } from '@/components/custom/form/body'
 import { Formik } from 'formik'
 import { useCreateSubmitMutation } from '@/mutations/use-create-submit-mutation'
 import { useGetFullUser } from '@/hooks/use-get-full-user'
+import { getSubmitsFirestoreQuery, getSubmitsQueryOptions } from '@/queries/use-get-submits-query'
 
 export const Route = createFileRoute(
   '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/activities/$idActivity/view-activity-student',
@@ -35,6 +35,21 @@ export function ViewActivityStudent() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const { mutate } = useCreateSubmitMutation()
   const fullUser = useGetFullUser()
+  const profileRef = fullUser.profileRef
+
+  const submitsQueryOptions = getSubmitsQueryOptions({ idCourse, idClass, idSubject, idActivity, profileRef })
+  const { data: submitStudent, isLoading: submitStudentLoading } = useQuery(submitsQueryOptions)
+
+  if (submitStudentLoading) {
+    return <div>Loading...</div>
+  }
+
+  const firstSubmit = Array.isArray(submitStudent) ? submitStudent[0] : submitStudent
+
+  useFirestoreRealtimeQuery(
+    submitsQueryOptions.queryKey,
+    getSubmitsFirestoreQuery({ idCourse, idClass, idSubject, idActivity, profileRef }),
+  )
 
   const initialValues = {
     studentAttachments: [],
@@ -46,18 +61,18 @@ export function ViewActivityStudent() {
       idClass,
       idSubject,
       idActivity,
-      studentProfile: fullUser.profileRef,
+      studentProfile: profileRef,
       studentAttachments: values.studentAttachments,
-    });
-  
+    })
+
     mutate({
       idCourse,
       idClass,
       idSubject,
       idActivity,
-      studentProfile: fullUser.profileRef,
+      studentProfile: profileRef,
       studentAttachments: values.studentAttachments,
-    });
+    })
   }
 
   const activityByIdQueryOptions = getActivityByIdQueryOptions(idCourse, idClass, idSubject, idActivity)
@@ -97,7 +112,8 @@ export function ViewActivityStudent() {
               Data para entrega:{' '}
               {dataActivity?.deliveryDate ? new Date(dataActivity.deliveryDate).toLocaleDateString() : 'Sem data'}
             </p>
-            <NoteValue note={0} maxGrade={100} />
+
+            <p>{firstSubmit?.note ?? '_'}/100</p>
           </div>
         </div>
 

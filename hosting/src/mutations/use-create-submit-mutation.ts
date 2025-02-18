@@ -1,5 +1,4 @@
 import { firestore, storage } from '@/services/firebase'
-import { docRefSchema } from '@/utils/schema'
 import { useMutation } from '@tanstack/react-query'
 import { addDoc, collection, DocumentReference } from 'firebase/firestore'
 import { ref, uploadBytes } from 'firebase/storage'
@@ -38,7 +37,7 @@ export function useCreateSubmitMutation() {
       const newSubmit = {
         note: null,
         isEvaluated: false,
-        studentProfile, 
+        studentProfile,
       }
 
       const docRef = await addDoc(submitRef, newSubmit)
