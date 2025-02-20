@@ -33,7 +33,7 @@ export function getClassesFirestoreQuery(
     fromFirestore: (snapshot, options) => {
       const data = snapshot.data(options)
 
-      return classSchema.parse({ ...data, idCourse: courseId, id: snapshot.id })
+      return classSchema.parse({ ...data, idCourse: courseId, id: snapshot.id, ref: snapshot.ref })
     },
   })
 
