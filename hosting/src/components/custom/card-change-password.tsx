@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import clsx from 'clsx'
 
 interface CardChangePasswordProps {
   name: string
@@ -18,11 +19,24 @@ interface CardChangePasswordProps {
   handleApproved?: () => void
   handleReject?: () => void
   avatarUrl: string
+  variant: 'pending' | 'accepted' | 'recused'
 }
 
-export default function CardChangePassword({ name, handleApproved, handleReject, avatarUrl }: CardChangePasswordProps) {
+export default function CardChangePassword({
+  name,
+  handleApproved,
+  handleReject,
+  avatarUrl,
+  variant,
+}: CardChangePasswordProps) {
   return (
-    <div className="flex items-center justify-between w-full p-4 bg-white border rounded-lg shadow-sm">
+    <div
+      className={clsx('flex items-center justify-between w-full p-4 border rounded-lg shadow-sm', {
+        'bg-white': variant === 'pending',
+        'bg-green-100': variant === 'accepted',
+        'bg-red-100': variant === 'recused',
+      })}
+    >
       <div className="flex items-center gap-3">
         <Avatar>
           <AvatarImage src={avatarUrl} alt={`${name} foto de perfil`} />
@@ -38,11 +52,9 @@ export default function CardChangePassword({ name, handleApproved, handleReject,
           </button>
         </div>
         <AlertDialog>
-          <AlertDialogTrigger asChild>
+          <AlertDialogTrigger>
             <div className="p-2 flex items-center justify-center rounded-full bg-red-50">
-              <button onClick={handleReject}>
-                <X className="w-5 h-5 text-red-600" />
-              </button>
+              <X className="w-5 h-5 text-red-600" />
             </div>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -54,7 +66,9 @@ export default function CardChangePassword({ name, handleApproved, handleReject,
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction>Confirmar</AlertDialogAction>
+              <AlertDialogAction asChild>
+                <button onClick={handleReject}>Confirmar</button>
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

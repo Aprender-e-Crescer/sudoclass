@@ -6,12 +6,21 @@ import { useQueries, useSuspenseQuery } from '@tanstack/react-query'
 
 export function usePasswordChangeController() {
   const passwordRequestsQueryOptions = getPasswordRequestsQueryOptions()
-  const { data: profileRefs } = useSuspenseQuery(passwordRequestsQueryOptions)
+  const { data: requestsData } = useSuspenseQuery(passwordRequestsQueryOptions)
+
+  const requests = requestsData ?? []
 
   const profilesQueries = useQueries({
-    queries: profileRefs?.map(({ profileRef }) => getProfileQueryOptions(profileRef)) ?? [],
+    queries: requests.map(({ profileRef }) => getProfileQueryOptions(profileRef)) ?? [],
   })
-  const profiles = profilesQueries.filter(({ data }) => data).map(({ data }) => data!)
+
+  const profiles = profilesQueries
+    .filter(({ data }) => data)
+    .map(({ data }, index) => ({
+      ...data!,
+      profileRef: requests[index].profileRef,
+      requestStatus: requests[index].requestStatus,
+    }))
 
   const { mutate: updateCredentials } = useUpdateCredentialsMutation({
     onError: (error) => {
