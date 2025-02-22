@@ -2,14 +2,21 @@ import CardChangePassword from '@/components/custom/card-change-password'
 import { usePasswordChangeController } from '@/controllers/password-change-controller'
 import { getCredentialQueryOptions } from '@/queries/use-get-new-credential.query'
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useState } from 'react'
 import { DocumentData, DocumentReference } from 'firebase/firestore'
 import { ConfirmPasswordChangeDialog } from '@/components/custom/confirm-password-dialog'
 import { useUpdateRequestPasswordStatus } from '@/mutations/use-update-request-password-status'
+import { getUserQueryOptions } from '@/queries/use-get-user-query'
+import { currentUserQueryOptions } from '@/queries/use-current-user-query'
 
 export const Route = createFileRoute('/_authenticated/_requests/password-change-request')({
   component: PasswordChangeRequest,
+  beforeLoad: async ({ context: { queryClient } }) => {
+    const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
+    const user = (await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))).data()
+    if (user?.role != 'admin') throw redirect({ to: '/' })
+  },
 })
 
 function PasswordChangeRequest() {
