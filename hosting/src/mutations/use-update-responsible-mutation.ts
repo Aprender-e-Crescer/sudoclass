@@ -1,7 +1,7 @@
 import { firestore, storage } from "@/services/firebase"
 import { useMutation } from "@tanstack/react-query"
 import { doc, runTransaction } from "firebase/firestore"
-import { ref, uploadBytes } from "firebase/storage"
+import { deleteObject, listAll, ref, uploadBytes } from "firebase/storage"
 
 interface UpdateResponsibleInput {
     onSuccess: () => void
@@ -10,6 +10,7 @@ interface UpdateResponsibleInput {
 
 interface UpdateResponsibleData {
     id: string
+    cpf: string
     fullName: string
     email: string
     telephone: string
@@ -33,6 +34,7 @@ export function useUpdateResponsibleMutation({ onSuccess, onError }: UpdateRespo
         mutationKey: ['updateResponsible'],
         mutationFn: async ({
             id,
+            cpf,
             fullName,
             birthCity,
             birthDate,
@@ -72,13 +74,21 @@ export function useUpdateResponsibleMutation({ onSuccess, onError }: UpdateRespo
             transaction.update(userData.roleRef, {
                 responsibleFor: students.map(studentId => doc(firestore, 'users', studentId))
             })
-        }).then(() => 
-            Promise.all(
-                documents.map((document) => uploadBytes(
-                    ref(storage, `users/${id}/documents/${document.name}`), document)
+        })
+        .then(() => listAll(ref(storage, `users/${cpf}/documents`)))
+        .then(({ items }) => {
+            const { itemsToDelete, itemsToUpload } = {
+                itemsToDelete: items.filter((item) => documents.find(document => item.name !== document.name)),
+                itemsToUpload: items.length === 0 ? documents : documents.filter((document) => items.find(item => item.name !== document.name))
+            }
+
+            return Promise.all([
+                ...itemsToDelete.map((item) => deleteObject(item)),
+                ...itemsToUpload.map((document) => uploadBytes(
+                    ref(storage, `users/${cpf}/documents/${document.name}`), document)
                 )
-            )
-        ),
+            ])
+        }),
         onSuccess,
         onError,
     })

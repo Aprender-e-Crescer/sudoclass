@@ -112,7 +112,7 @@ export function useUpdateStudentMutation({ onError, onSuccess }: UpdateStudentIn
         .then(({ items }) => {
             const { itemsToDelete, itemsToUpload } = {
                 itemsToDelete: items.filter((item) => documents.find(document => item.name !== document.name)),
-                itemsToUpload: documents.filter((document) => items.find(item => item.name !== document.name))
+                itemsToUpload: items.length === 0 ? documents : documents.filter((document) => items.find(item => item.name !== document.name))
             }
 
             return Promise.all([
