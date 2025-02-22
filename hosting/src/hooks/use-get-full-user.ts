@@ -1,6 +1,7 @@
 import { useAuthStateReady } from '@/queries/use-auth-state-ready-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
+import { getUserQueryOptions } from '@/queries/use-get-user-query'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
@@ -9,7 +10,10 @@ export function useGetFullUser() {
 
   const { data: isAuthStateReady } = useAuthStateReady()
   const { data: currentUser } = useCurrentUserQuery(isAuthStateReady)
-  const { data: user } = useGetUserQuery(currentUser?.uid)
+
+  if (!currentUser) throw new Error('User is not logged in')
+
+  const { data: user } = useSuspenseQuery(getUserQueryOptions(currentUser.uid))
 
   useEffect(() => {
     if (currentUser) return

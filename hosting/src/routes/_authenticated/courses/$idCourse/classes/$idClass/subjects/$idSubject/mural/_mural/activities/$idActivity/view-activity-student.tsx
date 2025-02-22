@@ -9,7 +9,7 @@ import { useGetActivityQuery } from '@/queries/use-get-activity-query'
 import { format } from 'date-fns'
 // import { useGetNoteByActivity } from '@/queries/use-get-note-by-activity-query'
 import { useCurrentUserQuery } from '@/queries/use-current-user-query'
-import { useGetUserQuery } from '@/queries/use-get-user-query'
+// import { useGetUserQuery } from '@/queries/use-get-user-query'
 import { useUpdateLinkActivityMutation } from '@/mutations/use-update-link-activity-mutation'
 
 export const Route = createFileRoute(

@@ -19,9 +19,13 @@ export const Route = createFileRoute('/_authenticated')({
     
     const isUserInsideAuthenticatedBoundaries = matches[1].id === '/_authenticated'
 
-    if (!currentUser && isUserInsideAuthenticatedBoundaries) throw redirect({ to: '/login' })
+    if ((!currentUser || !currentUser.uid) && isUserInsideAuthenticatedBoundaries) throw redirect({ to: '/login' })
+    if (!currentUser) return
 
-    const user = await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
+    const user = (await queryClient.ensureQueryData(getUserQueryOptions(currentUser.uid))).data()
+
+    if (!user) throw new Error('User not found')
+
     const role = getRoleFromRef(user?.roleRef)
 
     const student = getStudentPersonalClassesQueryOptions(role, user?.roleRef).enabled ? 
@@ -66,7 +70,7 @@ export function Authenticated() {
 
   const coursesWithClasses = courses.map(course => ({
     ...course,
-    classes: allClasses.find(({ data }) => data.some(({ idCourse }) => idCourse === course.id))?.data,
+    classes: allClasses.find(({ data }) => data.some(({ idCourse }) => idCourse === course.id))?.data || [],
   }))
   
   return (
