@@ -4,7 +4,7 @@ import { Timestamp } from 'firebase/firestore'
 
 export const classSchema = z.object({
   id: z.string(),
-  idCourse: z.string().optional(),
+  idCourse: z.string(),
   name: z.string(),
   color: z.string(),
   shift: z.enum(['morning', 'afternoon', 'night']),

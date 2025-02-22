@@ -4,7 +4,7 @@ import { queryOptions } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
 
 export const getSubjectsFirestoreQuery = (idCourse: string, idClass: string) => collection(firestore, 'courses', idCourse, 'classes', idClass, 'subjects').withConverter({
-  fromFirestore: snapshot => subjectsSchema.parse({ id: snapshot.id, ...snapshot.data() }),
+  fromFirestore: snapshot => subjectsSchema.parse({ id: snapshot.id, ref: snapshot.ref, idCourse, idClass, ...snapshot.data() }),
   toFirestore: (subject: Subject) => subject
 })
 
