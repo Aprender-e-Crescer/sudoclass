@@ -16,7 +16,7 @@ export function SubHeader({ type }: SubHeaderProps) {
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
           <Link
-            to="/password-change-request"
+            to="/password-change"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >

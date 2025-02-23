@@ -12,8 +12,6 @@ export function useGetFullUser() {
   const { data: currentUser } = useCurrentUserQuery(isAuthStateReady)
 
   useEffect(() => {
-    console.log('currentUser', currentUser)
-
     if (currentUser) return
 
     router.invalidate()
@@ -25,6 +23,7 @@ export function useGetFullUser() {
 
 
   return {
+    fullName: user.fullName,
     displayName: currentUser.displayName,
     photoURL: currentUser.photoURL,
     email: currentUser.email,
@@ -35,3 +34,5 @@ export function useGetFullUser() {
     profileRef: user.profileRef,
   }
 }
+
+export type FullUser = ReturnType<typeof useGetFullUser>

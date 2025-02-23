@@ -9,8 +9,9 @@ import { getCoursesFirestoreQuery, getCoursesQueryOptions } from '@/queries/use-
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
 import { getStudentPersonalClassesFirestoreQuery, getStudentPersonalClassesQueryOptions } from '@/queries/use-student-personal-classes-query'
 import { getTeacherPersonalSubjectsFirestoreQuery, getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
+import { auth } from "@/services/firebase"
 import { getRoleFromRef } from '@/utils/getRoleFromRef'
-import { useQuery, useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated')({
@@ -46,7 +47,18 @@ export const Route = createFileRoute('/_authenticated')({
 })
 
 export function Authenticated() {
+  const navigate = Route.useNavigate()
   const fullUser = useGetFullUser()
+
+  const { mutate: logout } = useMutation({
+    mutationKey: ["logout"],
+    mutationFn: () => auth.signOut(),
+    onSuccess: () => {
+      navigate({
+        to: '/login'
+      })
+    }
+  })
   
   const studentPersonalClassesQueryOptions = getStudentPersonalClassesQueryOptions(fullUser.role, fullUser.roleRef)
   const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(fullUser.role, fullUser.roleRef)
@@ -75,7 +87,7 @@ export function Authenticated() {
   
   return (
     <SidebarProvider>
-      <AppSidebar role={fullUser.role} coursesWithClasses={coursesWithClasses} />
+      <AppSidebar logout={logout} fullUser={fullUser} coursesWithClasses={coursesWithClasses} />
       <main className="flex flex-col w-full h-full">
         <SidebarTrigger />
         <Outlet />

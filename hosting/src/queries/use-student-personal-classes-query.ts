@@ -5,7 +5,7 @@ import { DocumentReference, getDoc } from "firebase/firestore";
 
 export const getStudentPersonalClassesFirestoreQuery = (roleRef: DocumentReference) => roleRef.withConverter({
     toFirestore: (data: Student) => data,
-    fromFirestore: (snapshot, options) => studentSchema.parse({ ...snapshot.data(options), id: snapshot.id }),
+    fromFirestore: (snapshot, options) => studentSchema.parse({ ...snapshot.data(options), ref: snapshot.ref, id: snapshot.id }),
 })
 
 export const getStudentPersonalClassesQueryOptions = (role: role, roleRef: DocumentReference) => queryOptions({

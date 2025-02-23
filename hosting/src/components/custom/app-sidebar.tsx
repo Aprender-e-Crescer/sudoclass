@@ -1,43 +1,39 @@
-import { Home, Lock, Settings, Users } from 'lucide-react'
 import sudotecLogo from '@/assets/sudotecLogo.svg'
+import { Home, Lock, Settings, Users } from 'lucide-react'
 
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroupLabel,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
-import { Case, Switch, When } from 'react-if'
-import { role } from '@/types/user'
-import { Link } from '@tanstack/react-router'
-import { Collapsible, CollapsibleContent } from '../ui/collapsible'
-import { Course } from '@/models/course-schema'
+import { FullUser } from '@/hooks/use-get-full-user'
 import { Class } from '@/models/class-schema'
+import { Course } from '@/models/course-schema'
+import { Link } from '@tanstack/react-router'
+import { Case, Switch, When } from 'react-if'
+import { Collapsible, CollapsibleContent } from '../ui/collapsible'
+import { NavUser } from './nav-user'
 
 const menuItemsStudentPortal = [
   { title: 'Início', icon: Home, to: '/' },
-  { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
-  { title: 'Documentos', icon: Home, to: '/documents' },
-  { title: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
 const menuItemsAdminPortal = [
   { title: 'Início', icon: Home, to: '/' },
   { title: 'Usuários', icon: Users, to: '/users' },
-  { title: 'Trocas de Senha', icon: Lock, to: '/password-change-request' },
-  { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
-  { title: 'Documentos', icon: Home, to: '/documents' },
+  { title: 'Solicitações', icon: Lock, to: '/password-change' },
 ]
 
 const menuItemsTeacherClassroom = [
   { title: 'Início', icon: Home, to: '/' },
-  { title: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
 interface CoursesWithClasses extends Course {
@@ -45,11 +41,14 @@ interface CoursesWithClasses extends Course {
 }
 
 interface Props {
-  role: role
+  fullUser: FullUser
+  logout: () => void
   coursesWithClasses: CoursesWithClasses[]
 }
 
-export function AppSidebar({ role, coursesWithClasses }: Props) {
+export function AppSidebar({ fullUser, logout, coursesWithClasses }: Props) {
+  const { role } = fullUser
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -170,6 +169,9 @@ export function AppSidebar({ role, coursesWithClasses }: Props) {
             </Collapsible>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser logout={logout} fullUser={fullUser} />
+      </SidebarFooter>
     </Sidebar>
   )
 }

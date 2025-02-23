@@ -10,11 +10,17 @@ import { useUpdateRequestPasswordStatus } from '@/mutations/use-update-request-p
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
 import { currentUserQueryOptions } from '@/queries/use-current-user-query'
 
-export const Route = createFileRoute('/_authenticated/_requests/password-change-request')({
+export const Route = createFileRoute(
+  '/_authenticated/_requests/password-change',
+)({
   component: PasswordChangeRequest,
   beforeLoad: async ({ context: { queryClient } }) => {
-    const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
-    const user = (await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))).data()
+    const currentUser = await queryClient.ensureQueryData(
+      currentUserQueryOptions(),
+    )
+    const user = (
+      await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
+    ).data()
     if (user?.role != 'admin') throw redirect({ to: '/' })
   },
 })
@@ -22,7 +28,10 @@ export const Route = createFileRoute('/_authenticated/_requests/password-change-
 function PasswordChangeRequest() {
   const { profiles, updateCredentials } = usePasswordChangeController()
   const { mutate: updateRequestStatus } = useUpdateRequestPasswordStatus()
-  const [selectedProfile, setSelectedProfile] = useState<DocumentReference<DocumentData, DocumentData> | null>(null)
+  const [selectedProfile, setSelectedProfile] = useState<DocumentReference<
+    DocumentData,
+    DocumentData
+  > | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [statusMap, setStatusMap] = useState<Record<string, string>>({})
 
@@ -31,12 +40,17 @@ function PasswordChangeRequest() {
     enabled: !!selectedProfile,
   })
 
-  const handleAccept = (profileRef: DocumentReference<DocumentData, DocumentData>) => {
+  const handleAccept = (
+    profileRef: DocumentReference<DocumentData, DocumentData>,
+  ) => {
     setSelectedProfile(profileRef)
     setIsOpen(true)
   }
 
-  const handleReject = (profileRef: DocumentReference<DocumentData, DocumentData>, id: string) => {
+  const handleReject = (
+    profileRef: DocumentReference<DocumentData, DocumentData>,
+    id: string,
+  ) => {
     updateRequestStatus(
       { profileRef: profileRef, status: 'recused' },
       {
@@ -57,7 +71,10 @@ function PasswordChangeRequest() {
       { profileRef: selectedProfile, status: 'accepted' },
       {
         onSuccess: () => {
-          setStatusMap((prev) => ({ ...prev, [selectedProfile.id]: 'accepted' }))
+          setStatusMap((prev) => ({
+            ...prev,
+            [selectedProfile.id]: 'accepted',
+          }))
         },
       },
     )
@@ -66,17 +83,27 @@ function PasswordChangeRequest() {
 
   return (
     <div className="mt-3">
-      {profiles.map(({ id, displayName, photoURL, profileRef, requestStatus }) => (
-        <div key={id} className="flex flex-col justify-center items-center mx-20 mb-3">
-          <CardChangePassword
-            name={displayName}
-            avatarUrl={photoURL!}
-            handleApproved={() => handleAccept(profileRef)}
-            handleReject={() => handleReject(profileRef, id)}
-            variant={(statusMap[id] || requestStatus) as 'pending' | 'accepted' | 'recused'}
-          />
-        </div>
-      ))}
+      {profiles.map(
+        ({ id, displayName, photoURL, profileRef, requestStatus }) => (
+          <div
+            key={id}
+            className="flex flex-col justify-center items-center mx-20 mb-3"
+          >
+            <CardChangePassword
+              name={displayName}
+              avatarUrl={photoURL!}
+              handleApproved={() => handleAccept(profileRef)}
+              handleReject={() => handleReject(profileRef, id)}
+              variant={
+                (statusMap[id] || requestStatus) as
+                  | 'pending'
+                  | 'accepted'
+                  | 'recused'
+              }
+            />
+          </div>
+        ),
+      )}
 
       <ConfirmPasswordChangeDialog
         isOpen={isOpen}
