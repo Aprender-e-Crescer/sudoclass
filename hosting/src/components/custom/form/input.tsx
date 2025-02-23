@@ -3,7 +3,7 @@ import { Mask } from "@/utils/formatWithMask.types";
 import { QueryFilters, useIsFetching } from "@tanstack/react-query";
 import { ErrorMessage, Field, useFormikContext } from "formik";
 import { Loader2 } from "lucide-react";
-import { HTMLInputTypeAttribute, useEffect } from "react";
+import { HTMLInputTypeAttribute, useLayoutEffect } from "react";
 
 interface Props {
     name: string
@@ -36,7 +36,7 @@ export function Input({ name, label, placeholder, type, mask, disabled, onChange
     setFieldValue(name, event.currentTarget.value)
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { masked } = formatWithMask({
       text: currentValue,
       mask: mask,

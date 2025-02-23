@@ -4,6 +4,7 @@ import { Timestamp } from 'firebase/firestore'
 
 export const classSchema = z.object({
   id: z.string(),
+  ref: docRefSchema,
   idCourse: z.string(),
   name: z.string(),
   color: z.string(),
