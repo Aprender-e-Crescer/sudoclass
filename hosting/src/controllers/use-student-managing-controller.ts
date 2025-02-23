@@ -1,36 +1,38 @@
+import { useGetFullUser } from "@/hooks/use-get-full-user"
 import { useToast } from "@/hooks/use-toast"
-import { useCreateTeacherMutation } from "@/mutations/use-create-teacher-mutation"
-import { useUpdateTeacherMutation } from "@/mutations/use-update-teacher-mutation"
+import { useCreateStudentMutation } from "@/mutations/use-create-student-mutation"
+import { useUpdateStudentMutation } from "@/mutations/use-update-student-mutation"
 import { getClassesQueriesOptions } from '@/queries/use-get-classes-query'
 import { getCoursesQueryOptions } from '@/queries/use-get-courses-query'
-import { getSubjectsQueryOptions } from '@/queries/use-get-subjects-query'
+import { getStudentQueryOptions } from "@/queries/use-get-student-query"
 import { getUserDocumentsQueryOptions } from "@/queries/use-get-user-documents-query"
 import { getUserDocumentsReferencesQueryOptions } from "@/queries/use-get-user-documents-references-query"
 import { getUserQueryOptions } from "@/queries/use-get-user-query"
-import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
-import { QueryFilters, useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
+import { QueryFilters, useQueries, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 
-export function useTeacherManagingController(id: string | undefined) {
+export function useStudentManagingController(id: string | undefined) {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
-    const { data: user } = useQuery(getUserQueryOptions(id))
-  
-    const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(user?.role, user?.roleRef)
-    
-    const { data: teacher } = useQuery(teacherPersonalSubjectsQueryOptions)
+    const { role } = useGetFullUser()
 
-    const { data: courses } = useQuery(getCoursesQueryOptions(user?.role, undefined, teacher?.subjects))
+    const { data: user } = useSuspenseQuery(getUserQueryOptions(id))
+
+    const coursesQueryOptions = getCoursesQueryOptions(role, undefined, undefined)
   
-    const classesQueriesOptions = getClassesQueriesOptions(courses, user?.role, undefined, teacher?.subjects)
+    const { data: courses } = useSuspenseQuery(coursesQueryOptions)
+  
+    const classesQueriesOptions = getClassesQueriesOptions(courses, role, undefined, undefined)
+
+    const { data: student } = useQuery(getStudentQueryOptions(user?.role, user?.roleRef))
     
     const allClasses = useQueries({
         queries: classesQueriesOptions.map(({ classesQueryOptions }) => classesQueryOptions),
         combine: (queries) => queries.flatMap(({ data }) => {
             if (data === undefined || data.length === 0) return []
             
-            const dataWithCourseName = courses?.find(({ id }) => data[0]?.idCourse === id)
+            const dataWithCourseName = courses.find(({ id }) => data[0]?.idCourse === id)
             
             if (!dataWithCourseName) throw new Error('Course not found')
 
@@ -39,25 +41,6 @@ export function useTeacherManagingController(id: string | undefined) {
                 courseName: dataWithCourseName.name,
             }))
         }).filter((data) => data !== undefined)
-    })
-
-    const subjectsQueriesOptions = allClasses.map(({ id, idCourse }) => getSubjectsQueryOptions(idCourse, id))
-
-    const subjectsWithClassesAndCourses = useQueries({
-        queries: subjectsQueriesOptions,
-        combine: (queries) => queries.flatMap(({ data }) => {
-            if (data === undefined || data.length === 0) return []
-            
-            const dataWithClassName = allClasses.find(({ id }) => data[0]?.idClass === id)
-            
-            if (!dataWithClassName) throw new Error('Course not found')
-
-            return data.map((currentClass) => ({
-                ...currentClass,
-                className: dataWithClassName.name,
-                courseName: dataWithClassName.courseName
-            }))
-        }).filter(value => value !== undefined)
     })
 
     const documentsReferencesQueryOptions = getUserDocumentsReferencesQueryOptions(id)
@@ -78,30 +61,30 @@ export function useTeacherManagingController(id: string | undefined) {
 
     const { toast } = useToast()
 
-    const { mutateAsync: createTeacher } = useCreateTeacherMutation({
+    const { mutateAsync: createStudent } = useCreateStudentMutation({
         onError: (error) => {
             toast({
                 variant: "destructive",
-                title: "Erro ao criar admin",
+                title: "Erro ao criar aluno",
                 description: error.message,
             })
         },
         onSuccess: () => {
-                navigate({
+            navigate({
                 to: "/users"
             })
         }
     })
 
-    const { mutateAsync: updateTeacher } = useUpdateTeacherMutation({
+    const { mutateAsync: updateStudent } = useUpdateStudentMutation({
         onError: (error) => {
             queryClient.invalidateQueries({
-                queryKey: documentsReferencesQueryOptions,
+                queryKey: documentsReferencesQueryOptions.queryKey,
             })
             
             toast({
                 variant: "destructive",
-                title: "Erro ao atualizar admin",
+                title: "Erro ao atualizar aluno",
                 description: error.message,
             })
         },
@@ -113,12 +96,12 @@ export function useTeacherManagingController(id: string | undefined) {
     })
 
     return {
-        updateTeacher,
-        createTeacher,
+        updateStudent,
+        createStudent,
         user,
-        teacher,
+        student,
         documents,
         documentsQueryFilters,
-        subjectsWithClassesAndCourses,
+        allClasses,
     }
 }

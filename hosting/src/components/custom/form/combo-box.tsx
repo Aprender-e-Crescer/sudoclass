@@ -73,7 +73,7 @@ export function ComboBox({ name, label, placeholder, options, disabled, onChange
                   className="flex items-center rounded-md border hover:bg-gray-100 bg-white border-gray-300 px-3 py-2 data-[show-error=true]:border-red-300 data-[show-error=true]:bg-red-50 flex-1"
                 >
                   <p className="flex-1 text-start">
-                    Selecionar turmas
+                    {placeholder}
                   </p>
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </button>

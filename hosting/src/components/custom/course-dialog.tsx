@@ -14,6 +14,8 @@ import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { useEffect, useState } from 'react'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 
+const courseFormSchema = courseSchema.omit({ id: true })
+
 interface CourseDialogProps {
   title: string
   subTitle: string
@@ -46,7 +48,7 @@ export default function CourseDialog({
         </DialogHeader>
         <Formik
           initialValues={initialValues}
-          validationSchema={toFormikValidationSchema(courseSchema)}
+          validationSchema={toFormikValidationSchema(courseFormSchema)}
           onSubmit={(values) => {
             mutation(values)
             onClose()
