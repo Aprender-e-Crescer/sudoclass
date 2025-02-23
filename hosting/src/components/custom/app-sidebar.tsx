@@ -13,7 +13,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Case, Else, If, Switch, Then, When } from "react-if"
+import { Case, Switch, When } from "react-if"
 import { role } from "@/types/user"
 import { Link } from "@tanstack/react-router"
 import { Collapsible, CollapsibleContent } from "../ui/collapsible"
@@ -133,6 +133,16 @@ export function AppSidebar({ role, coursesWithClasses }: Props) {
                                 {() => 
                                     <SidebarMenuButton className="flex items-center" asChild>
                                         <Link to="/courses/$idCourse/classes/$idClass/subjects" params={{ idCourse: id, idClass: classes[0].id }}>
+                                            <span className="rounded h-2 w-2" style={{ backgroundColor: color }} />
+                                            {name}
+                                        </Link>
+                                    </SidebarMenuButton>
+                                }
+                            </Case>
+                            <Case condition={classes.length === 0}>
+                                {() => 
+                                    <SidebarMenuButton className="flex items-center" asChild>
+                                        <Link to="/courses/$idCourse" params={{ idCourse: id }}>
                                             <span className="rounded h-2 w-2" style={{ backgroundColor: color }} />
                                             {name}
                                         </Link>

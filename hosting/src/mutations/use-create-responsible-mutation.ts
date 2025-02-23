@@ -6,12 +6,12 @@ import { useMutation } from "@tanstack/react-query";
 import { collection, doc, runTransaction } from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
 
-interface CreateTeacherInput {
+interface CreateResponsibleInput {
     onSuccess: () => void
     onError: (error: Error) => void
 }
 
-interface CreateTeacherData {
+interface CreateResponsibleData {
     fullName: string
     cpf: string
     email: string
@@ -28,12 +28,12 @@ interface CreateTeacherData {
     grDispatchDate: Date
     grDispatchState: string
     documents: File[]
-    subjects: string[]
+    students: string[]
 }
 
-export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherInput) {
+export function useCreateResponsibleMutation({ onSuccess, onError }: CreateResponsibleInput) {
     return useMutation({
-        mutationKey: ['createTeacher'],
+        mutationKey: ['createResponsible'],
         mutationFn: async ({
             cpf,
             fullName,
@@ -51,8 +51,8 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
             state,
             street,
             telephone,
-            subjects,
-        }: CreateTeacherData) => runTransaction(firestore, async (transaction) => { 
+            students,
+        }: CreateResponsibleData) => runTransaction(firestore, async (transaction) => { 
             const { unmasked: cpfCleaned } = formatWithMask({
                 text: cpf,
                 mask: masks.BRL_CPF,
@@ -67,7 +67,7 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
             const password = passwordGenerator()
         
             const profileRef = doc(collection(firestore, "profiles"))
-            const roleRef = doc(collection(firestore, "teachers"))
+            const roleRef = doc(collection(firestore, "responsibles"))
                 
             transaction.set(userRef, {
                 profileRef,
@@ -82,12 +82,14 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
         
             transaction.set(doc(collection(firestore, userRef.path, "credentials")), { password })
             transaction.set(profileRef, { displayName: fullName, photoURL: null })
-            transaction.set(roleRef, { subjects: subjects.map((subjectPath) => doc(firestore, subjectPath)) })
+            transaction.set(roleRef, {
+                responsibleFor: students.map(studentId => doc(firestore, 'users', studentId))
+            })
         }).then(() => 
             Promise.all(
                 documents.map((document) => uploadBytes(
-                        ref(storage, `users/${cpf}/documents/${document.name}`), document)
-                    )
+                    ref(storage, `users/${cpf}/documents/${document.name}`), document)
+                )
             )
         ),
         onSuccess,

@@ -8,13 +8,13 @@ export const getTeacherPersonalSubjectsFirestoreQuery = (roleRef: DocumentRefere
     fromFirestore: (snapshot, options) => teacherSchema.parse({ ...snapshot.data(options), id: snapshot.id }),
 })
 
-export const getTeacherPersonalSubjectsQueryOptions = (role: role, roleRef: DocumentReference) => queryOptions({
+export const getTeacherPersonalSubjectsQueryOptions = (role: role | undefined, roleRef: DocumentReference | undefined) => queryOptions({
     queryKey: ['getTeacherPersonalSubjects', role, roleRef],
-    queryFn: () => getDoc(getTeacherPersonalSubjectsFirestoreQuery(roleRef)),
+    queryFn: () => getDoc(getTeacherPersonalSubjectsFirestoreQuery(roleRef!)),
     select: (snapshot) => {
         if (!snapshot.exists()) throw new Error('Document teacher does not exist')
 
         return snapshot.data()
     },
-    enabled: role === 'teacher',
+    enabled: role && roleRef && role === 'teacher',
 })

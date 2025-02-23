@@ -3,6 +3,9 @@ import { z } from 'zod'
 
 export const subjectsSchema = z.object({
   id: z.string(),
+  ref: docRefSchema,
+  idCourse: z.string(),
+  idClass: z.string(),
   name: z.string(),
   color: z.string(),
   workload: z.number(),

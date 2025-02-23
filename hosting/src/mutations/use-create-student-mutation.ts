@@ -6,12 +6,12 @@ import { useMutation } from "@tanstack/react-query";
 import { collection, doc, runTransaction } from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
 
-interface CreateTeacherInput {
+interface CreateStudentInput {
     onSuccess: () => void
     onError: (error: Error) => void
 }
 
-interface CreateTeacherData {
+interface CreateStudentData {
     fullName: string
     cpf: string
     email: string
@@ -28,12 +28,12 @@ interface CreateTeacherData {
     grDispatchDate: Date
     grDispatchState: string
     documents: File[]
-    subjects: string[]
+    classes: string[]
 }
 
-export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherInput) {
+export function useCreateStudentMutation({ onSuccess, onError }: CreateStudentInput) {
     return useMutation({
-        mutationKey: ['createTeacher'],
+        mutationKey: ['createStudent'],
         mutationFn: async ({
             cpf,
             fullName,
@@ -51,8 +51,8 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
             state,
             street,
             telephone,
-            subjects,
-        }: CreateTeacherData) => runTransaction(firestore, async (transaction) => { 
+            classes,
+        }: CreateStudentData) => runTransaction(firestore, async (transaction) => { 
             const { unmasked: cpfCleaned } = formatWithMask({
                 text: cpf,
                 mask: masks.BRL_CPF,
@@ -67,7 +67,7 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
             const password = passwordGenerator()
         
             const profileRef = doc(collection(firestore, "profiles"))
-            const roleRef = doc(collection(firestore, "teachers"))
+            const roleRef = doc(collection(firestore, "students"))
                 
             transaction.set(userRef, {
                 profileRef,
@@ -82,12 +82,12 @@ export function useCreateTeacherMutation({ onSuccess, onError }: CreateTeacherIn
         
             transaction.set(doc(collection(firestore, userRef.path, "credentials")), { password })
             transaction.set(profileRef, { displayName: fullName, photoURL: null })
-            transaction.set(roleRef, { subjects: subjects.map((subjectPath) => doc(firestore, subjectPath)) })
+            transaction.set(roleRef, { classes: classes.map((classPath) => doc(firestore, classPath)) })
         }).then(() => 
             Promise.all(
                 documents.map((document) => uploadBytes(
-                        ref(storage, `users/${cpf}/documents/${document.name}`), document)
-                    )
+                    ref(storage, `users/${cpf}/documents/${document.name}`), document)
+                )
             )
         ),
         onSuccess,

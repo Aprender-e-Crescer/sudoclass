@@ -15,15 +15,12 @@ interface Props {
 }
 
 export function InputFile({ name, label, placeholder, type, onChange, multiple, filtersQueryToShowLoading }: Props) {
-  const { setFieldValue, errors, touched, values } = useFormikContext()
+  const { setFieldValue, errors, touched, values } = useFormikContext<Record<string, string>>()
 
   const isLoading = useIsFetching(filtersQueryToShowLoading) > 0
 
-  // @ts-expect-error
-  const value = Array.isArray(values[name]) ? values[name] : []
-  // @ts-expect-error
+  const currentValue = Array.isArray(values[name]) ? values[name] : []
   const isTouched = !!touched[name]
-  // @ts-expect-error
   const hasError = !!errors[name]
   const shouldShowError = isTouched && hasError
 
@@ -34,13 +31,13 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple, 
 
     if (!multiple) return setFieldValue(name, [currentFiles[0]])
 
-    const files = currentFiles.concat(Array.from(value)).filter((file, index, array) => array.findIndex((f) => (f as File).name === (file as File).name) === index)
+    const files = currentFiles.concat(Array.from(currentValue)).filter((file, index, array) => array.findIndex((f) => (f as File).name === (file as File).name) === index)
 
     setFieldValue(name, files)
   }
 
   const handleOnRemoveFileClick = (fileName: string) => () => {
-    const files = Array.from(value).filter((file) => (file as File).name !== fileName)
+    const files = Array.from(currentValue).filter((file) => (file as File).name !== fileName)
 
     setFieldValue(name, files)
   }
@@ -63,7 +60,7 @@ export function InputFile({ name, label, placeholder, type, onChange, multiple, 
           multiple={multiple}
           className="hidden"
         />
-        {value.map((file: File) => (
+        {currentValue.map((file: File) => (
           <div key={file.name} data-show-error={shouldShowError} className="rounded-md border border-gray-300 px-3 py-2 flex flex-1 items-center gap-3">
             <p className="flex-1">{file.name}</p>
             <p>{prettyBytes(file.size)}</p>
