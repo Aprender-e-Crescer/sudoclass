@@ -1,21 +1,20 @@
-import { Formik, Form } from 'formik'
 import loginImage from '@/assets/login.png'
-import { AiOutlineIdcard } from 'react-icons/ai'
 import { InputAuth } from '@/components/custom/auth-input'
-import { FaKey } from 'react-icons/fa6'
 import { InputCheckbox } from '@/components/custom/checkbox-input'
-import { Link, Navigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { createFileRoute } from '@tanstack/react-router'
 import { useLoginController } from '@/controllers/use-login-controller'
 import { loginSchema } from '@/models/login-schema'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { masks } from '@/utils/masks'
-import { formatWithMask } from '@/utils/formatWithMask'
-import { useState } from 'react'
-import { Loader2 } from 'lucide-react'
-import { browserLocalPersistence, browserSessionPersistence, inMemoryPersistence, setPersistence } from 'firebase/auth'
 import { auth } from '@/services/firebase'
+import { formatWithMask } from '@/utils/formatWithMask'
+import { masks } from '@/utils/masks'
+import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
+import { browserLocalPersistence, browserSessionPersistence, setPersistence } from 'firebase/auth'
+import { Form, Formik } from 'formik'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { AiOutlineIdcard } from 'react-icons/ai'
+import { FaKey } from 'react-icons/fa6'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 export const Route = createFileRoute('/login')({
   component: Login,
@@ -54,8 +53,6 @@ function Login() {
         text: cpf,
         mask: masks.BRL_CPF,
       })
-
-      console.log(rememberMe)
 
       setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence)
 
@@ -135,7 +132,7 @@ function Login() {
 
                     <div className="text-blue-600 flex justify-between items-center gap-4 -mt-6 mr-5 ml-4">
                       <InputCheckbox fieldName="rememberMe" checkboxValues={checkboxOptions} />
-                      <Link to="/" className="text-blue-600 underline text-sm">
+                      <Link to="/password-reset" className="text-blue-600 underline text-sm">
                         Esqueceu sua Senha?
                       </Link>
                     </div>

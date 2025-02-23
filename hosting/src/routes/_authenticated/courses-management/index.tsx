@@ -5,16 +5,15 @@ import NotFound from '@/components/custom/not-found'
 import { useCoursesManagementController } from '@/controllers/courses-management-controller'
 import { currentUserQueryOptions } from '@/queries/use-current-user-query'
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
-import { getRoleFromRef } from '@/utils/getRoleFromRef'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { useState } from 'react'
 import { When } from 'react-if'
 
 export const Route = createFileRoute('/_authenticated/courses-management/')({
   beforeLoad: async ({ context: { queryClient } }) => {
     const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
-    const user = await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))
-    const role = getRoleFromRef(user?.roleRef)
+    const user = (await queryClient.ensureQueryData(getUserQueryOptions(currentUser?.uid))).data()
+    if (user?.role != 'admin') throw redirect({ to: '/' })
   },
   component: Index,
 })

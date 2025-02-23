@@ -1,4 +1,4 @@
-import { Home, Settings, Users } from "lucide-react"
+import { Home, Lock, Settings, Users } from 'lucide-react'
 import sudotecLogo from '@/assets/sudotecLogo.svg'
 
 import {
@@ -12,38 +12,37 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import { Case, Switch, When } from "react-if"
-import { role } from "@/types/user"
-import { Link } from "@tanstack/react-router"
-import { Collapsible, CollapsibleContent } from "../ui/collapsible"
-import { Course } from "@/models/course-schema"
-import { Class } from "@/models/class-schema"
+} from '@/components/ui/sidebar'
+import { Case, Switch, When } from 'react-if'
+import { role } from '@/types/user'
+import { Link } from '@tanstack/react-router'
+import { Collapsible, CollapsibleContent } from '../ui/collapsible'
+import { Course } from '@/models/course-schema'
+import { Class } from '@/models/class-schema'
 
 const menuItemsStudentPortal = [
-    { title: 'Início', icon: Home, to: '/' },
-    { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
-    { title: 'Documentos', icon: Home, to: '/documents' },
-    { title: 'Configurações', icon: Settings, to: '/profile-changes' },
+  { title: 'Início', icon: Home, to: '/' },
+  { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
+  { title: 'Documentos', icon: Home, to: '/documents' },
+  { title: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
 const menuItemsAdminPortal = [
-    { title: 'Início', icon: Home, to: '/' },
-    { title: 'Usuários', icon: Users, to: '/users' },
-    { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
-    { title: 'Documentos', icon: Home, to: '/documents' },
-    { title: 'Criações', icon: Home, to: '/creations' },
-    { title: 'Configurações', icon: Settings, to: '/profile-changes' },
+  { title: 'Início', icon: Home, to: '/' },
+  { title: 'Usuários', icon: Users, to: '/users' },
+  { title: 'Trocas de Senha', icon: Lock, to: '/password-change-request' },
+  { title: 'Matriz Escolar', icon: Home, to: '/school-matrices' },
+  { title: 'Documentos', icon: Home, to: '/documents' },
 ]
 
 const menuItemsTeacherClassroom = [
-    { title: 'Início', icon: Home, to: '/' },
-    { title: 'Configurações', icon: Settings, to: '/profile-changes' },
+  { title: 'Início', icon: Home, to: '/' },
+  { title: 'Configurações', icon: Settings, to: '/profile-changes' },
 ]
 
 interface CoursesWithClasses extends Course {
-    classes: Class[]
-} 
+  classes: Class[]
+}
 
 interface Props {
   role: role
@@ -55,62 +54,62 @@ export function AppSidebar({ role, coursesWithClasses }: Props) {
     <Sidebar>
       <SidebarContent>
         <div className="w-full flex items-center justify-center">
-            <img src={sudotecLogo} alt="sudotecLogo" className="h-24 w-52" />
+          <img src={sudotecLogo} alt="sudotecLogo" className="h-24 w-52" />
         </div>
         <hr />
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-                <Switch>
-                    <Case condition={role === 'admin'}>
-                        {menuItemsAdminPortal.map(({ icon: Icon, title, to }) => (
-                            <SidebarMenuItem key={title}>
-                                <SidebarMenuButton asChild>
-                                    <Link to={to}>
-                                        <Icon />
-                                        <span>{title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </Case>
-                    <Case condition={role === 'teacher'}>
-                        {menuItemsTeacherClassroom.map(({ icon: Icon, title, to }) => (
-                            <SidebarMenuItem key={title}>
-                                <SidebarMenuButton asChild>
-                                    <Link to={to}>
-                                        <Icon />
-                                        <span>{title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </Case>
-                    <Case condition={role === 'responsible'}>
-                        {menuItemsStudentPortal.map(({ icon: Icon, title, to }) => (
-                            <SidebarMenuItem key={title}>
-                                <SidebarMenuButton asChild>
-                                    <Link to={to}>
-                                        <Icon />
-                                        <span>{title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </Case>
-                    <Case condition={role === 'student'}>
-                        {menuItemsStudentPortal.map(({ icon: Icon, title, to }) => (
-                            <SidebarMenuItem key={title}>
-                                <SidebarMenuButton asChild>
-                                    <Link to={to}>
-                                        <Icon />
-                                        <span>{title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </Case>
-                </Switch>
+              <Switch>
+                <Case condition={role === 'admin'}>
+                  {menuItemsAdminPortal.map(({ icon: Icon, title, to }) => (
+                    <SidebarMenuItem key={title}>
+                      <SidebarMenuButton asChild>
+                        <Link to={to}>
+                          <Icon />
+                          <span>{title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </Case>
+                <Case condition={role === 'teacher'}>
+                  {menuItemsTeacherClassroom.map(({ icon: Icon, title, to }) => (
+                    <SidebarMenuItem key={title}>
+                      <SidebarMenuButton asChild>
+                        <Link to={to}>
+                          <Icon />
+                          <span>{title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </Case>
+                <Case condition={role === 'responsible'}>
+                  {menuItemsStudentPortal.map(({ icon: Icon, title, to }) => (
+                    <SidebarMenuItem key={title}>
+                      <SidebarMenuButton asChild>
+                        <Link to={to}>
+                          <Icon />
+                          <span>{title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </Case>
+                <Case condition={role === 'student'}>
+                  {menuItemsStudentPortal.map(({ icon: Icon, title, to }) => (
+                    <SidebarMenuItem key={title}>
+                      <SidebarMenuButton asChild>
+                        <Link to={to}>
+                          <Icon />
+                          <span>{title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </Case>
+              </Switch>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

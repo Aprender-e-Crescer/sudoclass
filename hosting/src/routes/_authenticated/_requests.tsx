@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_authenticated/_requests')({
 export function Requests() {
   return (
     <div className="flex flex-col flex-1">
-      <SubHeader hasPrivilege="requests" />
+      <SubHeader type="requests" />
       <Outlet />
     </div>
   )
