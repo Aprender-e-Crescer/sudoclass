@@ -116,8 +116,6 @@ function RouteComponent() {
     return createResponsible(dataCleaned)
   }
 
-  console.log(responsible?.responsibleFor, initialValues.students, students)
-
   return (
     <>
       <Formik innerRef={formikRef} enableReinitialize onSubmit={handleOnSubmit} initialValues={initialValues} validationSchema={toFormikValidationSchema(responsibleSchema)}>
