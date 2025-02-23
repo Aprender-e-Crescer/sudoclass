@@ -8,31 +8,29 @@ import { getUserDocumentsQueryOptions } from "@/queries/use-get-user-documents-q
 import { getUserDocumentsReferencesQueryOptions } from "@/queries/use-get-user-documents-references-query"
 import { getUserQueryOptions } from "@/queries/use-get-user-query"
 import { getTeacherPersonalSubjectsQueryOptions } from '@/queries/use-teacher-personal-subjects-query'
-import { QueryFilters, useQueries, useQuery, useQueryClient, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import { QueryFilters, useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 
 export function useTeacherManagingController(id: string | undefined) {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
-    const { data: user } = useSuspenseQuery(getUserQueryOptions(id))
+    const { data: user } = useQuery(getUserQueryOptions(id))
   
-    const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(user.role, user.roleRef)
+    const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(user?.role, user?.roleRef)
     
     const { data: teacher } = useQuery(teacherPersonalSubjectsQueryOptions)
 
-    const coursesQueryOptions = getCoursesQueryOptions(user.role, undefined, teacher?.subjects)
+    const { data: courses } = useQuery(getCoursesQueryOptions(user?.role, undefined, teacher?.subjects))
   
-    const { data: courses } = useSuspenseQuery(coursesQueryOptions)
-  
-    const classesQueriesOptions = getClassesQueriesOptions(courses, user.role, undefined, teacher?.subjects)
+    const classesQueriesOptions = getClassesQueriesOptions(courses, user?.role, undefined, teacher?.subjects)
     
-    const allClasses = useSuspenseQueries({
+    const allClasses = useQueries({
         queries: classesQueriesOptions.map(({ classesQueryOptions }) => classesQueryOptions),
         combine: (queries) => queries.flatMap(({ data }) => {
             if (data === undefined || data.length === 0) return []
             
-            const dataWithCourseName = courses.find(({ id }) => data[0]?.idCourse === id)
+            const dataWithCourseName = courses?.find(({ id }) => data[0]?.idCourse === id)
             
             if (!dataWithCourseName) throw new Error('Course not found')
 
@@ -45,7 +43,7 @@ export function useTeacherManagingController(id: string | undefined) {
 
     const subjectsQueriesOptions = allClasses.map(({ id, idCourse }) => getSubjectsQueryOptions(idCourse, id))
 
-    const subjectsWithClassesAndCourses = useSuspenseQueries({
+    const subjectsWithClassesAndCourses = useQueries({
         queries: subjectsQueriesOptions,
         combine: (queries) => queries.flatMap(({ data }) => {
             if (data === undefined || data.length === 0) return []

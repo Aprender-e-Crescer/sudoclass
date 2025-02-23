@@ -55,11 +55,13 @@ export const getClassesQueryOptions = (
   })
 
 export function getClassesQueriesOptions(
-  courses: Course[],
-  role: role,
+  courses: Course[] | undefined,
+  role: role | undefined,
   studentClasses: Student['classes'] | undefined,
   teacherSubjects: Teacher['subjects'] | undefined
 ) {
+  if (!role || !courses) return []
+
   const classesQueriesOptions = courses.map(({ id }) => getClassesQueryOptions(id, role, studentClasses, teacherSubjects))
 
   return classesQueriesOptions.map((queryOptions) => ({

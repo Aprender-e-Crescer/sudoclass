@@ -8,7 +8,7 @@ import { collection, getDocs, documentId, query, where } from 'firebase/firestor
 
 const getCourseRef = (role: role, studentClasses: Student['classes'] | undefined, teacherSubjects: Teacher['subjects'] | undefined) => {
   if (role === 'teacher') {
-    if (!teacherSubjects) throw new Error('Classes is not defined')
+    if (!teacherSubjects) return []
   
     return teacherSubjects.map((subjectRef) => subjectRef.parent.parent?.parent.parent)
   }
@@ -43,9 +43,13 @@ export const getCoursesFirestoreQuery = (role: role, studentClasses: Student['cl
   return queryRef
 }
 
-export const getCoursesQueryOptions = (role: role, studentClasses: Student['classes'] | undefined, teacherSubjects: Teacher['subjects'] | undefined) => queryOptions({
-  queryKey: ['getCourses', role, studentClasses, teacherSubjects],
-  queryFn: async () => getDocs(getCoursesFirestoreQuery(role, studentClasses, teacherSubjects)),
-  select: (snapshot) => snapshot.docs.map((doc) => doc.data()),
-  enabled: ((role === 'student' || role === 'responsible') && !!studentClasses) || role === 'admin' || role === 'teacher' && !!teacherSubjects,
-})
+export const getCoursesQueryOptions = (role: role | undefined, studentClasses: Student['classes'] | undefined, teacherSubjects: Teacher['subjects'] | undefined) => {
+  const coursesRef = getCourseRef(role!, studentClasses, teacherSubjects)
+
+  return queryOptions({
+    queryKey: ['getCourses', role, studentClasses, teacherSubjects],
+    queryFn: async () => getDocs(getCoursesFirestoreQuery(role!, studentClasses, teacherSubjects)),
+    select: (snapshot) => snapshot.docs.map((doc) => doc.data()),
+    enabled: role && coursesRef && (((role === 'student' || role === 'responsible') && !!studentClasses) || role === 'admin' || role === 'teacher' && !!teacherSubjects),
+  })
+}

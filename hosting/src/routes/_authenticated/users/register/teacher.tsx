@@ -35,6 +35,7 @@ export const Route = createFileRoute('/_authenticated/users/register/teacher')({
       }).parse(search)
 
       const user = await queryClient.ensureQueryData(getUserQueryOptions(id))
+
       const userData = user.data()
 
       if (!userData) throw new Error('User not found')
@@ -43,9 +44,7 @@ export const Route = createFileRoute('/_authenticated/users/register/teacher')({
 
       const role = getRoleFromRef(userData?.roleRef)
 
-      const teacher = getTeacherPersonalSubjectsQueryOptions(role, userData?.roleRef).enabled ?
-        await queryClient.ensureQueryData(getTeacherPersonalSubjectsQueryOptions(role, userData?.roleRef)) :
-        undefined
+      const teacher = await queryClient.ensureQueryData(getTeacherPersonalSubjectsQueryOptions(role, userData?.roleRef))
       
       const courses = await queryClient.ensureQueryData(getCoursesQueryOptions(role, undefined, teacher?.data()?.subjects))
 
