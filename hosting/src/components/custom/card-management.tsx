@@ -43,7 +43,7 @@ export default function CardManagement({
       <div className="p-6">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row items-start justify-between">
-            <h2 className="text-2xl sm:text-4xl text-[#0D062D] font-semibold">{name}</h2>
+            <h2 className="text-2xl sm:text-xl text-[#0D062D] font-semibold">{name}</h2>
             <div className="flex gap-2">
               <button
                 onClick={(e) => {

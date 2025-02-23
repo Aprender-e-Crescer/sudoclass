@@ -31,7 +31,7 @@ export default function CourseDialog({
   isOpen,
   onClose,
   mutation,
-  initialValues = { name: '', color: '#F44E3B' },
+  initialValues = { name: '', color: '' },
 }: CourseDialogProps) {
   const [hex, setHex] = useState(initialValues.color)
 
@@ -100,6 +100,10 @@ export default function CourseDialog({
                   ))}
                 </div>
               </div>
+              <p className="text-red-500 text-xs pl-24">
+                <ErrorMessage name="color" />
+                &#8203;
+              </p>
               <DialogFooter>
                 <Button type="submit">{initialValues.id ? 'Salvar' : 'Criar'}</Button>
               </DialogFooter>

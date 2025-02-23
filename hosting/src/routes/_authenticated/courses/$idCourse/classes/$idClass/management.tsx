@@ -6,7 +6,9 @@ import { useSubjectRegisterController } from '@/controllers/use-subject-register
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { When } from 'react-if'
 
-export const Route = createFileRoute('/_authenticated/courses-management/course/$idCourse/class/$idClass/')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/management',
+)({
   component: Index,
 })
 
@@ -50,7 +52,10 @@ function Index() {
         <div className="flex flex-col gap-y-5 px-6">
           {subjects.map(({ id, color, name }) => (
             <div key={id} className="w-full">
-              <Link to={`/courses/${idCourse}/classes/${idClass}/subjects/${id}/mural/warnings`} className="block">
+              <Link
+                to={`/courses/${idCourse}/classes/${idClass}/subjects/${id}/mural/warnings`}
+                className="block"
+              >
                 <CardManagement
                   color={color}
                   name={name}

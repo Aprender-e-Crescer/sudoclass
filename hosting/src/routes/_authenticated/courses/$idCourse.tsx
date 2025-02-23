@@ -2,5 +2,4 @@ import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/courses/$idCourse')({
     component: Outlet,
-    
 })

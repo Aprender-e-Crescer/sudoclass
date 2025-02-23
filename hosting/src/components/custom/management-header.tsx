@@ -20,8 +20,8 @@ export default function ManagementHeader({
     <div className="border-b-2">
       <div className="flex items-center mx-6 my-10">
         <div className="flex justify-between w-full">
-          <h1 className="text-4xl text-[#0D062D] font-medium">
-            {title} - {Subtitle}
+          <h1 className="text-3xl text-[#0D062D] font-medium">
+            {title}{Subtitle ? ' - ' : null}{Subtitle}
           </h1>
         </div>
         <Link to={buttonRedirection}>

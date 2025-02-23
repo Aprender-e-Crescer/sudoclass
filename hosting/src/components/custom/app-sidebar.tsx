@@ -1,11 +1,12 @@
 import sudotecLogo from '@/assets/sudotecLogo.svg'
-import { Home, Lock, Settings, Users } from 'lucide-react'
+import { Edit, Edit2, Home, Lock, Plus, Settings, Users } from 'lucide-react'
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
@@ -46,7 +47,7 @@ interface Props {
   coursesWithClasses: CoursesWithClasses[]
 }
 
-export function AppSidebar({ fullUser, logout, coursesWithClasses }: Props) {
+export function AppSidebar({ fullUser, goTo, logout, coursesWithClasses }: Props) {
   const { role } = fullUser
 
   return (
@@ -115,6 +116,11 @@ export function AppSidebar({ fullUser, logout, coursesWithClasses }: Props) {
         <hr />
         <SidebarGroup>
             <SidebarGroupLabel>Cursos</SidebarGroupLabel>
+            <Link to="/courses/management">
+              <SidebarGroupAction title="Gerenciar cursos">
+                <Edit /> <span className="sr-only">Gerenciar cursos</span>
+              </SidebarGroupAction>
+            </Link>
             <Collapsible defaultOpen className="group/collapsible">
                 {coursesWithClasses.map(({ color, id, name, classes }) => (
                     <SidebarMenuItem key={id} className="list-none">
