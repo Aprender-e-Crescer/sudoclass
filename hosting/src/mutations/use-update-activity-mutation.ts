@@ -1,43 +1,71 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { api } from '@/services/api'
-import { LIST_ACTIVITIES_QUERY } from '@/queries/use-list-activities-query'
+import { useMutation } from '@tanstack/react-query'
+import { firestore, storage } from '@/services/firebase'
+import { doc, updateDoc } from 'firebase/firestore'
+import { ref, uploadBytes, deleteObject } from 'firebase/storage'
+
+interface UpdateActivityData {
+  idCourse: string
+  idClass: string
+  idSubject: string
+  idActivity: string
+  title: string
+  description: string
+  deliveryDate: Date
+  isAcceptingSubmits: boolean
+  attachments: File[]
+  oldAttachments: File[]
+}
 
 export function useUpdateActivityMutation() {
-  const queryClient = useQueryClient()
-
   return useMutation({
-    mutationKey: ['updateActivity'],
-    mutationFn: async ({
-      activityId,
-      title,
-      instruction,
-      deliveryDate,
-      value,
-      attachment,
-    }: {
-      activityId: number
-      title: string
-      instruction: string
-      deliveryDate: string
-      value: number
-      attachment: string | null
-    }) => {
-      const requestBody = {
-        title,
-        description: instruction,
-        deliveryDate,
-        value,
-        attachment,
+    mutationFn: async (data: UpdateActivityData) => {
+      const activityRef = doc(
+        firestore,
+        'courses',
+        data.idCourse,
+        'classes',
+        data.idClass,
+        'subjects',
+        data.idSubject,
+        'activities',
+        data.idActivity,
+      )
+
+      const attachmentsToCreate = data.attachments.filter((file) => !data.oldAttachments.some((oldFile) => oldFile.name === file.name))
+      const attachmentsToDelete = data.oldAttachments.filter((oldFile) => !data.attachments.some((file) => file.name === oldFile.name))
+
+      await Promise.all(
+        attachmentsToCreate.map((file) => {
+          const fileRef = ref(
+            storage,
+            `courses/${data.idCourse}/classes/${data.idClass}/subjects/${data.idSubject}/activities/${data.idActivity}/${file.name}`,
+          )
+
+          return uploadBytes(fileRef, file)
+        })
+      )
+
+      await Promise.all(
+        attachmentsToDelete.map((file) => {
+          const fileRef = ref(
+            storage,
+            `courses/${data.idCourse}/classes/${data.idClass}/subjects/${data.idSubject}/activities/${data.idActivity}/${file.name}`,
+          )
+
+          return deleteObject(fileRef)
+        })
+      )
+
+      const updatedActivity = {
+        title: data.title,
+        description: data.description,
+        deliveryDate: data.deliveryDate,
+        isAcceptingSubmits: data.isAcceptingSubmits,
       }
 
-      const response = await api.put(`/activity/${activityId}`, requestBody)
-      return response.data
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: LIST_ACTIVITIES_QUERY })
-    },
-    onError: (error) => {
-      console.error('Erro ao atualizar a atividade:', error)
+      await updateDoc(activityRef, updatedActivity)
+
+      return data.idActivity
     },
   })
 }
