@@ -11,17 +11,18 @@ export function useGetFullUser() {
   const { data: isAuthStateReady } = useAuthStateReady()
   const { data: currentUser } = useCurrentUserQuery(isAuthStateReady)
 
-  if (!currentUser) throw new Error('User is not logged in')
-
-  const { data: user } = useSuspenseQuery(getUserQueryOptions(currentUser.uid))
-
   useEffect(() => {
+    console.log('currentUser', currentUser)
+
     if (currentUser) return
 
     router.invalidate()
   }, [currentUser])
   
   if (!currentUser) throw new Error('User is not logged in')
+
+  const { data: user } = useSuspenseQuery(getUserQueryOptions(currentUser.uid))
+
 
   return {
     displayName: currentUser.displayName,
