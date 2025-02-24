@@ -100,3 +100,109 @@
 .container-inline {
   container-type: inline-size;
 }
+
+/* CSS - Feature lesson plans */
+.calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+.days-header {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  border: 1px solid #d1d5db;
+}
+
+.day-header {
+  border-left: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+  background: #f9fafb;
+  padding: 0.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.day-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.day-number {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.calendar-container {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  height: 1440px; /* 24 horas x 60px */
+  border-left: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+}
+
+.hours {
+  border-right: 1px solid #d1d5db;
+  overflow: hidden;
+}
+
+.hour-label {
+  height: 60px;
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.days {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  height: 100%;
+}
+
+.day-column {
+  position: relative;
+  border-left: 1px solid #d1d5db;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 14px,
+    #d1d5db 15px
+  );
+  height: 100%;
+}
+
+.event {
+  position: absolute;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 0.25rem;
+  cursor: move;
+  padding: 0.25rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.resize-handle {
+  position: absolute;
+  height: 6px;
+  left: 0;
+  right: 0;
+  cursor: ns-resize;
+  background: rgba(0,0,0,0.2);
+}
+
+.resize-handle.top {
+  top: 0;
+}
+
+.resize-handle.bottom {
+  bottom: 0;
+}
+/* CSS - Feature lesson plans */
