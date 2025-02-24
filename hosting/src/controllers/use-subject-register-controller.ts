@@ -2,10 +2,11 @@ import { toast } from '@/hooks/use-toast'
 import { useCreateSubjectMutation } from '@/mutations/use-create-subject-mutation'
 import { useDeleteSubjectMutation } from '@/mutations/use-delete-subject-mutation'
 import { useUpdateSubjectMutation } from '@/mutations/use-update-subject-mutation'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 
 export function useSubjectRegisterController(idCourse: string, idClass: string) {
   const navigate = useNavigate()
+  const router = useRouter()
 
   const { mutate: createSubject } = useCreateSubjectMutation({
     idCourse,
@@ -15,7 +16,7 @@ export function useSubjectRegisterController(idCourse: string, idClass: string) 
         title: 'Matéria criada com sucesso',
         variant: 'success',
       })
-      navigate({ to: `/courses-management/course/${idCourse}/class/${idClass}` })
+      navigate({ replace: true, to: `/courses/$idCourse/classes/$idClass/management`, params: { idClass, idCourse } })
     },
     onError: (error) => {
       toast({
@@ -33,7 +34,11 @@ export function useSubjectRegisterController(idCourse: string, idClass: string) 
         title: 'Matéria editada com sucesso',
         variant: 'success',
       })
-      navigate({ to: `/courses-management/course/${idCourse}/class/${idClass}` })
+
+      router.invalidate({
+        filter: () => true,
+      })
+      navigate({ replace: true, to: `/courses/$idCourse/classes/$idClass/management`, params: { idClass, idCourse } })
     },
     onError: (error) => {
       toast({

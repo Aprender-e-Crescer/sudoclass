@@ -20,7 +20,7 @@ function Index() {
 
   const handleEdit = (idSubject: string) => {
     navigate({
-      to: `/register/${idCourse}/${idClass}/new-subject`,
+      to: `/courses/$idCourse/classes/$idClass/subjects/registration`,
       search: { idSubject, action: 'edit' },
     })
   }
@@ -36,7 +36,7 @@ function Index() {
           description="Esta turma ainda não tem matérias. Que tal criar a primeira?"
           blueButtonText="Criar matéria"
           whiteButtonText="Cancelar"
-          linkToBlueButton={`/register/${idCourse}/${idClass}/new-subject?action=create`}
+          linkToBlueButton={`/courses/$idCourse/classes/$idClass/subjects/registration`}
           linkToWhiteButton={`/courses/${idCourse}/classes/management`}
         />
       </When>
@@ -46,7 +46,7 @@ function Index() {
             title={course.name}
             Subtitle="Matérias"
             buttonText="+ Nova matéria"
-            buttonRedirection={`/register/${idCourse}/${idClass}/new-subject?action=create`}
+            buttonRedirection={`/courses/$idCourse/classes/$idClass/subjects/registration`}
           />
         </div>
         <div className="flex flex-col gap-y-5 px-6">

@@ -47,8 +47,8 @@ function RouteComponent() {
       <hr />
       <div className="flex flex-col gap-y-3">
         {classes?.map(({ id, color, name, ref }) => (
-          <Link to="/courses/$idCourse/classes/$idClass/management" params={{ idCourse, idClass: id }}>
-            <div key={id} className="flex items-center border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+          <Link key={id} to="/courses/$idCourse/classes/$idClass/management" params={{ idCourse, idClass: id }}>
+            <div className="flex items-center border rounded-lg p-4 hover:bg-gray-50 transition-colors">
               <div className="w-1.5 h-16 rounded-full mr-4" style={{ backgroundColor: color }} />
               <span className="flex-grow font-medium">{name}</span>
               <div className="flex gap-2">

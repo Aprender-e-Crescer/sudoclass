@@ -14,7 +14,7 @@ export const getSubjectFirestoreQuery = (idCourse: string, idClass: string, idSu
     idSubject
   ).withConverter({
     fromFirestore: snapshot =>
-      subjectsSchema.parse({ id: snapshot.id, ...snapshot.data() }),
+      subjectsSchema.parse({ ...snapshot.data(), id: snapshot.id, idCourse, idClass, ref: snapshot.ref }),
     toFirestore: (subject: Subject) => subject,
   })
 
@@ -25,13 +25,13 @@ export const getSubjectQueryOptions = (
 ) =>
   queryOptions({
     queryKey: ['get-subject-by-id', idCourse, idClass, idSubject],
-    queryFn: async () => {
-      const subjectRef = getSubjectFirestoreQuery(idCourse, idClass, idSubject)
-      const subjectSnapshot = await getDoc(subjectRef)
+    queryFn: async () => getDoc(getSubjectFirestoreQuery(idCourse, idClass, idSubject)),
+    select: (subjectSnapshot) => {
       if (!subjectSnapshot.exists()) {
         throw new Error('Subject not found')
       }
+
       return subjectSnapshot.data()
-    },
+    }
   })
 
