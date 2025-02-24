@@ -30,7 +30,7 @@ const menuItemsStudentPortal = [
 const menuItemsAdminPortal = [
   { title: 'Início', icon: Home, to: '/' },
   { title: 'Usuários', icon: Users, to: '/users' },
-  { title: 'Solicitações', icon: Lock, to: '/password-change' },
+  // { title: 'Solicitações', icon: Lock, to: '/password-change' },
 ]
 
 const menuItemsTeacherClassroom = [
@@ -125,14 +125,6 @@ export function AppSidebar({ fullUser, goTo, logout, coursesWithClasses }: Props
                 {coursesWithClasses.map(({ color, id, name, classes }) => (
                     <SidebarMenuItem key={id} className="list-none">
                         <Switch>
-                            <Case condition={classes.length > 1}>
-                                <SidebarMenuButton className="flex items-center" asChild>
-                                    <Link to="/courses/$idCourse/classes" params={{ idCourse: id }}>
-                                        <span className="rounded h-2 w-2" style={{ backgroundColor: color }} />
-                                        {name}
-                                    </Link>
-                                </SidebarMenuButton>
-                            </Case>
                             <Case condition={classes.length === 1}>
                                 {() => 
                                     <SidebarMenuButton className="flex items-center" asChild>
@@ -143,10 +135,10 @@ export function AppSidebar({ fullUser, goTo, logout, coursesWithClasses }: Props
                                     </SidebarMenuButton>
                                 }
                             </Case>
-                            <Case condition={classes.length === 0}>
+                            <Case condition={classes.length > 1 || classes.length === 0}>
                                 {() => 
                                     <SidebarMenuButton className="flex items-center" asChild>
-                                        <Link to="/courses/$idCourse" params={{ idCourse: id }}>
+                                        <Link to="/courses/$idCourse/classes" params={{ idCourse: id }}>
                                             <span className="rounded h-2 w-2" style={{ backgroundColor: color }} />
                                             {name}
                                         </Link>
