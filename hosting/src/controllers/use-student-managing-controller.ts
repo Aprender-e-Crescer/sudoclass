@@ -17,7 +17,7 @@ export function useStudentManagingController(id: string | undefined) {
 
     const { role } = useGetFullUser()
 
-    const { data: user } = useSuspenseQuery(getUserQueryOptions(id))
+    const { data: user } = useQuery(getUserQueryOptions(id))
 
     const coursesQueryOptions = getCoursesQueryOptions(role, undefined, undefined)
   

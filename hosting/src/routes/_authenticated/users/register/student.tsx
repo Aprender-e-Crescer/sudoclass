@@ -12,7 +12,6 @@ import { getUserProfileQueryOptions } from '@/queries/use-get-user-profile-query
 import { getUserQueryOptions } from '@/queries/use-get-user-query'
 import { getStringInputValueFromDate } from '@/utils/dateToStringInputValueFormatter'
 import { formatWithMask } from '@/utils/formatWithMask'
-import { getRoleFromRef } from '@/utils/getRoleFromRef'
 import { masks } from '@/utils/masks'
 import { ensureCPFUniqueSchema, telephoneSchema } from '@/utils/schema'
 import { useQueryClient } from '@tanstack/react-query'

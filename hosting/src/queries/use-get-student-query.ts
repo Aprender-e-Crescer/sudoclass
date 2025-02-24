@@ -8,13 +8,13 @@ export const getStudentFirestoreQuery = (roleRef: DocumentReference) => roleRef.
     fromFirestore: (snapshot, options) => studentSchema.parse({ ...snapshot.data(options), id: snapshot.id, ref: snapshot.ref }),
 })
 
-export const getStudentQueryOptions = (role: role, roleRef: DocumentReference) => queryOptions({
+export const getStudentQueryOptions = (role: role | undefined, roleRef: DocumentReference | undefined) => queryOptions({
     queryKey: ['getStudent', role, roleRef],
-    queryFn: () => getDoc(getStudentFirestoreQuery(roleRef)),
+    queryFn: () => getDoc(getStudentFirestoreQuery(roleRef!)),
     select: (snapshot) => {
         if (!snapshot.exists()) throw new Error('Document student does not exist')
 
         return snapshot.data()
     },
-    enabled: role === 'student',
+    enabled: role && roleRef && role === 'student',
 })
