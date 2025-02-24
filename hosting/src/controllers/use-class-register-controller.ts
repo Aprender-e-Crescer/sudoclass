@@ -4,10 +4,10 @@ import { useUpdateClassMutation } from '@/mutations/use-update-class-mutation'
 import { useNavigate } from '@tanstack/react-router'
 
 export function useClassRegisterController(idCourse: string) {
-  const navigate = useNavigate({ from: '/courses-management' })
+  const navigate = useNavigate({ from: '/courses/$idCourse/classes/management' })
   const { toast } = useToast()
 
-  const { mutate: createClass } = useCreateClassMutation({
+  const { mutateAsync: createClass } = useCreateClassMutation({
     idCourse,
     onError: (error) => {
       toast({
@@ -21,11 +21,11 @@ export function useClassRegisterController(idCourse: string) {
         title: 'Turma criada com sucesso',
         variant: 'sucesss',
       })
-      navigate({ to: `/courses-management/course/${idCourse}/class/${idClass}` })
+      navigate({ replace: true, to: `/courses/$idCourse/classes/$idClass/management`, params: { idClass, idCourse } })
     },
   })
 
-  const { mutate: updateClass } = useUpdateClassMutation({
+  const { mutateAsync: updateClass } = useUpdateClassMutation({
     idCourse,
     onError: (error) => {
       toast({
@@ -34,12 +34,12 @@ export function useClassRegisterController(idCourse: string) {
         variant: 'destructive',
       })
     },
-    onSuccess: (idClass) => {
+    onSuccess: () => {
       toast({
         title: 'Turma editada com sucesso',
         variant: 'sucesss',
       })
-      navigate({ to: `/courses-management/course/${idCourse}/class/${idClass}` })
+      navigate({ replace: true, to: `/courses/$idCourse/classes/management`, params: { idCourse } })
     },
   })
 

@@ -7,13 +7,29 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useClassRegisterController } from '@/controllers/use-class-register-controller'
-import { classRegisterSchema } from '@/models/class-schema'
+import { getClassQueryOptions } from '@/queries/use-class-query'
+import { getStringInputValueFromDate } from '@/utils/dateToStringInputValueFormatter'
+import { docRefSchema, stringToDatePreprocessedSchema, stringToNumberPreprocessedSchema } from '@/utils/schema'
 import { Select } from '@radix-ui/react-select'
 import { createFileRoute } from '@tanstack/react-router'
-import { Formik } from 'formik'
+import { Formik, FormikProps } from 'formik'
+import debounce from 'lodash.debounce'
 import { z } from 'zod'
 
+import { useMemo, useRef } from 'react'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
+
+export const classRegisterSchema = z.object({
+  name: z.string(),
+  color: z.string(),
+  shift: z.enum(['morning', 'afternoon', 'night']),
+  startDate: stringToDatePreprocessedSchema,
+  endDate: stringToDatePreprocessedSchema,
+  subscriptionEndDate: stringToDatePreprocessedSchema,
+  workload: stringToNumberPreprocessedSchema,
+  availableVacancies: stringToNumberPreprocessedSchema,
+  studentsProfile: z.array(docRefSchema),
+})
 
 const validateSearch = z.object({
   action: z.enum(['create', 'edit']),
@@ -21,8 +37,20 @@ const validateSearch = z.object({
 })
 
 export const Route = createFileRoute(
-  '/_authenticated/register/_register/$idCourse/new-class',
+  '/_authenticated/courses/$idCourse/classes/registration',
 )({
+  loader: async ({ params: { idCourse }, location: { search }, context: { queryClient } }) => {
+    try {
+      const { idClass } = z.object({
+        idClass: z.string(),
+      }).parse(search)
+
+      const classSnapshot = await queryClient.ensureQueryData(getClassQueryOptions(idCourse, idClass))
+      return classSnapshot?.data()
+    } catch {
+      return;
+    }
+  },
   component: RegisterClass,
   validateSearch,
 })
@@ -32,28 +60,23 @@ function RegisterClass() {
   const { idClass, action } = Route.useSearch()
   const { createClass, updateClass } = useClassRegisterController(idCourse)
 
+  const classData = Route.useLoaderData()
+
   const initialValues = {
-    idClass: idClass ?? '',
-    name: '',
-    color: '',
-    shift: 'morning',
-    startDate: undefined,
-    endDate: undefined,
-    subscriptionEndDate: undefined,
-    workload: 0,
-    availableVacancies: 0,
-    studentsProfile: [],
+    name: classData?.name ?? '',
+    color: classData?.color ?? '',
+    shift: classData?.shift ?? 'morning',
+    startDate: getStringInputValueFromDate(classData?.startDate),
+    endDate: getStringInputValueFromDate(classData?.endDate),
+    subscriptionEndDate: getStringInputValueFromDate(classData?.subscriptionEndDate),
+    workload: classData?.workload ?? 0,
+    availableVacancies: classData?.availableVacancies ?? 0,
+    studentsProfile: classData?.studentsProfile ?? [],
   }
 
   const handleClassOnSubmit = (data: typeof initialValues) => {
-    if (!data.startDate || !data.endDate || !data.subscriptionEndDate) return
-    const transformedData = {
-      ...data,
-      shift: data.shift as 'morning' | 'afternoon' | 'night',
-      startDate: new Date(data.startDate),
-      endDate: new Date(data.endDate),
-      subscriptionEndDate: new Date(data.subscriptionEndDate),
-    }
+    const transformedData = classRegisterSchema.parse(data)
+
     if (action === 'edit') {
       if (!idClass) throw new Error('Missing id')
 
@@ -62,15 +85,23 @@ function RegisterClass() {
 
     return createClass(transformedData)
   }
+
+  const formikRef = useRef<FormikProps<typeof initialValues>>(null)
+
+  const handleOnColorInputChange = useMemo(() => debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    formikRef.current?.setFieldValue('color', e.target.value)
+  }, 100), [])
+
   return (
     <>
       <Formik
+        innerRef={formikRef}
         onSubmit={handleClassOnSubmit}
         initialValues={initialValues}
         validationSchema={toFormikValidationSchema(classRegisterSchema)}
       >
         {({ values, setFieldValue }) => (
-          <FormBody cancelTo="/">
+          <FormBody cancelTo="/courses/$idCourse/classes/management" action={action}>
             <Input
               name="name"
               label="Nome da turma"
@@ -133,8 +164,8 @@ function RegisterClass() {
                     type="color"
                     id="color"
                     name="color"
-                    value={values.color}
-                    onChange={(e) => setFieldValue('color', e.target.value)}
+                    defaultValue={values.color}
+                    onChange={handleOnColorInputChange}
                   />
                 </div>
               </div>

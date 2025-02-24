@@ -81,7 +81,7 @@ function Index() {
             .filter((course) => course.id != undefined)
             .map(({ id, color, name }) => (
               <div key={id} className="w-full">
-                <Link to="/courses/$idCourse" params={{ idCourse: id }} className="block">
+                <Link to="/courses/$idCourse/classes/management" params={{ idCourse: id }} className="block">
                   <CardManagement
                     name={name}
                     type="course"

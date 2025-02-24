@@ -12,7 +12,9 @@ const validateSearch = z.object({
   idSubject: z.string().optional(),
 })
 
-export const Route = createFileRoute('/_authenticated/register/_register/$idCourse/$idClass/new-subject')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/registration',
+)({
   component: RegisterSubject,
   validateSearch,
 })
@@ -21,7 +23,10 @@ function RegisterSubject() {
   const { idCourse, idClass } = Route.useParams()
   const { action, idSubject } = Route.useSearch()
 
-  const { createSubject, editSubject } = useSubjectRegisterController(idCourse, idClass)
+  const { createSubject, editSubject } = useSubjectRegisterController(
+    idCourse,
+    idClass,
+  )
 
   const initialValues = {
     name: '',
@@ -45,9 +50,19 @@ function RegisterSubject() {
         {({ values, setFieldValue }) => (
           <div className="mx-10 sm:mx-40">
             <FormBody cancelTo="/">
-              <Input name="name" label="Nome da turma" type="text" placeholder="Aprender & Crescer 2025" />
+              <Input
+                name="name"
+                label="Nome da turma"
+                type="text"
+                placeholder="Aprender & Crescer 2025"
+              />
               <div className="flex w-full gap-x-10">
-                <Input name="workload" label="Carga horária" type="number" placeholder="500" />
+                <Input
+                  name="workload"
+                  label="Carga horária"
+                  type="number"
+                  placeholder="500"
+                />
                 <div className="flex flex-col mt-1">
                   <label htmlFor="color">Cores</label>
                   <input

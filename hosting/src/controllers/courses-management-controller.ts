@@ -28,7 +28,7 @@ export function useCoursesManagementController() {
         variant: 'sucesss',
         description: 'Curso criado',
       })
-      navigate({ to: `course/${id}` })
+      navigate({ to: `course/${id}/classes/management` })
     },
   })
   const { mutate: editCourse } = useUpdateCourseMutation()

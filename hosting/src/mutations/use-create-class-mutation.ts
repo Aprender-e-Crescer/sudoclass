@@ -1,4 +1,3 @@
-import { classRegisterSchema } from '@/models/class-schema'
 import { firestore } from '@/services/firebase'
 import { useMutation } from '@tanstack/react-query'
 import { addDoc, collection, doc, DocumentData, DocumentReference, writeBatch } from 'firebase/firestore'
@@ -36,7 +35,11 @@ export function useCreateClassMutation({ idCourse, onError, onSuccess }: CreateC
     }: CreateClassMutationData) => {
       const batch = writeBatch(firestore)
 
-      const classData = classRegisterSchema.parse({
+      const classesRef = collection(firestore, 'courses', idCourse, 'classes')
+      const idClass = (await addDoc(classesRef, {})).id
+      const newClassRef = doc(firestore, 'courses', idCourse, 'classes', idClass)
+
+      batch.set(newClassRef, {
         name,
         color,
         shift,
@@ -47,12 +50,6 @@ export function useCreateClassMutation({ idCourse, onError, onSuccess }: CreateC
         availableVacancies,
         studentsProfile,
       })
-
-      const classesRef = collection(firestore, 'courses', idCourse, 'classes')
-      const idClass = (await addDoc(classesRef, {})).id
-      const newClassRef = doc(firestore, 'courses', idCourse, 'classes', idClass)
-
-      batch.set(newClassRef, classData)
 
       await batch.commit()
       return idClass

@@ -82,7 +82,7 @@ export function Authenticated() {
 
   const coursesWithClasses = courses.map(course => ({
     ...course,
-    classes: allClasses.find(({ data }) => data.some(({ idCourse }) => idCourse === course.id))?.data || [],
+    classes: allClasses.find(({ data }) => data?.some(({ idCourse }) => idCourse === course.id))?.data || [],
   }))
   
   return (

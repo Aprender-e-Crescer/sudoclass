@@ -37,7 +37,7 @@ function Index() {
           blueButtonText="Criar matéria"
           whiteButtonText="Cancelar"
           linkToBlueButton={`/register/${idCourse}/${idClass}/new-subject?action=create`}
-          linkToWhiteButton={`/courses-management/course/${idCourse}`}
+          linkToWhiteButton={`/courses/${idCourse}/classes/management`}
         />
       </When>
       <When condition={subjects.length > 0}>

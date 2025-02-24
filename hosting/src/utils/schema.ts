@@ -5,6 +5,21 @@ import { DocumentReference, Timestamp } from "firebase/firestore";
 import { z } from "zod";
 import { isValidCPF } from '../../../functions/src/utils/isValidCPF';
 import { QueryClient } from '@tanstack/react-query';
+import { parse } from "date-fns";
+
+export const stringToNumberPreprocessedSchema = z.preprocess((value) => {
+    if (typeof value === 'number') return value
+    
+    if (typeof value !== 'string') return undefined
+
+    return Number(value)
+}, z.number())
+
+export const stringToDatePreprocessedSchema = z.preprocess((value) => {
+    if (typeof value !== 'string') return undefined
+
+    return parse(value, 'yyyy-MM-dd', new Date())
+}, z.date())
 
 export const datePreprocessedSchema = z.preprocess(data => {
     if (!(data instanceof Timestamp)) throw new Error("Invalid date format");
