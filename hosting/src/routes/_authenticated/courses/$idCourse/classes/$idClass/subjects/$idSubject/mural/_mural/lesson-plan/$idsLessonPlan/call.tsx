@@ -89,7 +89,7 @@ export function Call() {
     })
    
     navigate({
-      to: `/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view`,
+      to: `/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/view`,
       params: { idCourse, idClass, idSubject }
     })
   }

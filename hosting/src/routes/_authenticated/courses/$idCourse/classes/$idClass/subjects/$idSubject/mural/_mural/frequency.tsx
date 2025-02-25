@@ -14,9 +14,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from '@/components/ui/table'
 
-export const Route = createFileRoute('/_authenticated/frequency')({
+export const Route = createFileRoute(
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/frequency',
+)({
   component: StudentsListing,
 })
 
@@ -39,18 +41,20 @@ export function StudentsListing() {
   }
 
   if (isError) {
-    return <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
+    return (
+      <p className="text-red-500 text-center">Erro ao carregar os dados.</p>
+    )
   }
 
   // Mock dates for the attendance columns
-  const dates = Array(5).fill("20/07")
+  const dates = Array(5).fill('20/07')
 
   return (
     <div className="flex flex-col flex-1 p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Estudantes</h1>
         <Link to="/register/students" search={{ action: 'create' }}>
-          <Button variant="blueButton" size="small">
+          <Button variant="blueButton" size="large">
             Cadastrar novo estudante
           </Button>
         </Link>
@@ -65,17 +69,25 @@ export function StudentsListing() {
                 <TableHead key={index}>{date}</TableHead>
               ))}
               <TableHead>Ver mais...</TableHead>
-              <TableHead className="text-right">Média geral de frequência em AQO</TableHead>
+              <TableHead className="text-right">
+                Média geral de frequência em AQO
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {students.map((student) => {
               // Generate random attendance status for demo
-              const attendanceStatus = Array(5).fill(null).map(() => 
-                Math.random() > 0.5 ? 'present' : Math.random() > 0.5 ? 'absent' : 'document'
-              )
+              const attendanceStatus = Array(5)
+                .fill(null)
+                .map(() =>
+                  Math.random() > 0.5
+                    ? 'present'
+                    : Math.random() > 0.5
+                      ? 'absent'
+                      : 'document',
+                )
               const averageAttendance = Math.floor(Math.random() * 100)
-              
+
               return (
                 <TableRow key={student.id}>
                   <TableCell className="font-medium">
@@ -83,10 +95,12 @@ export function StudentsListing() {
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={student.avatar} />
                         <AvatarFallback>
-                          {(student.name || student.nome || "").charAt(0)}
+                          {(student.name || student.nome || '').charAt(0)}
                         </AvatarFallback>
                       </Avatar>
-                      <span>{student.name || student.nome || 'Nome não disponível'}</span>
+                      <span>
+                        {student.name || student.nome || 'Nome não disponível'}
+                      </span>
                     </div>
                   </TableCell>
                   {attendanceStatus.map((status, index) => (
@@ -101,10 +115,10 @@ export function StudentsListing() {
                     </TableCell>
                   ))}
                   <TableCell className="text-right">
-                    <div 
+                    <div
                       className={`inline-block px-3 py-1 rounded-full text-sm ${
-                        averageAttendance >= 70 
-                          ? 'bg-blue-100 text-blue-800' 
+                        averageAttendance >= 70
+                          ? 'bg-blue-100 text-blue-800'
                           : 'bg-red-100 text-red-800'
                       }`}
                     >

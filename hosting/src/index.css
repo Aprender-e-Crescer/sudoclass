@@ -150,10 +150,11 @@
 }
 
 .hour-label {
+  top: -10px;
+  position: relative;
+  align-items: baseline;
   height: 60px;
-  border-bottom: 1px solid #d1d5db;
   display: flex;
-  align-items: center;
   justify-content: center;
   font-size: 0.875rem;
   color: #4b5563;
@@ -169,12 +170,7 @@
 .day-column {
   position: relative;
   border-left: 1px solid #d1d5db;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent 14px,
-    #d1d5db 15px
-  );
+  background-image: repeating-linear-gradient(to bottom, transparent, transparent 59px, #d1d5db 60px);
   height: 100%;
 }
 
@@ -206,3 +202,12 @@
   bottom: 0;
 }
 /* CSS - Feature lesson plans */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

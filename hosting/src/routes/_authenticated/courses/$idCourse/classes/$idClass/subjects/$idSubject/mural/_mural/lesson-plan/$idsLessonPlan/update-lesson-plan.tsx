@@ -67,7 +67,7 @@ function UpdateLessonPlan() {
 
             <div className="flex gap-2 justify-center w-1/2">
               <Link
-                to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
+                to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/view"
                 params={{
                   idCourse,
                   idClass,

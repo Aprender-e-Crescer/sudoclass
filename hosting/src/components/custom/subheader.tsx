@@ -1,6 +1,5 @@
 import { useGetFullUser } from '@/hooks/use-get-full-user'
 import { Link } from '@tanstack/react-router'
-import { When } from 'react-if'
 
 interface SubHeaderProps {
   type?: 'requests' | undefined
@@ -63,7 +62,7 @@ export function SubHeader({ type }: SubHeaderProps) {
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/view"
             className="text-lg transform hover:scale-110 transition-all"
           >
             <p>Plano de aula</p>
@@ -78,39 +77,23 @@ export function SubHeader({ type }: SubHeaderProps) {
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
           <Link
-            to="/register/students"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/warnings"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >
-            <p>Aluno</p>
+            <p>Mural</p>
           </Link>
 
           <Link
-            to="/register/teachers"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/activities"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >
-            <p>Professor</p>
+            <p>Atividades</p>
           </Link>
 
           <Link
-            to="/register/classes"
-            className="text-lg transform hover:scale-110 transition-all"
-            activeProps={{ className: 'font-bold' }}
-          >
-            <p>Turmas</p>
-          </Link>
-
-          <Link
-            to="/register/pedagogo"
-            className="text-lg transform hover:scale-110 transition-all"
-            activeProps={{ className: 'font-bold' }}
-          >
-            <p>Pedagogo</p>
-          </Link>
-
-          <Link
-            to="/frequency"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/frequency"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >
@@ -118,7 +101,7 @@ export function SubHeader({ type }: SubHeaderProps) {
           </Link>
 
           <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/view"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >
@@ -134,7 +117,7 @@ export function SubHeader({ type }: SubHeaderProps) {
       <div className="flex w-full justify-center p-4 border-b-2">
         <div className="flex gap-5">
           <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/warnings"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >
@@ -149,7 +132,7 @@ export function SubHeader({ type }: SubHeaderProps) {
             <p>Atividades</p>
           </Link>
           <Link
-            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/lesson-plan-view"
+            to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/view"
             className="text-lg transform hover:scale-110 transition-all"
             activeProps={{ className: 'font-bold' }}
           >

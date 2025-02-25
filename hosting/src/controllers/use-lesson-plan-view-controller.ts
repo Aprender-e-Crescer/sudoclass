@@ -14,8 +14,8 @@ import { useDeleteLessonPlanMutation } from '@/mutations/use-delete-lessonplan-m
 export function useLessonPlanViewController(idCourse: string, idClass: string, idSubject: string) {
   const fullUser = useGetFullUser()
 
-  const { data: lessonPlanningsList, refetch: lessonPlanningsListRefetch  } = useQuery(getLessonPlansQueryOptions(idCourse, idClass, idSubject))
-
+  const { data: lessonPlanningsList, error, refetch: lessonPlanningsListRefetch  } = useQuery(getLessonPlansQueryOptions(idCourse, idClass, idSubject))
+  
   const missingsQueriesOptions =
     lessonPlanningsList?.map(({ id }) => ({
       ...getStudentMissingsQueryOptions(idCourse, idClass, idSubject, id, fullUser.profileRef),

@@ -1,14 +1,27 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Check, CirclePlus, ClipboardListIcon, EllipsisVertical, Pencil, Trash, X } from 'lucide-react'
+import {
+  Check,
+  CirclePlus,
+  ClipboardListIcon,
+  EllipsisVertical,
+  Pencil,
+  Trash,
+  X,
+} from 'lucide-react'
 import { Else, If, Then, When } from 'react-if'
 import { format } from 'date-fns'
 import { useLessonPlanViewController } from '@/controllers/use-lesson-plan-view-controller'
 import { Box, Button, Modal } from '@mui/material'
 import { useState } from 'react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 export const Route = createFileRoute(
-  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/lesson-plan-view',
+  '/_authenticated/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/_mural/lesson-plan/view',
 )({
   component: LessonPlanView,
 })
@@ -29,7 +42,9 @@ export function LessonPlanView() {
   } = useLessonPlanViewController(idCourse, idClass, idSubject)
 
   const [open, setOpen] = useState(false)
-  const [modalStep, setModalStep] = useState<'default' | 'selectLessons'>('default')
+  const [modalStep, setModalStep] = useState<'default' | 'selectLessons'>(
+    'default',
+  )
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [oneLessonId, setOneLessonId] = useState('')
 
@@ -68,7 +83,7 @@ export function LessonPlanView() {
     <div className="overflow-x-auto p-4">
       <When condition={adminPermission}>
         <Link
-          to="/courses/$idCourse/classes/$idClass/subjects/calendar"
+          to="/courses/$idCourse/classes/$idClass/subjects/$idSubject/mural/lesson-plan/calendar"
           params={{
             idCourse,
             idClass,
@@ -95,16 +110,20 @@ export function LessonPlanView() {
 
         <tbody>
           {lessonPlanningsList?.map((item) => {
-            console.log('Lesson Plannings:', lessonPlanningsList)
-
             const itemDate = format(new Date(item.startDate), 'dd/MM/yyyy')
-            const isMissed = missings.some((missing) => missing.idLessonPlan === item.id)
+            const isMissed = missings.some(
+              (missing) => missing.idLessonPlan === item.id,
+            )
 
             return (
               <tr key={item.id} className="border-b hover:bg-gray-100">
                 <td className="py-4 px-6 border-b w-1/12">{itemDate}</td>
-                <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.startDate), 'HH:mm')}</td>
-                <td className="py-4 px-6 border-b w-1/12">{format(new Date(item.endDate), 'HH:mm')}</td>
+                <td className="py-4 px-6 border-b w-1/12">
+                  {format(new Date(item.startDate), 'HH:mm')}
+                </td>
+                <td className="py-4 px-6 border-b w-1/12">
+                  {format(new Date(item.endDate), 'HH:mm')}
+                </td>
                 <td className="py-4 px-6 border-b w-1/2 whitespace-normal break-words">
                   {item.teachingDetails.content}
                 </td>
@@ -202,7 +221,9 @@ export function LessonPlanView() {
             <>
               <div className="mb-3">
                 <h1 className="text-lg font-semibold">Tipo de chamada</h1>
-                <p className="text-gray-500">Escolha o tipo de chamada que deseja realizar</p>
+                <p className="text-gray-500">
+                  Escolha o tipo de chamada que deseja realizar
+                </p>
               </div>
               <div className="flex flex-col gap-3">
                 <Link
@@ -234,11 +255,18 @@ export function LessonPlanView() {
             </>
           ) : (
             <>
-              <h1 className="text-lg font-semibold">Selecione as aulas para chamada múltipla</h1>
-              <p className="text-gray-500">Escolha as aulas que compartilharão a mesma chamada</p>
+              <h1 className="text-lg font-semibold">
+                Selecione as aulas para chamada múltipla
+              </h1>
+              <p className="text-gray-500">
+                Escolha as aulas que compartilharão a mesma chamada
+              </p>
               <div className="border rounded-lg p-4">
                 {lessonPlanningsList?.map((item) => {
-                  const itemDate = format(new Date(item.startDate), 'dd/MM/yyyy')
+                  const itemDate = format(
+                    new Date(item.startDate),
+                    'dd/MM/yyyy',
+                  )
 
                   return (
                     <When condition={!item.isCallMade}>
@@ -248,13 +276,20 @@ export function LessonPlanView() {
                             type="checkbox"
                             className="w-6 h-6 accent-blue-600 cursor-pointer"
                             checked={selectedIds.includes(item.id)}
-                            onChange={() => handleCheckboxChange(item.id, item.startDate)}
-                            disabled={selectedDate !== null && selectedDate !== itemDate}
+                            onChange={() =>
+                              handleCheckboxChange(item.id, item.startDate)
+                            }
+                            disabled={
+                              selectedDate !== null && selectedDate !== itemDate
+                            }
                           />
                         </div>
-                        <div className="px-6">{format(new Date(item.startDate), 'dd/MM/yyyy')}</div>
                         <div className="px-6">
-                          {format(new Date(item.startDate), 'HH:mm')} às {format(new Date(item.endDate), 'HH:mm')}
+                          {format(new Date(item.startDate), 'dd/MM/yyyy')}
+                        </div>
+                        <div className="px-6">
+                          {format(new Date(item.startDate), 'HH:mm')} às{' '}
+                          {format(new Date(item.endDate), 'HH:mm')}
                         </div>
                       </div>
                     </When>
@@ -297,7 +332,9 @@ export function LessonPlanView() {
       <Modal open={confirmDelete} onClose={handleClose}>
         <Box sx={style}>
           <h1 className="text-lg font-semibold">Excluir chamada</h1>
-          <p className="text-gray-500">Tem certeza que deseja excluir a chamada?</p>
+          <p className="text-gray-500">
+            Tem certeza que deseja excluir a chamada?
+          </p>
           <div className="flex gap-3">
             <button
               onClick={() => handleClose()}
