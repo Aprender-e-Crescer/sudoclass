@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import { genFirestoreId } from "@/utils/id-generator";
 import {
   addDays,
   addMinutes,
@@ -9,6 +9,7 @@ import {
   startOfDay,
 } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const totalMinutes = 1440;
 const gridIncrement = 15;
@@ -23,13 +24,13 @@ function formatHour(h: number) {
 }
 
 export interface ReturnedEventParsed {
-  id: number;
+  id: string;
   begin: Date;
   end: Date;
 }
 
 interface CalendarEvent {
-  id: number;
+  id: string;
   absoluteBegin: Date;
   duration: number;
 }
@@ -43,6 +44,7 @@ interface CalendarProps {
   locale?: Locale;
   onEventClick?: (event: ReturnedEventParsed) => void;
   onEventCreate?: (event: ReturnedEventParsed) => void;
+  onDragEvent?: (event: ReturnedEventParsed, previousEvent: ReturnedEventParsed) => void;
 }
 
 export function Calendar({
@@ -54,6 +56,7 @@ export function Calendar({
   locale,
   onEventClick,
   onEventCreate,
+  onDragEvent,
 }: CalendarProps) {
   const controlled = value !== undefined;
   const baseDate = startOfDay(startDate || new Date());
@@ -62,8 +65,8 @@ export function Calendar({
 
   const [internalEvents, setInternalEvents] = useState<CalendarEvent[]>(() => {
     if (defaultValue && defaultValue.length > 0) {
-      return defaultValue.map((evt, index) => ({
-        id: index + 1,
+      return defaultValue.map((evt) => ({
+        id: evt.id,
         absoluteBegin: evt.begin,
         duration: differenceInMinutes(evt.end, evt.begin),
       }));
@@ -73,8 +76,8 @@ export function Calendar({
 
   useEffect(() => {
     if (value) {
-      const newEvents = value.map((evt, index) => ({
-        id: index + 1,
+      const newEvents = value.map((evt) => ({
+        id: evt.id,
         absoluteBegin: evt.begin,
         duration: differenceInMinutes(evt.end, evt.begin),
       }));
@@ -83,8 +86,8 @@ export function Calendar({
   }, [value]);
 
   const currentEvents: CalendarEvent[] = controlled
-    ? value!.map((evt, index) => ({
-        id: index + 1,
+    ? value!.map((evt) => ({
+        id: evt.id,
         absoluteBegin: evt.begin,
         duration: differenceInMinutes(evt.end, evt.begin),
       }))
@@ -156,12 +159,14 @@ export function Calendar({
   }, []);
 
   const [dragState, setDragState] = useState<{
-    eventId: number;
+    eventId: string;
     type: "move" | "resize-top" | "resize-bottom" | null;
     startX: number;
     startY: number;
     originalEvent: CalendarEvent;
   } | null>(null);
+
+  const currentEventSelectedRef = useRef<CalendarEvent | null>(null);
 
   useEffect(() => {
     function onMouseMove(e: MouseEvent) {
@@ -196,10 +201,24 @@ export function Calendar({
     }
 
     function onMouseUp() {
-      if (!dragState) return;
+      if (!dragState || !currentEventSelectedRef.current) return;
+
+      onDragEvent?.({
+        id: dragState.eventId,
+        begin: dragState.originalEvent.absoluteBegin,
+        end: addMinutes(dragState.originalEvent.absoluteBegin, dragState.originalEvent.duration),
+      }, {
+        id: currentEventSelectedRef.current.id,
+        begin: currentEventSelectedRef.current.absoluteBegin,
+        end: addMinutes(currentEventSelectedRef.current.absoluteBegin, currentEventSelectedRef.current.duration),
+      });
+
+      currentEventSelectedRef.current = null
+
       updateEvents((prevEvents) =>
         prevEvents.map((ev) => {
           if (ev.id !== dragState.eventId) return ev;
+
           const dayIndex = differenceInCalendarDays(ev.absoluteBegin, baseDate);
           const dayStart = addDays(baseDate, dayIndex);
           const relativeStart = differenceInMinutes(ev.absoluteBegin, dayStart);
@@ -234,6 +253,9 @@ export function Calendar({
 
   function onMouseDown(e: React.MouseEvent, ev: CalendarEvent) {
     e.stopPropagation();
+
+    currentEventSelectedRef.current?.id !== ev.id && (currentEventSelectedRef.current = ev);
+  
     const target = e.target as HTMLElement;
     let type: "move" | "resize-top" | "resize-bottom" | null = "move";
     if (target.classList.contains("resize-handle")) {
@@ -243,6 +265,7 @@ export function Calendar({
         type = "resize-bottom";
       }
     }
+
     setDragState({
       eventId: ev.id,
       type,
@@ -259,7 +282,7 @@ export function Calendar({
     const newStartTime = Math.round(offsetY / gridIncrement) * gridIncrement;
     const dayStart = addDays(baseDate, dayIndex);
     const newAbsoluteBegin = addMinutes(dayStart, newStartTime);
-    const newId = currentEvents.length > 0 ? Math.max(...currentEvents.map((ev) => ev.id)) + 1 : 1;
+    const newId = genFirestoreId();
     const newEvent: CalendarEvent = {
       id: newId,
       absoluteBegin: newAbsoluteBegin,
