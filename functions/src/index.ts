@@ -12,7 +12,9 @@ import { credentialSchema } from './schemas/credential';
 
 export const loginWithCPF = onCall(async (request) => {
   try {
-      const { cpf, password } = loginDataSchema.parse(request.data)
+      const { cpf, password: rawPassword } = loginDataSchema.parse(request.data)
+
+      const password = encrypt(rawPassword)
 
       const studentsDocumentSnapshot = await firestore
           .collection("users")
