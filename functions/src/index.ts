@@ -81,7 +81,7 @@ export const createAdmin = onCall(async (request) => {
         },
       });
       
-      transaction.set(firestore.collection("credentials").doc(userRef.path), { password });
+      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null });
     });
   } catch (error) {
@@ -150,7 +150,7 @@ export const createStudent = onCall(async (request) => {
           generalRegistration,                
       })
 
-      transaction.set(firestore.collection("credentials").doc(userRef.path), { password })
+      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
       transaction.set(roleRef, { classes: classes.map((classPath) => firestore.doc(classPath)) })
     })
@@ -235,7 +235,7 @@ export const createTeacher = onCall(async (request) => {
           generalRegistration,                
       })
   
-      transaction.set(firestore.collection("credentials").doc(userRef.path), { password })
+      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
       transaction.set(roleRef, { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
     })
@@ -319,7 +319,7 @@ export const createResponsible = onCall(async (request) => {
           generalRegistration,                
       })
   
-      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password })
+      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
       transaction.set(roleRef, {
           responsibleFor: responsibleFor.map(studentId => firestore.collection('users').doc(studentId))
