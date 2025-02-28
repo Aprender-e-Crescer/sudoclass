@@ -127,7 +127,7 @@ function RouteComponent() {
     if (action === 'edit') {
       if (!id) throw new Error('Missing id')
             
-      return updateStudent({ id, ...dataCleaned })
+      return updateStudent({ id, roleRefPath: user!.roleRef.path, ...dataCleaned })
     }
     
     return createStudent(dataCleaned)

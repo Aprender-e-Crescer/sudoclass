@@ -70,6 +70,7 @@ function RouteComponent() {
     grDispatchDate: z.string(),
     grDispatchState: z.string(),
     documents: z.array(z.instanceof(File)).min(1),
+    students: z.array(z.string()).min(1),
   })
 
   const initialValues = {
@@ -110,7 +111,7 @@ function RouteComponent() {
     if (action === 'edit') {
       if (!id) throw new Error('Missing id')
             
-      return updateResponsible({ id, ...dataCleaned })
+      return updateResponsible({ id, roleRefPath: user!.roleRef.path, ...dataCleaned })
     }
     
     return createResponsible(dataCleaned)

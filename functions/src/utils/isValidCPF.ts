@@ -1,3 +1,5 @@
+import { cleanCpf } from "./cleanCPF";
+
 const rest = (cpfDigits: number[]) => (count: number) => {
     const sliceEnd = count - 12;
     const factor = count;
@@ -14,9 +16,7 @@ const rest = (cpfDigits: number[]) => (count: number) => {
 export function isValidCPF(cpf: string) {
     if (typeof cpf !== "string") return false;
 
-    const nonDigitRegex = /[^\d]+/g;
-    const repeatedDigitsRegex = /(\d)\1{10}/;
-    const cpfWithOnlyNumbers = cpf.replace(nonDigitRegex, "");
+    const cpfWithOnlyNumbers = cleanCpf(cpf);
     
     if (cpfWithOnlyNumbers.length !== 11 || !!cpfWithOnlyNumbers.match(repeatedDigitsRegex)) return false;
     

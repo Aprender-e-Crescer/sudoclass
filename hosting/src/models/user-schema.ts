@@ -2,6 +2,8 @@ import { getRoleFromRef } from '@/utils/getRoleFromRef'
 import { datePreprocessedSchema, docRefSchema } from '@/utils/schema'
 import { z } from 'zod'
 
+export type { CreateResponsibleData, UpdateResponsibleData, CreateAdminData, CreateStudentData, CreateTeacherData, UpdateAdminData, UpdateStudentData, UpdateTeacherData } from '../../../functions/src/schemas/users';
+
 export const userSchema = z.object({
   id: z.string(),
   profileRef: docRefSchema,

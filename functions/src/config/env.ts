@@ -25,6 +25,6 @@ function getEnv() {
 
 export const env = z
   .object({
-    database_url: z.string(),
+    encription_key: z.string(),    
   })
   .parse(getEnv());

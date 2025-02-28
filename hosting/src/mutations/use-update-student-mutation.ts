@@ -1,7 +1,7 @@
-import { credentialSchema } from "@/models/credentialSchema";
-import { firestore, storage } from "@/services/firebase";
+import { UpdateStudentData } from "@/models/user-schema";
+import { functions, storage } from "@/services/firebase";
 import { useMutation } from "@tanstack/react-query";
-import { collection, doc, getDocs, limit, query, runTransaction } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { deleteObject, listAll, ref, uploadBytes } from "firebase/storage";
 
 interface UpdateStudentInput {
@@ -9,8 +9,9 @@ interface UpdateStudentInput {
     onError: (error: Error) => void
 }
 
-interface UpdateStudentData {
+interface UpdateStudentDTO {
     id: string
+    roleRefPath: string
     fullName: string
     cpf: string
     email: string
@@ -30,11 +31,14 @@ interface UpdateStudentData {
     classes: string[]
 }
 
+const updateStudent = httpsCallable<UpdateStudentData, string>(functions, 'updateStudent')
+
 export function useUpdateStudentMutation({ onError, onSuccess }: UpdateStudentInput) {
     return useMutation({
         mutationKey: ['updateStudent'],
         mutationFn: ({
             id,
+            roleRefPath,
             cpf,
             fullName,
             birthCity,
@@ -52,61 +56,34 @@ export function useUpdateStudentMutation({ onError, onSuccess }: UpdateStudentIn
             street,
             telephone,
             classes,
-        }: UpdateStudentData) => runTransaction(firestore, async (transaction) => {
-            const userRef = doc(firestore, "users", id)
-        
-            const userSnapshot = await transaction.get(userRef)
-            const userDontExists = !userSnapshot.exists()
-            const userData = userSnapshot.data()
-        
-            if (userDontExists) throw new Error("User not found")
-
-            const newUserRef = doc(firestore, "users", cpf)
-        
-            if (userRef.id === newUserRef.id) {
-                transaction.update(userRef, {
-                    fullName,
-                    requireNewPassword: true,
-                    contact: { email, telephone },
-                    address: { state, city, street, neighborhood, number },
-                    birth: { date: birthDate, state: birthState, city: birthCity },
-                    generalRegistration: { number: grNumber, dispatch: { date: grDispatchDate, state: grDispatchState } },                
-                })
-                
-                transaction.set(userData?.roleRef, { classes: classes.map((classPath) => doc(firestore, classPath)) })
-
-                return
-            }
-            
-            const credentialQuerySnapshot = await getDocs(
-                query(
-                    collection(firestore, userRef.path, "credentials"), limit(1)
-                )
-            )
-
-            const credentialSnapshot = credentialQuerySnapshot.docs[0]
-
-            const credential = credentialSchema.parse(credentialSnapshot.data())
-
-            const profileRef = doc(collection(firestore, "profiles"))
-            const roleRef = doc(collection(firestore, "students"))
-
-            transaction.delete(userRef)
-            transaction.delete(credentialSnapshot.ref)
-            transaction.delete(userData?.roleRef)
-
-            transaction.set(newUserRef, {
-                profileRef,
-                roleRef,
-                fullName,
-                requireNewPassword: true,
-                contact: { email, telephone },
-                address: { state, city, street, neighborhood, number },
-                birth: { date: birthDate, state: birthState, city: birthCity },
-                generalRegistration: { number: grNumber, dispatch: { date: grDispatchDate, state: grDispatchState } },                
-            })
-            transaction.set(doc(collection(firestore, newUserRef.path, "credentials")), credential)
-            transaction.set(roleRef, { classes: classes.map((classPath) => doc(firestore, classPath)) })
+        }: UpdateStudentDTO) => updateStudent({
+            id,
+            fullName,
+            roleRefPath,
+            birth: {
+                city: birthCity,
+                date: birthDate,
+                state: birthState,
+            },
+            address: {
+                city,
+                neighborhood,
+                number,
+                state,
+                street,
+            },
+            contact: {
+                email,
+                telephone,
+            },
+            generalRegistration: {
+                dispatch: {
+                    date: grDispatchDate,
+                    state: grDispatchState,
+                },
+                number: grNumber,
+            },
+            classes,
         })
         .then(() => listAll(ref(storage, `users/${cpf}/documents`)))
         .then(({ items }) => {

@@ -1,6 +1,7 @@
-import { firestore, storage } from "@/services/firebase"
+import { UpdateResponsibleData } from "@/models/user-schema"
+import { functions, storage } from "@/services/firebase"
 import { useMutation } from "@tanstack/react-query"
-import { doc, runTransaction } from "firebase/firestore"
+import { httpsCallable } from "firebase/functions"
 import { deleteObject, listAll, ref, uploadBytes } from "firebase/storage"
 
 interface UpdateResponsibleInput {
@@ -8,9 +9,10 @@ interface UpdateResponsibleInput {
     onError: (error: Error) => void
 }
 
-interface UpdateResponsibleData {
+interface UpdateResponsibleDTO {
     id: string
     cpf: string
+    roleRefPath: string
     fullName: string
     email: string
     telephone: string
@@ -26,8 +28,10 @@ interface UpdateResponsibleData {
     grDispatchDate: Date
     grDispatchState: string
     documents: File[]
-    students: string[] // Add this field
+    students: string[]
 }
+
+const updateResponsible = httpsCallable<UpdateResponsibleData, string>(functions, 'updateResponsible')
 
 export function useUpdateResponsibleMutation({ onSuccess, onError }: UpdateResponsibleInput) {
     return useMutation({
@@ -35,6 +39,7 @@ export function useUpdateResponsibleMutation({ onSuccess, onError }: UpdateRespo
         mutationFn: async ({
             id,
             cpf,
+            roleRefPath,
             fullName,
             birthCity,
             birthDate,
@@ -51,29 +56,34 @@ export function useUpdateResponsibleMutation({ onSuccess, onError }: UpdateRespo
             street,
             telephone,
             students,
-        }: UpdateResponsibleData) => runTransaction(firestore, async (transaction) => {
-            const userRef = doc(firestore, "users", id)
-            const userDoc = await transaction.get(userRef)
-            
-            if (!userDoc.exists()) throw new Error("Usuário não encontrado")
-
-            const userData = userDoc.data()
-            
-            transaction.update(userRef, {
-                fullName,
-                contact: { email, telephone },
-                address: { state, city, street, neighborhood, number },
-                birth: { date: birthDate, state: birthState, city: birthCity },
-                generalRegistration: { number: grNumber, dispatch: { date: grDispatchDate, state: grDispatchState } },
-            })
-
-            transaction.update(userData.profileRef, { 
-                displayName: fullName,
-            })
-
-            transaction.update(userData.roleRef, {
-                responsibleFor: students.map(studentId => doc(firestore, 'users', studentId))
-            })
+        }: UpdateResponsibleDTO) => updateResponsible({
+            id,
+            roleRefPath,
+            address: {
+                city,
+                neighborhood,
+                number,
+                state,
+                street,
+            },
+            birth: {
+                city: birthCity,
+                date: birthDate,
+                state: birthState,
+            },
+            contact: {
+                email,
+                telephone,
+            },
+            generalRegistration: {
+                dispatch: {
+                    date: grDispatchDate,
+                    state: grDispatchState,
+                },
+                number: grNumber,
+            },
+            fullName,
+            responsibleFor: students,
         })
         .then(() => listAll(ref(storage, `users/${cpf}/documents`)))
         .then(({ items }) => {

@@ -1,9 +1,7 @@
-import { firestore, storage } from "@/services/firebase";
-import { formatWithMask } from "@/utils/formatWithMask";
-import { masks } from "@/utils/masks";
-import { passwordGenerator } from "@/utils/password-generator";
+import { CreateStudentData } from "@/models/user-schema";
+import { functions, storage } from "@/services/firebase";
 import { useMutation } from "@tanstack/react-query";
-import { collection, doc, runTransaction } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { ref, uploadBytes } from "firebase/storage";
 
 interface CreateStudentInput {
@@ -11,7 +9,7 @@ interface CreateStudentInput {
     onError: (error: Error) => void
 }
 
-interface CreateStudentData {
+interface CreateStudentDTO {
     fullName: string
     cpf: string
     email: string
@@ -30,6 +28,8 @@ interface CreateStudentData {
     documents: File[]
     classes: string[]
 }
+
+const createStudent = httpsCallable<CreateStudentData, string>(functions, 'createStudent')
 
 export function useCreateStudentMutation({ onSuccess, onError }: CreateStudentInput) {
     return useMutation({
@@ -52,38 +52,35 @@ export function useCreateStudentMutation({ onSuccess, onError }: CreateStudentIn
             street,
             telephone,
             classes,
-        }: CreateStudentData) => runTransaction(firestore, async (transaction) => { 
-            const { unmasked: cpfCleaned } = formatWithMask({
-                text: cpf,
-                mask: masks.BRL_CPF,
-            });
-
-            const userRef = doc(firestore, "users", cpfCleaned)
-        
-            const userAlreadyExist = await transaction.get(userRef).then((doc) => doc.exists())
-        
-            if (userAlreadyExist) throw new Error("Esse usuário já existe")
-        
-            const password = passwordGenerator()
-        
-            const profileRef = doc(collection(firestore, "profiles"))
-            const roleRef = doc(collection(firestore, "students"))
-                
-            transaction.set(userRef, {
-                profileRef,
-                roleRef,
-                fullName,
-                requireNewPassword: true,
-                contact: { email, telephone },
-                address: { state, city, street, neighborhood, number },
-                birth: { date: birthDate, state: birthState, city: birthCity },
-                generalRegistration: { number: grNumber, dispatch: { date: grDispatchDate, state: grDispatchState } },                
-            })
-        
-            transaction.set(doc(collection(firestore, userRef.path, "credentials")), { password })
-            transaction.set(profileRef, { displayName: fullName, photoURL: null })
-            transaction.set(roleRef, { classes: classes.map((classPath) => doc(firestore, classPath)) })
-        }).then(() => 
+        }: CreateStudentDTO) => createStudent({
+            cpf,
+            fullName,
+            address: {
+                city,
+                neighborhood,
+                number,
+                state,
+                street,
+            },
+            birth: {
+                city: birthCity,
+                date: birthDate,
+                state: birthState,
+            },
+            contact: {
+                email,
+                telephone,
+            },
+            generalRegistration: {
+                dispatch: {
+                    date: grDispatchDate,
+                    state: grDispatchState,
+                },
+                number: grNumber,
+            },
+            classes,
+        })
+        .then(() => 
             Promise.all(
                 documents.map((document) => uploadBytes(
                     ref(storage, `users/${cpf}/documents/${document.name}`), document)

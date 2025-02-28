@@ -1,6 +1,6 @@
 {
     "env": {
-      "database_url": ""
+      "encription_key": ""
     }
 }
   

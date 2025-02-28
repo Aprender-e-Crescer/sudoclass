@@ -1,48 +1,26 @@
-import { credentialSchema } from "@/models/credentialSchema";
-import { firestore } from "@/services/firebase";
+import { UpdateAdminData } from "@/models/user-schema";
+import { functions } from "@/services/firebase";
 import { useMutation } from "@tanstack/react-query";
-import { collection, doc, getDocs, limit, query, runTransaction } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 
 interface UpdateAdminInput {
     onSuccess: () => void
     onError: (error: Error) => void
 }
 
-interface UpdateAdminData {
+interface UpdateAdminDTO {
     id: string
     fullName: string
-    cpf: string
 }
+
+const updateAdmin = httpsCallable<UpdateAdminData, string>(functions, 'updateAdmin')
 
 export function useUpdateAdminMutation({ onError, onSuccess }: UpdateAdminInput) {
     return useMutation({
         mutationKey: ['updateAdmin'],
-        mutationFn: ({ cpf, fullName, id }: UpdateAdminData) => runTransaction(firestore, async (transaction) => {
-            const userRef = doc(firestore, "users", id)
-        
-            const userSnapshot = await transaction.get(userRef)
-            const userDontExists = !userSnapshot.exists()
-        
-            if (userDontExists) throw new Error("User not found")
-
-            const newUserRef = doc(firestore, "users", cpf)
-        
-            if (userRef.id === newUserRef.id) return transaction.update(userRef, { fullName })
-            
-            const credentialQuerySnapshot = await getDocs(
-                query(
-                    collection(firestore, userRef.path, "credentials"), limit(1)
-                )
-            )
-
-            const credentialSnapshot = credentialQuerySnapshot.docs[0]
-
-            const credential = credentialSchema.parse(credentialSnapshot.data())
-
-            transaction.delete(userRef)
-            transaction.delete(credentialSnapshot.ref)
-            transaction.update(newUserRef, { fullName })
-            transaction.set(doc(collection(firestore, newUserRef.path, "credentials")), credential)
+        mutationFn: ({ fullName, id }: UpdateAdminDTO) => updateAdmin({
+            fullName,
+            id,
         }),
         onSuccess,
         onError,
