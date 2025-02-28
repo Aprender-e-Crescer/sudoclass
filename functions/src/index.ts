@@ -6,6 +6,7 @@ import { auth, firestore } from './services/firebase';
 import { cleanCpf } from './utils/cleanCPF';
 import { encrypt } from './utils/encrypt';
 import { passwordGenerator } from './utils/passwordGenerator';
+import { getRoleRefByPath } from './utils/getReferenceByPath';
 
 export const loginWithCPF = onCall(async (request) => {
   try {
@@ -81,7 +82,7 @@ export const createAdmin = onCall(async (request) => {
         },
       });
       
-      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
+      transaction.set(userRef.collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null });
     });
   } catch (error) {
@@ -150,7 +151,7 @@ export const createStudent = onCall(async (request) => {
           generalRegistration,                
       })
 
-      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
+      transaction.set(userRef.collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
       transaction.set(roleRef, { classes: classes.map((classPath) => firestore.doc(classPath)) })
     })
@@ -173,6 +174,8 @@ export const updateStudent = onCall(async (request) => {
       classes,
     } = updateStudentSchema.parse(request.data)
 
+    const roleRef = getRoleRefByPath(roleRefPath)
+
     firestore.runTransaction(async (transaction) => {
       const userRef = firestore.collection("users").doc(id)
 
@@ -189,7 +192,7 @@ export const updateStudent = onCall(async (request) => {
           generalRegistration,                
       })
       
-      transaction.set(firestore.doc(roleRefPath), { classes: classes.map((classPath) => firestore.doc(classPath)) })
+      transaction.set(roleRef, { classes: classes.map((classPath) => firestore.doc(classPath)) })
     })
   } catch (error) {
     info('Error updating student:', error);
@@ -235,7 +238,7 @@ export const createTeacher = onCall(async (request) => {
           generalRegistration,                
       })
   
-      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
+      transaction.set(userRef.collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
       transaction.set(roleRef, { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
     })
@@ -257,6 +260,8 @@ export const updateTeacher = onCall(async (request) => {
       subjects,
       roleRefPath,
     } = updateTeacherSchema.parse(request.data)
+    
+    const roleRef = getRoleRefByPath(roleRefPath)
 
     firestore.runTransaction(async (transaction) => {
       const userRef = firestore.collection("users").doc(id)
@@ -274,7 +279,7 @@ export const updateTeacher = onCall(async (request) => {
           generalRegistration,                
       })
       
-      transaction.set(firestore.doc(roleRefPath), { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
+      transaction.set(roleRef, { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
     })
   } catch (error) {
     info('Error updating teacher:', error);
@@ -319,7 +324,7 @@ export const createResponsible = onCall(async (request) => {
           generalRegistration,                
       })
   
-      transaction.set(firestore.doc(userRef.path).collection("credentials").doc(), { password });
+      transaction.set(userRef.collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
       transaction.set(roleRef, {
           responsibleFor: responsibleFor.map(studentId => firestore.collection('users').doc(studentId))
@@ -343,7 +348,9 @@ export const updateResponsible = onCall(async (request) => {
       responsibleFor,
       roleRefPath,
     } = updateResponsibleSchema.parse(request.data)
-      
+    
+    const roleRef = getRoleRefByPath(roleRefPath)
+
     firestore.runTransaction(async (transaction) => {
       const userRef = firestore.collection("users").doc(id)
       const userDoc = await transaction.get(userRef)
@@ -358,7 +365,7 @@ export const updateResponsible = onCall(async (request) => {
           generalRegistration,
       })
 
-      transaction.update(firestore.doc(roleRefPath), {
+      transaction.update(roleRef, {
           responsibleFor: responsibleFor.map(studentId => firestore.collection('users').doc(studentId))
       })
   })
