@@ -1,14 +1,11 @@
-import { info } from 'firebase-functions/logger'
-import { HttpsError, onCall } from 'firebase-functions/v2/https'
-import { loginDataSchema } from './schemas/login'
-import { auth, firestore, storage } from './services/firebase'
-import { z } from 'zod';
-import { passwordGenerator } from './utils/passwordGenerator';
+import { info } from 'firebase-functions/logger';
+import { HttpsError, onCall } from 'firebase-functions/v2/https';
+import { loginDataSchema } from './schemas/login';
+import { createAdminSchema, createResponsibleSchema, createStudentSchema, createTeacherSchema, updateAdminSchema, updateResponsibleSchema, updateStudentSchema, updateTeacherSchema } from './schemas/users';
+import { auth, firestore } from './services/firebase';
 import { cleanCpf } from './utils/cleanCPF';
 import { encrypt } from './utils/encrypt';
-import { adminUserSchema, createAdminSchema, createResponsibleSchema, createStudentSchema, createTeacherSchema, updateAdminSchema, updateResponsibleSchema, updateStudentSchema, updateTeacherSchema, userSchema } from './schemas/users';
-import { cpfSchema } from './utils/schema';
-import { credentialSchema } from './schemas/credential';
+import { passwordGenerator } from './utils/passwordGenerator';
 
 export const loginWithCPF = onCall(async (request) => {
   try {
@@ -172,7 +169,7 @@ export const updateStudent = onCall(async (request) => {
       birth,
       contact,
       generalRegistration,
-      roleRef,
+      roleRefPath,
       classes,
     } = updateStudentSchema.parse(request.data)
 
@@ -186,14 +183,13 @@ export const updateStudent = onCall(async (request) => {
 
       transaction.update(userRef, {
           fullName,
-          requireNewPassword: true,
           contact,
           address,
           birth,
           generalRegistration,                
       })
       
-      transaction.set(roleRef, { classes: classes.map((classPath) => firestore.doc(classPath)) })
+      transaction.set(firestore.doc(roleRefPath), { classes: classes.map((classPath) => firestore.doc(classPath)) })
     })
   } catch (error) {
     info('Error updating student:', error);
@@ -259,7 +255,7 @@ export const updateTeacher = onCall(async (request) => {
       contact,
       generalRegistration,
       subjects,
-      roleRef,
+      roleRefPath,
     } = updateTeacherSchema.parse(request.data)
 
     firestore.runTransaction(async (transaction) => {
@@ -272,14 +268,13 @@ export const updateTeacher = onCall(async (request) => {
   
       transaction.update(userRef, {
           fullName,
-          requireNewPassword: true,
           contact,
           address,
           birth,
           generalRegistration,                
       })
       
-      transaction.set(roleRef, { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
+      transaction.set(firestore.doc(roleRefPath), { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
     })
   } catch (error) {
     info('Error updating teacher:', error);
