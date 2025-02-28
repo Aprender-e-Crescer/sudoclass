@@ -18,7 +18,7 @@ export function isValidCPF(cpf: string) {
 
     const cpfWithOnlyNumbers = cleanCpf(cpf);
     
-    if (cpfWithOnlyNumbers.length !== 11 || !!cpfWithOnlyNumbers.match(repeatedDigitsRegex)) return false;
+    if (cpfWithOnlyNumbers.length !== 11) return false;
     
     const cpfDigits = cpfWithOnlyNumbers.split("").map((el) => +el);
     const restWithDigits = rest(cpfDigits);
