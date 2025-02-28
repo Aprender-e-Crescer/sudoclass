@@ -2,18 +2,16 @@ import passwordResetImage from '@/assets/password-reset.png'
 import { InputAuth } from '@/components/custom/auth-input'
 import { Button } from '@/components/ui/button'
 import { usePasswordRequestController } from '@/controllers/password-request-controller'
-import { getUserQueryOptions } from '@/queries/use-get-user-query'
 import { formatWithMask } from '@/utils/formatWithMask'
 import { masks } from '@/utils/masks'
-import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Form, Formik } from 'formik'
 import { useEffect, useState } from 'react'
 import { AiOutlineIdcard } from 'react-icons/ai'
+import { FaKey } from 'react-icons/fa6'
 import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { isValidCPF } from '../../../functions/src/utils/isValidCPF'
-import { FaKey } from 'react-icons/fa6'
 
 export const Route = createFileRoute('/password-reset')({
   component: PasswordReset,
@@ -25,36 +23,20 @@ const validationSchema = z.object({
 })
 
 function PasswordReset() {
-  const [cpf, setCpf] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [hasRequested, setRequested] = useState<boolean>(false)
-
   const { addPasswordRequest } = usePasswordRequestController()
-
-  const userQueryOptions = getUserQueryOptions(cpf)
-  const { data: user } = useQuery({ ...userQueryOptions, enabled: !!cpf })
 
   const handleSubmit = async ({ cpf, password }: { cpf: string; password: string }) => {
     try {
-      const { unmasked } = formatWithMask({
+      const { unmasked: cpfCleaned } = formatWithMask({
         text: cpf,
         mask: masks.BRL_CPF,
       })
-      setCpf(unmasked)
-      setPassword(password)
+      
+      addPasswordRequest({ cpf: cpfCleaned, password })
     } catch (error) {
       console.error(error)
     }
   }
-
-  useEffect(() => {
-    if (user?.profileRef && !hasRequested && password) {
-      const profileRef = user.profileRef
-
-      addPasswordRequest({ profileRef, password })
-      setRequested(true)
-    }
-  }, [user?.profileRef, hasRequested, password])
 
   return (
     <Formik

@@ -1,7 +1,6 @@
 import { useToast } from '@/hooks/use-toast'
 import { useAddPasswordRequestMutation } from '@/mutations/use-add-password-request-mutation'
 import { useNavigate } from '@tanstack/react-router'
-import { toast } from 'sonner'
 
 export function usePasswordRequestController() {
   const { toast } = useToast()

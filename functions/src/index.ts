@@ -10,6 +10,7 @@ import { encrypt } from './utils/encrypt';
 import { getRoleRefByPath } from './utils/getReferenceByPath';
 import { passwordGenerator } from './utils/passwordGenerator';
 import { docRefSchema } from './utils/schema';
+import { requestChangePasswordSchema } from './schemas/credential';
 
 export const loginWithCPF = onCall(async (request) => {
   try {
@@ -375,6 +376,30 @@ export const updateResponsible = onCall(async (request) => {
   } catch (error) {
     info('Error updating responsible:', error);
     throw new HttpsError("internal", "Failed to update responsible");
+  }
+});
+
+export const requestChangePassword = onCall(async (request) => {
+  const { cpf, password } = requestChangePasswordSchema.parse(request.data)
+
+  try {
+    const userDocumentSnapshot = await firestore
+      .collection("users")
+      .doc(cpf)
+      .get()
+
+    const profileRef = docRefSchema.parse(userDocumentSnapshot.data()?.profileRef)
+    const passwordRequestRef = firestore.collection('requestsChangePassword')
+    const passwordRequestId = (await passwordRequestRef.add({ profileRef: profileRef, requestStatus: 'pending' }))
+      .id
+
+    const credentialCollectionRef = firestore.collection('requestsChangePassword').doc(passwordRequestId).collection('credentials')
+    const credentialId = (await credentialCollectionRef.add({ password })).id
+
+    return { id: credentialId }
+  } catch (error) {
+    info('Error requesting change password:', error);
+    throw new HttpsError("internal", "Failed to request change password");
   }
 });
 

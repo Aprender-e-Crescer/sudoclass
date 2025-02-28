@@ -1,9 +1,7 @@
 const getFirestoreLib = () => {
   try {
-    // @ts-expect-error
     return typeof process !== undefined ? require("firebase-admin/firestore") : import("firebase/firestore");
   } catch (error) {
-    // @ts-expect-error
     return import("firebase/firestore")
   }
 }
