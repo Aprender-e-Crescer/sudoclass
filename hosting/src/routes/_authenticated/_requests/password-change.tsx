@@ -42,7 +42,6 @@ function PasswordChangeRequest() {
   const handleReject = (
     passwordChangeRequestRef: DocumentReference<DocumentData, DocumentData>,
   ) => {
-    console.log(passwordChangeRequestRef.path)
 
     updateRequestStatus(
       { passwordChangeRequestRef, status: 'recused' },
@@ -57,8 +56,6 @@ function PasswordChangeRequest() {
 
   const confirmAccept = () => {
     if (!selectedPasswordRequestChangeRef) return
-
-    console.log(selectedPasswordRequestChangeRef.path)
 
     updateRequestStatus(
       { passwordChangeRequestRef: selectedPasswordRequestChangeRef, status: 'accepted' },
