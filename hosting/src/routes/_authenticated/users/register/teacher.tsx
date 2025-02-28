@@ -142,6 +142,7 @@ function RouteComponent() {
             type='text'
             placeholder='000.000.000-00'
             mask={masks.BRL_CPF}
+            disabled={action === 'edit'}
             filtersQueryToShowLoading={(cpf) => ({
               queryKey: getUserQueryOptions(
                 formatWithMask({
