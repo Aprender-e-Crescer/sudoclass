@@ -14,7 +14,6 @@ interface ConfirmPasswordChangeDialogProps {
   onClose: () => void
   onConfirm: () => void
   isLoading: boolean
-  password?: string
 }
 
 export function ConfirmPasswordChangeDialog({
@@ -22,7 +21,6 @@ export function ConfirmPasswordChangeDialog({
   onClose,
   onConfirm,
   isLoading,
-  password,
 }: ConfirmPasswordChangeDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -35,7 +33,7 @@ export function ConfirmPasswordChangeDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} disabled={isLoading || !password}>
+          <AlertDialogAction onClick={onConfirm} disabled={isLoading}>
             Confirmar
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -6,7 +6,7 @@ import { collection, getDocs, query } from 'firebase/firestore'
 export const getPasswordRequestsFirestoreQuery = () => {
   const passwordRequestsRef = collection(firestore, 'requestsChangePassword').withConverter({
     toFirestore: (request: ChangeRequests) => request,
-    fromFirestore: (snapshot) => changePasswordRequestSchema.parse({ id: snapshot.id, ...snapshot.data() }),
+    fromFirestore: (snapshot) => changePasswordRequestSchema.parse({ id: snapshot.id, ref: snapshot.ref, ...snapshot.data() }),
   })
   return query(passwordRequestsRef)
 }
@@ -16,7 +16,7 @@ export const getPasswordRequestsQueryOptions = () => {
     queryKey: ['get-password-requests'],
     queryFn: async () => {
       const querySnapshot = await getDocs(getPasswordRequestsFirestoreQuery())
-      return querySnapshot.docs.map((doc) => changePasswordRequestSchema.parse({ id: doc.id, ...doc.data() }))
+      return querySnapshot.docs.map((doc) => changePasswordRequestSchema.parse({ ...doc.data(), id: doc.id, ref: doc.ref }))
     },
   })
 }

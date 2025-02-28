@@ -1,12 +1,15 @@
 import { info } from 'firebase-functions/logger';
+import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
+import { z } from 'zod';
 import { loginDataSchema } from './schemas/login';
 import { createAdminSchema, createResponsibleSchema, createStudentSchema, createTeacherSchema, updateAdminSchema, updateResponsibleSchema, updateStudentSchema, updateTeacherSchema } from './schemas/users';
 import { auth, firestore } from './services/firebase';
 import { cleanCpf } from './utils/cleanCPF';
 import { encrypt } from './utils/encrypt';
-import { passwordGenerator } from './utils/passwordGenerator';
 import { getRoleRefByPath } from './utils/getReferenceByPath';
+import { passwordGenerator } from './utils/passwordGenerator';
+import { docRefSchema } from './utils/schema';
 
 export const loginWithCPF = onCall(async (request) => {
   try {
@@ -372,6 +375,52 @@ export const updateResponsible = onCall(async (request) => {
   } catch (error) {
     info('Error updating responsible:', error);
     throw new HttpsError("internal", "Failed to update responsible");
+  }
+});
+
+export const updateCredentials = onDocumentUpdated('requestsChangePassword/{requestId}', async (handler) => {
+  try {
+    z.object({
+      profileRef: docRefSchema,
+      requestStatus: z.enum(['pending']),
+    }).parse(handler.data?.before.data())
+
+    const { profileRef, requestStatus } = z.object({
+      profileRef: docRefSchema,
+      requestStatus: z.enum(['accepted', 'recused']),
+    }).parse(handler.data?.after.data())
+
+    if (requestStatus === 'recused') return firestore.recursiveDelete(handler.data!.before.ref);
+    
+    const { docs: [credential] } = await handler.data!.before.ref.collection('credentials').limit(1).get()
+
+    const password = encrypt(credential.data().password)
+
+    const userSnapshot = await firestore.collection('users').where('profileRef', '==', profileRef).get()
+
+    if (userSnapshot.empty) {
+      throw new Error('Usuário não encontrado.')
+    }
+
+    const userDoc = userSnapshot.docs[0]
+    const userId = userDoc.id
+
+    const credentialsCollection = firestore.collection('users').doc(userId).collection('credentials')
+    const credentialsSnapshot = await credentialsCollection.get()
+
+    if (credentialsSnapshot.empty) {
+      throw new Error('Nenhuma credencial encontrada para este usuário.')
+    }
+
+    const credentialDoc = credentialsSnapshot.docs[0]
+    const credentialId = credentialDoc.id
+
+    await credentialsCollection.doc(credentialId).update({ password })
+    
+    return firestore.recursiveDelete(handler.data!.before.ref);
+  } catch (error) {
+    info('Error updating credentials:', error);
+    throw new HttpsError("internal", "Failed to update credentials");
   }
 });
 

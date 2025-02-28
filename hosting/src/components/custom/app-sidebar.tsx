@@ -30,7 +30,7 @@ const menuItemsStudentPortal = [
 const menuItemsAdminPortal = [
   { title: 'Início', icon: Home, to: '/' },
   { title: 'Usuários', icon: Users, to: '/users' },
-  // { title: 'Solicitações', icon: Lock, to: '/password-change' },
+  { title: 'Solicitações', icon: Lock, to: '/password-change' },
 ]
 
 const menuItemsTeacherClassroom = [
