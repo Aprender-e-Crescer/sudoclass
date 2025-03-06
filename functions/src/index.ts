@@ -11,6 +11,7 @@ import { getRoleRefByPath } from './utils/getReferenceByPath';
 import { passwordGenerator } from './utils/passwordGenerator';
 import { docRefSchema } from './utils/schema';
 import { requestChangePasswordSchema } from './schemas/credential';
+import { DocumentReference, FieldValue } from 'firebase-admin/firestore';
 
 export const loginWithCPF = onCall(async (request) => {
   try {
@@ -155,9 +156,13 @@ export const createStudent = onCall(async (request) => {
           generalRegistration,                
       })
 
+      const classesRefs = classes.map((classPath) => firestore.doc(classPath));
+
       transaction.set(userRef.collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
-      transaction.set(roleRef, { classes: classes.map((classPath) => firestore.doc(classPath)) })
+      transaction.set(roleRef, { classes: classesRefs })
+
+      classesRefs.forEach((classRef) => transaction.update(classRef, { studentsProfile: FieldValue.arrayUnion(profileRef) }))
     })
   } catch (error) {
     info('Error creating student:', error);
@@ -182,7 +187,6 @@ export const updateStudent = onCall(async (request) => {
 
     firestore.runTransaction(async (transaction) => {
       const userRef = firestore.collection("users").doc(id)
-
       const userSnapshot = await transaction.get(userRef)
       const userDontExists = !userSnapshot.exists
 
@@ -196,12 +200,25 @@ export const updateStudent = onCall(async (request) => {
           generalRegistration,                
       })
       
-      transaction.set(roleRef, { classes: classes.map((classPath) => firestore.doc(classPath)) })
+      const classesRefs = classes.map((classPath) => firestore.doc(classPath));
+
+      transaction.set(roleRef, { classes: classesRefs })
     })
   } catch (error) {
     info('Error updating student:', error);
     throw new HttpsError("internal", "Failed to update student");
   }
+});
+
+export const onUpdateStudent = onDocumentUpdated('students/{studentId}', async (handler) => {
+  const studentProfile = handler.data?.before.ref
+  const { classes: oldClasses } = handler.data?.before.data() ?? { classes: [] }
+  const { classes: newClasses } = handler.data?.after.data() ?? { classes: [] }
+
+  return firestore.runTransaction(async (transaction) => {
+    oldClasses.forEach((classRef: DocumentReference) => transaction.update(classRef, { studentsProfile: FieldValue.arrayRemove(studentProfile) }))
+    newClasses.forEach((classRef: DocumentReference) => transaction.update(classRef, { studentsProfile: FieldValue.arrayUnion(studentProfile) }))
+  });
 });
 
 export const createTeacher = onCall(async (request) => {
@@ -241,10 +258,14 @@ export const createTeacher = onCall(async (request) => {
           birth,
           generalRegistration,                
       })
+
+      const subjectsRefs = subjects.map((subjectPath) => firestore.doc(subjectPath));
   
       transaction.set(userRef.collection("credentials").doc(), { password });
       transaction.set(profileRef, { displayName: fullName, photoURL: null })
-      transaction.set(roleRef, { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
+      transaction.set(roleRef, { subjects: subjectsRefs })
+
+      subjectsRefs.forEach((subjectRef) => transaction.update(subjectRef, { teachersProfile: FieldValue.arrayUnion(profileRef) }))
     })
   } catch (error) {
     info('Error creating teacher:', error);
@@ -282,13 +303,26 @@ export const updateTeacher = onCall(async (request) => {
           birth,
           generalRegistration,                
       })
+
+      const subjectsRefs = subjects.map((subjectPath) => firestore.doc(subjectPath))
       
-      transaction.set(roleRef, { subjects: subjects.map((subjectPath) => firestore.doc(subjectPath)) })
+      transaction.set(roleRef, { subjects: subjectsRefs })
     })
   } catch (error) {
     info('Error updating teacher:', error);
     throw new HttpsError("internal", "Failed to update teacher");
   }
+});
+
+export const onUpdateTeacher = onDocumentUpdated('teachers/{teacherId}', async (handler) => {
+  const teacherProfile = handler.data?.before.ref
+  const { subjects: oldSubjects } = handler.data?.before.data() ?? { subjects: [] }
+  const { subjects: newSubjects } = handler.data?.after.data() ?? { subjects: [] }
+
+  return firestore.runTransaction(async (transaction) => {
+    oldSubjects.forEach((subjectRef: DocumentReference) => transaction.update(subjectRef, { teachersProfile: FieldValue.arrayRemove(teacherProfile) }))
+    newSubjects.forEach((subjectRef: DocumentReference) => transaction.update(subjectRef, { teachersProfile: FieldValue.arrayUnion(teacherProfile) }))
+  });
 });
 
 export const createResponsible = onCall(async (request) => {
