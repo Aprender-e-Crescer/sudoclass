@@ -44,12 +44,10 @@ export const getCoursesFirestoreQuery = (role: role, studentClasses: Student['cl
 }
 
 export const getCoursesQueryOptions = (role: role | undefined, studentClasses: Student['classes'] | undefined, teacherSubjects: Teacher['subjects'] | undefined) => {
-  const coursesRef = getCourseRef(role!, studentClasses, teacherSubjects)
-
   return queryOptions({
     queryKey: ['getCourses', role, studentClasses, teacherSubjects],
     queryFn: async () => getDocs(getCoursesFirestoreQuery(role!, studentClasses, teacherSubjects)),
     select: (snapshot) => snapshot.docs.map((doc) => doc.data()),
-    enabled: role && coursesRef && (((role === 'student' || role === 'responsible') && !!studentClasses) || role === 'admin' || role === 'teacher' && !!teacherSubjects),
+    enabled: !!role && (((role === 'student' || role === 'responsible') && !!studentClasses) || role === 'admin' || role === 'teacher' && !!teacherSubjects),
   })
 }

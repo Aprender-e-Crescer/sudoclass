@@ -1,3 +1,4 @@
+import { useGetFullUser } from "@/hooks/use-get-full-user"
 import { useToast } from "@/hooks/use-toast"
 import { useCreateTeacherMutation } from "@/mutations/use-create-teacher-mutation"
 import { useUpdateTeacherMutation } from "@/mutations/use-update-teacher-mutation"
@@ -15,15 +16,17 @@ export function useTeacherManagingController(id: string | undefined) {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
+    const { role } = useGetFullUser()
+
     const { data: user } = useQuery(getUserQueryOptions(id))
   
     const teacherPersonalSubjectsQueryOptions = getTeacherPersonalSubjectsQueryOptions(user?.role, user?.roleRef)
     
     const { data: teacher } = useQuery(teacherPersonalSubjectsQueryOptions)
 
-    const { data: courses } = useQuery(getCoursesQueryOptions(user?.role, undefined, teacher?.subjects))
+    const { data: courses } = useQuery(getCoursesQueryOptions(role, undefined, undefined))
   
-    const classesQueriesOptions = getClassesQueriesOptions(courses, user?.role, undefined, teacher?.subjects)
+    const classesQueriesOptions = getClassesQueriesOptions(courses, role, undefined, undefined)
     
     const allClasses = useQueries({
         queries: classesQueriesOptions.map(({ classesQueryOptions }) => classesQueryOptions),
