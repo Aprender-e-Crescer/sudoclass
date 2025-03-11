@@ -246,7 +246,7 @@ export const createTeacher = onCall(async (request) => {
         const password = encrypt(rawPassword);
   
       const profileRef = firestore.collection("profiles").doc()
-      const roleRef = firestore.collection("students").doc()
+      const roleRef = firestore.collection("teachers").doc()
           
       transaction.set(userRef, {
           profileRef,
@@ -349,7 +349,7 @@ export const createResponsible = onCall(async (request) => {
       const password = passwordGenerator()
   
       const profileRef = firestore.collection("profiles").doc()
-      const roleRef = firestore.collection("students").doc()
+      const roleRef = firestore.collection("responsibles").doc()
           
       transaction.set(userRef, {
           profileRef,
