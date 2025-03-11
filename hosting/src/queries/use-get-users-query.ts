@@ -5,7 +5,7 @@ import { collection, getDocs, query, where, documentId } from "firebase/firestor
 
 export const getUsersFirestoreQuery = (uid: string) => query(
     collection(firestore, "users"),
-    where(documentId(), "!=", uid)
+    where(documentId(), "!=", uid),
 ).withConverter({
     toFirestore: (data: User) => data,
     fromFirestore: (snapshot, options) => userSchema.parse(({ ...snapshot.data(options), id: snapshot.id })), 

@@ -19,9 +19,14 @@ import { getRoleTranslation } from "@/utils/getRoleFromRef"
 import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { GraduationCap, Plus, ShieldCheck, User, Users2, X } from 'lucide-react'
+import { useRef } from "react"
 import { Fragment } from "react/jsx-runtime"
+import { z } from "zod"
 
 export const Route = createFileRoute('/_authenticated/users/')({
+    validateSearch: z.object({
+        query: z.string().optional(),
+    }),
     loader: async ({ context: { queryClient } }) => {
         const currentUser = await queryClient.ensureQueryData(currentUserQueryOptions())
 
@@ -68,6 +73,8 @@ const roles = [
 ]
 
 function RouteComponent() {
+    const navigate = Route.useNavigate()
+    const { query } = Route.useSearch()
     const { uid } = useGetFullUser()
     const usersQueryOptions = getUsersQueryOptions(uid)
     const { data: users } = useSuspenseQuery(usersQueryOptions)
@@ -85,13 +92,17 @@ function RouteComponent() {
         }),
     })
 
+    const handleOnQueryInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        navigate({ search: { query: e.target?.value ? e.target?.value : undefined } })
+    }
+
     useFirestoreRealtimeQuery(usersQueryOptions.queryKey, getUsersFirestoreQuery(uid))
     useFirestoreRealtimeQueries(usersProfileQueriesOptions.map(({ queryKey }) => ({ queryKey, q: getUserProfileFirestoreQuery(queryKey[1]) })))
 
     return (
         <div className='flex flex-col gap-y-5'>
             <div className='flex px-8 gap-4 items-center'>
-                <input type="text" placeholder='Usuários cadastrados' className='py-4 px-2 text-sm rounded-lg flex-1' />
+                <input defaultValue={query} onChange={handleOnQueryInputChange} type="text" placeholder='Usuários cadastrados' className='py-4 px-2 text-sm rounded-lg flex-1' />
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button size="medium" icon={<Plus size={16} />} type="button" variant="blueButton" className='flex items-center md:gap-3 px-2 md:px-0'>
@@ -142,7 +153,12 @@ function RouteComponent() {
             </div>
             <div className='flex flex-col'>
                 <hr />
-                {usersWithProfile.map(({ id, photoURL, roleTranslation, user, to }) => (
+                {usersWithProfile
+                .filter(({ user }) =>{
+                    const insensitiveQuery = query?.toLowerCase()
+                    return insensitiveQuery ? user.fullName?.toLowerCase().includes(insensitiveQuery) || user.id?.toLowerCase().includes(insensitiveQuery) : true
+                })
+                .map(({ id, photoURL, roleTranslation, user, to }) => (
                     <Fragment key={id}>
                         <Link to={to} search={{ action: 'edit', id: user.id }}>
                             <div className='flex items-center gap-x-5 px-5 py-3 text-sm cursor-pointer'>
